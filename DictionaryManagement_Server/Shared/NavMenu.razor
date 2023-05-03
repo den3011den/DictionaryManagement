@@ -17,48 +17,269 @@
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="dictionary">
-                <span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;СПРАВОЧНИКИ
+            <NavLink class="nav-link" @onclick="()=>expandSubNavDictionary = !expandSubNavDictionary" href="dictionary">
+                <span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;СПРАВОЧНИКИ                
             </NavLink>
         </div>
 
+        @if (expandSubNavDictionary)
+        {
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="dictionary/SapEquipment">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;Ресурсы SAP
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="dictionary/SapMaterial">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;Материалы SAP
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="dictionary/MesMaterial">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;Материалы MES
+                </NavLink>
+            </div>
+
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="dictionary/SapUnitOfMeasure">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;Ед. изм. SAP
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="dictionary/MesUnitOfMeasure">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;Ед. изм. MES
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="dictionary/ErrorCriterion">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;Критерии ошибок
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="dictionary/CorrectionReason">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;Причины коррект.
+                </NavLink>
+            </div>
+
+
+        }
+
+ 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="mapping">
+            <NavLink class="nav-link" href="mapping" @onclick="()=>expandSubNavMapping = !expandSubNavMapping">
                 <span class="bi bi-arrow-left-right" aria-hidden="true"></span>&nbsp;&nbsp;МАППИНГ
             </NavLink>
         </div>
 
+
+        @if (expandSubNavMapping)
+        {
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="dictionary/SapToMesMaterialMapping">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-arrow-left-right" aria-hidden="true"></span>&nbsp;&nbsp;Материалы
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="dictionary/UnitOfMeasureSapToMesMapping">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-arrow-left-right" aria-hidden="true"></span>&nbsp;&nbsp;Ед. измерения
+                </NavLink>
+            </div>
+
+        }
+
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="tags">
+            <NavLink class="nav-link" href="tags" @onclick="()=>expandSubNavTags = !expandSubNavTags">
                 <span class="bi bi-tags-fill" aria-hidden="true"></span>&nbsp;&nbsp;ТЭГИ
             </NavLink>
         </div>
 
+        @if (expandSubNavTags)
+        {
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="tags/MesParamSourceType">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-tags-fill" aria-hidden="true"></span>&nbsp;&nbsp;Типы тэгов
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="tags/MesParam">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-tags-fill" aria-hidden="true"></span>&nbsp;&nbsp;Тэги
+                </NavLink>
+            </div>
+
+        }
+
+
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="dataarchive">
+            <NavLink class="nav-link" href="dataarchive" @onclick="()=>expandSubNavDataArchive = !expandSubNavDataArchive">
                 <span class="bi bi-database-fill" aria-hidden="true"></span>&nbsp;&nbsp;АРХИВ ДАННЫХ
             </NavLink>
         </div>
 
+        @if (expandSubNavDataArchive)
+        {
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="dataarchive/DataType">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="i bi-database-fill" aria-hidden="true"></span>&nbsp;&nbsp;Виды данных
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="dataarchive/DataSource">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-database-fill" aria-hidden="true"></span>&nbsp;&nbsp;Источники данных
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="dataarchive/MesMovements">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-database-fill" aria-hidden="true"></span>&nbsp;&nbsp;Архив данных
+                </NavLink>
+            </div>
+        }
+
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="report">
+            <NavLink class="nav-link" href="SAPshowcase" @onclick="()=>expandSubNavSAPShowcase = !expandSubNavSAPShowcase">
+                <span class="bi bi-arrow-up" aria-hidden="true"></span>&nbsp;&nbsp;ВИТРИНЫ SAP
+            </NavLink>
+        </div>
+
+        @if (expandSubNavSAPShowcase)
+        {
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="SAPshowcase/SapMovementsIN">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-arrow-up" aria-hidden="true"></span>&nbsp;&nbsp;Движения - вход
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="SAPshowcase/SapMovementsOUT">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-arrow-up" aria-hidden="true"></span>&nbsp;&nbsp;Движения - выход
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="SAPshowcase/SapPackingOUT">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-arrow-up" aria-hidden="true"></span>&nbsp;&nbsp;Фасовка - выход
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="SAPshowcase/SapNdoOUT">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-arrow-up" aria-hidden="true"></span>&nbsp;&nbsp;НДО - выход
+                </NavLink>
+            </div>
+
+        }
+
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="reports" @onclick="()=>expandSubNavReport = !expandSubNavReport">
                 <span class="bi bi-building-fill-add" aria-hidden="true"></span>&nbsp;&nbsp;ОТЧЁТЫ
             </NavLink>
         </div>
 
+
+        @if (expandSubNavReport)
+        {
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="reports/ReportTemplateType">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-building-fill-add" aria-hidden="true"></span>&nbsp;&nbsp;Типы шаблонов
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="reports/ReportTemplate">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-building-fill-add" aria-hidden="true"></span>&nbsp;&nbsp;Шаблоны
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="reports/ReportTemplateTоDepartment">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-building-fill-add" aria-hidden="true"></span>&nbsp;&nbsp;Шаблоны-произ-ва
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="reports/ReportTemplateTypeTоRole">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-building-fill-add" aria-hidden="true"></span>&nbsp;&nbsp;Шаблоны-роли
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="reports/ReportEntity">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-building-fill-add" aria-hidden="true"></span>&nbsp;&nbsp;Экземп. отчётов
+                </NavLink>
+            </div>
+
+        }
+        
+
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="eventjournal">
+            <NavLink class="nav-link" href="EventJournal" @onclick="()=>expandSubNavEventJournal = !expandSubNavEventJournal">
                 <span class="bi bi-journal" aria-hidden="true"></span>&nbsp;&nbsp;ЖУРНАЛ СОБЫТИЙ
             </NavLink>
         </div>
 
+        @if (expandSubNavEventJournal)
+        {
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="EventJournal/LogEvent">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi-journal" aria-hidden="true"></span>&nbsp;&nbsp;Журнал событий
+                </NavLink>
+            </div>
+        }
+
+
+
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="administration">
+            <NavLink class="nav-link" href="administration" @onclick="()=>expandSubNavAdministration = !expandSubNavAdministration">
                 <span class="bi bi-gear-fill" aria-hidden="true"></span>&nbsp;&nbsp;АДМИН
             </NavLink>
         </div>
 
 
+        @if (expandSubNavAdministration)
+        {
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="administration/User">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-gear-fill" aria-hidden="true"></span>&nbsp;&nbsp;Пользователи
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="administration/Role">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-gear-fill" aria-hidden="true"></span>&nbsp;&nbsp;Роли
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="administration/MesDepartment">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-gear-fill" aria-hidden="true"></span>&nbsp;&nbsp;Производства
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="administration/Settings">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-gear-fill" aria-hidden="true"></span>&nbsp;&nbsp;Настройки
+                </NavLink>
+            </div>
+
+        }
 
 
 
@@ -74,4 +295,15 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    private bool expandSubNavDictionary;
+    private bool expandSubNavMapping;
+    private bool expandSubNavTags;
+    private bool expandSubNavDataArchive;
+    private bool expandSubNavSAPShowcase;
+    private bool expandSubNavReport;
+    private bool expandSubNavEventJournal;
+    private bool expandSubNavAdministration;
+
+   
 }
