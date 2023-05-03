@@ -1,6 +1,6 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">DictionaryManagement_Server</a>
+        <a class="navbar-brand" href="">1 - Dictionary Management</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -9,21 +9,59 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <span class="bi bi-house-fill" aria-hidden="true"></span>&nbsp;&nbsp;Домой
             </NavLink>
         </div>
+
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+            <NavLink class="nav-link" href="dictionary">
+                <span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;СПРАВОЧНИКИ
             </NavLink>
         </div>
+
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+            <NavLink class="nav-link" href="mapping">
+                <span class="bi bi-arrow-left-right" aria-hidden="true"></span>&nbsp;&nbsp;МАППИНГ
             </NavLink>
         </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="tags">
+                <span class="bi bi-tags-fill" aria-hidden="true"></span>&nbsp;&nbsp;ТЭГИ
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="dataarchive">
+                <span class="bi bi-database-fill" aria-hidden="true"></span>&nbsp;&nbsp;АРХИВ ДАННЫХ
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="report">
+                <span class="bi bi-building-fill-add" aria-hidden="true"></span>&nbsp;&nbsp;ОТЧЁТЫ
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="eventjournal">
+                <span class="bi bi-journal" aria-hidden="true"></span>&nbsp;&nbsp;ЖУРНАЛ СОБЫТИЙ
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="administration">
+                <span class="bi bi-gear-fill" aria-hidden="true"></span>&nbsp;&nbsp;АДМИН
+            </NavLink>
+        </div>
+
+
+
+
+
     </nav>
 </div>
 
