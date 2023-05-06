@@ -1,8 +1,371 @@
 ﻿@page "/dictionary/SapEquipment"
+@using DictionaryManagement_Business.Repository.IRepository;
+@using DictionaryManagement_Common;
+@using DictionaryManagement_Models.IntDBModels
+@using Microsoft.EntityFrameworkCore;
 
-<h3>Справочники - Ресурсы SAP</h3>
+@inject IJSRuntime _jsRuntime
+@inject ISapEquipmentRepository _sapEquipmentRepository
 
+@inject NavigationManager _navigationManager
+
+@*<_DeleteConfirmation IsParentComponentProcessing="IsLoading" DeleteConfirmationMessage="@DeleteMessage" ConfirmationChanged="ConfirmDelete_Click"></_DeleteConfirmation>*@
+
+<div class="row mt-4">
+
+    <div class="col-6">
+        <h4 class="card-title text-primary">Справочники - Ресурсы SAP</h4>
+        
+        <div class="col-6">
+            <RadzenCheckBox @bind-Value=@checkBoxValue TriState="true" TValue="bool?" Change=@OnArchiveCheckBoxChange Name="ArchiveCheckBox" />
+            <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
+        </div>
+
+    </div>
+
+
+    @if (IsLoading != true)
+    {
+      
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый ресурс" Click="@InsertRow" Disabled=@(sapEquipmentDTOToInsert != null || sapEquipmentDTOToUpdate != null) />
+        <RadzenDataGrid @ref="sapEquipmentDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                    Data="@sapEquipmentDTOs" TItem="SapEquipmentDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    FilterMode="FilterMode.Simple">
+            <Columns>
+                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Id" Title="Ид записи" Width="120px" />
+                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpPlantId" Title="Код завода SAP">
+                    <EditTemplate Context="sapEquipmentDTO">
+                        <RadzenTextBox @bind-Value="sapEquipmentDTO.ErpPlantId" Style="width:100%; display: block" Name="ErpPlantId" />
+                        <RadzenRequiredValidator Text="Код завода обязателен к заполнению" Component="ErpPlantId" Popup="true" />
+                        <RadzenLengthValidator Max=100 Text="Код завода не может быть больше 100 символов" Component="ErpPlantId" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpId" Title="Код ресурса/склада SAP">
+                    <EditTemplate Context="sapEquipmentDTO">
+                        <RadzenTextBox @bind-Value="sapEquipmentDTO.ErpId" Style="width:100%; display: block" Name="ErpId" />
+                        <RadzenRequiredValidator Text="Код ресурса/склада обязателен к заполнению" Component="ErpId" Popup="true" />
+                        <RadzenLengthValidator Max=100 Text="Код ресурса/склада не может быть больше 100 символов" Component="ErpId" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Name" Title="Наименование">
+                    <EditTemplate Context="sapEquipmentDTO">
+                        <RadzenTextBox @bind-Value="sapEquipmentDTO.Name" Style="width:100%; display: block" Name="Name" />
+                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                        <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                    <Template Context="data">
+                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="SapEquipmentDTO" Context="sapEquipmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <Template Context="sapEquipmentDTO">
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapEquipmentDTO))" @onclick:stopPropagation="true">
+                        </RadzenButton>
+                        @if (!sapEquipmentDTO.IsArchive)
+                        {
+                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(sapEquipmentDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                        else
+                        {
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(sapEquipmentDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+
+                    </Template>
+                    <EditTemplate Context="sapEquipmentDTO">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(sapEquipmentDTO))">
+                        </RadzenButton>
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(sapEquipmentDTO))">
+                        </RadzenButton>
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(sapEquipmentDTO))">
+                        </RadzenButton>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+    else
+    {
+        if (IsLoading)
+        {
+            //отображение gif загрузки
+            <div class="text-center">
+                <img src="/images/loading.gif">
+            </div>
+
+        }
+    }
+
+</div>
 
 @code {
+    public bool? checkBoxValue = null;
+    public string checkBoxText = "Все записи";
+    public string DeleteMessage { get; set; } = "";
+
+    RadzenDataGrid<SapEquipmentDTO> sapEquipmentDTOGrid;
+
+    IEnumerable<SapEquipmentDTO> sapEquipmentDTOs;
+
+    SapEquipmentDTO sapEquipmentDTOToInsert;
+    SapEquipmentDTO sapEquipmentDTOToUpdate;
+    //    SapEquipmentDTO OldSapEquipmentDTOToUpdate;
+
+    public bool IsLoading { get; set; }
+
+    void OnArchiveCheckBoxChange()
+    {
+        if (checkBoxValue == false)
+        {
+            checkBoxValue = null;
+            checkBoxText = "Только архивные";
+
+            IsLoading = true;
+            StateHasChanged();
+            sapEquipmentDTOs = _sapEquipmentRepository.GetAll(SD.SelectDictionaryScope.ArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+        }
+        if (checkBoxValue == null)
+        {
+            checkBoxValue = true;
+            checkBoxText = "Только активные";
+
+            IsLoading = true;
+            StateHasChanged();
+            sapEquipmentDTOs = _sapEquipmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+
+        }
+
+        if (checkBoxValue == true)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            sapEquipmentDTOs = _sapEquipmentRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+
+        }
+
+        
+    }
+
+    void Reset()
+    {
+        sapEquipmentDTOToInsert = null;
+        sapEquipmentDTOToUpdate = null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            sapEquipmentDTOs = _sapEquipmentRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task EditRow(SapEquipmentDTO sapEquipmentDTO)
+    {
+        //OldSapEquipmentDTOToUpdate = sapEquipmentDTO;
+        sapEquipmentDTOToUpdate = sapEquipmentDTO;
+        await sapEquipmentDTOGrid.EditRow(sapEquipmentDTO);
+
+    }
+
+    async Task OnUpdateRow(SapEquipmentDTO sapEquipmentDTO)
+    {
+        var forResourceCheck = _sapEquipmentRepository.GetListByResource(sapEquipmentDTO.ErpPlantId, sapEquipmentDTO.ErpId).Result;
+
+        foreach (var obj in forResourceCheck)
+        {
+            if (obj.Id != sapEquipmentDTO.Id)
+            {
+
+                var OldSapEquipmentDTOToUpdate = _sapEquipmentRepository.Get(sapEquipmentDTO.Id);
+
+                sapEquipmentDTO.ErpPlantId = OldSapEquipmentDTOToUpdate.Result.ErpPlantId;
+                sapEquipmentDTO.ErpId = OldSapEquipmentDTOToUpdate.Result.ErpId;
+                sapEquipmentDTO.Name = OldSapEquipmentDTOToUpdate.Result.Name;
+
+                await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
+
+                sapEquipmentDTOToUpdate = null;
+
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом завода " + obj.ErpPlantId + " и кодом ресурса/склада " + obj.ErpId);
+
+                return;
+            }
+        }
+
+        var forNameCheck = _sapEquipmentRepository.GetListByName(sapEquipmentDTO.Name).Result;
+
+        foreach (var obj in forNameCheck)
+        {
+            if (obj.Id != sapEquipmentDTO.Id)
+            {
+
+                var OldSapEquipmentDTOToUpdate = _sapEquipmentRepository.Get(sapEquipmentDTO.Id);
+
+                sapEquipmentDTO.ErpPlantId = OldSapEquipmentDTOToUpdate.Result.ErpPlantId;
+                sapEquipmentDTO.ErpId = OldSapEquipmentDTOToUpdate.Result.ErpId;
+                sapEquipmentDTO.Name = OldSapEquipmentDTOToUpdate.Result.Name;
+
+                await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
+
+
+                OldSapEquipmentDTOToUpdate = null;
+                sapEquipmentDTOToUpdate = null;
+
+                sapEquipmentDTOToUpdate = null;
+
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименованием \"" + obj.Name + "\" (код завода: " + obj.ErpPlantId + " Код ресурса / склада: " + obj.ErpId + ")");
+                return;
+            }
+        }
+
+        if (sapEquipmentDTO == sapEquipmentDTOToInsert)
+        {
+            sapEquipmentDTOToInsert = null;
+        }
+
+        sapEquipmentDTOToUpdate = null;
+
+        await _sapEquipmentRepository.Update(sapEquipmentDTO, SD.UpdateMode.Update);
+    }
+
+    async Task SaveRow(SapEquipmentDTO sapEquipmentDTO)
+    {
+        await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
+    }
+
+    void CancelEdit(SapEquipmentDTO sapEquipmentDTO)
+    {
+        if (sapEquipmentDTO == sapEquipmentDTOToInsert)
+        {
+            sapEquipmentDTOToInsert = null;
+        }
+
+        sapEquipmentDTOToUpdate = null;
+
+        sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
+
+        //var sapEquipmentDTOEntry = _sapEquipmentRepository.Get(sapEquipmentDTO.Id);
+        //if (sapEquipmentDTOEntry.State == EntityState.Modified)
+        //{
+        //    orderEntry.CurrentValues.SetValues(orderEntry.OriginalValues);
+        //    orderEntry.State = EntityState.Unchanged;
+        //}
+    }
+
+    async Task DeleteRow(SapEquipmentDTO sapEquipmentDTO)
+    {
+        if (sapEquipmentDTO == sapEquipmentDTOToInsert)
+        {
+            sapEquipmentDTOToInsert = null;
+        }
+
+        if (sapEquipmentDTO == sapEquipmentDTOToUpdate)
+        {
+            sapEquipmentDTOToUpdate = null;
+        }
+
+        if (sapEquipmentDTOs.Contains(sapEquipmentDTO))
+        {
+            if (sapEquipmentDTO.IsArchive)
+            {
+                await _sapEquipmentRepository.Update(sapEquipmentDTO, SD.UpdateMode.RestoreFromArchive);
+                sapEquipmentDTO.IsArchive = false;
+                await _jsRuntime.ToastrSuccess("Ресурс " + sapEquipmentDTO.ErpPlantId + " | " + sapEquipmentDTO.ErpId + " восстановлен из архива");
+            }
+            else
+            {
+                await _sapEquipmentRepository.Update(sapEquipmentDTO, SD.UpdateMode.MoveToArchive);
+                sapEquipmentDTO.IsArchive = true;
+                await _jsRuntime.ToastrSuccess("Ресурс " + sapEquipmentDTO.ErpPlantId + " | " + sapEquipmentDTO.ErpId + " удалён в архив");
+            }
+            await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
+            //await sapEquipmentDTOGrid.Reload();
+        }
+        else
+        {
+            sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
+            await sapEquipmentDTOGrid.Reload();
+        }
+    }
+
+    async Task InsertRow()
+    {
+        sapEquipmentDTOToInsert = new SapEquipmentDTO();
+        await sapEquipmentDTOGrid.InsertRow(sapEquipmentDTOToInsert);
+    }
+
+    async Task OnCreateRow(SapEquipmentDTO sapEquipmentDTO)
+    {
+
+        var forResourceCheck = _sapEquipmentRepository.GetListByResource(sapEquipmentDTO.ErpPlantId, sapEquipmentDTO.ErpId).Result;
+        if (forResourceCheck.Count() > 0)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом завода " + sapEquipmentDTO.ErpPlantId + " и кодом ресурса/склада " + sapEquipmentDTO.ErpId);
+            sapEquipmentDTOToInsert = null;
+            sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
+            await sapEquipmentDTOGrid.Reload();
+            return;
+
+        }
+
+        var forNameCheck = _sapEquipmentRepository.GetListByName(sapEquipmentDTO.Name).Result;
+
+        if (forNameCheck.Count() > 0)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименованием \"" + forNameCheck.First().Name + "\" (код завода: " + forNameCheck.First().ErpPlantId + " Код ресурса / склада: " + forNameCheck.First().ErpId + ")");
+            sapEquipmentDTOToInsert = null;
+            sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
+            await sapEquipmentDTOGrid.Reload();
+            return;
+        }
+
+        var newDTO = await _sapEquipmentRepository.Create(sapEquipmentDTOToInsert);
+
+        //  sapEquipmentDTOGrid.
+
+        //SapEquipmentDTO foundDTO = sapEquipmentDTOs.Where(u => (u.ErpPlantId.Trim().ToUpper() == sapEquipmentDTOToInsert.ErpPlantId.Trim().ToUpper() && u.ErpId.Trim().ToUpper() == sapEquipmentDTOToInsert.ErpId.Trim().ToUpper())).First();
+        //foundDTO.Id = newDTO.Id;
+        //sapEquipmentDTOToInsert.Id = newDTO.Id;
+        sapEquipmentDTOToInsert.Id = newDTO.Id;
+        await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTOToInsert);
+        //StateHasChanged();
+
+        sapEquipmentDTOToInsert = null;
+
+        //await sapEquipmentDTOGrid.Reload();
+    }
+
+
 
 }

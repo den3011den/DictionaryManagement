@@ -4,6 +4,7 @@ using DictionaryManagement_DataAccess.Data.IntDB;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
+using Radzen;
 using System.Runtime.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,10 @@ builder.Services.AddDbContext<IntDBApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("IntDBConnection")));
 builder.Services.AddScoped<ISapEquipmentRepository, SapEquipmentRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<TooltipService>();
+builder.Services.AddScoped<ContextMenuService>();
 
 
 var app = builder.Build();

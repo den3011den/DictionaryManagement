@@ -14,6 +14,10 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<SapEquipmentDTO> Get(int Id);
         public Task<IEnumerable<SapEquipmentDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All);
         public Task<SapEquipmentDTO> Update(SapEquipmentDTO objDTO, UpdateMode updateMode = UpdateMode.Update);
-        public Task<SapEquipmentDTO> Create(SapEquipmentDTO objectToAddDTO);      
+        public Task<SapEquipmentDTO> Create(SapEquipmentDTO objectToAddDTO);
+
+        public Task<IEnumerable<SapEquipmentDTO>> GetListByResource(string erpPlantId = "", string erpId = "");
+        public Task<IEnumerable<SapEquipmentDTO>> GetListByName(string name = "");
+
     }
 }

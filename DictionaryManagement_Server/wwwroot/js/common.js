@@ -10,14 +10,14 @@
 
 window.ShowSwal = (type, message) => {
     if (type === "success") {
-        Swal.fire(
+        swal(
             'Успешная операция!',
             message,
             'success'
         )
     }
     if (type === "error") {
-        Swal.fire(
+        swal(
             'Ошибка операции!',
             message,
             'error'

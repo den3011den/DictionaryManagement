@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -35,7 +36,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (Id > 0)
             {
-                var objToGet = await _db.SapEquipment.FirstOrDefaultAsync(u => u.Id == Id);
+                var objToGet = _db.SapEquipment.FirstOrDefaultAsync(u => u.Id == Id).GetAwaiter().GetResult();
                 if (objToGet != null)
                 {
                     return _mapper.Map<SapEquipment, SapEquipmentDTO>(objToGet);
@@ -48,7 +49,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
             {
-                var fff = _db.SapEquipment;
+                //var fff = _db.SapEquipment;
                 return _mapper.Map<IEnumerable<SapEquipment>, IEnumerable<SapEquipmentDTO>>(_db.SapEquipment);
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
@@ -57,6 +58,16 @@ namespace DictionaryManagement_Business.Repository
                 return _mapper.Map<IEnumerable<SapEquipment>, IEnumerable<SapEquipmentDTO>>(_db.SapEquipment.Where(u => u.IsArchive != true));
             return _mapper.Map<IEnumerable<SapEquipment>, IEnumerable<SapEquipmentDTO>>(_db.SapEquipment);
         }
+
+        public async Task<IEnumerable<SapEquipmentDTO>> GetListByResource(string erpPlantId = "", string erpId = "")
+        {                            
+            return _mapper.Map<IEnumerable<SapEquipment>, IEnumerable<SapEquipmentDTO>>(_db.SapEquipment).Where(u => (u.ErpPlantId.Trim().ToUpper() == erpPlantId.Trim().ToUpper() && u.ErpId.Trim().ToUpper() == erpId.Trim().ToUpper()));
+        }
+        public async Task<IEnumerable<SapEquipmentDTO>> GetListByName(string name = "")
+        {
+            return _mapper.Map<IEnumerable<SapEquipment>, IEnumerable<SapEquipmentDTO>>(_db.SapEquipment).Where(u => (u.Name.Trim().ToUpper() == name.Trim().ToUpper()));
+        }
+
 
         public async Task<SapEquipmentDTO> Update(SapEquipmentDTO objectToUpdateDTO, SD.UpdateMode updateMode = SD.UpdateMode.Update)
         {
