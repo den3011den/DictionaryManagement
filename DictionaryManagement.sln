@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionaryManagement_Server", "DictionaryManagement_Server\DictionaryManagement_Server.csproj", "{E2A54E93-EBF5-4CC4-954C-362C19BB19DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DictionaryManagement_Server", "DictionaryManagement_Server\DictionaryManagement_Server.csproj", "{E2A54E93-EBF5-4CC4-954C-362C19BB19DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionaryManagement_Business", "DictionaryManagement_Business\DictionaryManagement_Business.csproj", "{8624C044-B721-46AF-BED8-EF0750647089}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DictionaryManagement_Business", "DictionaryManagement_Business\DictionaryManagement_Business.csproj", "{8624C044-B721-46AF-BED8-EF0750647089}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionaryManagement_Common", "DictionaryManagement_Common\DictionaryManagement_Common.csproj", "{05B2D4E4-1544-452B-BF8D-35A08A8C8172}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DictionaryManagement_Common", "DictionaryManagement_Common\DictionaryManagement_Common.csproj", "{05B2D4E4-1544-452B-BF8D-35A08A8C8172}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionaryManagement_DataAccess", "DictionaryManagement_DataAccess\DictionaryManagement_DataAccess.csproj", "{127E7CE4-5B1A-4C86-BC71-0A8326A60649}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DictionaryManagement_DataAccess", "DictionaryManagement_DataAccess\DictionaryManagement_DataAccess.csproj", "{127E7CE4-5B1A-4C86-BC71-0A8326A60649}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionaryManagement_Models", "DictionaryManagement_Models\DictionaryManagement_Models.csproj", "{93573737-D3A2-48E0-B991-F050AA31C465}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DictionaryManagement_Models", "DictionaryManagement_Models\DictionaryManagement_Models.csproj", "{93573737-D3A2-48E0-B991-F050AA31C465}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
