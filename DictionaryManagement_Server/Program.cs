@@ -1,7 +1,10 @@
+using DictionaryManagement_Business.Repository;
+using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,8 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddDbContext<IntDBApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("IntDBConnection")));
+builder.Services.AddScoped<ISapEquipmentRepository, SapEquipmentRepository>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
 var app = builder.Build();

@@ -13,6 +13,9 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         {
 
         }
+
+        public DbSet<SapEquipment> SapEquipment { get; set; }
+
     }
 
 }
