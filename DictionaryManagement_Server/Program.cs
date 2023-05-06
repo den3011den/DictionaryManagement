@@ -1,13 +1,18 @@
-//using DictionaryManagement_Server.Data;
+using DictionaryManagement_DataAccess.Data.IntDB;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-//builder.Services.AddSingleton<WeatherForecastService>();
+
+builder.Services.AddDbContext<IntDBApplicationDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("IntDBConnection")));
+
 
 var app = builder.Build();
 
