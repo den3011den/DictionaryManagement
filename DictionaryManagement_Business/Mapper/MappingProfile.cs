@@ -15,6 +15,13 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<SapUnitOfMeasure, SapUnitOfMeasureDTO>().ReverseMap();
             CreateMap<ErrorCriterion, ErrorCriterionDTO>().ReverseMap();
             CreateMap<CorrectionReason, CorrectionReasonDTO>().ReverseMap();
+
+            CreateMap<MesParamSourceType, MesParamSourceTypeDTO>().ReverseMap();
+            CreateMap<DataType, DataTypeDTO>().ReverseMap();
+            CreateMap<DataSource, DataSourceDTO>().ReverseMap();
+            CreateMap<ReportTemplateType, ReportTemplateTypeDTO>().ReverseMap();
+            CreateMap<LogEventType, LogEventTypeDTO>().ReverseMap();
+            CreateMap<Settings, SettingsDTO>().ReverseMap();
         }
     }
 }

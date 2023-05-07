@@ -22,6 +22,13 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<ErrorCriterion> ErrorCriterion { get; set; }
         public DbSet<CorrectionReason> CorrectionReason { get; set; }
 
+        public DbSet<MesParamSourceType> MesParamSourceType { get; set; }
+        public DbSet<DataType> DataType { get; set; }
+        public DbSet<DataSource> DataSource { get; set; }
+        public DbSet<ReportTemplateType> ReportTemplateType { get; set; }
+        public DbSet<LogEventType> LogEventType { get; set; }
+        public DbSet<Settings> Settings { get; set; }
+
     }
 
 }
