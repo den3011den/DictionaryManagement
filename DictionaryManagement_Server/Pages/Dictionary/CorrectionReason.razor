@@ -229,13 +229,13 @@
             {
                 await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.RestoreFromArchive);
                 correctionReasonDTO.IsArchive = false;
-                await _jsRuntime.ToastrSuccess("Ед. изм. " + correctionReasonDTO.Name + " восстановлена из архива");
+                await _jsRuntime.ToastrSuccess("Причина корректировки " + correctionReasonDTO.Name + " восстановлена из архива");
             }
             else
             {
                 await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.MoveToArchive);
                 correctionReasonDTO.IsArchive = true;
-                await _jsRuntime.ToastrSuccess("Ед. изм. " + correctionReasonDTO.Name + " удалена в архив");
+                await _jsRuntime.ToastrSuccess("Причина корректировки " + correctionReasonDTO.Name + " удалена в архив");
             }
             await correctionReasonDTOGrid.UpdateRow(correctionReasonDTO);
             //await sapEquipmentDTOGrid.Reload();

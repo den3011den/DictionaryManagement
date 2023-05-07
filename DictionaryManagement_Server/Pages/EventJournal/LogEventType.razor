@@ -1,0 +1,270 @@
+﻿@page "/EventJournal/LogEventType"
+
+@using DictionaryManagement_Business.Repository.IRepository;
+@using DictionaryManagement_Common;
+@using DictionaryManagement_Models.IntDBModels
+@using Microsoft.EntityFrameworkCore;
+
+
+@inject IJSRuntime _jsRuntime
+@inject ILogEventTypeRepository _logEventTypeRepository
+
+@inject NavigationManager _navigationManager
+
+
+<div class="row mt-4">
+
+    <div class="col-6">
+        <h4 class="card-title text-primary"><a href="/EventJournal">Журнал событий</a> - <a href="/dictionary/LogEventType">Типы событий</a></h4>
+
+        <div class="col-6">
+            <RadzenCheckBox @bind-Value=@checkBoxValue TriState="true" TValue="bool?" Change=@OnArchiveCheckBoxChange Name="ArchiveCheckBox" />
+            <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
+        </div>
+
+    </div>
+
+
+    @if (IsLoading != true)
+    {
+
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тип событий" Click="@InsertRow" Disabled=@(logEventTypeDTOToInsert != null || logEventTypeDTOToUpdate != null) />
+        <RadzenDataGrid @ref="logEventTypeDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                    Data="@logEventTypeDTOs" TItem="LogEventTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    FilterMode="FilterMode.Simple">
+            <Columns>
+                <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
+                <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="Name" Title="Наименование">
+                    <EditTemplate Context="logEventTypeDTO">
+                        <RadzenTextBox @bind-Value="logEventTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
+                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                        <RadzenLengthValidator Max=100 Text="Наименование не может быть больше 100 символов" Component="Name" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                    <Template Context="data">
+                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="LogEventTypeDTO" Context="logEventTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <Template Context="logEventTypeDTO">
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(logEventTypeDTO))" @onclick:stopPropagation="true">
+                        </RadzenButton>
+                        @if (!logEventTypeDTO.IsArchive)
+                        {
+                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(logEventTypeDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                        else
+                        {
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(logEventTypeDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                    </Template>
+                    <EditTemplate Context="logEventTypeDTO">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(logEventTypeDTO))">
+                        </RadzenButton>
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(logEventTypeDTO))">
+                        </RadzenButton>
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(logEventTypeDTO))">
+                        </RadzenButton>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+    else
+    {
+        if (IsLoading)
+        {
+            //отображение gif загрузки
+            <div class="text-center">
+                <img src="/images/loading.gif">
+            </div>
+
+        }
+    }
+
+</div>
+
+@code {
+    public bool? checkBoxValue = null;
+    public string checkBoxText = "Все записи";
+    public string DeleteMessage { get; set; } = "";
+
+    RadzenDataGrid<LogEventTypeDTO> logEventTypeDTOGrid;
+
+    IEnumerable<LogEventTypeDTO> logEventTypeDTOs;
+
+    LogEventTypeDTO logEventTypeDTOToInsert;
+    LogEventTypeDTO logEventTypeDTOToUpdate;
+
+
+    public bool IsLoading { get; set; }
+
+    void OnArchiveCheckBoxChange()
+    {
+        if (checkBoxValue == false)
+        {
+            checkBoxValue = null;
+            checkBoxText = "Только архивные";
+
+            IsLoading = true;
+            StateHasChanged();
+            logEventTypeDTOs = _logEventTypeRepository.GetAll(SD.SelectDictionaryScope.ArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+        }
+        if (checkBoxValue == null)
+        {
+            checkBoxValue = true;
+            checkBoxText = "Только активные";
+
+            IsLoading = true;
+            StateHasChanged();
+            logEventTypeDTOs = _logEventTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+
+        }
+
+        if (checkBoxValue == true)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            logEventTypeDTOs = _logEventTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+        }
+    }
+
+    void Reset()
+    {
+        logEventTypeDTOToInsert = null;
+        logEventTypeDTOToUpdate = null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            logEventTypeDTOs = _logEventTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task EditRow(LogEventTypeDTO logEventTypeDTO)
+    {
+        logEventTypeDTOToUpdate = logEventTypeDTO;
+        await logEventTypeDTOGrid.EditRow(logEventTypeDTO);
+    }
+
+    async Task OnUpdateRow(LogEventTypeDTO logEventTypeDTO)
+    {
+
+        if (logEventTypeDTO == logEventTypeDTOToInsert)
+        {
+            logEventTypeDTOToInsert = null;
+        }
+
+        logEventTypeDTOToUpdate = null;
+
+        await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.Update);
+    }
+
+    async Task SaveRow(LogEventTypeDTO logEventTypeDTO)
+    {
+        await logEventTypeDTOGrid.UpdateRow(logEventTypeDTO);
+    }
+
+    void CancelEdit(LogEventTypeDTO logEventTypeDTO)
+    {
+        if (logEventTypeDTO == logEventTypeDTOToInsert)
+        {
+            logEventTypeDTOToInsert = null;
+        }
+
+        logEventTypeDTOToUpdate = null;
+
+        logEventTypeDTOGrid.CancelEditRow(logEventTypeDTO);
+
+    }
+
+    async Task DeleteRow(LogEventTypeDTO logEventTypeDTO)
+    {
+        if (logEventTypeDTO == logEventTypeDTOToInsert)
+        {
+            logEventTypeDTOToInsert = null;
+        }
+
+        if (logEventTypeDTO == logEventTypeDTOToUpdate)
+        {
+            logEventTypeDTOToUpdate = null;
+        }
+
+        if (logEventTypeDTOs.Contains(logEventTypeDTO))
+        {
+            if (logEventTypeDTO.IsArchive)
+            {
+                await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.RestoreFromArchive);
+                logEventTypeDTO.IsArchive = false;
+                await _jsRuntime.ToastrSuccess("Тип событий " + logEventTypeDTO.Name + " восстановлен из архива");
+            }
+            else
+            {
+                await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.MoveToArchive);
+                logEventTypeDTO.IsArchive = true;
+                await _jsRuntime.ToastrSuccess("Тип событий " + logEventTypeDTO.Name + " удален в архив");
+            }
+            await logEventTypeDTOGrid.UpdateRow(logEventTypeDTO);
+            //await sapEquipmentDTOGrid.Reload();
+        }
+        else
+        {
+            logEventTypeDTOGrid.CancelEditRow(logEventTypeDTO);
+            await logEventTypeDTOGrid.Reload();
+        }
+    }
+
+    async Task InsertRow()
+    {
+        logEventTypeDTOToInsert = new LogEventTypeDTO();
+        await logEventTypeDTOGrid.InsertRow(logEventTypeDTOToInsert);
+    }
+
+    async Task OnCreateRow(LogEventTypeDTO logEventTypeDTO)
+    {
+
+        var newDTO = await _logEventTypeRepository.Create(logEventTypeDTOToInsert);
+
+        //logEventTypeDTOToInsert.Id = newDTO.Id;
+        //await logEventTypeDTOGrid.UpdateRow(logEventTypeDTOToInsert);
+
+        logEventTypeDTOToInsert = null;
+        await OnAfterRenderAsync(true);
+
+    }
+}
+
+

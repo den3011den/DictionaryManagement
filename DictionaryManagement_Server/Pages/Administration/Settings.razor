@@ -1,7 +1,294 @@
 ﻿@page "/administration/Settings"
 
-<h3>Администрирование - Настройки</h3>
+@using DictionaryManagement_Business.Repository.IRepository;
+@using DictionaryManagement_Common;
+@using DictionaryManagement_Models.IntDBModels
+@using Microsoft.EntityFrameworkCore;
+
+
+@inject IJSRuntime _jsRuntime
+@inject ISettingsRepository _settingsRepository
+
+@inject NavigationManager _navigationManager
+
+@*<_DeleteConfirmation IsParentComponentProcessing="IsLoading" DeleteConfirmationMessage="@DeleteMessage" ConfirmationChanged="ConfirmDelete_Click"></_DeleteConfirmation>*@
+
+<div class="row mt-4">
+
+    <div class="col-6">
+        <h4 class="card-title text-primary"><a href="/administration">Администрирование</a> - <a href="/administration/Settings">Настройки</a></h4>
+
+    </div>
+
+    @if (IsLoading != true)
+    {
+
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую настройку" Click="@InsertRow" Disabled=@(settingsDTOToInsert != null || settingsDTOToUpdate != null) />
+        <RadzenDataGrid @ref="settingsDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                    Data="@settingsDTOs" TItem="SettingsDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    FilterMode="FilterMode.Simple">
+            <Columns>
+                <RadzenDataGridColumn TItem="SettingsDTO" Property="Id" Title="Ид записи" Width="120px" />
+                <RadzenDataGridColumn TItem="SettingsDTO" Property="Name" Title="Наименование">
+                    <EditTemplate Context="settingsDTO">
+                        <RadzenTextBox @bind-Value="settingsDTO.Name" Style="width:100%; display: block" Name="Name" />
+                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                        <RadzenLengthValidator Max=100 Text="Наименование не может быть больше 100 символов" Component="Name" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="SettingsDTO" Property="Description" Title="Описание">
+                    <EditTemplate Context="settingsDTO">
+                        <RadzenTextBox @bind-Value="settingsDTO.Description" Style="width:100%; display: block" Name="Description" />
+                        <RadzenLengthValidator Max=300 Text="Описание не может быть больше 300 символов" Component="Description" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="SettingsDTO" Property="Value" Title="Значение настройки">
+                    <EditTemplate Context="settingsDTO">
+                        <RadzenTextBox @bind-Value="settingsDTO.Value" Style="width:100%; display: block" Name="Value" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="SettingsDTO" Context="settingsDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <EditTemplate Context="settingsDTO">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(settingsDTO))">
+                        </RadzenButton>
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(settingsDTO))">
+                        </RadzenButton>
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(settingsDTO))">
+                        </RadzenButton>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+    else
+    {
+        if (IsLoading)
+        {
+            //отображение gif загрузки
+            <div class="text-center">
+                <img src="/images/loading.gif">
+            </div>
+
+        }
+    }
+
+</div>
 
 @code {
 
+    public string DeleteMessage { get; set; } = "";
+
+    private int DeleteSettingsId { get; set; } = 0;
+    private string DeleteSettingsName { get; set; } = "";
+
+    RadzenDataGrid<SettingsDTO> settingsDTOGrid;
+
+    IEnumerable<SettingsDTO> settingsDTOs;
+
+    SettingsDTO settingsDTOToInsert;
+    SettingsDTO settingsDTOToUpdate;
+
+
+    public bool IsLoading { get; set; }
+
+
+    void Reset()
+    {
+        settingsDTOToInsert = null;
+        settingsDTOToUpdate = null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            IsLoading = true;
+            StateHasChanged();
+            settingsDTOs = _settingsRepository.GetAll().Result;
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task EditRow(SettingsDTO settingsDTO)
+    {
+        settingsDTOToUpdate = settingsDTO;
+        await settingsDTOGrid.EditRow(settingsDTO);
+    }
+
+    async Task OnUpdateRow(SettingsDTO settingsDTO)
+    {
+
+        var forNameCheck = _settingsRepository.GetListByName(settingsDTO.Name).Result;
+
+        foreach (var obj in forNameCheck)
+        {
+            if (obj.Id != settingsDTO.Id)
+            {
+
+                var OldSettingsToUpdate = _settingsRepository.Get(settingsDTO.Id);
+
+                settingsDTO.Id = OldSettingsToUpdate.Result.Id;
+                settingsDTO.Name = OldSettingsToUpdate.Result.Name;
+                settingsDTO.Description = OldSettingsToUpdate.Result.Description;
+                settingsDTO.Value = OldSettingsToUpdate.Result.Value;
+
+                await settingsDTOGrid.UpdateRow(settingsDTO);
+
+                settingsDTOToUpdate = null;
+
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть с наименованием настройуи " + obj.Name);
+
+                return;
+            }
+        }
+
+        if (settingsDTO == settingsDTOToInsert)
+        {
+            settingsDTOToInsert = null;
+        }
+
+        settingsDTOToUpdate = null;
+
+        await _settingsRepository.Update(settingsDTO);
+    }
+
+    async Task SaveRow(SettingsDTO settingsDTO)
+    {
+        await settingsDTOGrid.UpdateRow(settingsDTO);
+    }
+
+    void CancelEdit(SettingsDTO settingsDTO)
+    {
+        if (settingsDTO == settingsDTOToInsert)
+        {
+            settingsDTOToInsert = null;
+        }
+
+        settingsDTOToUpdate = null;
+
+        settingsDTOGrid.CancelEditRow(settingsDTO);
+
+    }
+
+    async Task DeleteRow(SettingsDTO settingsDTO)
+    {
+        if (settingsDTO == settingsDTOToInsert)
+        {
+            settingsDTOToInsert = null;
+        }
+
+        if (settingsDTO == settingsDTOToUpdate)
+        {
+            settingsDTOToUpdate = null;
+        }
+
+        if (settingsDTOs.Contains(settingsDTO))
+        {
+            await _settingsRepository.Delete(settingsDTO.Id);
+
+            await settingsDTOGrid.Reload();
+        }
+        else
+        {
+            settingsDTOGrid.CancelEditRow(settingsDTO);
+            await settingsDTOGrid.Reload();
+        }
+    }
+
+    async Task InsertRow()
+    {
+        settingsDTOToInsert = new SettingsDTO();
+        await settingsDTOGrid.InsertRow(settingsDTOToInsert);
+    }
+
+    async Task OnCreateRow(SettingsDTO settingsDTO)
+    {
+
+        var forNameCheck = _settingsRepository.GetListByName(settingsDTO.Name).Result;
+
+        if (forNameCheck.Count() > 0)
+        {
+
+            settingsDTOToInsert = null;
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть настройка с наименованием " + settingsDTO.Name);
+
+            return;
+        }
+
+        var newDTO = await _settingsRepository.Create(settingsDTOToInsert);
+
+        //settingsDTOToInsert.Id = newDTO.Id;
+        //await settingsDTOGrid.UpdateRow(settingsDTOToInsert);
+
+        settingsDTOToInsert = null;
+        await OnAfterRenderAsync(true);
+    }
+
+
+    //public async Task ConfirmDeleteEquipment_Click(bool isConfirmed)
+    //{
+    //    IsLoading = true;
+    //    // здесь код удаления
+    //    /*if (isConfirmed && DeleteCategoryId != 0)*/
+    //    if (isConfirmed)
+    //    {
+    //        /*await Task.Delay(5000);*/
+    //        //delete
+    //        /*await _categoryRepository.Delete(DeleteCategoryId);
+    //        await LoadCategories(); */
+    //        await _jsRuntime.InvokeVoidAsync("HideDeleteConfirmationModal");
+    //    }
+    //    DeleteMessage = "";
+    //    IsLoading = false;
+    //}
+
+
+    //public async Task ConfirmDelete_Click(bool isConfirmed)
+    //{
+    //    IsLoading = true;
+    //    // здесь код удаления
+    //    /*if (isConfirmed && DeleteCategoryId != 0)*/
+
+    //    if (isConfirmed)
+    //    {
+
+    //            if (DeleteSettingsId <= 0)
+    //            {
+    //                await _jsRuntime.ToastrError("Код настройки пуст!");
+    //            }
+    //            else
+    //            {
+    //                await 
+    //                await _jsRuntime.ToastrError("Настройка \"" + DeleteSettingsName +"\" удалена");
+    //            }
+    //            await OnInitializedAsync();
+
+    //    }
+    //    await _jsRuntime.InvokeVoidAsync("HideDeleteConfirmationModal");
+    //    DeleteMessage = "";
+    //    IsLoading = false;
+    //}
+
+    //private void HandleDelete(SettingsDTO settingsDTO)
+    //{
+    //    DeleteSettingsId = settingsDTO.Id;
+    //    DeleteSettingsName = settingsDTO.Name;
+    //    DeleteMessage = "Удалить ресурс настройку \"" + DeleteSettingsName + "\" ?";        
+    //    _jsRuntime.InvokeVoidAsync("ShowDeleteConfirmationModal");
+    //}
+
 }
+
+

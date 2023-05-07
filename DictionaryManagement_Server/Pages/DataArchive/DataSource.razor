@@ -1,7 +1,271 @@
 ﻿@page "/dataarchive/DataSource"
 
-<h3>Архив данных - Источники данных</h3>
+@using DictionaryManagement_Business.Repository.IRepository;
+@using DictionaryManagement_Common;
+@using DictionaryManagement_Models.IntDBModels
+@using Microsoft.EntityFrameworkCore;
+
+
+@inject IJSRuntime _jsRuntime
+@inject IDataSourceRepository _dataSourceRepository
+
+@inject NavigationManager _navigationManager
+
+
+<div class="row mt-4">
+
+    <div class="col-6">
+        <h4 class="card-title text-primary"><a href="/dataarchive">Архив данных</a> - <a href="/dataarchive/DataSource">Источники данных</a></h4>
+
+        <div class="col-6">
+            <RadzenCheckBox @bind-Value=@checkBoxValue TriState="true" TValue="bool?" Change=@OnArchiveCheckBoxChange Name="ArchiveCheckBox" />
+            <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
+        </div>
+
+    </div>
+
+
+    @if (IsLoading != true)
+    {
+
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый источник данных" Click="@InsertRow" Disabled=@(dataSourceDTOToInsert != null || dataSourceDTOToUpdate != null) />
+        <RadzenDataGrid @ref="dataSourceDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                    Data="@dataSourceDTOs" TItem="DataSourceDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    FilterMode="FilterMode.Simple">
+            <Columns>
+                <RadzenDataGridColumn TItem="DataSourceDTO" Property="Id" Title="Ид записи" Width="120px" />
+                <RadzenDataGridColumn TItem="DataSourceDTO" Property="Name" Title="Наименование">
+                    <EditTemplate Context="dataSourceDTO">
+                        <RadzenTextBox @bind-Value="dataSourceDTO.Name" Style="width:100%; display: block" Name="Name" />
+                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                        <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="DataSourceDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                    <Template Context="data">
+                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="DataSourceDTO" Context="dataSourceDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <Template Context="dataSourceDTO">
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(dataSourceDTO))" @onclick:stopPropagation="true">
+                        </RadzenButton>
+                        @if (!dataSourceDTO.IsArchive)
+                        {
+                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataSourceDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                        else
+                        {
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataSourceDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                    </Template>
+                    <EditTemplate Context="dataSourceDTO">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(dataSourceDTO))">
+                        </RadzenButton>
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(dataSourceDTO))">
+                        </RadzenButton>
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataSourceDTO))">
+                        </RadzenButton>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+    else
+    {
+        if (IsLoading)
+        {
+            //отображение gif загрузки
+            <div class="text-center">
+                <img src="/images/loading.gif">
+            </div>
+
+        }
+    }
+
+</div>
 
 @code {
+    public bool? checkBoxValue = null;
+    public string checkBoxText = "Все записи";
+    public string DeleteMessage { get; set; } = "";
 
+    RadzenDataGrid<DataSourceDTO> dataSourceDTOGrid;
+
+    IEnumerable<DataSourceDTO> dataSourceDTOs;
+
+    DataSourceDTO dataSourceDTOToInsert;
+    DataSourceDTO dataSourceDTOToUpdate;
+
+
+    public bool IsLoading { get; set; }
+
+    void OnArchiveCheckBoxChange()
+    {
+        if (checkBoxValue == false)
+        {
+            checkBoxValue = null;
+            checkBoxText = "Только архивные";
+
+            IsLoading = true;
+            StateHasChanged();
+            dataSourceDTOs = _dataSourceRepository.GetAll(SD.SelectDictionaryScope.ArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+        }
+        if (checkBoxValue == null)
+        {
+            checkBoxValue = true;
+            checkBoxText = "Только активные";
+
+            IsLoading = true;
+            StateHasChanged();
+            dataSourceDTOs = _dataSourceRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+
+        }
+
+        if (checkBoxValue == true)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            dataSourceDTOs = _dataSourceRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+        }
+    }
+
+    void Reset()
+    {
+        dataSourceDTOToInsert = null;
+        dataSourceDTOToUpdate = null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            dataSourceDTOs = _dataSourceRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task EditRow(DataSourceDTO dataSourceDTO)
+    {
+        dataSourceDTOToUpdate = dataSourceDTO;
+        await dataSourceDTOGrid.EditRow(dataSourceDTO);
+    }
+
+    async Task OnUpdateRow(DataSourceDTO dataSourceDTO)
+    {
+
+        if (dataSourceDTO == dataSourceDTOToInsert)
+        {
+            dataSourceDTOToInsert = null;
+        }
+
+        dataSourceDTOToUpdate = null;
+
+        await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.Update);
+    }
+
+    async Task SaveRow(DataSourceDTO dataSourceDTO)
+    {
+        await dataSourceDTOGrid.UpdateRow(dataSourceDTO);
+    }
+
+    void CancelEdit(DataSourceDTO dataSourceDTO)
+    {
+        if (dataSourceDTO == dataSourceDTOToInsert)
+        {
+            dataSourceDTOToInsert = null;
+        }
+
+        dataSourceDTOToUpdate = null;
+
+        dataSourceDTOGrid.CancelEditRow(dataSourceDTO);
+
+    }
+
+    async Task DeleteRow(DataSourceDTO dataSourceDTO)
+    {
+        if (dataSourceDTO == dataSourceDTOToInsert)
+        {
+            dataSourceDTOToInsert = null;
+        }
+
+        if (dataSourceDTO == dataSourceDTOToUpdate)
+        {
+            dataSourceDTOToUpdate = null;
+        }
+
+        if (dataSourceDTOs.Contains(dataSourceDTO))
+        {
+            if (dataSourceDTO.IsArchive)
+            {
+                await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.RestoreFromArchive);
+                dataSourceDTO.IsArchive = false;
+                await _jsRuntime.ToastrSuccess("Источник данных " + dataSourceDTO.Name + " восстановлен из архива");
+            }
+            else
+            {
+                await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.MoveToArchive);
+                dataSourceDTO.IsArchive = true;
+                await _jsRuntime.ToastrSuccess("Источник данных " + dataSourceDTO.Name + " удален в архив");
+            }
+            await dataSourceDTOGrid.UpdateRow(dataSourceDTO);
+            //await sapEquipmentDTOGrid.Reload();
+        }
+        else
+        {
+            dataSourceDTOGrid.CancelEditRow(dataSourceDTO);
+            await dataSourceDTOGrid.Reload();
+        }
+    }
+
+    async Task InsertRow()
+    {
+        dataSourceDTOToInsert = new DataSourceDTO();
+        await dataSourceDTOGrid.InsertRow(dataSourceDTOToInsert);
+    }
+
+    async Task OnCreateRow(DataSourceDTO dataSourceDTO)
+    {
+
+        var newDTO = await _dataSourceRepository.Create(dataSourceDTOToInsert);
+
+        //dataSourceDTOToInsert.Id = newDTO.Id;
+        //await dataSourceDTOGrid.UpdateRow(dataSourceDTOToInsert);
+
+        dataSourceDTOToInsert = null;
+        await OnAfterRenderAsync(true);
+
+    }
 }
+
+
+

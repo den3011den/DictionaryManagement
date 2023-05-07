@@ -42,14 +42,14 @@ namespace DictionaryManagement_Business.Repository
             return new SettingsDTO();
         }
 
-        public async Task<SettingsDTO> GetByName(string name)
+        public async Task<IEnumerable<SettingsDTO>> GetListByName(string name)
         {
-            var objToGet = _db.Settings.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            var objToGet = _db.Settings.Where(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
-                return _mapper.Map<Settings, SettingsDTO>(objToGet);
+                return _mapper.Map<IEnumerable<Settings>, IEnumerable<SettingsDTO>>(objToGet);
             }
-            return new SettingsDTO();
+            return null;
         }
 
         public async Task<IEnumerable<SettingsDTO>> GetAll()

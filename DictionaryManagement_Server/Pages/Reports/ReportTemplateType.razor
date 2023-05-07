@@ -1,7 +1,270 @@
 ﻿@page "/reports/ReportTemplateType"
 
-<h3>Отчёты - Типы шаблонов отчётов</h3>
+@using DictionaryManagement_Business.Repository.IRepository;
+@using DictionaryManagement_Common;
+@using DictionaryManagement_Models.IntDBModels
+@using Microsoft.EntityFrameworkCore;
+
+
+@inject IJSRuntime _jsRuntime
+@inject IReportTemplateTypeRepository _reportTemplateTypeRepository
+
+@inject NavigationManager _navigationManager
+
+
+<div class="row mt-4">
+
+    <div class="col-6">
+        <h4 class="card-title text-primary"><a href="/reports">Отчёты</a> - <a href="/reports/ReportTemplateType">Типы шаблонов отчётов</a></h4>
+
+        <div class="col-6">
+            <RadzenCheckBox @bind-Value=@checkBoxValue TriState="true" TValue="bool?" Change=@OnArchiveCheckBoxChange Name="ArchiveCheckBox" />
+            <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
+        </div>
+
+    </div>
+
+    @if (IsLoading != true)
+    {
+
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тип шаблонов отчётов" Click="@InsertRow" Disabled=@(reportTemplateTypeDTOToInsert != null || reportTemplateTypeDTOToUpdate != null) />
+        <RadzenDataGrid @ref="reportTemplateTypeDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                    Data="@reportTemplateTypeDTOs" TItem="ReportTemplateTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    FilterMode="FilterMode.Simple">
+            <Columns>
+                <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
+                <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="Name" Title="Наименование">
+                    <EditTemplate Context="reportTemplateTypeDTO">
+                        <RadzenTextBox @bind-Value="reportTemplateTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
+                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                        <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                    <Template Context="data">
+                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Context="reportTemplateTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <Template Context="reportTemplateTypeDTO">
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(reportTemplateTypeDTO))" @onclick:stopPropagation="true">
+                        </RadzenButton>
+                        @if (!reportTemplateTypeDTO.IsArchive)
+                        {
+                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateTypeDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                        else
+                        {
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateTypeDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                    </Template>
+                    <EditTemplate Context="reportTemplateTypeDTO">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(reportTemplateTypeDTO))">
+                        </RadzenButton>
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(reportTemplateTypeDTO))">
+                        </RadzenButton>
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateTypeDTO))">
+                        </RadzenButton>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+    else
+    {
+        if (IsLoading)
+        {
+            //отображение gif загрузки
+            <div class="text-center">
+                <img src="/images/loading.gif">
+            </div>
+
+        }
+    }
+
+</div>
 
 @code {
+    public bool? checkBoxValue = null;
+    public string checkBoxText = "Все записи";
+    public string DeleteMessage { get; set; } = "";
 
+    RadzenDataGrid<ReportTemplateTypeDTO> reportTemplateTypeDTOGrid;
+
+    IEnumerable<ReportTemplateTypeDTO> reportTemplateTypeDTOs;
+
+    ReportTemplateTypeDTO reportTemplateTypeDTOToInsert;
+    ReportTemplateTypeDTO reportTemplateTypeDTOToUpdate;
+
+
+    public bool IsLoading { get; set; }
+
+    void OnArchiveCheckBoxChange()
+    {
+        if (checkBoxValue == false)
+        {
+            checkBoxValue = null;
+            checkBoxText = "Только архивные";
+
+            IsLoading = true;
+            StateHasChanged();
+            reportTemplateTypeDTOs = _reportTemplateTypeRepository.GetAll(SD.SelectDictionaryScope.ArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+        }
+        if (checkBoxValue == null)
+        {
+            checkBoxValue = true;
+            checkBoxText = "Только активные";
+
+            IsLoading = true;
+            StateHasChanged();
+            reportTemplateTypeDTOs = _reportTemplateTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+
+        }
+
+        if (checkBoxValue == true)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            reportTemplateTypeDTOs = _reportTemplateTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+        }
+    }
+
+    void Reset()
+    {
+        reportTemplateTypeDTOToInsert = null;
+        reportTemplateTypeDTOToUpdate = null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            reportTemplateTypeDTOs = _reportTemplateTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task EditRow(ReportTemplateTypeDTO reportTemplateTypeDTO)
+    {
+        reportTemplateTypeDTOToUpdate = reportTemplateTypeDTO;
+        await reportTemplateTypeDTOGrid.EditRow(reportTemplateTypeDTO);
+    }
+
+    async Task OnUpdateRow(ReportTemplateTypeDTO reportTemplateTypeDTO)
+    {
+
+        if (reportTemplateTypeDTO == reportTemplateTypeDTOToInsert)
+        {
+            reportTemplateTypeDTOToInsert = null;
+        }
+
+        reportTemplateTypeDTOToUpdate = null;
+
+        await _reportTemplateTypeRepository.Update(reportTemplateTypeDTO, SD.UpdateMode.Update);
+    }
+
+    async Task SaveRow(ReportTemplateTypeDTO reportTemplateTypeDTO)
+    {
+        await reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTO);
+    }
+
+    void CancelEdit(ReportTemplateTypeDTO reportTemplateTypeDTO)
+    {
+        if (reportTemplateTypeDTO == reportTemplateTypeDTOToInsert)
+        {
+            reportTemplateTypeDTOToInsert = null;
+        }
+
+        reportTemplateTypeDTOToUpdate = null;
+
+        reportTemplateTypeDTOGrid.CancelEditRow(reportTemplateTypeDTO);
+
+    }
+
+    async Task DeleteRow(ReportTemplateTypeDTO reportTemplateTypeDTO)
+    {
+        if (reportTemplateTypeDTO == reportTemplateTypeDTOToInsert)
+        {
+            reportTemplateTypeDTOToInsert = null;
+        }
+
+        if (reportTemplateTypeDTO == reportTemplateTypeDTOToUpdate)
+        {
+            reportTemplateTypeDTOToUpdate = null;
+        }
+
+        if (reportTemplateTypeDTOs.Contains(reportTemplateTypeDTO))
+        {
+            if (reportTemplateTypeDTO.IsArchive)
+            {
+                await _reportTemplateTypeRepository.Update(reportTemplateTypeDTO, SD.UpdateMode.RestoreFromArchive);
+                reportTemplateTypeDTO.IsArchive = false;
+                await _jsRuntime.ToastrSuccess("Тип шаблона отчёта " + reportTemplateTypeDTO.Name + " восстановлен из архива");
+            }
+            else
+            {
+                await _reportTemplateTypeRepository.Update(reportTemplateTypeDTO, SD.UpdateMode.MoveToArchive);
+                reportTemplateTypeDTO.IsArchive = true;
+                await _jsRuntime.ToastrSuccess("Тип шаблона отчёта " + reportTemplateTypeDTO.Name + " удален в архив");
+            }
+            await reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTO);
+            //await sapEquipmentDTOGrid.Reload();
+        }
+        else
+        {
+            reportTemplateTypeDTOGrid.CancelEditRow(reportTemplateTypeDTO);
+            await reportTemplateTypeDTOGrid.Reload();
+        }
+    }
+
+    async Task InsertRow()
+    {
+        reportTemplateTypeDTOToInsert = new ReportTemplateTypeDTO();
+        await reportTemplateTypeDTOGrid.InsertRow(reportTemplateTypeDTOToInsert);
+    }
+
+    async Task OnCreateRow(ReportTemplateTypeDTO reportTemplateTypeDTO)
+    {
+
+        var newDTO = await _reportTemplateTypeRepository.Create(reportTemplateTypeDTOToInsert);
+
+        //reportTemplateTypeDTOToInsert.Id = newDTO.Id;
+        //await reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTOToInsert);
+
+        reportTemplateTypeDTOToInsert = null;
+        await OnAfterRenderAsync(true);
+
+    }
 }
+
+
+
