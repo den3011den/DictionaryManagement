@@ -12,7 +12,8 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<SapMaterial, SapMaterialDTO>().ReverseMap();
             CreateMap<MesMaterial, MesMaterialDTO>().ReverseMap();
             CreateMap<MesUnitOfMeasure, MesUnitOfMeasureDTO>().ReverseMap();
-            CreateMap<SapUnitOfMeasure, SapUnitOfMeasureDTO>().ReverseMap();
+            CreateMap<ErrorCriterion, ErrorCriterionDTO>().ReverseMap();
+            CreateMap<CorrectionReason, CorrectionReasonDTO>().ReverseMap();
         }
     }
 }
