@@ -1,7 +1,281 @@
 ﻿@page "/dictionary/MesUnitOfMeasure"
 
+@using DictionaryManagement_Business.Repository.IRepository;
+@using DictionaryManagement_Common;
+@using DictionaryManagement_Models.IntDBModels
+@using Microsoft.EntityFrameworkCore;
+
+
+@inject IJSRuntime _jsRuntime
+@inject IMesUnitOfMeasureRepository _mesUnitOfMeasureRepository
+
+@inject NavigationManager _navigationManager
+
+
 <h3>Справочники - Единицы измерения MES</h3>
 
-@code {
 
+<div class="row mt-4">
+
+    <div class="col-6">
+        <h4 class="card-title text-primary"><a href="/dictionary">Справочники</a> - <a href="/dictionary/MesUnitOfMeasure">Единицы измерения MES</a></h4>
+
+        <div class="col-6">
+            <RadzenCheckBox @bind-Value=@checkBoxValue TriState="true" TValue="bool?" Change=@OnArchiveCheckBoxChange Name="ArchiveCheckBox" />
+            <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
+        </div>
+
+    </div>
+
+
+    @if (IsLoading != true)
+    {
+
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую единицу измерения SAP" Click="@InsertRow" Disabled=@(mesUnitOfMeasureDTOToInsert != null || mesUnitOfMeasureDTOToUpdate != null) />
+        <RadzenDataGrid @ref="mesUnitOfMeasureDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                    Data="@mesUnitOfMeasureDTOs" TItem="MesUnitOfMeasureDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    FilterMode="FilterMode.Simple">
+            <Columns>
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Id" Title="Ид записи" Width="120px" />
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Name" Title="Наименование">
+                    <EditTemplate Context="mesUnitOfMeasureDTO">
+                        <RadzenTextBox @bind-Value="mesUnitOfMeasureDTO.Name" Style="width:100%; display: block" Name="Name" />
+                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                        <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="ShortName" Title="Сокр. наименование">
+                    <EditTemplate Context="mesUnitOfMeasureDTO">
+                        <RadzenTextBox @bind-Value="mesUnitOfMeasureDTO.ShortName" Style="width:100%; display: block" Name="ShortName" />
+                        <RadzenRequiredValidator Text="Сокр. наименование обязателено к заполнению" Component="ShortName" Popup="true" />
+                        <RadzenLengthValidator Max=100 Text="Сокр. наименование не может быть больше 100 символов" Component="ShortName" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                    <Template Context="data">
+                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Context="mesUnitOfMeasureDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <Template Context="mesUnitOfMeasureDTO">
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesUnitOfMeasureDTO))" @onclick:stopPropagation="true">
+                        </RadzenButton>
+                        @if (!mesUnitOfMeasureDTO.IsArchive)
+                        {
+                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesUnitOfMeasureDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                        else
+                        {
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesUnitOfMeasureDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                    </Template>
+                    <EditTemplate Context="mesUnitOfMeasureDTO">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(mesUnitOfMeasureDTO))">
+                        </RadzenButton>
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(mesUnitOfMeasureDTO))">
+                        </RadzenButton>
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesUnitOfMeasureDTO))">
+                        </RadzenButton>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+    else
+    {
+        if (IsLoading)
+        {
+            //отображение gif загрузки
+            <div class="text-center">
+                <img src="/images/loading.gif">
+            </div>
+
+        }
+    }
+
+</div>
+
+@code {
+    public bool? checkBoxValue = null;
+    public string checkBoxText = "Все записи";
+    public string DeleteMessage { get; set; } = "";
+
+    RadzenDataGrid<MesUnitOfMeasureDTO> mesUnitOfMeasureDTOGrid;
+
+    IEnumerable<MesUnitOfMeasureDTO> mesUnitOfMeasureDTOs;
+
+    MesUnitOfMeasureDTO mesUnitOfMeasureDTOToInsert;
+    MesUnitOfMeasureDTO mesUnitOfMeasureDTOToUpdate;
+
+
+    public bool IsLoading { get; set; }
+
+    void OnArchiveCheckBoxChange()
+    {
+        if (checkBoxValue == false)
+        {
+            checkBoxValue = null;
+            checkBoxText = "Только архивные";
+
+            IsLoading = true;
+            StateHasChanged();
+            mesUnitOfMeasureDTOs = _mesUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.ArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+        }
+        if (checkBoxValue == null)
+        {
+            checkBoxValue = true;
+            checkBoxText = "Только активные";
+
+            IsLoading = true;
+            StateHasChanged();
+            mesUnitOfMeasureDTOs = _mesUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+
+        }
+
+        if (checkBoxValue == true)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            mesUnitOfMeasureDTOs = _mesUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+
+        }
+
+
+    }
+
+    void Reset()
+    {
+        mesUnitOfMeasureDTOToInsert = null;
+        mesUnitOfMeasureDTOToUpdate = null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            mesUnitOfMeasureDTOs = _mesUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task EditRow(MesUnitOfMeasureDTO mesUnitOfMeasureDTO)
+    {
+        mesUnitOfMeasureDTOToUpdate = mesUnitOfMeasureDTO;
+        await mesUnitOfMeasureDTOGrid.EditRow(mesUnitOfMeasureDTO);
+    }
+
+    async Task OnUpdateRow(MesUnitOfMeasureDTO mesUnitOfMeasureDTO)
+    {
+
+        if (mesUnitOfMeasureDTO == mesUnitOfMeasureDTOToInsert)
+        {
+            mesUnitOfMeasureDTOToInsert = null;
+        }
+
+        mesUnitOfMeasureDTOToUpdate = null;
+
+        await _mesUnitOfMeasureRepository.Update(mesUnitOfMeasureDTO, SD.UpdateMode.Update);
+    }
+
+    async Task SaveRow(MesUnitOfMeasureDTO mesUnitOfMeasureDTO)
+    {
+        await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTO);
+    }
+
+    void CancelEdit(MesUnitOfMeasureDTO mesUnitOfMeasureDTO)
+    {
+        if (mesUnitOfMeasureDTO == mesUnitOfMeasureDTOToInsert)
+        {
+            mesUnitOfMeasureDTOToInsert = null;
+        }
+
+        mesUnitOfMeasureDTOToUpdate = null;
+
+        mesUnitOfMeasureDTOGrid.CancelEditRow(mesUnitOfMeasureDTO);
+
+    }
+
+    async Task DeleteRow(MesUnitOfMeasureDTO mesUnitOfMeasureDTO)
+    {
+        if (mesUnitOfMeasureDTO == mesUnitOfMeasureDTOToInsert)
+        {
+            mesUnitOfMeasureDTOToInsert = null;
+        }
+
+        if (mesUnitOfMeasureDTO == mesUnitOfMeasureDTOToUpdate)
+        {
+            mesUnitOfMeasureDTOToUpdate = null;
+        }
+
+        if (mesUnitOfMeasureDTOs.Contains(mesUnitOfMeasureDTO))
+        {
+            if (mesUnitOfMeasureDTO.IsArchive)
+            {
+                await _mesUnitOfMeasureRepository.Update(mesUnitOfMeasureDTO, SD.UpdateMode.RestoreFromArchive);
+                mesUnitOfMeasureDTO.IsArchive = false;
+                await _jsRuntime.ToastrSuccess("Ед. изм. " + mesUnitOfMeasureDTO.Name + " восстановлена из архива");
+            }
+            else
+            {
+                await _mesUnitOfMeasureRepository.Update(mesUnitOfMeasureDTO, SD.UpdateMode.MoveToArchive);
+                mesUnitOfMeasureDTO.IsArchive = true;
+                await _jsRuntime.ToastrSuccess("Ед. изм. " + mesUnitOfMeasureDTO.Name + " удалена в архив");
+            }
+            await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTO);
+            //await sapEquipmentDTOGrid.Reload();
+        }
+        else
+        {
+            mesUnitOfMeasureDTOGrid.CancelEditRow(mesUnitOfMeasureDTO);
+            await mesUnitOfMeasureDTOGrid.Reload();
+        }
+    }
+
+    async Task InsertRow()
+    {
+        mesUnitOfMeasureDTOToInsert = new MesUnitOfMeasureDTO();
+        await mesUnitOfMeasureDTOGrid.InsertRow(mesUnitOfMeasureDTOToInsert);
+    }
+
+    async Task OnCreateRow(MesUnitOfMeasureDTO mesUnitOfMeasureDTO)
+    {
+
+        var newDTO = await _mesUnitOfMeasureRepository.Create(mesUnitOfMeasureDTOToInsert);
+
+        mesUnitOfMeasureDTOToInsert.Id = newDTO.Id;
+        await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTOToInsert);
+
+        mesUnitOfMeasureDTOToInsert = null;
+
+    }
 }
+

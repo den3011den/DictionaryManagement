@@ -14,7 +14,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [Key]
         [Required]
         [MaxLength(100)]
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(250)]

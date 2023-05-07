@@ -1,7 +1,328 @@
 ﻿@page "/dictionary/MesMaterial"
 
-<h3>Справочники - Материалы MES</h3>
+@using DictionaryManagement_Business.Repository.IRepository;
+@using DictionaryManagement_Common;
+@using DictionaryManagement_Models.IntDBModels
+@using Microsoft.EntityFrameworkCore;
+
+@inject IJSRuntime _jsRuntime
+@inject IMesMaterialRepository _mesMaterialRepository
+
+@inject NavigationManager _navigationManager
+
+
+<div class="row mt-4">
+
+    <div class="col-6">
+        <h4 class="card-title text-primary"><a href="/dictionary">Справочники</a> - <a href="/dictionary/MesMaterial">Материалы MES</a></h4>
+
+        <div class="col-6">
+            <RadzenCheckBox @bind-Value=@checkBoxValue TriState="true" TValue="bool?" Change=@OnArchiveCheckBoxChange Name="ArchiveCheckBox" />
+            <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
+        </div>
+
+    </div>
+
+
+    @if (IsLoading != true)
+    {
+
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый материал MES" Click="@InsertRow" Disabled=@(mesMaterialDTOToInsert != null || mesMaterialDTOToUpdate != null) />
+        <RadzenDataGrid @ref="mesMaterialDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                    Data="@mesMaterialDTOs" TItem="MesMaterialDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    FilterMode="FilterMode.Simple">
+            <Columns>                
+                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Id" Title="Код материала">
+                    <EditTemplate Context="mesMaterialDTO">
+                        <RadzenTextBox @bind-Value="mesMaterialDTO.Id" Style="width:100%; display: block" Name="Id" />
+                        <RadzenRequiredValidator Text="Код материала обязателен к заполнению" Component="Id" Popup="true" />
+                        <RadzenLengthValidator Max=100 Text="Код материала не может быть больше 100 символов" Component="Id" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Name" Title="Наименование">
+                    <EditTemplate Context="mesMaterialDTO">
+                        <RadzenTextBox @bind-Value="mesMaterialDTO.Name" Style="width:100%; display: block" Name="Name" />
+                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                        <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="ShortName" Title="Сокр. наименование">
+                    <EditTemplate Context="mesMaterialDTO">
+                        <RadzenTextBox @bind-Value="mesMaterialDTO.ShortName" Style="width:100%; display: block" Name="ShortName" />
+                        <RadzenRequiredValidator Text="Сокр. наименование обязателено к заполнению" Component="ShortName" Popup="true" />
+                        <RadzenLengthValidator Max=100 Text="Сокр. наименование не может быть больше 100 символов" Component="ShortName" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                    <Template Context="data">
+                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="MesMaterialDTO" Context="mesMaterialDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <Template Context="mesMaterialDTO">
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesMaterialDTO))" @onclick:stopPropagation="true">
+                        </RadzenButton>
+                        @if (!mesMaterialDTO.IsArchive)
+                        {
+                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesMaterialDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                        else
+                        {
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesMaterialDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+
+                    </Template>
+                    <EditTemplate Context="mesMaterialDTO">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(mesMaterialDTO))">
+                        </RadzenButton>
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(mesMaterialDTO))">
+                        </RadzenButton>
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesMaterialDTO))">
+                        </RadzenButton>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+    else
+    {
+        if (IsLoading)
+        {
+            //отображение gif загрузки
+            <div class="text-center">
+                <img src="/images/loading.gif">
+            </div>
+
+        }
+    }
+
+</div>
 
 @code {
+    public bool? checkBoxValue = null;
+    public string checkBoxText = "Все записи";
+    public string DeleteMessage { get; set; } = "";
+
+    RadzenDataGrid<MesMaterialDTO> mesMaterialDTOGrid;
+
+    IEnumerable<MesMaterialDTO> mesMaterialDTOs;
+
+    MesMaterialDTO mesMaterialDTOToInsert;
+    MesMaterialDTO mesMaterialDTOToUpdate;
+
+    MesMaterialDTO OldMesMaterialDTOToUpdate = new();
+
+    public bool IsLoading { get; set; }
+
+    void OnArchiveCheckBoxChange()
+    {
+        if (checkBoxValue == false)
+        {
+            checkBoxValue = null;
+            checkBoxText = "Только архивные";
+
+            IsLoading = true;
+            StateHasChanged();
+            mesMaterialDTOs = _mesMaterialRepository.GetAll(SD.SelectDictionaryScope.ArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+        }
+        if (checkBoxValue == null)
+        {
+            checkBoxValue = true;
+            checkBoxText = "Только активные";
+
+            IsLoading = true;
+            StateHasChanged();
+            mesMaterialDTOs = _mesMaterialRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+
+        }
+
+        if (checkBoxValue == true)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            mesMaterialDTOs = _mesMaterialRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+
+        }
+
+
+    }
+
+    void Reset()
+    {
+        mesMaterialDTOToInsert = null;
+        mesMaterialDTOToUpdate = null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            mesMaterialDTOs = _mesMaterialRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task EditRow(MesMaterialDTO mesMaterialDTO)
+    {
+        OldMesMaterialDTOToUpdate = new MesMaterialDTO();
+        OldMesMaterialDTOToUpdate.Id = mesMaterialDTO.Id;
+        OldMesMaterialDTOToUpdate.Name = mesMaterialDTO.Name;
+        OldMesMaterialDTOToUpdate.ShortName = mesMaterialDTO.ShortName;
+        OldMesMaterialDTOToUpdate.IsArchive = mesMaterialDTO.IsArchive;
+
+        mesMaterialDTOToUpdate = mesMaterialDTO;
+        await mesMaterialDTOGrid.EditRow(mesMaterialDTO);
+
+    }
+
+    async Task OnUpdateRow(MesMaterialDTO mesMaterialDTO)
+    {
+
+        if (OldMesMaterialDTOToUpdate.Id.Trim().ToUpper() != mesMaterialDTO.Id.Trim().ToUpper())
+        {
+            var forIdCheck = _mesMaterialRepository.Get(mesMaterialDTO.Id).Result;
+
+            if (forIdCheck.Id.Trim().ToUpper() == mesMaterialDTO.Id.Trim().ToUpper())
+            {
+                mesMaterialDTO.Id = OldMesMaterialDTOToUpdate.Id;
+                mesMaterialDTO.Name = OldMesMaterialDTOToUpdate.Name;
+                mesMaterialDTO.ShortName = OldMesMaterialDTOToUpdate.ShortName;
+                mesMaterialDTO.IsArchive = OldMesMaterialDTOToUpdate.IsArchive;
+
+                await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
+
+                OldMesMaterialDTOToUpdate = null;
+                mesMaterialDTOToUpdate = null;
+
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом материала " + forIdCheck.Id);
+                return;
+            }
+        }
+
+        if (mesMaterialDTO == mesMaterialDTOToInsert)
+        {
+            mesMaterialDTOToInsert = null;
+        }
+
+        mesMaterialDTOToUpdate = null;
+
+        await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.Update);
+    }
+
+    async Task SaveRow(MesMaterialDTO mesMaterialDTO)
+    {
+        await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
+    }
+
+    void CancelEdit(MesMaterialDTO mesMaterialDTO)
+    {
+        if (mesMaterialDTO == mesMaterialDTOToInsert)
+        {
+            mesMaterialDTOToInsert = null;
+        }
+
+        mesMaterialDTOToUpdate = null;
+
+        mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
+    }
+
+    async Task DeleteRow(MesMaterialDTO mesMaterialDTO)
+    {
+        if (mesMaterialDTO == mesMaterialDTOToInsert)
+        {
+            mesMaterialDTOToInsert = null;
+        }
+
+        if (mesMaterialDTO == mesMaterialDTOToUpdate)
+        {
+            mesMaterialDTOToUpdate = null;
+        }
+
+        if (mesMaterialDTOs.Contains(mesMaterialDTO))
+        {
+            if (mesMaterialDTO.IsArchive)
+            {
+                await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.RestoreFromArchive);
+                mesMaterialDTO.IsArchive = false;
+                await _jsRuntime.ToastrSuccess("Материал \"" + mesMaterialDTO.Name + "\" восстановлен из архива");
+            }
+            else
+            {
+                await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.MoveToArchive);
+                mesMaterialDTO.IsArchive = true;
+                await _jsRuntime.ToastrSuccess("Материал \"" + mesMaterialDTO.Name + "\" удалён в архив");
+            }
+            await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
+        }
+        else
+        {
+            mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
+            await mesMaterialDTOGrid.Reload();
+        }
+    }
+
+    async Task InsertRow()
+    {
+        mesMaterialDTOToInsert = new MesMaterialDTO();
+        await mesMaterialDTOGrid.InsertRow(mesMaterialDTOToInsert);
+    }
+
+    async Task OnCreateRow(MesMaterialDTO mesMaterialDTO)
+    {
+
+        var forIdCheck = _mesMaterialRepository.Get(mesMaterialDTO.Id).Result;
+        if (forIdCheck.Id.Trim().ToUpper() == mesMaterialDTO.Id.Trim().ToUpper())
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом материала " + mesMaterialDTO.Id);
+            mesMaterialDTOToInsert = null;
+            mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
+            await mesMaterialDTOGrid.Reload();
+            return;
+
+        }
+
+        var newDTO = await _mesMaterialRepository.Create(mesMaterialDTOToInsert);
+
+        mesMaterialDTOToInsert.Id = newDTO.Id;
+        await mesMaterialDTOGrid.UpdateRow(mesMaterialDTOToInsert);
+        //StateHasChanged();
+
+        mesMaterialDTOToInsert = null;
+
+        //await sapEquipmentDTOGrid.Reload();
+    }
+
+
 
 }

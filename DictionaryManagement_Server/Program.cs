@@ -17,6 +17,10 @@ builder.Services.AddDbContext<IntDBApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("IntDBConnection")));
 builder.Services.AddScoped<ISapEquipmentRepository, SapEquipmentRepository>();
+builder.Services.AddScoped<ISapMaterialRepository, SapMaterialRepository>();
+builder.Services.AddScoped<IMesMaterialRepository, MesMaterialRepository>();
+builder.Services.AddScoped<IMesUnitOfMeasureRepository, MesUnitOfMeasureRepository>();
+builder.Services.AddScoped<ISapUnitOfMeasureRepository, SapUnitOfMeasureRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();

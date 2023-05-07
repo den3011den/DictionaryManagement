@@ -9,6 +9,10 @@ namespace DictionaryManagement_Business.Mapper
         public MappingProfile()
         {
             CreateMap<SapEquipment, SapEquipmentDTO>().ReverseMap();
+            CreateMap<SapMaterial, SapMaterialDTO>().ReverseMap();
+            CreateMap<MesMaterial, MesMaterialDTO>().ReverseMap();
+            CreateMap<MesUnitOfMeasure, MesUnitOfMeasureDTO>().ReverseMap();
+            CreateMap<SapUnitOfMeasure, SapUnitOfMeasureDTO>().ReverseMap();
         }
     }
 }
