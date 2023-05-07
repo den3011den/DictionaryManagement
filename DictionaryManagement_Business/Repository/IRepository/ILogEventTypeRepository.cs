@@ -1,0 +1,19 @@
+﻿using DictionaryManagement_Common;
+using DictionaryManagement_Models.IntDBModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static DictionaryManagement_Common.SD;
+
+namespace DictionaryManagement_Business.Repository.IRepository
+{
+    public interface ILogEventTypeRepository
+    {
+        public Task<LogEventTypeDTO> Get(int Id);
+        public Task<IEnumerable<LogEventTypeDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All);
+        public Task<LogEventTypeDTO> Update(LogEventTypeDTO objDTO, UpdateMode updateMode = UpdateMode.Update);
+        public Task<LogEventTypeDTO> Create(LogEventTypeDTO objectToAddDTO);
+    }
+}

@@ -23,6 +23,14 @@ builder.Services.AddScoped<IMesUnitOfMeasureRepository, MesUnitOfMeasureReposito
 builder.Services.AddScoped<ISapUnitOfMeasureRepository, SapUnitOfMeasureRepository>();
 builder.Services.AddScoped<IErrorCriterionRepository, ErrorCriterionRepository>();
 builder.Services.AddScoped<ICorrectionReasonRepository, CorrectionReasonRepository>();
+
+builder.Services.AddScoped<IMesParamSourceTypeRepository, MesParamSourceTypeRepository>();
+builder.Services.AddScoped<IDataTypeRepository, DataTypeRepository>();
+builder.Services.AddScoped<IDataSourceRepository, DataSourceRepository>();
+builder.Services.AddScoped<IReportTemplateTypeRepository, ReportTemplateTypeRepository>();
+builder.Services.AddScoped<ILogEventTypeRepository, LogEventTypeRepository>();
+builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
