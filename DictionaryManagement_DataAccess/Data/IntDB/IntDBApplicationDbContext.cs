@@ -17,8 +17,8 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<SapEquipment> SapEquipment { get; set; }
         public DbSet<SapUnitOfMeasure> SapUnitOfMeasure { get; set; }
         public DbSet<MesUnitOfMeasure> MesUnitOfMeasure { get; set; }
-        public DbSet<MesUnitOfMeasure> MesMaterial { get; set; }
-        public DbSet<MesUnitOfMeasure> SapMaterial { get; set; }
+        public DbSet<MesMaterial> MesMaterial { get; set; }
+        public DbSet<SapMaterial> SapMaterial { get; set; }
 
     }
 
