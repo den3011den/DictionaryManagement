@@ -45,7 +45,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<ErrorCriterionDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
-            {                
+            {
                 return _mapper.Map<IEnumerable<ErrorCriterion>, IEnumerable<ErrorCriterionDTO>>(_db.ErrorCriterion);
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)

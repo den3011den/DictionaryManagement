@@ -12,7 +12,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
     public class CorrectionReason
     {
         [Key]
-        [Required]     
+        [Required]
         public int Id { get; set; }
 
         [Required]

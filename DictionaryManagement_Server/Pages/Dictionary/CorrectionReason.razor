@@ -1,7 +1,269 @@
 ﻿@page "/dictionary/CorrectionReason"
 
-<h3>Справочники - Причины корректировок</h3>
+@using DictionaryManagement_Business.Repository.IRepository;
+@using DictionaryManagement_Common;
+@using DictionaryManagement_Models.IntDBModels
+@using Microsoft.EntityFrameworkCore;
+
+
+@inject IJSRuntime _jsRuntime
+@inject ICorrectionReasonRepository _correctionReasonRepository
+
+@inject NavigationManager _navigationManager
+
+
+<div class="row mt-4">
+
+    <div class="col-6">
+        <h4 class="card-title text-primary"><a href="/dictionary">Справочники</a> - <a href="/dictionary/CorrectionReason">Причины корректировок</a></h4>
+
+        <div class="col-6">
+            <RadzenCheckBox @bind-Value=@checkBoxValue TriState="true" TValue="bool?" Change=@OnArchiveCheckBoxChange Name="ArchiveCheckBox" />
+            <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
+        </div>
+
+    </div>
+
+
+    @if (IsLoading != true)
+    {
+
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую причину корректировки" Click="@InsertRow" Disabled=@(correctionReasonDTOToInsert != null || correctionReasonDTOToUpdate != null) />
+        <RadzenDataGrid @ref="correctionReasonDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                    Data="@correctionReasonDTOs" TItem="CorrectionReasonDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    FilterMode="FilterMode.Simple">
+            <Columns>
+                <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="Id" Title="Ид записи" Width="120px" />
+                <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="Name" Title="Наименование">
+                    <EditTemplate Context="correctionReasonDTO">
+                        <RadzenTextBox @bind-Value="correctionReasonDTO.Name" Style="width:100%; display: block" Name="Name" />
+                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                        <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                    <Template Context="data">
+                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CorrectionReasonDTO" Context="correctionReasonDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <Template Context="correctionReasonDTO">
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(correctionReasonDTO))" @onclick:stopPropagation="true">
+                        </RadzenButton>
+                        @if (!correctionReasonDTO.IsArchive)
+                        {
+                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(correctionReasonDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                        else
+                        {
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(correctionReasonDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                    </Template>
+                    <EditTemplate Context="correctionReasonDTO">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(correctionReasonDTO))">
+                        </RadzenButton>
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(correctionReasonDTO))">
+                        </RadzenButton>
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(correctionReasonDTO))">
+                        </RadzenButton>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+    else
+    {
+        if (IsLoading)
+        {
+            //отображение gif загрузки
+            <div class="text-center">
+                <img src="/images/loading.gif">
+            </div>
+
+        }
+    }
+
+</div>
 
 @code {
+    public bool? checkBoxValue = null;
+    public string checkBoxText = "Все записи";
+    public string DeleteMessage { get; set; } = "";
 
+    RadzenDataGrid<CorrectionReasonDTO> correctionReasonDTOGrid;
+
+    IEnumerable<CorrectionReasonDTO> correctionReasonDTOs;
+
+    CorrectionReasonDTO correctionReasonDTOToInsert;
+    CorrectionReasonDTO correctionReasonDTOToUpdate;
+
+
+    public bool IsLoading { get; set; }
+
+    void OnArchiveCheckBoxChange()
+    {
+        if (checkBoxValue == false)
+        {
+            checkBoxValue = null;
+            checkBoxText = "Только архивные";
+
+            IsLoading = true;
+            StateHasChanged();
+            correctionReasonDTOs = _correctionReasonRepository.GetAll(SD.SelectDictionaryScope.ArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+        }
+        if (checkBoxValue == null)
+        {
+            checkBoxValue = true;
+            checkBoxText = "Только активные";
+
+            IsLoading = true;
+            StateHasChanged();
+            correctionReasonDTOs = _correctionReasonRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+
+        }
+
+        if (checkBoxValue == true)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            correctionReasonDTOs = _correctionReasonRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+        }
+    }
+
+    void Reset()
+    {
+        correctionReasonDTOToInsert = null;
+        correctionReasonDTOToUpdate = null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            checkBoxValue = false;
+            checkBoxText = "Все записи";
+
+            IsLoading = true;
+            StateHasChanged();
+            correctionReasonDTOs = _correctionReasonRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    async Task EditRow(CorrectionReasonDTO correctionReasonDTO)
+    {
+        correctionReasonDTOToUpdate = correctionReasonDTO;
+        await correctionReasonDTOGrid.EditRow(correctionReasonDTO);
+    }
+
+    async Task OnUpdateRow(CorrectionReasonDTO correctionReasonDTO)
+    {
+
+        if (correctionReasonDTO == correctionReasonDTOToInsert)
+        {
+            correctionReasonDTOToInsert = null;
+        }
+
+        correctionReasonDTOToUpdate = null;
+
+        await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.Update);
+    }
+
+    async Task SaveRow(CorrectionReasonDTO correctionReasonDTO)
+    {
+        await correctionReasonDTOGrid.UpdateRow(correctionReasonDTO);
+    }
+
+    void CancelEdit(CorrectionReasonDTO correctionReasonDTO)
+    {
+        if (correctionReasonDTO == correctionReasonDTOToInsert)
+        {
+            correctionReasonDTOToInsert = null;
+        }
+
+        correctionReasonDTOToUpdate = null;
+
+        correctionReasonDTOGrid.CancelEditRow(correctionReasonDTO);
+
+    }
+
+    async Task DeleteRow(CorrectionReasonDTO correctionReasonDTO)
+    {
+        if (correctionReasonDTO == correctionReasonDTOToInsert)
+        {
+            correctionReasonDTOToInsert = null;
+        }
+
+        if (correctionReasonDTO == correctionReasonDTOToUpdate)
+        {
+            correctionReasonDTOToUpdate = null;
+        }
+
+        if (correctionReasonDTOs.Contains(correctionReasonDTO))
+        {
+            if (correctionReasonDTO.IsArchive)
+            {
+                await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.RestoreFromArchive);
+                correctionReasonDTO.IsArchive = false;
+                await _jsRuntime.ToastrSuccess("Ед. изм. " + correctionReasonDTO.Name + " восстановлена из архива");
+            }
+            else
+            {
+                await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.MoveToArchive);
+                correctionReasonDTO.IsArchive = true;
+                await _jsRuntime.ToastrSuccess("Ед. изм. " + correctionReasonDTO.Name + " удалена в архив");
+            }
+            await correctionReasonDTOGrid.UpdateRow(correctionReasonDTO);
+            //await sapEquipmentDTOGrid.Reload();
+        }
+        else
+        {
+            correctionReasonDTOGrid.CancelEditRow(correctionReasonDTO);
+            await correctionReasonDTOGrid.Reload();
+        }
+    }
+
+    async Task InsertRow()
+    {
+        correctionReasonDTOToInsert = new CorrectionReasonDTO();
+        await correctionReasonDTOGrid.InsertRow(correctionReasonDTOToInsert);
+    }
+
+    async Task OnCreateRow(CorrectionReasonDTO correctionReasonDTO)
+    {
+
+        var newDTO = await _correctionReasonRepository.Create(correctionReasonDTOToInsert);
+
+        correctionReasonDTOToInsert.Id = newDTO.Id;
+        await correctionReasonDTOGrid.UpdateRow(correctionReasonDTOToInsert);
+
+        correctionReasonDTOToInsert = null;
+
+    }
 }
+
+

@@ -45,7 +45,8 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<CorrectionReasonDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
-            {                
+            {
+                var ttt = _db.CorrectionReason;
                 return _mapper.Map<IEnumerable<CorrectionReason>, IEnumerable<CorrectionReasonDTO>>(_db.CorrectionReason);
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
