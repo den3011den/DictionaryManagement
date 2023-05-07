@@ -311,15 +311,18 @@
 
         }
 
-        var newDTO = await _sapMaterialRepository.Create(sapMaterialDTOToInsert);
+        //var newDTO = await _sapMaterialRepository.Create(sapMaterialDTOToInsert);
 
-        sapMaterialDTOToInsert.Id = newDTO.Id;
-        await sapMaterialDTOGrid.UpdateRow(sapMaterialDTOToInsert);
-        //StateHasChanged();
+        //var newDTO = await _sapMaterialRepository.Create(sapMaterialDTO);
 
+        //sapMaterialDTO.Id = newDTO.Id;
+        //await sapMaterialDTOGrid.UpdateRow(sapMaterialDTO);
         sapMaterialDTOToInsert = null;
 
-        //await sapEquipmentDTOGrid.Reload();
+        await OnAfterRenderAsync(true);
+        
+
+        //await sapMaterialDTOGrid.Reload();
     }
 
 

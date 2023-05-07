@@ -258,10 +258,11 @@
 
         var newDTO = await _errorCriterionRepository.Create(errorCriterionDTOToInsert);
 
-        errorCriterionDTOToInsert.Id = newDTO.Id;
-        await errorCriterionDTOGrid.UpdateRow(errorCriterionDTOToInsert);
+        //errorCriterionDTOToInsert.Id = newDTO.Id;
+        //await errorCriterionDTOGrid.UpdateRow(errorCriterionDTOToInsert);
 
         errorCriterionDTOToInsert = null;
+        await OnAfterRenderAsync(true);
 
     }
 }

@@ -352,18 +352,14 @@
 
         var newDTO = await _sapEquipmentRepository.Create(sapEquipmentDTOToInsert);
 
-        //  sapEquipmentDTOGrid.
 
-        //SapEquipmentDTO foundDTO = sapEquipmentDTOs.Where(u => (u.ErpPlantId.Trim().ToUpper() == sapEquipmentDTOToInsert.ErpPlantId.Trim().ToUpper() && u.ErpId.Trim().ToUpper() == sapEquipmentDTOToInsert.ErpId.Trim().ToUpper())).First();
-        //foundDTO.Id = newDTO.Id;
         //sapEquipmentDTOToInsert.Id = newDTO.Id;
-        sapEquipmentDTOToInsert.Id = newDTO.Id;
-        await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTOToInsert);
+        //await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTOToInsert);
         //StateHasChanged();
 
         sapEquipmentDTOToInsert = null;
-
-        //await sapEquipmentDTOGrid.Reload();
+        await OnAfterRenderAsync(true);
+        
     }
 
 

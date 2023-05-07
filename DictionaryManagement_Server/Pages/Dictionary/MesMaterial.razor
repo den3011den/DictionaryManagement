@@ -314,12 +314,13 @@
 
         var newDTO = await _mesMaterialRepository.Create(mesMaterialDTOToInsert);
 
-        mesMaterialDTOToInsert.Id = newDTO.Id;
-        await mesMaterialDTOGrid.UpdateRow(mesMaterialDTOToInsert);
+        //mesMaterialDTOToInsert.Id = newDTO.Id;
+        //await mesMaterialDTOGrid.UpdateRow(mesMaterialDTOToInsert);
         //StateHasChanged();
 
         mesMaterialDTOToInsert = null;
 
+        await OnAfterRenderAsync(true);
         //await sapEquipmentDTOGrid.Reload();
     }
 

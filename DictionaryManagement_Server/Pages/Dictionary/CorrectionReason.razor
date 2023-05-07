@@ -258,10 +258,11 @@
 
         var newDTO = await _correctionReasonRepository.Create(correctionReasonDTOToInsert);
 
-        correctionReasonDTOToInsert.Id = newDTO.Id;
-        await correctionReasonDTOGrid.UpdateRow(correctionReasonDTOToInsert);
+        //correctionReasonDTOToInsert.Id = newDTO.Id;
+        //await correctionReasonDTOGrid.UpdateRow(correctionReasonDTOToInsert);
 
         correctionReasonDTOToInsert = null;
+        await OnAfterRenderAsync(true);
 
     }
 }

@@ -268,8 +268,10 @@
 
         var newDTO = await _mesUnitOfMeasureRepository.Create(mesUnitOfMeasureDTOToInsert);
 
-        mesUnitOfMeasureDTOToInsert.Id = newDTO.Id;
-        await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTOToInsert);
+        //mesUnitOfMeasureDTOToInsert.Id = newDTO.Id;
+        //await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTOToInsert);
+
+        await OnAfterRenderAsync(true);
 
         mesUnitOfMeasureDTOToInsert = null;
 
