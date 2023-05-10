@@ -27,47 +27,46 @@
     @if (IsLoading != true)
     {
 
-        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую настройку" Click="@InsertRow" Disabled=@(settingsDTOToInsert != null || settingsDTOToUpdate != null) />
-        <RadzenDataGrid @ref="settingsDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                    Data="@settingsDTOs" TItem="SettingsDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую связку ед. изм." Click="@InsertRow" Disabled=@(unitOfMeasureSapToMesMappingDTOToInsert != null || unitOfMeasureSapToMesMappingDTOToUpdate != null) />
+        <RadzenDataGrid @ref="unitOfMeasureSapToMesMappingDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                    Data="@unitOfMeasureSapToMesMappingDTOs" TItem="UnitOfMeasureSapToMesMappingDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     FilterMode="FilterMode.Simple">
             <Columns>
-                <RadzenDataGridColumn TItem="SettingsDTO" Property="Id" Title="Ид записи" Width="120px" />
-                <RadzenDataGridColumn TItem="SettingsDTO" Property="Name" Title="Наименование">
-                    <EditTemplate Context="settingsDTO">
-                        <RadzenTextBox @bind-Value="settingsDTO.Name" Style="width:100%; display: block" Name="Name" />
-                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
-                        <RadzenLengthValidator Max=100 Text="Наименование не может быть больше 100 символов" Component="Name" Popup="true" />
+                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapUnitOfMeasureDTO.ShortName" Title="Ед. изм. SAP" Width="280px">
+                    <EditTemplate Context="sapUnitOfMeasureDTO">
+                        <RadzenDropDown @bind-Value="sapUnitOfMeasureDTO.SapUnitId" Data="@sapUnitOfMeasureDTOs" TextProperty="ShortName" ValueProperty="Id" Style="width:100%; display: block;" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="SettingsDTO" Property="Description" Title="Описание">
-                    <EditTemplate Context="settingsDTO">
-                        <RadzenTextBox @bind-Value="settingsDTO.Description" Style="width:100%; display: block" Name="Description" />
-                        <RadzenLengthValidator Max=300 Text="Описание не может быть больше 300 символов" Component="Description" Popup="true" />
+                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="MesUnitOfMeasureDTO.ShortName" Title="Ед. изм. MES" Width="280px">
+                    <EditTemplate Context="mesUnitOfMeasureDTO">
+                        <RadzenDropDown @bind-Value="mesUnitOfMeasureDTO.MesUnitId" Data="@mesUnitOfMeasureDTOs" TextProperty="ShortName" ValueProperty="Id" Style="width:100%; display: block;" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="SettingsDTO" Property="Value" Title="Значение настройки">
-                    <EditTemplate Context="settingsDTO">
-                        <RadzenTextBox @bind-Value="settingsDTO.Value" Style="width:100%; display: block" Name="Value" />
+                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapToMesTransformKoef" Title="Коэф. пересчёта из SAP в MES">
+                    <Template Context="unitOfMeasureSapToMesMappingDTO">
+                        @String.Format(new System.Globalization.CultureInfo("en-US"), "{0}", unitOfMeasureSapToMesMappingDTO.SapToMesTransformKoef)
+                    </Template>
+                    <EditTemplate Context="unitOfMeasureSapToMesMappingDTO">
+                        <RadzenNumeric @bind-Value="unitOfMeasureSapToMesMappingDTO.SapToMesTransformKoef" Style="width:100%" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="SettingsDTO" Context="SettingsDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
-                    <Template Context="SettingsDTO">
-                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(SettingsDTO))" @onclick:stopPropagation="true">
+                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Context="UnitOfMeasureSapToMesMappingDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <Template Context="UnitOfMeasureSapToMesMappingDTO">
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(UnitOfMeasureSapToMesMappingDTO))" @onclick:stopPropagation="true">
                         </RadzenButton>
-                        <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SettingsDTO))" @onclick:stopPropagation="true">
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(UnitOfMeasureSapToMesMappingDTO))" @onclick:stopPropagation="true">
                         </RadzenButton>
                     </Template>
-                    <EditTemplate Context="SettingsDTO">
-                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(SettingsDTO))">
+                    <EditTemplate Context="UnitOfMeasureSapToMesMappingDTO">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(UnitOfMeasureSapToMesMappingDTO))">
                         </RadzenButton>
-                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(SettingsDTO))">
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(UnitOfMeasureSapToMesMappingDTO))">
                         </RadzenButton>
-                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SettingsDTO))">
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(UnitOfMeasureSapToMesMappingDTO))">
                         </RadzenButton>
                     </EditTemplate>
                 </RadzenDataGridColumn>
@@ -112,8 +111,8 @@
     {
         unitOfMeasureSapToMesMappingDTOToInsert = null;
         unitOfMeasureSapToMesMappingDTOToUpdate = null;
-        oldSapUnitIdBeforeUpdate = 0;
-        oldMesUnitIdBeforeUpdate = 0;
+        //oldSapUnitIdBeforeUpdate = 0;
+        //oldMesUnitIdBeforeUpdate = 0;
     }
 
     protected override async Task OnInitializedAsync()
@@ -242,7 +241,7 @@
 
         var forCheck = _unitOfMeasureSapToMesMappingRepository.Get(unitOfMeasureSapToMesMappingDTO.SapUnitId, unitOfMeasureSapToMesMappingDTO.MesUnitId).Result;
 
-        if (forCheck!=null)
+        if (forCheck.SapUnitId > 0)
         {
 
             unitOfMeasureSapToMesMappingDTOToInsert = null;

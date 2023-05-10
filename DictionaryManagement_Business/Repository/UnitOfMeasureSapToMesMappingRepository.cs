@@ -44,8 +44,9 @@ namespace DictionaryManagement_Business.Repository
         }
 
         public async Task<IEnumerable<UnitOfMeasureSapToMesMappingDTO>> GetAll()
-        {                      
-            return _mapper.Map<IEnumerable<UnitOfMeasureSapToMesMapping>, IEnumerable<UnitOfMeasureSapToMesMappingDTO>>(_db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure"));
+        {
+            var hhh = _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure");
+            return _mapper.Map<IEnumerable<UnitOfMeasureSapToMesMapping>, IEnumerable<UnitOfMeasureSapToMesMappingDTO>>(hhh);
         }
 
         public async Task<UnitOfMeasureSapToMesMappingDTO> Update(UnitOfMeasureSapToMesMappingDTO objectToUpdateDTO)
