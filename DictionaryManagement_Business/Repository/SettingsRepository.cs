@@ -85,7 +85,7 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToDelete!= null)
                 {
                     _db.Settings.Remove(objectToDelete);
-                    return _db.SaveChangesAsync().Result;
+                    return await _db.SaveChangesAsync();
                 }
             }
             return 0;

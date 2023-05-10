@@ -5,12 +5,13 @@
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 
-@inject DialogService DialogService
-
 @inject IJSRuntime _jsRuntime
 @inject ISapMaterialRepository _sapMaterialRepository
 
-@inject NavigationManager _navigationManager
+@*@inject NavigationManager _navigationManager*@
+
+
+<_Dialogs @ref="_dialogs"></_Dialogs>
 
 <div class="row mt-4">
 
@@ -106,6 +107,9 @@
 </div>
 
 @code {
+
+    _Dialogs? _dialogs { get; set; }
+
     public bool? checkBoxValue = null;
     public string checkBoxText = "Все записи";
     public string DeleteSapsage { get; set; } = "";
@@ -260,12 +264,26 @@
 
     async Task DeleteRow(SapMaterialDTO sapMaterialDTO)
     {
+        if (_dialogs != null)
+            if (sapMaterialDTO.IsArchive != true)
+            {
+                bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление материала SAP", "Удалить материал SAP \"" + sapMaterialDTO.ShortName + "\" в архив ?", "Удалить", "Отмена");
+                if (selectionResult == false)
+                {
+                    await _jsRuntime.ToastrSuccess("Отмена удаления");
+                    return;
+                }
+            }
+            else
+            {
+                bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Восстановление материала SAP", "Восстановить материал SAP \"" + sapMaterialDTO.ShortName + "\" из архива ?", "Восстановить", "Отмена");
+                if (selectionResult == false)
+                {
+                    await _jsRuntime.ToastrSuccess("Отмена восстановления");
+                    return;
+                }
+            }    
 
-        bool fff = await ShowInlineDialog("Удаление материала SAP", "Удалить материал SAP \"" + sapMaterialDTO.ShortName + "\" ?", "Удалить", "Отмена");        
-        string yyy = fff.ToString();
-
-        await _jsRuntime.ToastrSuccess(yyy);
-        return;
         if (sapMaterialDTO == sapMaterialDTOToInsert)
         {
             sapMaterialDTOToInsert = null;
@@ -298,24 +316,6 @@
             await sapMaterialDTOGrid.Reload();
         }
     }
-
-    async Task<dynamic> ShowInlineDialog(string windowTitle, string windowMessage, string actionButtonText, string cancelButtonText)
-    {
-        var result = await DialogService.OpenAsync(windowTitle, ds =>
-        @<RadzenStack Gap="1.5rem">
-        <p>@windowMessage</p>
-        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
-            <RadzenStack Orientation="Orientation.Horizontal">
-                <RadzenButton Text="@actionButtonText" Click="() => ds.Close(true)" Style="width: 100px;" />
-                <RadzenButton Text="@cancelButtonText" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
-            </RadzenStack>
-        </RadzenStack>
-    </RadzenStack>
-    );
-    return result;
-
-    }
-
 
     async Task InsertRow()
     {

@@ -5,15 +5,14 @@
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 
-@inject DialogService DialogService
-
 
 @inject IJSRuntime _jsRuntime
 @inject ISettingsRepository _settingsRepository
 
-@inject NavigationManager _navigationManager
+@*@inject NavigationManager _navigationManager*@
 
-@*<_DeleteConfirmation IsParentComponentProcessing="IsLoading" DeleteConfirmationMessage="@DeleteMessage" ConfirmationChanged="ConfirmDelete_Click"></_DeleteConfirmation>*@
+
+<_Dialogs @ref="_dialogs"></_Dialogs>
 
 <div class="row mt-4">
 
@@ -53,16 +52,23 @@
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="SettingsDTO" Context="settingsDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
-                    <EditTemplate Context="settingsDTO">
-                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(settingsDTO))">
+                <RadzenDataGridColumn TItem="SettingsDTO" Context="SettingsDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <Template Context="SettingsDTO">
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(SettingsDTO))" @onclick:stopPropagation="true">
                         </RadzenButton>
-                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(settingsDTO))">
+                        <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SettingsDTO))" @onclick:stopPropagation="true">
                         </RadzenButton>
-                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(settingsDTO))">
+                    </Template>
+                    <EditTemplate Context="SettingsDTO">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(SettingsDTO))">
+                        </RadzenButton>
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(SettingsDTO))">
+                        </RadzenButton>
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SettingsDTO))">
                         </RadzenButton>
                     </EditTemplate>
                 </RadzenDataGridColumn>
+
             </Columns>
         </RadzenDataGrid>
     }
@@ -81,6 +87,8 @@
 </div>
 
 @code {
+
+    _Dialogs? _dialogs { get; set; }
 
     public string DeleteMessage { get; set; } = "";
 
@@ -150,7 +158,7 @@
 
                 settingsDTOToUpdate = null;
 
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть с наименованием настройуи " + obj.Name);
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть настройка с наименованием \"" + obj.Name + "\"");
 
                 return;
             }
@@ -187,6 +195,16 @@
     async Task DeleteRow(SettingsDTO settingsDTO)
     {
 
+        if (_dialogs != null)
+        {
+            bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление настройки", "Удалить настройку \"" + settingsDTO.Name + "\" безвозвратно ?", "Удалить", "Отмена");
+            if (selectionResult == false)
+            {
+                await _jsRuntime.ToastrSuccess("Отмена удаления");
+                return;
+            }
+        }
+
         if (settingsDTO == settingsDTOToInsert)
         {
             settingsDTOToInsert = null;
@@ -200,6 +218,8 @@
         if (settingsDTOs.Contains(settingsDTO))
         {
             await _settingsRepository.Delete(settingsDTO.Id);
+
+            settingsDTOs = settingsDTOs.Where(u => u.Id != settingsDTO.Id);
 
             await settingsDTOGrid.Reload();
         }
@@ -226,7 +246,8 @@
 
             settingsDTOToInsert = null;
             await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть настройка с наименованием " + settingsDTO.Name);
-
+            settingsDTOGrid.CancelEditRow(settingsDTO);
+            await settingsDTOGrid.Reload();
             return;
         }
 
@@ -239,59 +260,6 @@
         await OnAfterRenderAsync(true);
     }
 
-
-
-    //public async Task ConfirmDeleteEquipment_Click(bool isConfirmed)
-    //{
-    //    IsLoading = true;
-    //    // здесь код удаления
-    //    /*if (isConfirmed && DeleteCategoryId != 0)*/
-    //    if (isConfirmed)
-    //    {
-    //        /*await Task.Delay(5000);*/
-    //        //delete
-    //        /*await _categoryRepository.Delete(DeleteCategoryId);
-    //        await LoadCategories(); */
-    //        await _jsRuntime.InvokeVoidAsync("HideDeleteConfirmationModal");
-    //    }
-    //    DeleteMessage = "";
-    //    IsLoading = false;
-    //}
-
-
-    //public async Task ConfirmDelete_Click(bool isConfirmed)
-    //{
-    //    IsLoading = true;
-    //    // здесь код удаления
-    //    /*if (isConfirmed && DeleteCategoryId != 0)*/
-
-    //    if (isConfirmed)
-    //    {
-
-    //            if (DeleteSettingsId <= 0)
-    //            {
-    //                await _jsRuntime.ToastrError("Код настройки пуст!");
-    //            }
-    //            else
-    //            {
-    //                await 
-    //                await _jsRuntime.ToastrError("Настройка \"" + DeleteSettingsName +"\" удалена");
-    //            }
-    //            await OnInitializedAsync();
-
-    //    }
-    //    await _jsRuntime.InvokeVoidAsync("HideDeleteConfirmationModal");
-    //    DeleteMessage = "";
-    //    IsLoading = false;
-    //}
-
-    //private void HandleDelete(SettingsDTO settingsDTO)
-    //{
-    //    DeleteSettingsId = settingsDTO.Id;
-    //    DeleteSettingsName = settingsDTO.Name;
-    //    DeleteMessage = "Удалить ресурс настройку \"" + DeleteSettingsName + "\" ?";        
-    //    _jsRuntime.InvokeVoidAsync("ShowDeleteConfirmationModal");
-    //}
 
 }
 
