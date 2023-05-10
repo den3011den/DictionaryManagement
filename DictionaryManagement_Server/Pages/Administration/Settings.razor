@@ -5,6 +5,8 @@
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 
+@inject DialogService DialogService
+
 
 @inject IJSRuntime _jsRuntime
 @inject ISettingsRepository _settingsRepository
@@ -184,6 +186,7 @@
 
     async Task DeleteRow(SettingsDTO settingsDTO)
     {
+
         if (settingsDTO == settingsDTOToInsert)
         {
             settingsDTOToInsert = null;
@@ -212,7 +215,7 @@
         settingsDTOToInsert = new SettingsDTO();
         await settingsDTOGrid.InsertRow(settingsDTOToInsert);
     }
-
+        
     async Task OnCreateRow(SettingsDTO settingsDTO)
     {
 
@@ -235,6 +238,7 @@
         settingsDTOToInsert = null;
         await OnAfterRenderAsync(true);
     }
+
 
 
     //public async Task ConfirmDeleteEquipment_Click(bool isConfirmed)

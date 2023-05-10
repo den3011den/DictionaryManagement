@@ -5,6 +5,8 @@
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 
+@inject DialogService DialogService
+
 @inject IJSRuntime _jsRuntime
 @inject ISapMaterialRepository _sapMaterialRepository
 
@@ -258,6 +260,12 @@
 
     async Task DeleteRow(SapMaterialDTO sapMaterialDTO)
     {
+
+        bool fff = await ShowInlineDialog("Удаление материала SAP", "Удалить материал SAP \"" + sapMaterialDTO.ShortName + "\" ?", "Удалить", "Отмена");        
+        string yyy = fff.ToString();
+
+        await _jsRuntime.ToastrSuccess(yyy);
+        return;
         if (sapMaterialDTO == sapMaterialDTOToInsert)
         {
             sapMaterialDTOToInsert = null;
@@ -290,6 +298,24 @@
             await sapMaterialDTOGrid.Reload();
         }
     }
+
+    async Task<dynamic> ShowInlineDialog(string windowTitle, string windowMessage, string actionButtonText, string cancelButtonText)
+    {
+        var result = await DialogService.OpenAsync(windowTitle, ds =>
+        @<RadzenStack Gap="1.5rem">
+        <p>@windowMessage</p>
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenStack Orientation="Orientation.Horizontal">
+                <RadzenButton Text="@actionButtonText" Click="() => ds.Close(true)" Style="width: 100px;" />
+                <RadzenButton Text="@cancelButtonText" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenStack>
+    );
+    return result;
+
+    }
+
 
     async Task InsertRow()
     {
