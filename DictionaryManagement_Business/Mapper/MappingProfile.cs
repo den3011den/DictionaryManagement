@@ -22,6 +22,8 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<ReportTemplateType, ReportTemplateTypeDTO>().ReverseMap();
             CreateMap<LogEventType, LogEventTypeDTO>().ReverseMap();
             CreateMap<Settings, SettingsDTO>().ReverseMap();
+
+            CreateMap<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>().ReverseMap();
         }
     }
 }

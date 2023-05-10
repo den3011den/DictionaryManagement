@@ -30,6 +30,8 @@ builder.Services.AddScoped<IDataSourceRepository, DataSourceRepository>();
 builder.Services.AddScoped<IReportTemplateTypeRepository, ReportTemplateTypeRepository>();
 builder.Services.AddScoped<ILogEventTypeRepository, LogEventTypeRepository>();
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
+builder.Services.AddScoped<IUnitOfMeasureSapToMesMappingRepository, UnitOfMeasureSapToMesMappingRepository>();
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<DialogService>();

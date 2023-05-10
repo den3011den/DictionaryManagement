@@ -29,6 +29,8 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<LogEventType> LogEventType { get; set; }
         public DbSet<Settings> Settings { get; set; }
 
+        public DbSet<UnitOfMeasureSapToMesMapping> UnitOfMeasureSapToMesMapping { get; set; }
+        
     }
 
 }

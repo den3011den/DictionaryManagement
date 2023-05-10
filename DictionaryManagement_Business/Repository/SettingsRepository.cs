@@ -26,11 +26,12 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SettingsDTO> Create(SettingsDTO objectToAddDTO)
         {
-            var objectToAdd = _mapper.Map<SettingsDTO, Settings>(objectToAddDTO);            
+            var objectToAdd = _mapper.Map<SettingsDTO, Settings>(objectToAddDTO);
             var addedSettings = _db.Settings.Add(objectToAdd);
             await _db.SaveChangesAsync();
             return _mapper.Map<Settings, SettingsDTO>(addedSettings.Entity);
         }
+
 
         public async Task<SettingsDTO> Get(int Id)
         {
