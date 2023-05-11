@@ -34,7 +34,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<CorrectionReasonDTO> Get(int Id)
         {
-            var objToGet = _db.CorrectionReason.FirstOrDefaultAsync(u => u.Id == Id).GetAwaiter().GetResult();
+            var objToGet = _db.CorrectionReason.FirstOrDefaultAsync(u => u.Id == Id).GetAwaiter().GetResult();            
             if (objToGet != null)
             {
                 return _mapper.Map<CorrectionReason, CorrectionReasonDTO>(objToGet);

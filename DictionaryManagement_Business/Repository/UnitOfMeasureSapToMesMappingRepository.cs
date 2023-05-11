@@ -26,7 +26,15 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UnitOfMeasureSapToMesMappingDTO> Create(UnitOfMeasureSapToMesMappingDTO objectToAddDTO)
         {
-            var objectToAdd = _mapper.Map<UnitOfMeasureSapToMesMappingDTO, UnitOfMeasureSapToMesMapping>(objectToAddDTO);
+            //var objectToAdd = _mapper.Map<UnitOfMeasureSapToMesMappingDTO, UnitOfMeasureSapToMesMapping>(objectToAddDTO);
+
+            UnitOfMeasureSapToMesMapping objectToAdd = new UnitOfMeasureSapToMesMapping();
+                
+                objectToAdd.Id = objectToAddDTO.Id;
+                objectToAdd.SapUnitId = objectToAddDTO.SapUnitId;
+                objectToAdd.MesUnitId = objectToAddDTO.MesUnitId;
+
+
             var addedUnitOfMeasureSapToMesMapping = _db.UnitOfMeasureSapToMesMapping.Add(objectToAdd);
             await _db.SaveChangesAsync();
             return _mapper.Map<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>(addedUnitOfMeasureSapToMesMapping.Entity);
@@ -40,8 +48,20 @@ namespace DictionaryManagement_Business.Repository
             {
                 return _mapper.Map<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>(objToGet);
             }
-            return new UnitOfMeasureSapToMesMappingDTO();
+            return null;
         }
+
+        public async Task<UnitOfMeasureSapToMesMappingDTO> GetById(int id)
+        {
+            var objToGet = _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure").
+                            FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>(objToGet);
+            }
+            return null;
+        }
+
 
         public async Task<IEnumerable<UnitOfMeasureSapToMesMappingDTO>> GetAll()
         {
@@ -52,15 +72,21 @@ namespace DictionaryManagement_Business.Repository
         public async Task<UnitOfMeasureSapToMesMappingDTO> Update(UnitOfMeasureSapToMesMappingDTO objectToUpdateDTO)
         {
             var objectToUpdate = _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure").
-                    FirstOrDefault(u => u.SapUnitId == objectToUpdateDTO.SapUnitId && u.MesUnitId == objectToUpdateDTO.MesUnitId);
+                    FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
-            {                
-                    if (objectToUpdate.SapUnitId != objectToUpdateDTO.SapUnitId)
-                        objectToUpdate.SapUnitId = objectToUpdateDTO.SapUnitId;
-                    if (objectToUpdate.MesUnitId != objectToUpdateDTO.MesUnitId)
-                        objectToUpdate.MesUnitId = objectToUpdateDTO.MesUnitId;
-                    if (objectToUpdate.SapToMesTransformKoef != objectToUpdateDTO.SapToMesTransformKoef)
-                        objectToUpdate.SapToMesTransformKoef = objectToUpdateDTO.SapToMesTransformKoef;
+            {
+                if (objectToUpdate.SapUnitId != objectToUpdateDTO.SapUnitOfMeasureDTO.Id)
+                {
+                    objectToUpdate.SapUnitId = objectToUpdateDTO.SapUnitOfMeasureDTO.Id;
+                    objectToUpdate.SapUnitOfMeasure = _mapper.Map<SapUnitOfMeasureDTO, SapUnitOfMeasure>(objectToUpdateDTO.SapUnitOfMeasureDTO);
+                }
+                if (objectToUpdate.MesUnitId != objectToUpdateDTO.MesUnitOfMeasureDTO.Id)
+                {
+                    objectToUpdate.MesUnitId = objectToUpdateDTO.MesUnitOfMeasureDTO.Id;
+                    objectToUpdate.MesUnitOfMeasure = _mapper.Map<MesUnitOfMeasureDTO, MesUnitOfMeasure>(objectToUpdateDTO.MesUnitOfMeasureDTO);
+                }
+                if (objectToUpdate.SapToMesTransformKoef != objectToUpdateDTO.SapToMesTransformKoef)
+                    objectToUpdate.SapToMesTransformKoef = objectToUpdateDTO.SapToMesTransformKoef;
                 _db.UnitOfMeasureSapToMesMapping.Update(objectToUpdate);
                 await _db.SaveChangesAsync();
                 return _mapper.Map<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>(objectToUpdate);
@@ -69,19 +95,19 @@ namespace DictionaryManagement_Business.Repository
 
         }
 
-        public async Task<int> Delete(int sapUnitId, int mesUnitId)
+        public async Task<int> Delete(int id)
         {
-            if (sapUnitId > 0 && mesUnitId > 0)
+            if (id > 0)
             {
-                var objectToDelete = _db.UnitOfMeasureSapToMesMapping.FirstOrDefault(u => u.SapUnitId == sapUnitId && u.MesUnitId == mesUnitId);
-                if (objectToDelete!= null)
+                var objectToDelete = _db.UnitOfMeasureSapToMesMapping.FirstOrDefault(u => u.Id == id);
+                if (objectToDelete != null)
                 {
                     _db.UnitOfMeasureSapToMesMapping.Remove(objectToDelete);
                     return await _db.SaveChangesAsync();
                 }
             }
             return 0;
-            
+
         }
     }
 }

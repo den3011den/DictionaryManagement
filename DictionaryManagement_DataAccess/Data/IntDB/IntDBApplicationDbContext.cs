@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace DictionaryManagement_DataAccess.Data.IntDB
 {
@@ -30,7 +31,13 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<Settings> Settings { get; set; }
 
         public DbSet<UnitOfMeasureSapToMesMapping> UnitOfMeasureSapToMesMapping { get; set; }
-        
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+        //    modelBuilder.Entity<UnitOfMeasureSapToMesMapping>().HasKey(x => new { x.SapUnitId, x.MesUnitId });
+        //}
+
     }
 
 }

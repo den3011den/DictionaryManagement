@@ -33,25 +33,28 @@
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     FilterMode="FilterMode.Simple">
             <Columns>
-                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapUnitOfMeasureDTO.ShortName" Title="Ед. изм. SAP" Width="280px">
-                    <EditTemplate Context="sapUnitOfMeasureDTO">
-                        <RadzenDropDown @bind-Value="sapUnitOfMeasureDTO.SapUnitId" Data="@sapUnitOfMeasureDTOs" TextProperty="ShortName" ValueProperty="Id" Style="width:100%; display: block;" />
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="MesUnitOfMeasureDTO.ShortName" Title="Ед. изм. MES" Width="280px">
-                    <EditTemplate Context="mesUnitOfMeasureDTO">
-                        <RadzenDropDown @bind-Value="mesUnitOfMeasureDTO.MesUnitId" Data="@mesUnitOfMeasureDTOs" TextProperty="ShortName" ValueProperty="Id" Style="width:100%; display: block;" />
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapToMesTransformKoef" Title="Коэф. пересчёта из SAP в MES">
-                    <Template Context="unitOfMeasureSapToMesMappingDTO">
-                        @String.Format(new System.Globalization.CultureInfo("en-US"), "{0}", unitOfMeasureSapToMesMappingDTO.SapToMesTransformKoef)
-                    </Template>
+                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapUnitOfMeasureDTO" Title="Ед. изм. SAP" Width="280px" Filterable = "false">
                     <EditTemplate Context="unitOfMeasureSapToMesMappingDTO">
-                        <RadzenNumeric @bind-Value="unitOfMeasureSapToMesMappingDTO.SapToMesTransformKoef" Style="width:100%" />
+                        <RadzenDropDown Data="@sapUnitOfMeasureDTOs" @bind-Value="unitOfMeasureSapToMesMappingDTO.SapUnitOfMeasureDTO" Style="width:100%; display: block;" Name="SapUnit" />
+                        <RadzenRequiredValidator Text="Ед. изм. SAP обязательна к выбору" Component="SapUnit" Popup="true" />
                     </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="MesUnitOfMeasureDTO" Title="Ед. изм. MES" Width="280px" Filterable="false">
+                    <EditTemplate Context="unitOfMeasureSapToMesMappingDTO">
+                        <RadzenDropDown Data="@mesUnitOfMeasureDTOs" @bind-Value="unitOfMeasureSapToMesMappingDTO.MesUnitOfMeasureDTO" Style="width:100%; display: block;" Name="MesUnit" />
+                        <RadzenRequiredValidator Text="Ед. изм. MES обязательна к выбору" Component="MesUnit" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapToMesTransformKoef" Title="Коэф. пересчёта из SAP в MES" Filterable="false">
+                    <Template Context="unitOfMeasureSapToMesMappingDTO">
+                        @String.Format(new System.Globalization.CultureInfo("en-US"), "{0:0.0000}", unitOfMeasureSapToMesMappingDTO.SapToMesTransformKoef)
+                    </Template>                    
+                    <EditTemplate Context="unitOfMeasureSapToMesMappingDTO">                        
+                        <RadzenNumeric @bind-Value="unitOfMeasureSapToMesMappingDTO.SapToMesTransformKoef" Style="width:100%" Name="Koef"/>
+                        <RadzenRequiredValidator Text="Коэффициент обязателено к заполнению" Component="Koef" Popup="true" />                        
+                    </EditTemplate>                    
                 </RadzenDataGridColumn>
 
                 <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Context="UnitOfMeasureSapToMesMappingDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
@@ -149,15 +152,19 @@
     async Task OnUpdateRow(UnitOfMeasureSapToMesMappingDTO unitOfMeasureSapToMesMappingDTO)
     {
 
-        if ((unitOfMeasureSapToMesMappingDTO.SapUnitId != unitOfMeasureSapToMesMappingDTOToUpdate.SapUnitId) || (unitOfMeasureSapToMesMappingDTO.MesUnitId != unitOfMeasureSapToMesMappingDTOToUpdate.MesUnitId))
+        if ((unitOfMeasureSapToMesMappingDTO.SapUnitId != unitOfMeasureSapToMesMappingDTO.SapUnitOfMeasureDTO.Id) || (unitOfMeasureSapToMesMappingDTO.MesUnitId != unitOfMeasureSapToMesMappingDTO.MesUnitOfMeasureDTO.Id))
         {
-            var forCheck = _unitOfMeasureSapToMesMappingRepository.Get(unitOfMeasureSapToMesMappingDTO.SapUnitId, unitOfMeasureSapToMesMappingDTO.MesUnitId).Result;
+            var forCheck = _unitOfMeasureSapToMesMappingRepository.Get(unitOfMeasureSapToMesMappingDTO.SapUnitOfMeasureDTO.Id, unitOfMeasureSapToMesMappingDTO.MesUnitOfMeasureDTO.Id).Result;
             if (forCheck!=null)
             {
+
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже маппинг между ед. изм. SAP \"" + unitOfMeasureSapToMesMappingDTO.SapUnitOfMeasureDTO.ShortName
+                    + "\" и ед. изм. MES \"" + unitOfMeasureSapToMesMappingDTO.MesUnitOfMeasureDTO.ShortName + "\"");
+
+                unitOfMeasureSapToMesMappingDTOToUpdate.SapUnitOfMeasureDTO = _sapUnitOfMeasureRepository.Get(unitOfMeasureSapToMesMappingDTO.SapUnitId).Result;
+                unitOfMeasureSapToMesMappingDTOToUpdate.MesUnitOfMeasureDTO = _mesUnitOfMeasureRepository.Get(unitOfMeasureSapToMesMappingDTO.MesUnitId).Result;
                 await unitOfMeasureSapToMesMappingDTOGrid.UpdateRow(unitOfMeasureSapToMesMappingDTOToUpdate);
                 unitOfMeasureSapToMesMappingDTOToUpdate = null;
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже маппинг между ед. изм. SAP \"" + unitOfMeasureSapToMesMappingDTO.SapUnitOfMeasureDTO.ShortName 
-                            + "\" и ед. изм. MES \"" + unitOfMeasureSapToMesMappingDTO.MesUnitOfMeasureDTO.ShortName + "\"");
                 return;
 
             }
@@ -170,6 +177,8 @@
 
         unitOfMeasureSapToMesMappingDTOToUpdate = null;
 
+        unitOfMeasureSapToMesMappingDTO.SapUnitId = unitOfMeasureSapToMesMappingDTO.SapUnitOfMeasureDTO.Id;
+        unitOfMeasureSapToMesMappingDTO.MesUnitId = unitOfMeasureSapToMesMappingDTO.MesUnitOfMeasureDTO.Id;
         await _unitOfMeasureSapToMesMappingRepository.Update(unitOfMeasureSapToMesMappingDTO);
     }
 
@@ -217,9 +226,9 @@
 
         if (unitOfMeasureSapToMesMappingDTOs.Contains(unitOfMeasureSapToMesMappingDTO))
         {
-            await _unitOfMeasureSapToMesMappingRepository.Delete(unitOfMeasureSapToMesMappingDTO.SapUnitId, unitOfMeasureSapToMesMappingDTO.MesUnitId);
+            await _unitOfMeasureSapToMesMappingRepository.Delete(unitOfMeasureSapToMesMappingDTO.Id);
 
-            unitOfMeasureSapToMesMappingDTOs = unitOfMeasureSapToMesMappingDTOs.Where(u => (!(u.SapUnitId == unitOfMeasureSapToMesMappingDTO.SapUnitId) && (u.MesUnitId == unitOfMeasureSapToMesMappingDTO.MesUnitId)));
+            unitOfMeasureSapToMesMappingDTOs = unitOfMeasureSapToMesMappingDTOs.Where(u => (u.Id != unitOfMeasureSapToMesMappingDTO.Id));
 
             await unitOfMeasureSapToMesMappingDTOGrid.Reload();
         }
@@ -239,9 +248,9 @@
     async Task OnCreateRow(UnitOfMeasureSapToMesMappingDTO unitOfMeasureSapToMesMappingDTO)
     {
 
-        var forCheck = _unitOfMeasureSapToMesMappingRepository.Get(unitOfMeasureSapToMesMappingDTO.SapUnitId, unitOfMeasureSapToMesMappingDTO.MesUnitId).Result;
+        var forCheck = _unitOfMeasureSapToMesMappingRepository.Get(unitOfMeasureSapToMesMappingDTO.SapUnitOfMeasureDTO.Id, unitOfMeasureSapToMesMappingDTO.MesUnitOfMeasureDTO.Id).Result;
 
-        if (forCheck.SapUnitId > 0)
+        if (forCheck !=null)
         {
 
             unitOfMeasureSapToMesMappingDTOToInsert = null;
@@ -252,12 +261,15 @@
             return;
         }
 
+        unitOfMeasureSapToMesMappingDTO.SapUnitId = unitOfMeasureSapToMesMappingDTO.SapUnitOfMeasureDTO.Id;
+        unitOfMeasureSapToMesMappingDTO.MesUnitId = unitOfMeasureSapToMesMappingDTO.MesUnitOfMeasureDTO.Id;
+
         var newDTO = await _unitOfMeasureSapToMesMappingRepository.Create(unitOfMeasureSapToMesMappingDTO);
 
         //settingsDTOToInsert.Id = newDTO.Id;
         //await settingsDTOGrid.UpdateRow(settingsDTOToInsert);
 
-        unitOfMeasureSapToMesMappingDTOToInsert = null;
+        unitOfMeasureSapToMesMappingDTOToInsert = null;        
         await OnAfterRenderAsync(true);
     }
 
