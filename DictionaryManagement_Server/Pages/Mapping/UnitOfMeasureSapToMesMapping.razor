@@ -33,21 +33,21 @@
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     FilterMode="FilterMode.Simple">
             <Columns>
-                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapUnitOfMeasureDTO" Title="Ед. изм. SAP" Width="280px" Filterable = "false">
+                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapUnitOfMeasureDTO" FilterProperty="SapUnitOfMeasureDTO.ShortName" Title="Ед. изм. SAP" Width="280px" Filterable="true">
                     <EditTemplate Context="unitOfMeasureSapToMesMappingDTO">
                         <RadzenDropDown Data="@sapUnitOfMeasureDTOs" @bind-Value="unitOfMeasureSapToMesMappingDTO.SapUnitOfMeasureDTO" Style="width:100%; display: block;" Name="SapUnit" />
                         <RadzenRequiredValidator Text="Ед. изм. SAP обязательна к выбору" Component="SapUnit" Popup="true" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="MesUnitOfMeasureDTO" Title="Ед. изм. MES" Width="280px" Filterable="false">
+                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="MesUnitOfMeasureDTO" Title="Ед. изм. MES" Width="280px" FilterProperty="MesUnitOfMeasureDTO.ShortName" Filterable="true">
                     <EditTemplate Context="unitOfMeasureSapToMesMappingDTO">
                         <RadzenDropDown Data="@mesUnitOfMeasureDTOs" @bind-Value="unitOfMeasureSapToMesMappingDTO.MesUnitOfMeasureDTO" Style="width:100%; display: block;" Name="MesUnit" />
                         <RadzenRequiredValidator Text="Ед. изм. MES обязательна к выбору" Component="MesUnit" Popup="true" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapToMesTransformKoef" Title="Коэф. пересчёта из SAP в MES" Filterable="false">
+                <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapToMesTransformKoef" Title="Коэф. пересчёта из SAP в MES" FilterProperty="SapToMesTransformKoef" Filterable="true">
                     <Template Context="unitOfMeasureSapToMesMappingDTO">
                         @String.Format(new System.Globalization.CultureInfo("en-US"), "{0:0.0000}", unitOfMeasureSapToMesMappingDTO.SapToMesTransformKoef)
                     </Template>                    
