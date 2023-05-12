@@ -39,7 +39,7 @@ namespace DictionaryManagement_Business.Repository
             {
                 return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objToGet);
             }
-            return new MesUnitOfMeasureDTO();
+            return null;
         }
 
         public async Task<IEnumerable<MesUnitOfMeasureDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
@@ -81,6 +81,26 @@ namespace DictionaryManagement_Business.Repository
             }
             return objectToUpdateDTO;
 
+        }
+
+        public async Task<MesUnitOfMeasureDTO> GetByName(string name)
+        {
+            var objToGet = _db.MesUnitOfMeasure.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objToGet);
+            }
+            return null;
+        }
+
+        public async Task<MesUnitOfMeasureDTO> GetByShortName(string shortName)
+        {
+            var objToGet = _db.MesUnitOfMeasure.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objToGet);
+            }
+            return null;
         }
     }
 }

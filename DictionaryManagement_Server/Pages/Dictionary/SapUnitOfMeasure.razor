@@ -328,6 +328,8 @@
     async Task OnCreateRow(SapUnitOfMeasureDTO sapUnitOfMeasureDTO)
     {
 
+        sapUnitOfMeasureDTOToInsert = null;
+
         var objectForCheckName = await _sapUnitOfMeasureRepository.GetByName(sapUnitOfMeasureDTO.Name);
         if (objectForCheckName != null)
         {
@@ -347,14 +349,11 @@
             return;
         }
 
+        var newDTO = await _sapUnitOfMeasureRepository.Create(sapUnitOfMeasureDTO);
 
-        var newDTO = await _sapUnitOfMeasureRepository.Create(sapUnitOfMeasureDTOToInsert);
-
-        sapUnitOfMeasureDTOToInsert.Id = newDTO.Id;
-        await sapUnitOfMeasureDTOGrid.UpdateRow(sapUnitOfMeasureDTOToInsert);
-
-        sapUnitOfMeasureDTOToInsert = null;
-
+        //sapUnitOfMeasureDTO.Id = newDTO.Id;
+        //await sapUnitOfMeasureDTOGrid.UpdateRow(sapUnitOfMeasureDTO);
+        
         await OnAfterRenderAsync(true);
     }
 }

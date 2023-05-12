@@ -203,6 +203,36 @@
 
         mesUnitOfMeasureDTOToUpdate = null;
 
+        var objectForCheckName = await _mesUnitOfMeasureRepository.GetByName(mesUnitOfMeasureDTO.Name);
+        if (objectForCheckName != null)
+        {
+            if (objectForCheckName.Id != mesUnitOfMeasureDTO.Id)
+            {
+                var objectForRestore = await _mesUnitOfMeasureRepository.Get(mesUnitOfMeasureDTO.Id);
+                mesUnitOfMeasureDTO.Name = objectForRestore.Name;
+                mesUnitOfMeasureDTO.ShortName = objectForRestore.ShortName;
+                await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTO);
+                await mesUnitOfMeasureDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименованием единицы измерения MES \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                return;
+            }
+        }
+
+        var objectForCheckShortName = await _mesUnitOfMeasureRepository.GetByShortName(mesUnitOfMeasureDTO.ShortName);
+        if (objectForCheckShortName != null)
+        {
+            if (objectForCheckShortName.Id != mesUnitOfMeasureDTO.Id)
+            {
+                var objectForRestore = await _mesUnitOfMeasureRepository.Get(mesUnitOfMeasureDTO.Id);
+                mesUnitOfMeasureDTO.Name = objectForRestore.Name;
+                mesUnitOfMeasureDTO.ShortName = objectForRestore.ShortName;
+                await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTO);
+                await mesUnitOfMeasureDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с сокр. наименованием единицы измерения MES \"" + objectForCheckShortName.ShortName + "\" с ИД зависи = " + objectForCheckShortName.Id.ToString());
+                return;
+            }
+        }
+
         await _mesUnitOfMeasureRepository.Update(mesUnitOfMeasureDTO, SD.UpdateMode.Update);
     }
 
@@ -221,6 +251,12 @@
         mesUnitOfMeasureDTOToUpdate = null;
 
         mesUnitOfMeasureDTOGrid.CancelEditRow(mesUnitOfMeasureDTO);
+
+        var objectForRestore = _mesUnitOfMeasureRepository.Get(mesUnitOfMeasureDTO.Id).GetAwaiter().GetResult();
+        mesUnitOfMeasureDTO.Name = objectForRestore.Name;
+        mesUnitOfMeasureDTO.ShortName = objectForRestore.ShortName;
+        mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTO);
+        mesUnitOfMeasureDTOGrid.Reload();
 
     }
 
@@ -292,14 +328,35 @@
     async Task OnCreateRow(MesUnitOfMeasureDTO mesUnitOfMeasureDTO)
     {
 
-        var newDTO = await _mesUnitOfMeasureRepository.Create(mesUnitOfMeasureDTOToInsert);
+         mesUnitOfMeasureDTOToInsert = null;
+
+        var objectForCheckName = await _mesUnitOfMeasureRepository.GetByName(mesUnitOfMeasureDTO.Name);
+        if (objectForCheckName != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименованием единицы измерения MES \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+            mesUnitOfMeasureDTOGrid.CancelEditRow(mesUnitOfMeasureDTO);
+            await mesUnitOfMeasureDTOGrid.Reload();
+            return;
+        }
+
+        var objectForCheckShortName = await _mesUnitOfMeasureRepository.GetByShortName(mesUnitOfMeasureDTO.ShortName);
+        if (objectForCheckShortName != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с сокр. наименованием единицы измерения MES \"" + objectForCheckShortName.ShortName + "\" с ИД записи = " + objectForCheckShortName.Id.ToString());
+            mesUnitOfMeasureDTOGrid.CancelEditRow(mesUnitOfMeasureDTO);
+            await mesUnitOfMeasureDTOGrid.Reload();
+
+            return;
+        }
+
+        var newDTO = await _mesUnitOfMeasureRepository.Create(mesUnitOfMeasureDTO);
 
         //mesUnitOfMeasureDTOToInsert.Id = newDTO.Id;
-        //await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTOToInsert);
+        //await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTOToInsert);        
 
         await OnAfterRenderAsync(true);
 
-        mesUnitOfMeasureDTOToInsert = null;
+       
 
     }
 }
