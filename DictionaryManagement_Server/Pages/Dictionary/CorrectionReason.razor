@@ -195,6 +195,20 @@
 
         correctionReasonDTOToUpdate = null;
 
+        var objectForCheckName = await _correctionReasonRepository.GetByName(correctionReasonDTO.Name);
+        if (objectForCheckName != null)
+        {
+            if (objectForCheckName.Id != correctionReasonDTO.Id)
+            {
+                var objectForRestore = await _correctionReasonRepository.Get(correctionReasonDTO.Id);
+                correctionReasonDTO.Name = objectForRestore.Name;
+                await correctionReasonDTOGrid.UpdateRow(correctionReasonDTO);
+                await correctionReasonDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись причины корректировки с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                return;
+            }
+        }
+
         await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.Update);
     }
 
@@ -211,6 +225,11 @@
         }
 
         correctionReasonDTOToUpdate = null;
+
+        var objectForRestore = _correctionReasonRepository.Get(correctionReasonDTO.Id).GetAwaiter().GetResult();
+        correctionReasonDTO.Name = objectForRestore.Name;
+        correctionReasonDTOGrid.UpdateRow(correctionReasonDTO);
+        correctionReasonDTOGrid.Reload();
 
         correctionReasonDTOGrid.CancelEditRow(correctionReasonDTO);
 
@@ -283,12 +302,22 @@
     async Task OnCreateRow(CorrectionReasonDTO correctionReasonDTO)
     {
 
-        var newDTO = await _correctionReasonRepository.Create(correctionReasonDTOToInsert);
+        correctionReasonDTOToInsert = null;
+
+        var objectForCheckName = await _correctionReasonRepository.GetByName(correctionReasonDTO.Name);
+        if (objectForCheckName != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись причины ошибки с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+            correctionReasonDTOGrid.CancelEditRow(correctionReasonDTO);
+            await correctionReasonDTOGrid.Reload();
+            return;
+        }
+
+        var newDTO = await _correctionReasonRepository.Create(correctionReasonDTO);
 
         //correctionReasonDTOToInsert.Id = newDTO.Id;
         //await correctionReasonDTOGrid.UpdateRow(correctionReasonDTOToInsert);
 
-        correctionReasonDTOToInsert = null;
         await OnAfterRenderAsync(true);
 
     }

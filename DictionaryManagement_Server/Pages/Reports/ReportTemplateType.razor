@@ -193,6 +193,21 @@
 
         reportTemplateTypeDTOToUpdate = null;
 
+
+        var objectForCheckName = await _reportTemplateTypeRepository.GetByName(reportTemplateTypeDTO.Name);
+        if (objectForCheckName != null)
+        {
+            if (objectForCheckName.Id != reportTemplateTypeDTO.Id)
+            {
+                var objectForRestore = await _reportTemplateTypeRepository.Get(reportTemplateTypeDTO.Id);
+                reportTemplateTypeDTO.Name = objectForRestore.Name;
+                await reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTO);
+                await reportTemplateTypeDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись типа шаблона отчётов с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                return;
+            }
+        }
+
         await _reportTemplateTypeRepository.Update(reportTemplateTypeDTO, SD.UpdateMode.Update);
     }
 
@@ -209,6 +224,11 @@
         }
 
         reportTemplateTypeDTOToUpdate = null;
+
+        var objectForRestore = _reportTemplateTypeRepository.Get(reportTemplateTypeDTO.Id).GetAwaiter().GetResult();
+        reportTemplateTypeDTO.Name = objectForRestore.Name;
+        reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTO);
+        reportTemplateTypeDTOGrid.Reload();
 
         reportTemplateTypeDTOGrid.CancelEditRow(reportTemplateTypeDTO);
 
@@ -281,13 +301,22 @@
 
     async Task OnCreateRow(ReportTemplateTypeDTO reportTemplateTypeDTO)
     {
+        reportTemplateTypeDTOToInsert = null;
 
-        var newDTO = await _reportTemplateTypeRepository.Create(reportTemplateTypeDTOToInsert);
+        var objectForCheckName = await _reportTemplateTypeRepository.GetByName(reportTemplateTypeDTO.Name);
+        if (objectForCheckName != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись типа шаблона отчётов с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+            reportTemplateTypeDTOGrid.CancelEditRow(reportTemplateTypeDTO);
+            await reportTemplateTypeDTOGrid.Reload();
+            return;
+        }
+
+        var newDTO = await _reportTemplateTypeRepository.Create(reportTemplateTypeDTO);
 
         //reportTemplateTypeDTOToInsert.Id = newDTO.Id;
         //await reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTOToInsert);
-
-        reportTemplateTypeDTOToInsert = null;
+        
         await OnAfterRenderAsync(true);
 
     }

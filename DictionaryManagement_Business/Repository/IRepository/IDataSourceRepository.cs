@@ -15,5 +15,6 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<IEnumerable<DataSourceDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All);
         public Task<DataSourceDTO> Update(DataSourceDTO objDTO, UpdateMode updateMode = UpdateMode.Update);
         public Task<DataSourceDTO> Create(DataSourceDTO objectToAddDTO);
+        public Task<DataSourceDTO> GetByName(string Name);
     }
 }

@@ -194,6 +194,20 @@
 
         logEventTypeDTOToUpdate = null;
 
+        var objectForCheckName = await _logEventTypeRepository.GetByName(logEventTypeDTO.Name);
+        if (objectForCheckName != null)
+        {
+            if (objectForCheckName.Id != logEventTypeDTO.Id)
+            {
+                var objectForRestore = await _logEventTypeRepository.Get(logEventTypeDTO.Id);
+                logEventTypeDTO.Name = objectForRestore.Name;
+                await logEventTypeDTOGrid.UpdateRow(logEventTypeDTO);
+                await logEventTypeDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись типа события с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                return;
+            }
+        }
+
         await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.Update);
     }
 
@@ -210,6 +224,11 @@
         }
 
         logEventTypeDTOToUpdate = null;
+
+        var objectForRestore = _logEventTypeRepository.Get(logEventTypeDTO.Id).GetAwaiter().GetResult();
+        logEventTypeDTO.Name = objectForRestore.Name;
+        logEventTypeDTOGrid.UpdateRow(logEventTypeDTO);
+        logEventTypeDTOGrid.Reload();
 
         logEventTypeDTOGrid.CancelEditRow(logEventTypeDTO);
 
@@ -282,12 +301,22 @@
     async Task OnCreateRow(LogEventTypeDTO logEventTypeDTO)
     {
 
-        var newDTO = await _logEventTypeRepository.Create(logEventTypeDTOToInsert);
+        logEventTypeDTOToInsert = null;
+
+        var objectForCheckName = await _logEventTypeRepository.GetByName(logEventTypeDTO.Name);
+        if (objectForCheckName != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись типа собыия с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+            logEventTypeDTOGrid.CancelEditRow(logEventTypeDTO);
+            await logEventTypeDTOGrid.Reload();
+            return;
+        }
+
+        var newDTO = await _logEventTypeRepository.Create(logEventTypeDTO);
 
         //logEventTypeDTOToInsert.Id = newDTO.Id;
         //await logEventTypeDTOGrid.UpdateRow(logEventTypeDTOToInsert);
-
-        logEventTypeDTOToInsert = null;
+        
         await OnAfterRenderAsync(true);
 
     }

@@ -196,6 +196,20 @@
 
         errorCriterionDTOToUpdate = null;
 
+        var objectForCheckName = await _errorCriterionRepository.GetByName(errorCriterionDTO.Name);
+        if (objectForCheckName != null)
+        {
+            if (objectForCheckName.Id != errorCriterionDTO.Id)
+            {
+                var objectForRestore = await _errorCriterionRepository.Get(errorCriterionDTO.Id);
+                errorCriterionDTO.Name = objectForRestore.Name;
+                await errorCriterionDTOGrid.UpdateRow(errorCriterionDTO);
+                await errorCriterionDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименованием критерия ошибки \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                return;
+            }
+        }
+
         await _errorCriterionRepository.Update(errorCriterionDTO, SD.UpdateMode.Update);
     }
 
@@ -212,6 +226,11 @@
         }
 
         errorCriterionDTOToUpdate = null;
+
+        var objectForRestore = _errorCriterionRepository.Get(errorCriterionDTO.Id).GetAwaiter().GetResult();
+        errorCriterionDTO.Name = objectForRestore.Name;        
+        errorCriterionDTOGrid.UpdateRow(errorCriterionDTO);
+        errorCriterionDTOGrid.Reload();
 
         errorCriterionDTOGrid.CancelEditRow(errorCriterionDTO);
 
@@ -286,12 +305,21 @@
     async Task OnCreateRow(ErrorCriterionDTO errorCriterionDTO)
     {
 
-        var newDTO = await _errorCriterionRepository.Create(errorCriterionDTOToInsert);
+        errorCriterionDTOToInsert = null;
+        var objectForCheckName = await _errorCriterionRepository.GetByName(errorCriterionDTO.Name);
+        if (objectForCheckName != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименованием критерия ошибки \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+            errorCriterionDTOGrid.CancelEditRow(errorCriterionDTO);
+            await errorCriterionDTOGrid.Reload();
+            return;
+        }
+
+        var newDTO = await _errorCriterionRepository.Create(errorCriterionDTO);
 
         //errorCriterionDTOToInsert.Id = newDTO.Id;
         //await errorCriterionDTOGrid.UpdateRow(errorCriterionDTOToInsert);
-
-        errorCriterionDTOToInsert = null;
+        
         await OnAfterRenderAsync(true);
 
     }

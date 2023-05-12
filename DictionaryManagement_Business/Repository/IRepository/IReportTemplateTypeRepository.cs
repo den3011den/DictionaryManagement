@@ -15,5 +15,6 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<IEnumerable<ReportTemplateTypeDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All);
         public Task<ReportTemplateTypeDTO> Update(ReportTemplateTypeDTO objDTO, UpdateMode updateMode = UpdateMode.Update);
         public Task<ReportTemplateTypeDTO> Create(ReportTemplateTypeDTO objectToAddDTO);
+        public Task<ReportTemplateTypeDTO> GetByName(string Name);
     }
 }

@@ -26,7 +26,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<ErrorCriterionDTO> Create(ErrorCriterionDTO objectToAddDTO)
         {
-            var objectToAdd = _mapper.Map<ErrorCriterionDTO, ErrorCriterion>(objectToAddDTO);            
+            var objectToAdd = _mapper.Map<ErrorCriterionDTO, ErrorCriterion>(objectToAddDTO);
             var addedErrorCriterion = _db.ErrorCriterion.Add(objectToAdd);
             await _db.SaveChangesAsync();
             return _mapper.Map<ErrorCriterion, ErrorCriterionDTO>(addedErrorCriterion.Entity);
@@ -39,7 +39,7 @@ namespace DictionaryManagement_Business.Repository
             {
                 return _mapper.Map<ErrorCriterion, ErrorCriterionDTO>(objToGet);
             }
-            return new ErrorCriterionDTO();
+            return null;
         }
 
         public async Task<IEnumerable<ErrorCriterionDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
@@ -79,6 +79,16 @@ namespace DictionaryManagement_Business.Repository
             }
             return objectToUpdateDTO;
 
+        }
+
+        public async Task<ErrorCriterionDTO> GetByName(string name)
+        {
+            var objToGet = _db.ErrorCriterion.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<ErrorCriterion, ErrorCriterionDTO>(objToGet);
+            }
+            return null;
         }
     }
 }

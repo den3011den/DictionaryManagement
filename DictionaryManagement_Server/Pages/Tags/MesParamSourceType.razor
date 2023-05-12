@@ -196,6 +196,20 @@
 
         mesParamSourceTypeDTOToUpdate = null;
 
+        var objectForCheckName = await _mesParamSourceTypeRepository.GetByName(mesParamSourceTypeDTO.Name);
+        if (objectForCheckName != null)
+        {
+            if (objectForCheckName.Id != mesParamSourceTypeDTO.Id)
+            {
+                var objectForRestore = await _mesParamSourceTypeRepository.Get(mesParamSourceTypeDTO.Id);
+                mesParamSourceTypeDTO.Name = objectForRestore.Name;
+                await mesParamSourceTypeDTOGrid.UpdateRow(mesParamSourceTypeDTO);
+                await mesParamSourceTypeDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись типа тэгов с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                return;
+            }
+        }
+
         await _mesParamSourceTypeRepository.Update(mesParamSourceTypeDTO, SD.UpdateMode.Update);
     }
 
@@ -212,6 +226,11 @@
         }
 
         mesParamSourceTypeDTOToUpdate = null;
+
+        var objectForRestore = _mesParamSourceTypeRepository.Get(mesParamSourceTypeDTO.Id).GetAwaiter().GetResult();
+        mesParamSourceTypeDTO.Name = objectForRestore.Name;
+        mesParamSourceTypeDTOGrid.UpdateRow(mesParamSourceTypeDTO);
+        mesParamSourceTypeDTOGrid.Reload();
 
         mesParamSourceTypeDTOGrid.CancelEditRow(mesParamSourceTypeDTO);
 
@@ -285,12 +304,22 @@
     async Task OnCreateRow(MesParamSourceTypeDTO mesParamSourceTypeDTO)
     {
 
-        var newDTO = await _mesParamSourceTypeRepository.Create(mesParamSourceTypeDTOToInsert);
+        mesParamSourceTypeDTOToInsert = null;
+
+        var objectForCheckName = await _mesParamSourceTypeRepository.GetByName(mesParamSourceTypeDTO.Name);
+        if (objectForCheckName != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись типа тэгов с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+            mesParamSourceTypeDTOGrid.CancelEditRow(mesParamSourceTypeDTO);
+            await mesParamSourceTypeDTOGrid.Reload();
+            return;
+        }
+
+        var newDTO = await _mesParamSourceTypeRepository.Create(mesParamSourceTypeDTO);
 
         //mesParamSourceTypeDTOToInsert.Id = newDTO.Id;
         //await mesParamSourceTypeDTOGrid.UpdateRow(mesParamSourceTypeDTOToInsert);
-
-        mesParamSourceTypeDTOToInsert = null;
+        
         await OnAfterRenderAsync(true);
 
     }

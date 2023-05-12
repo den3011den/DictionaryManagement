@@ -15,5 +15,6 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<IEnumerable<ErrorCriterionDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All);
         public Task<ErrorCriterionDTO> Update(ErrorCriterionDTO objDTO, UpdateMode updateMode = UpdateMode.Update);
         public Task<ErrorCriterionDTO> Create(ErrorCriterionDTO objectToAddDTO);
+        public Task<ErrorCriterionDTO> GetByName(string Name);
     }
 }

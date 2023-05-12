@@ -196,6 +196,20 @@
 
         dataSourceDTOToUpdate = null;
 
+        var objectForCheckName = await _dataSourceRepository.GetByName(dataSourceDTO.Name);
+        if (objectForCheckName != null)
+        {
+            if (objectForCheckName.Id != dataSourceDTO.Id)
+            {
+                var objectForRestore = await _dataSourceRepository.Get(dataSourceDTO.Id);
+                dataSourceDTO.Name = objectForRestore.Name;
+                await dataSourceDTOGrid.UpdateRow(dataSourceDTO);
+                await dataSourceDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись источника данных с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                return;
+            }
+        }
+
         await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.Update);
     }
 
@@ -212,6 +226,11 @@
         }
 
         dataSourceDTOToUpdate = null;
+
+        var objectForRestore = _dataSourceRepository.Get(dataSourceDTO.Id).GetAwaiter().GetResult();
+        dataSourceDTO.Name = objectForRestore.Name;
+        dataSourceDTOGrid.UpdateRow(dataSourceDTO);
+        dataSourceDTOGrid.Reload();
 
         dataSourceDTOGrid.CancelEditRow(dataSourceDTO);
 
@@ -282,13 +301,23 @@
 
     async Task OnCreateRow(DataSourceDTO dataSourceDTO)
     {
+        dataSourceDTOToInsert = null;
 
-        var newDTO = await _dataSourceRepository.Create(dataSourceDTOToInsert);
+        var objectForCheckName = await _dataSourceRepository.GetByName(dataSourceDTO.Name);
+        if (objectForCheckName != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись источника данных с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+            dataSourceDTOGrid.CancelEditRow(dataSourceDTO);
+            await dataSourceDTOGrid.Reload();
+            return;
+        }
+
+        var newDTO = await _dataSourceRepository.Create(dataSourceDTO);
 
         //dataSourceDTOToInsert.Id = newDTO.Id;
         //await dataSourceDTOGrid.UpdateRow(dataSourceDTOToInsert);
 
-        dataSourceDTOToInsert = null;
+
         await OnAfterRenderAsync(true);
 
     }

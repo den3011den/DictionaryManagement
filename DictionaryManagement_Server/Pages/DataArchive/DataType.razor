@@ -194,6 +194,20 @@
 
         dataTypeDTOToUpdate = null;
 
+        var objectForCheckName = await _dataTypeRepository.GetByName(dataTypeDTO.Name);
+        if (objectForCheckName != null)
+        {
+            if (objectForCheckName.Id != dataTypeDTO.Id)
+            {
+                var objectForRestore = await _dataTypeRepository.Get(dataTypeDTO.Id);
+                dataTypeDTO.Name = objectForRestore.Name;
+                await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
+                await dataTypeDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись вида данных с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                return;
+            }
+        }
+
         await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.Update);
     }
 
@@ -210,6 +224,11 @@
         }
 
         dataTypeDTOToUpdate = null;
+
+        var objectForRestore = _dataTypeRepository.Get(dataTypeDTO.Id).GetAwaiter().GetResult();
+        dataTypeDTO.Name = objectForRestore.Name;
+        dataTypeDTOGrid.UpdateRow(dataTypeDTO);
+        dataTypeDTOGrid.Reload();
 
         dataTypeDTOGrid.CancelEditRow(dataTypeDTO);
 
@@ -282,13 +301,22 @@
 
     async Task OnCreateRow(DataTypeDTO dataTypeDTO)
     {
+        dataTypeDTOToInsert = null;
 
-        var newDTO = await _dataTypeRepository.Create(dataTypeDTOToInsert);
+        var objectForCheckName = await _dataTypeRepository.GetByName(dataTypeDTO.Name);
+        if (objectForCheckName != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись вида данных с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+            dataTypeDTOGrid.CancelEditRow(dataTypeDTO);
+            await dataTypeDTOGrid.Reload();
+            return;
+        }
+
+        var newDTO = await _dataTypeRepository.Create(dataTypeDTO);
 
         //dataTypeDTOToInsert.Id = newDTO.Id;
         //await dataTypeDTOGrid.UpdateRow(dataTypeDTOToInsert);
-
-        dataTypeDTOToInsert = null;
+        
         await OnAfterRenderAsync(true);
 
     }

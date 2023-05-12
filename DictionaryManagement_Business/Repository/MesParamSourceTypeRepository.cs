@@ -39,7 +39,7 @@ namespace DictionaryManagement_Business.Repository
             {
                 return _mapper.Map<MesParamSourceType, MesParamSourceTypeDTO>(objToGet);
             }
-            return new MesParamSourceTypeDTO();
+            return null;
         }
 
         public async Task<IEnumerable<MesParamSourceTypeDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
@@ -78,7 +78,16 @@ namespace DictionaryManagement_Business.Repository
                 return _mapper.Map<MesParamSourceType, MesParamSourceTypeDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
+        }
 
+        public async Task<MesParamSourceTypeDTO> GetByName(string name)
+        {
+            var objToGet = _db.MesParamSourceType.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<MesParamSourceType, MesParamSourceTypeDTO>(objToGet);
+            }
+            return null;
         }
     }
 }

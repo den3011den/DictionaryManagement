@@ -39,7 +39,7 @@ namespace DictionaryManagement_Business.Repository
             {
                 return _mapper.Map<ReportTemplateType, ReportTemplateTypeDTO>(objToGet);
             }
-            return new ReportTemplateTypeDTO();
+            return null;
         }
 
         public async Task<IEnumerable<ReportTemplateTypeDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
@@ -78,7 +78,15 @@ namespace DictionaryManagement_Business.Repository
                 return _mapper.Map<ReportTemplateType, ReportTemplateTypeDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
-
+        }
+        public async Task<ReportTemplateTypeDTO> GetByName(string name)
+        {
+            var objToGet = _db.ReportTemplateType.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<ReportTemplateType, ReportTemplateTypeDTO>(objToGet);
+            }
+            return null;
         }
     }
 }

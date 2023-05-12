@@ -39,7 +39,7 @@ namespace DictionaryManagement_Business.Repository
             {
                 return _mapper.Map<DataType, DataTypeDTO>(objToGet);
             }
-            return new DataTypeDTO();
+            return null;
         }
 
         public async Task<IEnumerable<DataTypeDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
@@ -79,6 +79,16 @@ namespace DictionaryManagement_Business.Repository
             }
             return objectToUpdateDTO;
 
+        }
+
+        public async Task<DataTypeDTO> GetByName(string name)
+        {
+            var objToGet = _db.DataType.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<DataType, DataTypeDTO>(objToGet);
+            }
+            return null;
         }
     }
 }

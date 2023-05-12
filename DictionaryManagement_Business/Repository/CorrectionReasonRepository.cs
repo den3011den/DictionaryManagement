@@ -39,7 +39,7 @@ namespace DictionaryManagement_Business.Repository
             {
                 return _mapper.Map<CorrectionReason, CorrectionReasonDTO>(objToGet);
             }
-            return new CorrectionReasonDTO();
+            return null;
         }
 
         public async Task<IEnumerable<CorrectionReasonDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
@@ -79,7 +79,17 @@ namespace DictionaryManagement_Business.Repository
                 return _mapper.Map<CorrectionReason, CorrectionReasonDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
-
         }
+        public async Task<CorrectionReasonDTO> GetByName(string name)
+        {
+            var objToGet = _db.CorrectionReason.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<CorrectionReason, CorrectionReasonDTO>(objToGet);
+            }
+            return null;
+        }
+
+
     }
 }
