@@ -15,6 +15,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<IEnumerable<SapUnitOfMeasureDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All);
         public Task<SapUnitOfMeasureDTO> Update(SapUnitOfMeasureDTO objDTO, UpdateMode updateMode = UpdateMode.Update);
         public Task<SapUnitOfMeasureDTO> Create(SapUnitOfMeasureDTO objectToAddDTO);
-
+        public Task<SapUnitOfMeasureDTO> GetByShortName(string shortName);
+        public Task<SapUnitOfMeasureDTO> GetByName(string Name);
     }
 }

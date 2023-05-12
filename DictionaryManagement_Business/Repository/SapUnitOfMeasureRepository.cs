@@ -42,6 +42,27 @@ namespace DictionaryManagement_Business.Repository
             return new SapUnitOfMeasureDTO();
         }
 
+        public async Task<SapUnitOfMeasureDTO> GetByName(string name)
+        {
+            var objToGet = _db.SapUnitOfMeasure.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<SapUnitOfMeasure, SapUnitOfMeasureDTO>(objToGet);
+            }
+            return null;
+        }
+
+        public async Task<SapUnitOfMeasureDTO> GetByShortName(string shortName)
+        {
+            var objToGet = _db.SapUnitOfMeasure.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<SapUnitOfMeasure, SapUnitOfMeasureDTO>(objToGet);
+            }
+            return null;
+        }
+
+
         public async Task<IEnumerable<SapUnitOfMeasureDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)

@@ -203,6 +203,36 @@
 
         sapUnitOfMeasureDTOToUpdate = null;
 
+        var objectForCheckName = await _sapUnitOfMeasureRepository.GetByName(sapUnitOfMeasureDTO.Name);
+        if (objectForCheckName != null)
+        {
+            if (objectForCheckName.Id != sapUnitOfMeasureDTO.Id)
+            {                
+                var objectForRestore = await _sapUnitOfMeasureRepository.Get(sapUnitOfMeasureDTO.Id);
+                sapUnitOfMeasureDTO.Name = objectForRestore.Name;
+                sapUnitOfMeasureDTO.ShortName = objectForRestore.ShortName;
+                await sapUnitOfMeasureDTOGrid.UpdateRow(sapUnitOfMeasureDTO);
+                await sapUnitOfMeasureDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименованием единицы измерения SAP \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                return;
+            }
+        }
+
+        var objectForCheckShortName = await _sapUnitOfMeasureRepository.GetByShortName(sapUnitOfMeasureDTO.ShortName);
+        if (objectForCheckShortName != null)
+        {
+            if (objectForCheckShortName.Id != sapUnitOfMeasureDTO.Id)
+            {
+                var objectForRestore = await _sapUnitOfMeasureRepository.Get(sapUnitOfMeasureDTO.Id);
+                sapUnitOfMeasureDTO.Name = objectForRestore.Name;
+                sapUnitOfMeasureDTO.ShortName = objectForRestore.ShortName;
+                await sapUnitOfMeasureDTOGrid.UpdateRow(sapUnitOfMeasureDTO);
+                await sapUnitOfMeasureDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с сокр. наименованием единицы измерения SAP \"" + objectForCheckShortName.ShortName + "\" с ИД зависи = " + objectForCheckShortName.Id.ToString());
+                return;
+            }
+        }
+
         await _sapUnitOfMeasureRepository.Update(sapUnitOfMeasureDTO, SD.UpdateMode.Update);
     }
 
@@ -221,6 +251,12 @@
         sapUnitOfMeasureDTOToUpdate = null;
 
         sapUnitOfMeasureDTOGrid.CancelEditRow(sapUnitOfMeasureDTO);
+
+        var objectForRestore = _sapUnitOfMeasureRepository.Get(sapUnitOfMeasureDTO.Id).GetAwaiter().GetResult();
+        sapUnitOfMeasureDTO.Name = objectForRestore.Name;
+        sapUnitOfMeasureDTO.ShortName = objectForRestore.ShortName;
+        sapUnitOfMeasureDTOGrid.UpdateRow(sapUnitOfMeasureDTO);
+        sapUnitOfMeasureDTOGrid.Reload();
 
     }
 
@@ -291,6 +327,26 @@
 
     async Task OnCreateRow(SapUnitOfMeasureDTO sapUnitOfMeasureDTO)
     {
+
+        var objectForCheckName = await _sapUnitOfMeasureRepository.GetByName(sapUnitOfMeasureDTO.Name);
+        if (objectForCheckName != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименованием единицы измерения SAP \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+            sapUnitOfMeasureDTOGrid.CancelEditRow(sapUnitOfMeasureDTO);
+            await sapUnitOfMeasureDTOGrid.Reload();
+            return;
+        }
+
+        var objectForCheckShortName = await _sapUnitOfMeasureRepository.GetByShortName(sapUnitOfMeasureDTO.ShortName);
+        if (objectForCheckShortName != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с сокр. наименованием единицы измерения SAP \"" + objectForCheckShortName.ShortName + "\" с ИД записи = " + objectForCheckShortName.Id.ToString());
+            sapUnitOfMeasureDTOGrid.CancelEditRow(sapUnitOfMeasureDTO);
+            await sapUnitOfMeasureDTOGrid.Reload();
+
+            return;
+        }
+
 
         var newDTO = await _sapUnitOfMeasureRepository.Create(sapUnitOfMeasureDTOToInsert);
 
