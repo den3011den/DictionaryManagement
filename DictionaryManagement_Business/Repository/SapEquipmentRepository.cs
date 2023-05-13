@@ -42,7 +42,7 @@ namespace DictionaryManagement_Business.Repository
                     return _mapper.Map<SapEquipment, SapEquipmentDTO>(objToGet);
                 }
             }
-            return new SapEquipmentDTO();
+            return null;
         }
 
         public async Task<IEnumerable<SapEquipmentDTO>> GetAll(SD.SelectDictionaryScope selectDictionaryScope = SD.SelectDictionaryScope.All)
@@ -59,13 +59,23 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<IEnumerable<SapEquipment>, IEnumerable<SapEquipmentDTO>>(_db.SapEquipment);
         }
 
-        public async Task<IEnumerable<SapEquipmentDTO>> GetListByResource(string erpPlantId = "", string erpId = "")
-        {                            
-            return _mapper.Map<IEnumerable<SapEquipment>, IEnumerable<SapEquipmentDTO>>(_db.SapEquipment).Where(u => (u.ErpPlantId.Trim().ToUpper() == erpPlantId.Trim().ToUpper() && u.ErpId.Trim().ToUpper() == erpId.Trim().ToUpper()));
-        }
-        public async Task<IEnumerable<SapEquipmentDTO>> GetListByName(string name = "")
+        public async Task<SapEquipmentDTO> GetByResource(string erpPlantId = "", string erpId = "")
         {
-            return _mapper.Map<IEnumerable<SapEquipment>, IEnumerable<SapEquipmentDTO>>(_db.SapEquipment).Where(u => (u.Name.Trim().ToUpper() == name.Trim().ToUpper()));
+            var objToGet = _db.SapEquipment.FirstOrDefaultAsync(u => ((u.ErpPlantId.Trim().ToUpper() == erpPlantId.Trim().ToUpper()) && (u.ErpId.Trim().ToUpper() == erpId.Trim().ToUpper()))).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<SapEquipment, SapEquipmentDTO>(objToGet);
+            }
+            return null;
+        }
+        public async Task<SapEquipmentDTO> GetByName(string name = "")
+        {
+            var objToGet = _db.SapEquipment.FirstOrDefaultAsync(u => ((u.Name.Trim().ToUpper()) == (name.Trim().ToUpper()))).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<SapEquipment, SapEquipmentDTO>(objToGet);
+            }
+            return null;
         }
 
 

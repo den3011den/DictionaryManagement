@@ -203,61 +203,47 @@
 
     async Task OnUpdateRow(SapEquipmentDTO sapEquipmentDTO)
     {
-        var forResourceCheck = _sapEquipmentRepository.GetListByResource(sapEquipmentDTO.ErpPlantId, sapEquipmentDTO.ErpId).Result;
-
-        foreach (var obj in forResourceCheck)
-        {
-            if (obj.Id != sapEquipmentDTO.Id)
-            {
-
-                var OldSapEquipmentDTOToUpdate = _sapEquipmentRepository.Get(sapEquipmentDTO.Id);
-
-                sapEquipmentDTO.ErpPlantId = OldSapEquipmentDTOToUpdate.Result.ErpPlantId;
-                sapEquipmentDTO.ErpId = OldSapEquipmentDTOToUpdate.Result.ErpId;
-                sapEquipmentDTO.Name = OldSapEquipmentDTOToUpdate.Result.Name;
-
-                await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
-
-                sapEquipmentDTOToUpdate = null;
-
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом завода " + obj.ErpPlantId + " и кодом ресурса/склада " + obj.ErpId);
-
-                return;
-            }
-        }
-
-        var forNameCheck = _sapEquipmentRepository.GetListByName(sapEquipmentDTO.Name).Result;
-
-        foreach (var obj in forNameCheck)
-        {
-            if (obj.Id != sapEquipmentDTO.Id)
-            {
-
-                var OldSapEquipmentDTOToUpdate = _sapEquipmentRepository.Get(sapEquipmentDTO.Id);
-
-                sapEquipmentDTO.ErpPlantId = OldSapEquipmentDTOToUpdate.Result.ErpPlantId;
-                sapEquipmentDTO.ErpId = OldSapEquipmentDTOToUpdate.Result.ErpId;
-                sapEquipmentDTO.Name = OldSapEquipmentDTOToUpdate.Result.Name;
-
-                await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
-
-
-                OldSapEquipmentDTOToUpdate = null;
-                sapEquipmentDTOToUpdate = null;
-
-                sapEquipmentDTOToUpdate = null;
-
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименованием \"" + obj.Name + "\" (код завода: " + obj.ErpPlantId + " Код ресурса / склада: " + obj.ErpId + ")");
-                return;
-            }
-        }
-
+        
         if (sapEquipmentDTO == sapEquipmentDTOToInsert)
         {
             sapEquipmentDTOToInsert = null;
         }
 
         sapEquipmentDTOToUpdate = null;
+
+        var objectForCheckResource = _sapEquipmentRepository.GetByResource(sapEquipmentDTO.ErpPlantId, sapEquipmentDTO.ErpId).Result;
+
+        if (objectForCheckResource != null)
+        {
+            if (objectForCheckResource.Id != sapEquipmentDTO.Id)
+            {
+                var objectForRestore = await _sapEquipmentRepository.Get(sapEquipmentDTO.Id);
+                sapEquipmentDTO.Name = objectForRestore.Name;
+                sapEquipmentDTO.ErpPlantId = objectForRestore.ErpPlantId;
+                sapEquipmentDTO.ErpId = objectForRestore.ErpId;
+                await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
+                await sapEquipmentDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом завода " + objectForCheckResource.ErpPlantId + " и кодом ресурса/склада " + objectForCheckResource.ErpId + " (ИД записи: " + objectForCheckResource.Id.ToString() + ")");
+                return;
+            }
+        }
+
+        var objectForCheckName = _sapEquipmentRepository.GetByName(sapEquipmentDTO.Name).Result;
+
+        if (objectForCheckName != null)
+        {
+            if (objectForCheckName.Id != sapEquipmentDTO.Id)
+            {
+                var objectForRestore = await _sapEquipmentRepository.Get(sapEquipmentDTO.Id);
+                sapEquipmentDTO.Name = objectForRestore.Name;
+                sapEquipmentDTO.ErpPlantId = objectForRestore.ErpPlantId;
+                sapEquipmentDTO.ErpId = objectForRestore.ErpId;
+                await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
+                await sapEquipmentDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименование ресурса " + objectForCheckName.Name + " (ИД записи: " + objectForCheckName.Id.ToString() + ")");
+                return;
+            }
+        }
 
         await _sapEquipmentRepository.Update(sapEquipmentDTO, SD.UpdateMode.Update);
     }
@@ -277,6 +263,15 @@
         sapEquipmentDTOToUpdate = null;
 
         sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
+
+        var objectForRestore = _sapEquipmentRepository.Get(sapEquipmentDTO.Id).GetAwaiter().GetResult();
+        sapEquipmentDTO.Name = objectForRestore.Name;
+        sapEquipmentDTO.ErpPlantId = objectForRestore.ErpPlantId;
+        sapEquipmentDTO.ErpId = objectForRestore.ErpId;
+        sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
+        sapEquipmentDTOGrid.Reload();
+
+      //  sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
 
         //var sapEquipmentDTOEntry = _sapEquipmentRepository.Get(sapEquipmentDTO.Id);
         //if (sapEquipmentDTOEntry.State == EntityState.Modified)
@@ -352,37 +347,34 @@
 
     async Task OnCreateRow(SapEquipmentDTO sapEquipmentDTO)
     {
+        sapEquipmentDTOToInsert = null;
 
-        var forResourceCheck = _sapEquipmentRepository.GetListByResource(sapEquipmentDTO.ErpPlantId, sapEquipmentDTO.ErpId).Result;
-        if (forResourceCheck.Count() > 0)
+        var objectForCheckResource = await _sapEquipmentRepository.GetByResource(sapEquipmentDTO.ErpPlantId, sapEquipmentDTO.ErpId);
+        if (objectForCheckResource != null)
         {
-            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом завода " + sapEquipmentDTO.ErpPlantId + " и кодом ресурса/склада " + sapEquipmentDTO.ErpId);
-            sapEquipmentDTOToInsert = null;
-            sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
-            await sapEquipmentDTOGrid.Reload();
-            return;
-
-        }
-
-        var forNameCheck = _sapEquipmentRepository.GetListByName(sapEquipmentDTO.Name).Result;
-
-        if (forNameCheck.Count() > 0)
-        {
-            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименованием \"" + forNameCheck.First().Name + "\" (код завода: " + forNameCheck.First().ErpPlantId + " Код ресурса / склада: " + forNameCheck.First().ErpId + ")");
-            sapEquipmentDTOToInsert = null;
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом завода " + objectForCheckResource.ErpPlantId + " и кодом ресурса/склада " + objectForCheckResource.ErpId + " (ИД записи: " + objectForCheckResource.Id.ToString() + ")");
             sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
             await sapEquipmentDTOGrid.Reload();
             return;
         }
 
-        var newDTO = await _sapEquipmentRepository.Create(sapEquipmentDTOToInsert);
+        var objectForCheckName = await _sapEquipmentRepository.GetByName(sapEquipmentDTO.Name);
+        if (objectForCheckName != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименование ресурса " + objectForCheckName.Name + " (ИД записи: " + objectForCheckName.Id.ToString() + ")");
+            sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
+            await sapEquipmentDTOGrid.Reload();
+
+            return;
+        }
+
+        var newDTO = await _sapEquipmentRepository.Create(sapEquipmentDTO);
 
 
         //sapEquipmentDTOToInsert.Id = newDTO.Id;
         //await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTOToInsert);
         //StateHasChanged();
 
-        sapEquipmentDTOToInsert = null;
         await OnAfterRenderAsync(true);
 
     }
