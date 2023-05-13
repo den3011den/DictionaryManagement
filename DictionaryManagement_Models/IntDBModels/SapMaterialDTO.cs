@@ -13,7 +13,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Required(ErrorMessage = "Код материала SAP является обязательным для заполнения полем")]
         [MaxLength(100, ErrorMessage = "Код материала SAP не может быть больше 100 символов")]
         public string Id { get; set; } = string.Empty;
-
+       
         [Required(ErrorMessage = "Наименование материала SAP является обязательным для заполнения полем")]
         [Display(Name = "Наименование материала SAP")]
         [MaxLength(250, ErrorMessage = "Наименование материала SAP не может быть больше 250 символов")]

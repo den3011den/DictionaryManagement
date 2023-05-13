@@ -37,11 +37,12 @@
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     FilterMode="FilterMode.Simple">
             <Columns>
-                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Id" Title="Код материала">
+                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Id" Title="Ид записи" Width="50px" />
+                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Code" Title="Код материала">
                     <EditTemplate Context="mesMaterialDTO">
-                        <RadzenTextBox @bind-Value="mesMaterialDTO.Id" Style="width:100%; display: block" Name="Id" />
-                        <RadzenRequiredValidator Text="Код материала обязателен к заполнению" Component="Id" Popup="true" />
-                        <RadzenLengthValidator Max=100 Text="Код материала не может быть больше 100 символов" Component="Id" Popup="true" />
+                        <RadzenTextBox @bind-Value="mesMaterialDTO.Code" Style="width:50%; display: block" Name="Code" />
+                        <RadzenRequiredValidator Text="Код материала обязателен к заполнению" Component="Code" Popup="true" />
+                        <RadzenLengthValidator Max=100 Text="Код материала не может быть больше 100 символов" Component="Code" Popup="true" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
@@ -61,7 +62,7 @@
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="50px">
                     <Template Context="data">
                         <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                     </Template>
@@ -123,8 +124,6 @@
     MesMaterialDTO mesMaterialDTOToInsert;
     MesMaterialDTO mesMaterialDTOToUpdate;
 
-    MesMaterialDTO OldMesMaterialDTOToUpdate = new();
-
     public bool IsLoading { get; set; }
 
     void OnArchiveCheckBoxChange()
@@ -166,10 +165,7 @@
             IsLoading = false;
             StateHasChanged();
             return;
-
         }
-
-
     }
 
     void Reset()
@@ -202,41 +198,12 @@
 
     async Task EditRow(MesMaterialDTO mesMaterialDTO)
     {
-        OldMesMaterialDTOToUpdate = new MesMaterialDTO();
-        OldMesMaterialDTOToUpdate.Id = mesMaterialDTO.Id;
-        OldMesMaterialDTOToUpdate.Name = mesMaterialDTO.Name;
-        OldMesMaterialDTOToUpdate.ShortName = mesMaterialDTO.ShortName;
-        OldMesMaterialDTOToUpdate.IsArchive = mesMaterialDTO.IsArchive;
-
         mesMaterialDTOToUpdate = mesMaterialDTO;
         await mesMaterialDTOGrid.EditRow(mesMaterialDTO);
-
     }
 
     async Task OnUpdateRow(MesMaterialDTO mesMaterialDTO)
     {
-
-        if (OldMesMaterialDTOToUpdate.Id.Trim().ToUpper() != mesMaterialDTO.Id.Trim().ToUpper())
-        {
-            var forIdCheck = _mesMaterialRepository.Get(mesMaterialDTO.Id).Result;
-
-            if (forIdCheck.Id.Trim().ToUpper() == mesMaterialDTO.Id.Trim().ToUpper())
-            {
-                mesMaterialDTO.Id = OldMesMaterialDTOToUpdate.Id;
-                mesMaterialDTO.Name = OldMesMaterialDTOToUpdate.Name;
-                mesMaterialDTO.ShortName = OldMesMaterialDTOToUpdate.ShortName;
-                mesMaterialDTO.IsArchive = OldMesMaterialDTOToUpdate.IsArchive;
-
-                await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
-
-                OldMesMaterialDTOToUpdate = null;
-                mesMaterialDTOToUpdate = null;
-
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом материала " + forIdCheck.Id);
-                return;
-            }
-        }
-
         if (mesMaterialDTO == mesMaterialDTOToInsert)
         {
             mesMaterialDTOToInsert = null;
@@ -244,6 +211,57 @@
 
         mesMaterialDTOToUpdate = null;
 
+        string errorMessage = string.Empty;
+
+        var objectForCheckCode = _mesMaterialRepository.GetByCode(mesMaterialDTO.Code).Result;
+
+        if (objectForCheckCode != null)
+        {
+            if (objectForCheckCode.Id != mesMaterialDTO.Id)
+            {
+                errorMessage = "Уже есть запись с кодом материала MES \"" + objectForCheckCode.Code + "\" (ИД записи: " + objectForCheckCode.Id.ToString() + ")";
+            }
+        }
+
+        var objectForCheckName = _mesMaterialRepository.GetByName(mesMaterialDTO.Name).Result;
+
+        if (objectForCheckName != null)
+        {
+            if (objectForCheckName.Id != mesMaterialDTO.Id)
+            {
+                if (errorMessage != string.Empty)
+                {
+                    errorMessage = errorMessage + "\n";
+                }
+                errorMessage = errorMessage + "Уже есть запись с наименованием материала MES \"" + objectForCheckName.Name + "\" (ИД записи: " + objectForCheckName.Id.ToString() + ")";
+            }
+        }
+
+        var objectForCheckShortName = _mesMaterialRepository.GetByName(mesMaterialDTO.ShortName).Result;
+
+        if (objectForCheckShortName != null)
+        {
+            if (objectForCheckShortName.Id != mesMaterialDTO.Id)
+            {
+                if (errorMessage != string.Empty)
+                {
+                    errorMessage = errorMessage + "\n";
+                }
+                errorMessage = errorMessage + "Уже есть запись с сокр. наименованием материала MES \"" + objectForCheckShortName.ShortName + "\" (ИД записи: " + objectForCheckShortName.Id.ToString() + ")";
+            }
+        }
+
+        if (errorMessage != string.Empty)
+        {
+            var objectForRestore = await _mesMaterialRepository.Get(mesMaterialDTO.Id);
+            mesMaterialDTO.Code = objectForRestore.Code;
+            mesMaterialDTO.Name = objectForRestore.Name;
+            mesMaterialDTO.ShortName = objectForRestore.ShortName;
+            await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
+            await mesMaterialDTOGrid.Reload();
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
+            return;
+        }
         await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.Update);
     }
 
@@ -262,6 +280,14 @@
         mesMaterialDTOToUpdate = null;
 
         mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
+
+        var objectForRestore = _mesMaterialRepository.Get(mesMaterialDTO.Id).GetAwaiter().GetResult();
+        mesMaterialDTO.Code = objectForRestore.Code;
+        mesMaterialDTO.Name = objectForRestore.Name;
+        mesMaterialDTO.ShortName = objectForRestore.ShortName;
+        mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
+        mesMaterialDTOGrid.Reload();
+
     }
 
     async Task DeleteRow(MesMaterialDTO mesMaterialDTO)
@@ -331,27 +357,49 @@
     async Task OnCreateRow(MesMaterialDTO mesMaterialDTO)
     {
 
-        var forIdCheck = _mesMaterialRepository.Get(mesMaterialDTO.Id).Result;
-        if (forIdCheck.Id.Trim().ToUpper() == mesMaterialDTO.Id.Trim().ToUpper())
+        mesMaterialDTOToInsert = null;
+
+        string errorMessage = string.Empty;
+        var objectForCheckCode = _mesMaterialRepository.GetByCode(mesMaterialDTO.Code).Result;
+
+        if (objectForCheckCode != null)
         {
-            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом материала " + mesMaterialDTO.Id);
-            mesMaterialDTOToInsert = null;
+            errorMessage = "Уже есть запись с кодом материала MES \"" + objectForCheckCode.Code + "\" (ИД записи: " + objectForCheckCode.Id.ToString() + ")";
+        }
+
+        var objectForCheckName = _mesMaterialRepository.GetByName(mesMaterialDTO.Name).Result;
+
+        if (objectForCheckName != null)
+        {
+            if (errorMessage != string.Empty)
+            {
+                errorMessage = errorMessage + "\n";
+            }
+            errorMessage = errorMessage + "Уже есть запись с наименованием материала MES \"" + objectForCheckName.Name + "\" (ИД записи: " + objectForCheckName.Id.ToString() + ")";
+        }
+
+        var objectForCheckShortName = _mesMaterialRepository.GetByName(mesMaterialDTO.ShortName).Result;
+
+        if (objectForCheckShortName != null)
+        {
+            if (errorMessage != string.Empty)
+            {
+                errorMessage = errorMessage + "\n";
+            }
+            errorMessage = errorMessage + "Уже есть запись с сокр. наименованием материала MES \"" + objectForCheckShortName.ShortName + "\" (ИД записи: " + objectForCheckShortName.Id.ToString() + ")";
+        }
+
+
+        if (errorMessage != string.Empty)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
             mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
             await mesMaterialDTOGrid.Reload();
             return;
-
         }
 
-        var newDTO = await _mesMaterialRepository.Create(mesMaterialDTOToInsert);
-
-        //mesMaterialDTOToInsert.Id = newDTO.Id;
-        //await mesMaterialDTOGrid.UpdateRow(mesMaterialDTOToInsert);
-        //StateHasChanged();
-
-        mesMaterialDTOToInsert = null;
-
+        var newDTO = await _mesMaterialRepository.Create(mesMaterialDTO);
         await OnAfterRenderAsync(true);
-        //await sapEquipmentDTOGrid.Reload();
     }
 
 

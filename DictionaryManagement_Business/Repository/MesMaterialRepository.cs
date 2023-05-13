@@ -27,26 +27,52 @@ namespace DictionaryManagement_Business.Repository
         public async Task<MesMaterialDTO> Create(MesMaterialDTO objectToAddDTO)
         {
             var objectToAdd = _mapper.Map<MesMaterialDTO, MesMaterial>(objectToAddDTO);
-            if (_db.MesMaterial.Where(u => u.Id.Trim().ToUpper() == objectToAddDTO.Id.Trim().ToUpper()).Count() <= 0)
-            { 
-                var addedMesMaterial = _db.MesMaterial.Add(objectToAdd);
-                await _db.SaveChangesAsync();
-                return _mapper.Map<MesMaterial, MesMaterialDTO>(addedMesMaterial.Entity);
-            }
-            return new MesMaterialDTO();
+            var addedMesMaterial = _db.MesMaterial.Add(objectToAdd);
+            await _db.SaveChangesAsync();
+            return _mapper.Map<MesMaterial, MesMaterialDTO>(addedMesMaterial.Entity);
         }
 
-        public async Task<MesMaterialDTO> Get(string Id)
+        public async Task<MesMaterialDTO> Get(int id)
         {
-            if (!string.IsNullOrEmpty(Id.Trim()))
+            if (id > 0)
             {
-                var objToGet = _db.MesMaterial.FirstOrDefaultAsync(u => u.Id == Id).GetAwaiter().GetResult();
+                var objToGet = _db.MesMaterial.FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
                 if (objToGet != null)
                 {
                     return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
                 }
             }
-            return new MesMaterialDTO();
+            return null;
+        }
+
+        public async Task<MesMaterialDTO> GetByCode(string code = "")
+        {
+            var objToGet = _db.MesMaterial.FirstOrDefaultAsync(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper()).GetAwaiter().GetResult();
+                if (objToGet != null)
+                {
+                    return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
+                }            
+            return null;
+        }
+
+        public async Task<MesMaterialDTO> GetByName(string name = "")
+        {
+            var objToGet = _db.MesMaterial.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
+            }
+            return null;
+        }
+
+        public async Task<MesMaterialDTO> GetByShortName(string shortName = "")
+        {
+            var objToGet = _db.MesMaterial.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
+            }
+            return null;
         }
 
         public async Task<IEnumerable<MesMaterialDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
@@ -64,13 +90,13 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesMaterialDTO> Update(MesMaterialDTO objectToUpdateDTO, UpdateMode updateMode = UpdateMode.Update)
         {
-            var objectToUpdate = _db.MesMaterial.FirstOrDefault(u => u.Id.Trim().ToUpper() == objectToUpdateDTO.Id.Trim().ToUpper());
+            var objectToUpdate = _db.MesMaterial.FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
                 if (updateMode == SD.UpdateMode.Update)
                 {
-                    if (objectToUpdate.Id.Trim().ToUpper() != objectToUpdateDTO.Id.Trim().ToUpper())
-                        objectToUpdate.Id = objectToUpdateDTO.Id.Trim();
+                    if (objectToUpdate.Code != objectToUpdateDTO.Code)
+                        objectToUpdate.Code = objectToUpdateDTO.Code;
                     if (objectToUpdate.Name != objectToUpdateDTO.Name)
                         objectToUpdate.Name = objectToUpdateDTO.Name;
                     if (objectToUpdate.ShortName != objectToUpdateDTO.ShortName)

@@ -107,8 +107,7 @@
     _Dialogs? _dialogs { get; set; }
 
     public bool? checkBoxValue = null;
-    public string checkBoxText = "Все записи";
-    public string DeleteMessage { get; set; } = "";
+    public string checkBoxText = "Все записи";    
 
     RadzenDataGrid<SapEquipmentDTO> sapEquipmentDTOGrid;
 
@@ -194,11 +193,9 @@
     }
 
     async Task EditRow(SapEquipmentDTO sapEquipmentDTO)
-    {
-        //OldSapEquipmentDTOToUpdate = sapEquipmentDTO;
+    {        
         sapEquipmentDTOToUpdate = sapEquipmentDTO;
         await sapEquipmentDTOGrid.EditRow(sapEquipmentDTO);
-
     }
 
     async Task OnUpdateRow(SapEquipmentDTO sapEquipmentDTO)

@@ -9,14 +9,19 @@ namespace DictionaryManagement_Models.IntDBModels
 {
     public class MesMaterialDTO
     {
-        [Display(Name = "Код записи")]
+        [Display(Name = "ИД записи")]
+        [Required(ErrorMessage = "ИД записи является обязательным для заполнения полем")]        
+        public int Id { get; set; }
+
+
         [Required(ErrorMessage = "Код материала MES является обязательным для заполнения полем")]
-        [MaxLength(100, ErrorMessage = "Код материала MES не может быть больше 100 символов")]
-        public string Id { get; set; } = string.Empty;
+        [Display(Name = "Наименование материала MES")]
+        [MaxLength(100, ErrorMessage = "Наименование материала MES не может быть больше 100 символов")]
+        public string Code { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Наименование материала MES является обязательным для заполнения полем")]
-        [Display(Name = "Наименование материала SAP")]
-        [MaxLength(250, ErrorMessage = "Наименование материала SAP не может быть больше 250 символов")]
+        [Display(Name = "Наименование материала MES")]
+        [MaxLength(250, ErrorMessage = "Наименование материала MES не может быть больше 250 символов")]
         public string Name { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Сокращённое наименование материала MES является обязательным для заполнения полем")]
