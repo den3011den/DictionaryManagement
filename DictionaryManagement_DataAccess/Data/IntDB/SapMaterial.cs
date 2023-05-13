@@ -12,9 +12,12 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
     public class SapMaterial
     {
         [Key]
+        public int Id { get; set; }
+
         [Required]
         [MaxLength(100)]
-        public string Id { get; set; } = string.Empty;
+        [MinLength(1)]
+        public string Code { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(250)]

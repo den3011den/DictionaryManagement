@@ -10,7 +10,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IMesMaterialRepository _mesMaterialRepository
 
-@inject NavigationManager _navigationManager
+@*@inject NavigationManager _navigationManager*@
 
 
 <_Dialogs @ref="_dialogs"></_Dialogs>
@@ -401,7 +401,4 @@
         var newDTO = await _mesMaterialRepository.Create(mesMaterialDTO);
         await OnAfterRenderAsync(true);
     }
-
-
-
 }

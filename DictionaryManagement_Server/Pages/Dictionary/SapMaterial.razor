@@ -35,11 +35,12 @@
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     FilterMode="FilterMode.Simple">
             <Columns>
-                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Id" Title="Код материала">
+                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Id" Title="Ид записи" Width="50px" />
+                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Code" Title="Код материала">
                     <EditTemplate Context="sapMaterialDTO">
-                        <RadzenTextBox @bind-Value="sapMaterialDTO.Id" Style="width:100%; display: block" Name="Id" />
-                        <RadzenRequiredValidator Text="Код материала обязателен к заполнению" Component="Id" Popup="true" />
-                        <RadzenLengthValidator Max=100 Text="Код материала не может быть больше 100 символов" Component="Id" Popup="true" />
+                        <RadzenTextBox @bind-Value="sapMaterialDTO.Code" Style="width:50%; display: block" Name="Code" />
+                        <RadzenRequiredValidator Text="Код материала обязателен к заполнению" Component="Code" Popup="true" />
+                        <RadzenLengthValidator Max=100 Text="Код материала не может быть больше 100 символов" Component="Code" Popup="true" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
@@ -59,7 +60,7 @@
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="50px">
                     <Template Context="data">
                         <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                     </Template>
@@ -112,7 +113,6 @@
 
     public bool? checkBoxValue = null;
     public string checkBoxText = "Все записи";
-    public string DeleteSapsage { get; set; } = "";
 
     RadzenDataGrid<SapMaterialDTO> sapMaterialDTOGrid;
 
@@ -120,8 +120,6 @@
 
     SapMaterialDTO sapMaterialDTOToInsert;
     SapMaterialDTO sapMaterialDTOToUpdate;
-
-    SapMaterialDTO OldSapMaterialDTOToUpdate = new();
 
     public bool IsLoading { get; set; }
 
@@ -200,12 +198,6 @@
 
     async Task EditRow(SapMaterialDTO sapMaterialDTO)
     {
-        OldSapMaterialDTOToUpdate = new SapMaterialDTO();
-        OldSapMaterialDTOToUpdate.Id = sapMaterialDTO.Id;
-        OldSapMaterialDTOToUpdate.Name = sapMaterialDTO.Name;
-        OldSapMaterialDTOToUpdate.ShortName = sapMaterialDTO.ShortName;
-        OldSapMaterialDTOToUpdate.IsArchive = sapMaterialDTO.IsArchive;
-
         sapMaterialDTOToUpdate = sapMaterialDTO;
         await sapMaterialDTOGrid.EditRow(sapMaterialDTO);
 
@@ -213,28 +205,6 @@
 
     async Task OnUpdateRow(SapMaterialDTO sapMaterialDTO)
     {
-
-        if (OldSapMaterialDTOToUpdate.Id.Trim().ToUpper() != sapMaterialDTO.Id.Trim().ToUpper())
-        {
-            var forIdCheck = _sapMaterialRepository.Get(sapMaterialDTO.Id).Result;
-
-            if (forIdCheck.Id.Trim().ToUpper() == sapMaterialDTO.Id.Trim().ToUpper())
-            {
-                sapMaterialDTO.Id = OldSapMaterialDTOToUpdate.Id;
-                sapMaterialDTO.Name = OldSapMaterialDTOToUpdate.Name;
-                sapMaterialDTO.ShortName = OldSapMaterialDTOToUpdate.ShortName;
-                sapMaterialDTO.IsArchive = OldSapMaterialDTOToUpdate.IsArchive;
-
-                await sapMaterialDTOGrid.UpdateRow(sapMaterialDTO);
-
-                OldSapMaterialDTOToUpdate = null;
-                sapMaterialDTOToUpdate = null;
-
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом материала " + forIdCheck.Id);
-                return;
-            }
-        }
-
         if (sapMaterialDTO == sapMaterialDTOToInsert)
         {
             sapMaterialDTOToInsert = null;
@@ -242,6 +212,57 @@
 
         sapMaterialDTOToUpdate = null;
 
+        string errorMessage = string.Empty;
+
+        var objectForCheckCode = _sapMaterialRepository.GetByCode(sapMaterialDTO.Code).Result;
+
+        if (objectForCheckCode != null)
+        {
+            if (objectForCheckCode.Id != sapMaterialDTO.Id)
+            {
+                errorMessage = "Уже есть запись с кодом материала SAP \"" + objectForCheckCode.Code + "\" (ИД записи: " + objectForCheckCode.Id.ToString() + ")";
+            }
+        }
+
+        var objectForCheckName = _sapMaterialRepository.GetByName(sapMaterialDTO.Name).Result;
+
+        if (objectForCheckName != null)
+        {
+            if (objectForCheckName.Id != sapMaterialDTO.Id)
+            {
+                if (errorMessage != string.Empty)
+                {
+                    errorMessage = errorMessage + "\n";
+                }
+                errorMessage = errorMessage + "Уже есть запись с наименованием материала SAP \"" + objectForCheckName.Name + "\" (ИД записи: " + objectForCheckName.Id.ToString() + ")";
+            }
+        }
+
+        var objectForCheckShortName = _sapMaterialRepository.GetByName(sapMaterialDTO.ShortName).Result;
+
+        if (objectForCheckShortName != null)
+        {
+            if (objectForCheckShortName.Id != sapMaterialDTO.Id)
+            {
+                if (errorMessage != string.Empty)
+                {
+                    errorMessage = errorMessage + "\n";
+                }
+                errorMessage = errorMessage + "Уже есть запись с сокр. наименованием материала SAP \"" + objectForCheckShortName.ShortName + "\" (ИД записи: " + objectForCheckShortName.Id.ToString() + ")";
+            }
+        }
+
+        if (errorMessage != string.Empty)
+        {
+            var objectForRestore = await _sapMaterialRepository.Get(sapMaterialDTO.Id);
+            sapMaterialDTO.Code = objectForRestore.Code;
+            sapMaterialDTO.Name = objectForRestore.Name;
+            sapMaterialDTO.ShortName = objectForRestore.ShortName;
+            await sapMaterialDTOGrid.UpdateRow(sapMaterialDTO);
+            await sapMaterialDTOGrid.Reload();
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
+            return;
+        }
         await _sapMaterialRepository.Update(sapMaterialDTO, SD.UpdateMode.Update);
     }
 
@@ -260,6 +281,13 @@
         sapMaterialDTOToUpdate = null;
 
         sapMaterialDTOGrid.CancelEditRow(sapMaterialDTO);
+
+        var objectForRestore = _sapMaterialRepository.Get(sapMaterialDTO.Id).GetAwaiter().GetResult();
+        sapMaterialDTO.Code = objectForRestore.Code;
+        sapMaterialDTO.Name = objectForRestore.Name;
+        sapMaterialDTO.ShortName = objectForRestore.ShortName;
+        sapMaterialDTOGrid.UpdateRow(sapMaterialDTO);
+        sapMaterialDTOGrid.Reload();
     }
 
     async Task DeleteRow(SapMaterialDTO sapMaterialDTO)
@@ -325,33 +353,49 @@
 
     async Task OnCreateRow(SapMaterialDTO sapMaterialDTO)
     {
+        sapMaterialDTOToInsert = null;
 
-        var forIdCheck = _sapMaterialRepository.Get(sapMaterialDTO.Id).Result;
-        if (forIdCheck.Id.Trim().ToUpper() == sapMaterialDTO.Id.Trim().ToUpper())
+        string errorMessage = string.Empty;
+        var objectForCheckCode = _sapMaterialRepository.GetByCode(sapMaterialDTO.Code).Result;
+
+        if (objectForCheckCode != null)
         {
-            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом материала " + sapMaterialDTO.Id);
-            sapMaterialDTOToInsert = null;
+            errorMessage = "Уже есть запись с кодом материала SAP \"" + objectForCheckCode.Code + "\" (ИД записи: " + objectForCheckCode.Id.ToString() + ")";
+        }
+
+        var objectForCheckName = _sapMaterialRepository.GetByName(sapMaterialDTO.Name).Result;
+
+        if (objectForCheckName != null)
+        {
+            if (errorMessage != string.Empty)
+            {
+                errorMessage = errorMessage + "\n";
+            }
+            errorMessage = errorMessage + "Уже есть запись с наименованием материала SAP \"" + objectForCheckName.Name + "\" (ИД записи: " + objectForCheckName.Id.ToString() + ")";
+        }
+
+        var objectForCheckShortName = _sapMaterialRepository.GetByName(sapMaterialDTO.ShortName).Result;
+
+        if (objectForCheckShortName != null)
+        {
+            if (errorMessage != string.Empty)
+            {
+                errorMessage = errorMessage + "\n";
+            }
+            errorMessage = errorMessage + "Уже есть запись с сокр. наименованием материала SAP \"" + objectForCheckShortName.ShortName + "\" (ИД записи: " + objectForCheckShortName.Id.ToString() + ")";
+        }
+
+
+        if (errorMessage != string.Empty)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
             sapMaterialDTOGrid.CancelEditRow(sapMaterialDTO);
             await sapMaterialDTOGrid.Reload();
             return;
-
         }
 
-        //var newDTO = await _sapMaterialRepository.Create(sapMaterialDTOToInsert);
-
-        //var newDTO = await _sapMaterialRepository.Create(sapMaterialDTO);
-
-        //sapMaterialDTO.Id = newDTO.Id;
-        //await sapMaterialDTOGrid.UpdateRow(sapMaterialDTO);
-        sapMaterialDTOToInsert = null;
-
+        var newDTO = await _sapMaterialRepository.Create(sapMaterialDTO);
         await OnAfterRenderAsync(true);
-        
-
-        //await sapMaterialDTOGrid.Reload();
     }
-
-
-
 }
 

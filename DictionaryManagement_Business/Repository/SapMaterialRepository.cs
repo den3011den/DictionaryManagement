@@ -27,26 +27,53 @@ namespace DictionaryManagement_Business.Repository
         public async Task<SapMaterialDTO> Create(SapMaterialDTO objectToAddDTO)
         {
             var objectToAdd = _mapper.Map<SapMaterialDTO, SapMaterial>(objectToAddDTO);
-            if (_db.SapMaterial.Where(u => u.Id.Trim().ToUpper() == objectToAddDTO.Id.Trim().ToUpper()).Count() <= 0)
-            { 
-                var addedSapMaterial = _db.SapMaterial.Add(objectToAdd);
-                await _db.SaveChangesAsync();
-                return _mapper.Map<SapMaterial, SapMaterialDTO>(addedSapMaterial.Entity);
-            }
-            return new SapMaterialDTO();
+            var addedSapMaterial = _db.SapMaterial.Add(objectToAdd);
+            await _db.SaveChangesAsync();
+            return _mapper.Map<SapMaterial, SapMaterialDTO>(addedSapMaterial.Entity);
         }
 
-        public async Task<SapMaterialDTO> Get(string Id)
+        public async Task<SapMaterialDTO> Get(int id)
         {
-            if (!string.IsNullOrEmpty(Id.Trim()))
+            if (id > 0)
             {
-                var objToGet = _db.SapMaterial.FirstOrDefaultAsync(u => u.Id == Id).GetAwaiter().GetResult();
+                var objToGet = _db.SapMaterial.FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
                 if (objToGet != null)
                 {
                     return _mapper.Map<SapMaterial, SapMaterialDTO>(objToGet);
                 }
             }
-            return new SapMaterialDTO();
+            return null;
+        }
+
+
+        public async Task<SapMaterialDTO> GetByCode(string code = "")
+        {
+            var objToGet = _db.SapMaterial.FirstOrDefaultAsync(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<SapMaterial, SapMaterialDTO>(objToGet);
+            }
+            return null;
+        }
+
+        public async Task<SapMaterialDTO> GetByName(string name = "")
+        {
+            var objToGet = _db.SapMaterial.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<SapMaterial, SapMaterialDTO>(objToGet);
+            }
+            return null;
+        }
+
+        public async Task<SapMaterialDTO> GetByShortName(string shortName = "")
+        {
+            var objToGet = _db.SapMaterial.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<SapMaterial, SapMaterialDTO>(objToGet);
+            }
+            return null;
         }
 
         public async Task<IEnumerable<SapMaterialDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
@@ -64,13 +91,13 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapMaterialDTO> Update(SapMaterialDTO objectToUpdateDTO, UpdateMode updateMode = UpdateMode.Update)
         {
-            var objectToUpdate = _db.SapMaterial.FirstOrDefault(u => u.Id.Trim().ToUpper() == objectToUpdateDTO.Id.Trim().ToUpper());
+            var objectToUpdate = _db.SapMaterial.FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
                 if (updateMode == SD.UpdateMode.Update)
                 {
-                    if (objectToUpdate.Id.Trim().ToUpper() != objectToUpdateDTO.Id.Trim().ToUpper())
-                        objectToUpdate.Id = objectToUpdateDTO.Id.Trim();
+                    if (objectToUpdate.Code != objectToUpdateDTO.Code)
+                        objectToUpdate.Code = objectToUpdateDTO.Code;
                     if (objectToUpdate.Name != objectToUpdateDTO.Name)
                         objectToUpdate.Name = objectToUpdateDTO.Name;
                     if (objectToUpdate.ShortName != objectToUpdateDTO.ShortName)
