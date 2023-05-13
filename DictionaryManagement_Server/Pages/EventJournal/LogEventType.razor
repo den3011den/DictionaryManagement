@@ -105,6 +105,8 @@
     LogEventTypeDTO logEventTypeDTOToInsert;
     LogEventTypeDTO logEventTypeDTOToUpdate;
 
+    bool firtsInsertRow = true;
+
 
     public bool IsLoading { get; set; }
 
@@ -294,6 +296,12 @@
 
     async Task InsertRow()
     {
+        if (firtsInsertRow)
+        {
+            firtsInsertRow = false;
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "warning", "Добавление новой записи в справочник типов событий не приведёт к появлению событий этого типа в журнале событий без внесения изменений в код приложения!");
+        }
+
         logEventTypeDTOToInsert = new LogEventTypeDTO();
         await logEventTypeDTOGrid.InsertRow(logEventTypeDTOToInsert);
     }

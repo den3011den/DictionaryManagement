@@ -90,8 +90,6 @@
 
     _Dialogs? _dialogs { get; set; }
 
-    public string DeleteMessage { get; set; } = "";
-
     private int DeleteSettingsId { get; set; } = 0;
     private string DeleteSettingsName { get; set; } = "";
 
@@ -102,6 +100,7 @@
     SettingsDTO settingsDTOToInsert;
     SettingsDTO settingsDTOToUpdate;
 
+    bool firtsInsertRow = true;
 
     public bool IsLoading { get; set; }
 
@@ -127,7 +126,7 @@
             StateHasChanged();
             settingsDTOs = _settingsRepository.GetAll().Result;
             IsLoading = false;
-            StateHasChanged();
+            StateHasChanged();            
         }
     }
 
@@ -140,30 +139,6 @@
     async Task OnUpdateRow(SettingsDTO settingsDTO)
     {
 
-        var forNameCheck = _settingsRepository.GetListByName(settingsDTO.Name).Result;
-
-        foreach (var obj in forNameCheck)
-        {
-            if (obj.Id != settingsDTO.Id)
-            {
-
-                var OldSettingsToUpdate = _settingsRepository.Get(settingsDTO.Id);
-
-                settingsDTO.Id = OldSettingsToUpdate.Result.Id;
-                settingsDTO.Name = OldSettingsToUpdate.Result.Name;
-                settingsDTO.Description = OldSettingsToUpdate.Result.Description;
-                settingsDTO.Value = OldSettingsToUpdate.Result.Value;
-
-                await settingsDTOGrid.UpdateRow(settingsDTO);
-
-                settingsDTOToUpdate = null;
-
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть настройка с наименованием \"" + obj.Name + "\"");
-
-                return;
-            }
-        }
-
         if (settingsDTO == settingsDTOToInsert)
         {
             settingsDTOToInsert = null;
@@ -171,6 +146,27 @@
 
         settingsDTOToUpdate = null;
 
+        var forNameCheck = _settingsRepository.GetByName(settingsDTO.Name).Result;
+
+        if (forNameCheck != null)
+        {
+            if (forNameCheck.Id != settingsDTO.Id)
+            {
+
+                var objectForRestore = await _settingsRepository.Get(settingsDTO.Id);
+                settingsDTO.Name = objectForRestore.Name;
+                settingsDTO.Description = objectForRestore.Description;
+                settingsDTO.Value = objectForRestore.Value;
+                await settingsDTOGrid.UpdateRow(settingsDTO);
+                await settingsDTOGrid.Reload();
+
+                await settingsDTOGrid.UpdateRow(settingsDTO);
+
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть настройка с наименованием \"" + forNameCheck.Name + "\" (ИД записи: " + forNameCheck.Id.ToString() + ")");
+
+                return;
+            }
+        }
         await _settingsRepository.Update(settingsDTO);
     }
 
@@ -189,6 +185,13 @@
         settingsDTOToUpdate = null;
 
         settingsDTOGrid.CancelEditRow(settingsDTO);
+
+        var objectForRestore = _settingsRepository.Get(settingsDTO.Id).GetAwaiter().GetResult();        
+        settingsDTO.Name = objectForRestore.Name;
+        settingsDTO.Value = objectForRestore.Value;
+        settingsDTO.Description = objectForRestore.Description;
+        settingsDTOGrid.UpdateRow(settingsDTO);
+        settingsDTOGrid.Reload();
 
     }
 
@@ -232,32 +235,33 @@
 
     async Task InsertRow()
     {
+        if (firtsInsertRow)
+        {
+            firtsInsertRow = false;
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "warning", "Добавление новой записи в справочник настроек не приведёт к использованию этой настройки приложением без внесения изменений в код приложения!");
+        }
         settingsDTOToInsert = new SettingsDTO();
         await settingsDTOGrid.InsertRow(settingsDTOToInsert);
     }
         
     async Task OnCreateRow(SettingsDTO settingsDTO)
     {
+        settingsDTOToInsert = null;
 
-        var forNameCheck = _settingsRepository.GetListByName(settingsDTO.Name).Result;
+        string errorMessage = string.Empty;
+        var objectForCheckName = _settingsRepository.GetByName(settingsDTO.Name).Result;
 
-        if (forNameCheck.Count() > 0)
+        if (objectForCheckName != null)
         {
-
-            settingsDTOToInsert = null;
-            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть настройка с наименованием " + settingsDTO.Name);
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись настройки с наименованием \"" + objectForCheckName.Name + "\" (ИД записи: " + objectForCheckName.Id.ToString() + ")");
             settingsDTOGrid.CancelEditRow(settingsDTO);
             await settingsDTOGrid.Reload();
             return;
         }
 
-        var newDTO = await _settingsRepository.Create(settingsDTOToInsert);
-
-        //settingsDTOToInsert.Id = newDTO.Id;
-        //await settingsDTOGrid.UpdateRow(settingsDTOToInsert);
-
-        settingsDTOToInsert = null;
+        var newDTO = await _settingsRepository.Create(settingsDTO);
         await OnAfterRenderAsync(true);
+
     }
 
 

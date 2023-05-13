@@ -23,6 +23,13 @@ window.ShowSwal = (type, message) => {
             'error'
         )
     }
+    if (type === "warning") {
+        swal(
+            'Предупреждение!',
+            message,
+            'warning'
+        )
+    }
 }
 
 function ShowDeleteConfirmationModal() {
