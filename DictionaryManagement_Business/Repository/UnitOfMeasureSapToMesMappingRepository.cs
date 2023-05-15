@@ -65,7 +65,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<UnitOfMeasureSapToMesMappingDTO>> GetAll()
         {
-            var hhh = _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure");
+            var hhh = _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure");           
             return _mapper.Map<IEnumerable<UnitOfMeasureSapToMesMapping>, IEnumerable<UnitOfMeasureSapToMesMappingDTO>>(hhh);
         }
 

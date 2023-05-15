@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DictionaryManagement_DataAccess.Data.IntDB
 {
-    [Table("", Schema = "dbo")]
+    [Table("SapToMesMaterialMapping", Schema = "dbo")]
     public class SapToMesMaterialMapping
     {
 

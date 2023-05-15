@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,8 +30,17 @@ namespace DictionaryManagement_Models.IntDBModels
         [MaxLength(100, ErrorMessage = "Сокращённое наименование материала SAP не может быть больше 100 символов")]
         public string ShortName { get; set; } = string.Empty;
 
-
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
+
+        [NotMapped]
+        public string ToStringValue { get; set; } = string.Empty;
+
+        public override string ToString()
+        {
+            ToStringValue = $"{Code}   {ShortName}";
+            return ToStringValue;
+        }
+
     }
 }

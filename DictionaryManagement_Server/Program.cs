@@ -31,6 +31,7 @@ builder.Services.AddScoped<IReportTemplateTypeRepository, ReportTemplateTypeRepo
 builder.Services.AddScoped<ILogEventTypeRepository, LogEventTypeRepository>();
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
 builder.Services.AddScoped<IUnitOfMeasureSapToMesMappingRepository, UnitOfMeasureSapToMesMappingRepository>();
+builder.Services.AddScoped<ISapToMesMaterialMappingRepository, SapToMesMaterialMappingRepository>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

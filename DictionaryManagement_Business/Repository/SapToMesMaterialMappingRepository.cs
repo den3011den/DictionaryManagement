@@ -65,8 +65,9 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<SapToMesMaterialMappingDTO>> GetAll()
         {
-            var hhh = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial");
+            var hhh = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial");            
             return _mapper.Map<IEnumerable<SapToMesMaterialMapping>, IEnumerable<SapToMesMaterialMappingDTO>>(hhh);
+            
         }
 
         public async Task<SapToMesMaterialMappingDTO> Update(SapToMesMaterialMappingDTO objectToUpdateDTO)
