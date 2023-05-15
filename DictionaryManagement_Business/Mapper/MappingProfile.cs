@@ -33,6 +33,17 @@ namespace DictionaryManagement_Business.Mapper
                     .ForMember(dest => dest.SapUnitOfMeasure, opt => opt.MapFrom(src => src.SapUnitOfMeasureDTO))
                     .ForMember(dest => dest.MesUnitOfMeasure, opt => opt.MapFrom(src => src.MesUnitOfMeasureDTO));
 
+
+            CreateMap<SapToMesMaterialMapping, SapToMesMaterialMappingDTO>().ReverseMap();
+
+            CreateMap<SapToMesMaterialMapping, SapToMesMaterialMappingDTO>()
+                    .ForMember(dest => dest.SapMaterialDTO, opt => opt.MapFrom(src => src.SapMaterial))
+                    .ForMember(dest => dest.MesMaterialDTO, opt => opt.MapFrom(src => src.MesMaterial));
+
+            CreateMap<SapToMesMaterialMappingDTO, SapToMesMaterialMapping>()
+                    .ForMember(dest => dest.SapMaterial, opt => opt.MapFrom(src => src.SapMaterialDTO))
+                    .ForMember(dest => dest.MesMaterial, opt => opt.MapFrom(src => src.MesMaterialDTO));
+
         }
     }
 }
