@@ -1,5 +1,6 @@
 using DictionaryManagement_Business.Repository;
 using DictionaryManagement_Business.Repository.IRepository;
+using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -40,6 +41,9 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
 
+System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+SD.AppVersion = fvi.FileVersion;
 
 var app = builder.Build();
 

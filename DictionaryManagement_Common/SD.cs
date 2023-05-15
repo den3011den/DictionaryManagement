@@ -21,6 +21,7 @@ namespace DictionaryManagement_Common
             MoveToArchive,
             RestoreFromArchive
         }
+        public static string AppVersion = "";
 
     }
 }
