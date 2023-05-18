@@ -253,9 +253,12 @@
         sapUnitOfMeasureDTOGrid.CancelEditRow(sapUnitOfMeasureDTO);
 
         var objectForRestore = _sapUnitOfMeasureRepository.Get(sapUnitOfMeasureDTO.Id).GetAwaiter().GetResult();
+        if (objectForRestore!=null)
+        {
         sapUnitOfMeasureDTO.Name = objectForRestore.Name;
         sapUnitOfMeasureDTO.ShortName = objectForRestore.ShortName;
         sapUnitOfMeasureDTOGrid.UpdateRow(sapUnitOfMeasureDTO);
+        }
         sapUnitOfMeasureDTOGrid.Reload();
 
     }

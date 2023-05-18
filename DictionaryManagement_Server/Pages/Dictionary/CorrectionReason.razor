@@ -227,8 +227,11 @@
         correctionReasonDTOToUpdate = null;
 
         var objectForRestore = _correctionReasonRepository.Get(correctionReasonDTO.Id).GetAwaiter().GetResult();
-        correctionReasonDTO.Name = objectForRestore.Name;
-        correctionReasonDTOGrid.UpdateRow(correctionReasonDTO);
+        if (objectForRestore != null)
+        {
+            correctionReasonDTO.Name = objectForRestore.Name;
+            correctionReasonDTOGrid.UpdateRow(correctionReasonDTO);
+        }
         correctionReasonDTOGrid.Reload();
 
         correctionReasonDTOGrid.CancelEditRow(correctionReasonDTO);

@@ -228,8 +228,11 @@
         errorCriterionDTOToUpdate = null;
 
         var objectForRestore = _errorCriterionRepository.Get(errorCriterionDTO.Id).GetAwaiter().GetResult();
-        errorCriterionDTO.Name = objectForRestore.Name;        
-        errorCriterionDTOGrid.UpdateRow(errorCriterionDTO);
+        if (objectForRestore != null)
+        {
+            errorCriterionDTO.Name = objectForRestore.Name;
+            errorCriterionDTOGrid.UpdateRow(errorCriterionDTO);
+        }
         errorCriterionDTOGrid.Reload();
 
         errorCriterionDTOGrid.CancelEditRow(errorCriterionDTO);
@@ -319,7 +322,7 @@
 
         //errorCriterionDTOToInsert.Id = newDTO.Id;
         //await errorCriterionDTOGrid.UpdateRow(errorCriterionDTOToInsert);
-        
+
         await OnAfterRenderAsync(true);
 
     }

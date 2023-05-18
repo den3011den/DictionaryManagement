@@ -283,10 +283,13 @@
         sapMaterialDTOGrid.CancelEditRow(sapMaterialDTO);
 
         var objectForRestore = _sapMaterialRepository.Get(sapMaterialDTO.Id).GetAwaiter().GetResult();
-        sapMaterialDTO.Code = objectForRestore.Code;
-        sapMaterialDTO.Name = objectForRestore.Name;
-        sapMaterialDTO.ShortName = objectForRestore.ShortName;
-        sapMaterialDTOGrid.UpdateRow(sapMaterialDTO);
+        if (objectForRestore != null)
+        {
+            sapMaterialDTO.Code = objectForRestore.Code;
+            sapMaterialDTO.Name = objectForRestore.Name;
+            sapMaterialDTO.ShortName = objectForRestore.ShortName;
+            sapMaterialDTOGrid.UpdateRow(sapMaterialDTO);
+        }
         sapMaterialDTOGrid.Reload();
     }
 
@@ -310,7 +313,7 @@
                     await _jsRuntime.ToastrSuccess("Отмена восстановления");
                     return;
                 }
-            }    
+            }
 
         if (sapMaterialDTO == sapMaterialDTOToInsert)
         {

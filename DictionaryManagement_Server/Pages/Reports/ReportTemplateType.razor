@@ -226,8 +226,11 @@
         reportTemplateTypeDTOToUpdate = null;
 
         var objectForRestore = _reportTemplateTypeRepository.Get(reportTemplateTypeDTO.Id).GetAwaiter().GetResult();
+        if (objectForRestore != null)
+        {
         reportTemplateTypeDTO.Name = objectForRestore.Name;
         reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTO);
+        }
         reportTemplateTypeDTOGrid.Reload();
 
         reportTemplateTypeDTOGrid.CancelEditRow(reportTemplateTypeDTO);

@@ -228,8 +228,11 @@
         logEventTypeDTOToUpdate = null;
 
         var objectForRestore = _logEventTypeRepository.Get(logEventTypeDTO.Id).GetAwaiter().GetResult();
+        if (objectForRestore != null)
+        {
         logEventTypeDTO.Name = objectForRestore.Name;
         logEventTypeDTOGrid.UpdateRow(logEventTypeDTO);
+        }
         logEventTypeDTOGrid.Reload();
 
         logEventTypeDTOGrid.CancelEditRow(logEventTypeDTO);

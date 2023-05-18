@@ -282,12 +282,15 @@
         mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
 
         var objectForRestore = _mesMaterialRepository.Get(mesMaterialDTO.Id).GetAwaiter().GetResult();
-        mesMaterialDTO.Code = objectForRestore.Code;
-        mesMaterialDTO.Name = objectForRestore.Name;
-        mesMaterialDTO.ShortName = objectForRestore.ShortName;
-        mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
-        mesMaterialDTOGrid.Reload();
+        if (objectForRestore != null)
+        {
 
+            mesMaterialDTO.Code = objectForRestore.Code;
+            mesMaterialDTO.Name = objectForRestore.Name;
+            mesMaterialDTO.ShortName = objectForRestore.ShortName;
+            mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
+        }
+        mesMaterialDTOGrid.Reload();
     }
 
     async Task DeleteRow(MesMaterialDTO mesMaterialDTO)

@@ -107,7 +107,7 @@
     _Dialogs? _dialogs { get; set; }
 
     public bool? checkBoxValue = null;
-    public string checkBoxText = "Все записи";    
+    public string checkBoxText = "Все записи";
 
     RadzenDataGrid<SapEquipmentDTO> sapEquipmentDTOGrid;
 
@@ -193,14 +193,14 @@
     }
 
     async Task EditRow(SapEquipmentDTO sapEquipmentDTO)
-    {        
+    {
         sapEquipmentDTOToUpdate = sapEquipmentDTO;
         await sapEquipmentDTOGrid.EditRow(sapEquipmentDTO);
     }
 
     async Task OnUpdateRow(SapEquipmentDTO sapEquipmentDTO)
     {
-        
+
         if (sapEquipmentDTO == sapEquipmentDTOToInsert)
         {
             sapEquipmentDTOToInsert = null;
@@ -262,13 +262,16 @@
         sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
 
         var objectForRestore = _sapEquipmentRepository.Get(sapEquipmentDTO.Id).GetAwaiter().GetResult();
-        sapEquipmentDTO.Name = objectForRestore.Name;
-        sapEquipmentDTO.ErpPlantId = objectForRestore.ErpPlantId;
-        sapEquipmentDTO.ErpId = objectForRestore.ErpId;
-        sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
+        if (objectForRestore != null)
+        {
+            sapEquipmentDTO.Name = objectForRestore.Name;
+            sapEquipmentDTO.ErpPlantId = objectForRestore.ErpPlantId;
+            sapEquipmentDTO.ErpId = objectForRestore.ErpId;
+            sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
+        }
         sapEquipmentDTOGrid.Reload();
 
-      //  sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
+        //  sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
 
         //var sapEquipmentDTOEntry = _sapEquipmentRepository.Get(sapEquipmentDTO.Id);
         //if (sapEquipmentDTOEntry.State == EntityState.Modified)

@@ -228,8 +228,11 @@
         mesParamSourceTypeDTOToUpdate = null;
 
         var objectForRestore = _mesParamSourceTypeRepository.Get(mesParamSourceTypeDTO.Id).GetAwaiter().GetResult();
-        mesParamSourceTypeDTO.Name = objectForRestore.Name;
-        mesParamSourceTypeDTOGrid.UpdateRow(mesParamSourceTypeDTO);
+        if (objectForRestore != null)
+        {
+            mesParamSourceTypeDTO.Name = objectForRestore.Name;
+            mesParamSourceTypeDTOGrid.UpdateRow(mesParamSourceTypeDTO);
+        }
         mesParamSourceTypeDTOGrid.Reload();
 
         mesParamSourceTypeDTOGrid.CancelEditRow(mesParamSourceTypeDTO);
@@ -319,7 +322,7 @@
 
         //mesParamSourceTypeDTOToInsert.Id = newDTO.Id;
         //await mesParamSourceTypeDTOGrid.UpdateRow(mesParamSourceTypeDTOToInsert);
-        
+
         await OnAfterRenderAsync(true);
 
     }

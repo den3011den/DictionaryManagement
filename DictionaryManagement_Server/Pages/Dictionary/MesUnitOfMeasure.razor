@@ -253,9 +253,12 @@
         mesUnitOfMeasureDTOGrid.CancelEditRow(mesUnitOfMeasureDTO);
 
         var objectForRestore = _mesUnitOfMeasureRepository.Get(mesUnitOfMeasureDTO.Id).GetAwaiter().GetResult();
-        mesUnitOfMeasureDTO.Name = objectForRestore.Name;
-        mesUnitOfMeasureDTO.ShortName = objectForRestore.ShortName;
-        mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTO);
+        if (objectForRestore != null)
+        {
+            mesUnitOfMeasureDTO.Name = objectForRestore.Name;
+            mesUnitOfMeasureDTO.ShortName = objectForRestore.ShortName;
+            mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTO);
+        }
         mesUnitOfMeasureDTOGrid.Reload();
 
     }
@@ -328,7 +331,7 @@
     async Task OnCreateRow(MesUnitOfMeasureDTO mesUnitOfMeasureDTO)
     {
 
-         mesUnitOfMeasureDTOToInsert = null;
+        mesUnitOfMeasureDTOToInsert = null;
 
         var objectForCheckName = await _mesUnitOfMeasureRepository.GetByName(mesUnitOfMeasureDTO.Name);
         if (objectForCheckName != null)
@@ -352,11 +355,11 @@
         var newDTO = await _mesUnitOfMeasureRepository.Create(mesUnitOfMeasureDTO);
 
         //mesUnitOfMeasureDTOToInsert.Id = newDTO.Id;
-        //await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTOToInsert);        
+        //await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTOToInsert);
 
         await OnAfterRenderAsync(true);
 
-       
+
 
     }
 }
