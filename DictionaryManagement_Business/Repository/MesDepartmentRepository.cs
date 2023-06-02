@@ -57,18 +57,29 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<MesDepartmentDTO>> GetAll()
         {
-            var hhh = _db.MesDepartment.Include("DepartmentParent");
-            return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh);
+                var hhh1 = _db.MesDepartment.Include("DepartmentParent");
+                return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
+        }
 
+        public async Task<IEnumerable<MesDepartmentDTO>> GetAllTopLevel()
+        {
+                var hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => (u.ParentDepartmentId == null || u.ParentDepartmentId <= 0));
+                return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
         }
 
         public async Task<IEnumerable<MesDepartmentDTO>> GetChildList(int id)
         {
-            var hhh = _db.MesDepartment.Include("DepartmentParent").Where(u => u.ParentDepartmentId == id);
-            return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh);
+                var hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.ParentDepartmentId == id);
+                return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
         }
 
-    public async Task<MesDepartmentDTO> Update(MesDepartmentDTO objectToUpdateDTO)
+        public async Task<bool> HasChild(int id)
+        {
+            var hhh = _db.MesDepartment.Where(u => u.ParentDepartmentId == id).Any();
+            return hhh;
+        }
+
+        public async Task<MesDepartmentDTO> Update(MesDepartmentDTO objectToUpdateDTO)
         {
             var objectToUpdate = _db.MesDepartment.Include("DepartmentParent").
                     FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);

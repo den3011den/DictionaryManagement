@@ -23,7 +23,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         public string ShortName { get; set; }
 
-        public int ParentDepartmentId { get; set; }
+        public int? ParentDepartmentId { get; set; }
 
         [ForeignKey("ParentDepartmentId")]
         public MesDepartment? DepartmentParent { get; set; }

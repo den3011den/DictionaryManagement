@@ -29,7 +29,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Required]
         [Display(Name = "Ид родителя")]
-        public int ParentDepartmentId { get; set; }
+        public int? ParentDepartmentId { get; set; }
 
         [Required]
         [Display(Name = "Родитель")]
@@ -39,4 +39,4 @@ namespace DictionaryManagement_Models.IntDBModels
         public bool IsArchive { get; set; }
     }
 }
-}
+
