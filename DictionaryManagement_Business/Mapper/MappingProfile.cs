@@ -44,6 +44,9 @@ namespace DictionaryManagement_Business.Mapper
                     .ForMember(dest => dest.SapMaterial, opt => opt.MapFrom(src => src.SapMaterialDTO))
                     .ForMember(dest => dest.MesMaterial, opt => opt.MapFrom(src => src.MesMaterialDTO));
 
+            CreateMap<MesDepartmentDTO, MesDepartment>()
+                .ForMember(dest => dest.DepartmentParent, opt => opt.MapFrom(src => src.DepartmentParentDTO));
+
         }
     }
 }
