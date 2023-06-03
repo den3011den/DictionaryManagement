@@ -5,6 +5,7 @@ using DictionaryManagement_DataAccess.Data.IntDB;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Radzen;
 using System.Runtime.Serialization;
 
@@ -14,7 +15,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddDbContext<IntDBApplicationDbContext>(options =>
+SD.AppFactoryMode = SD.FactoryMode.KOS;
+if (builder.Configuration.GetValue<string>("FactoryMode") == "NKNH")
+    SD.AppFactoryMode = SD.FactoryMode.NKNH;
+
+    builder.Services.AddDbContext<IntDBApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("IntDBConnection")));
 builder.Services.AddScoped<ISapEquipmentRepository, SapEquipmentRepository>();
@@ -34,6 +39,7 @@ builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
 builder.Services.AddScoped<IUnitOfMeasureSapToMesMappingRepository, UnitOfMeasureSapToMesMappingRepository>();
 builder.Services.AddScoped<ISapToMesMaterialMappingRepository, SapToMesMaterialMappingRepository>();
 builder.Services.AddScoped<IMesDepartmentRepository, MesDepartmentRepository>();
+builder.Services.AddScoped<IMesParamRepository, MesParamRepository>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -41,6 +47,8 @@ builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
+
+
 
 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
 System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);

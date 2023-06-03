@@ -49,6 +49,26 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<MesDepartment, MesDepartmentDTO>()
                 .ForMember(dest => dest.DepartmentParentDTO, opt => opt.MapFrom(src => src.DepartmentParent));
 
+
+            CreateMap<MesParamDTO, MesParam>()
+                .ForMember(dest => dest.MesParamSourceTypeFK, opt => opt.MapFrom(src => src.MesParamSourceTypeDTOFK))
+                .ForMember(dest => dest.MesDepartmentFK, opt => opt.MapFrom(src => src.MesDepartmentDTOFK))
+                .ForMember(dest => dest.SapEquipmentSourceFK, opt => opt.MapFrom(src => src.SapEquipmentSourceDTOFK))
+                .ForMember(dest => dest.SapEquipmentDestFK, opt => opt.MapFrom(src => src.SapEquipmentDestDTOFK))
+                .ForMember(dest => dest.MesMaterialFK, opt => opt.MapFrom(src => src.MesMaterialDTOFK))
+                .ForMember(dest => dest.SapMaterialFK, opt => opt.MapFrom(src => src.SapMaterialDTOFK))
+                .ForMember(dest => dest.MesUnitOfMeasureFK, opt => opt.MapFrom(src => src.MesUnitOfMeasureDTOFK))
+                .ForMember(dest => dest.SapUnitOfMeasureFK, opt => opt.MapFrom(src => src.SapUnitOfMeasureDTOFK));
+
+            CreateMap<MesParam, MesParamDTO>()
+                .ForMember(dest => dest.MesParamSourceTypeDTOFK, opt => opt.MapFrom(src => src.MesParamSourceTypeFK))
+                .ForMember(dest => dest.MesDepartmentDTOFK, opt => opt.MapFrom(src => src.MesDepartmentFK))
+                .ForMember(dest => dest.SapEquipmentSourceDTOFK, opt => opt.MapFrom(src => src.SapEquipmentSourceFK))
+                .ForMember(dest => dest.SapEquipmentDestDTOFK, opt => opt.MapFrom(src => src.SapEquipmentDestFK))
+                .ForMember(dest => dest.MesMaterialDTOFK, opt => opt.MapFrom(src => src.MesMaterialFK))
+                .ForMember(dest => dest.SapMaterialDTOFK, opt => opt.MapFrom(src => src.SapMaterialFK))
+                .ForMember(dest => dest.MesUnitOfMeasureDTOFK, opt => opt.MapFrom(src => src.MesUnitOfMeasureFK))
+                .ForMember(dest => dest.SapUnitOfMeasureDTOFK, opt => opt.MapFrom(src => src.SapUnitOfMeasureFK));
         }
     }
 }

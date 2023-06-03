@@ -21,7 +21,15 @@ namespace DictionaryManagement_Common
             MoveToArchive,
             RestoreFromArchive
         }
+
+        public enum FactoryMode
+        {
+            NKNH,
+            KOS
+        }
+
         public static string AppVersion = "";
+        public static FactoryMode AppFactoryMode = FactoryMode.KOS;
 
     }
 }

@@ -33,7 +33,8 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<UnitOfMeasureSapToMesMapping> UnitOfMeasureSapToMesMapping { get; set; }
         public DbSet<SapToMesMaterialMapping> SapToMesMaterialMapping { get; set; }
         public DbSet<MesDepartment> MesDepartment { get; set; }
-        
+        public DbSet<MesParam> MesParam { get; set; }
+
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
