@@ -11,9 +11,9 @@
 @inject IMesDepartmentRepository _mesDepartmentRepository
 
 @inject DialogService _dialogService
-@*<_Dialogs @ref="_dialogs"></_Dialogs>*@
 
 
+<_Dialogs @ref="_dialogs"></_Dialogs>
 
 <div class="row mt-4">
 
@@ -30,9 +30,9 @@
 
         @*        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@InsertRow" Disabled=@(sapToMesMaterialMappingDTOToInsert != null || sapToMesMaterialMappingDTOToUpdate != null) />*@
         <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@(args => EditRow(null))" />
-        <RadzenDataGrid @ref="grid" AllowColumnResize="true" ExpandMode="DataGridExpandMode.Single"
+        <RadzenDataGrid @ref="mesDepartmentDTOGrid" AllowColumnResize="true" ExpandMode="DataGridExpandMode.Single"
                         Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
-                        RowCollapse="@(args => grid.ColumnsCollection.ToList().ForEach(c => c.ClearFilters()))"
+                        RowCollapse="@(args => mesDepartmentDTOGrid.ColumnsCollection.ToList().ForEach(c => c.ClearFilters()))"
                         AllowFiltering="true" AllowPaging="true" PageSize="9" AllowSorting="true" AllowMultiColumnSorting="true"
                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                         FilterMode="FilterMode.Simple">            
@@ -44,6 +44,7 @@
                         <strong>@data.Name</strong>
                     </Template>
                 </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Id" Title="ИД" Width="60px" />
                 <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="MesCode" Title="Код" Width="240px" />                
                 <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Name" Title="Сокр. наименование" Width="240px" />
 
@@ -104,13 +105,12 @@
 
 @code {
 
-    //_Dialogs? _dialogs { get; set; }
+    _Dialogs? _dialogs { get; set; }
 
     //public bool? checkBoxValue = null;
     //public string checkBoxText = "Все записи";
 
     IEnumerable<MesDepartmentDTO>? mesDepartmentDTOs;
-    RadzenDataGrid<MesDepartmentDTO> grid;
 
     RadzenDataGrid<MesDepartmentDTO> mesDepartmentDTOGrid;
 
@@ -140,6 +140,7 @@
     {
         //args.Expandable = dbContext.Employees.Where(e => e.ReportsTo == args.Data.EmployeeID).Any();        
         args.Expandable = _mesDepartmentRepository.HasChild(args.Data.Id).GetAwaiter().GetResult();
+        //args.Expandable = _mesDepartmentRepository.HasChild(args.Data.Id);
     }
 
     void LoadChildData(DataGridLoadChildDataEventArgs<MesDepartmentDTO> args)
@@ -165,7 +166,7 @@
 
         IsLoading = true;
 
-        Task<dynamic> dialogResult;
+        MesDepartmentDTO dialogResult;
 
         if (mesDepartmentDTO == null)
         {
@@ -179,8 +180,8 @@
             this.StateHasChanged();
             dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Изменить производство", new Dictionary<string, object>() { { "MesDepartmentId", mesDepartmentDTO.Id }});
         }
-        
-        
+
+
         if (dialogResult != null)
         {
             //var processResourcesVMDTOListTmp = processResourcesVMDTOList.ToList();
@@ -189,7 +190,9 @@
             mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();
             IsLoading = false;
             this.StateHasChanged();
-        }
+        }        
+
+        //DialogService.Clo (dialogResult
 
         IsLoading = false;
 
@@ -204,58 +207,50 @@
     async Task DeleteRow(MesDepartmentDTO mesDepartmentDTO)
     {
 
-        //if (_dialogs != null)
-        //{
-        //    if (mesMaterialDTO.IsArchive != true)
-        //    {
-        //        bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление материала MES", "Удалить материал MES \"" + mesMaterialDTO.ShortName + "\" в архив ?", "Удалить", "Отмена");
-        //        if (selectionResult == false)
-        //        {
-        //            await _jsRuntime.ToastrSuccess("Отмена удаления");
-        //            return;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Восстановление материала MES", "Восстановить материал MES \"" + mesMaterialDTO.ShortName + "\" из архива ?", "Восстановить", "Отмена");
-        //        if (selectionResult == false)
-        //        {
-        //            await _jsRuntime.ToastrSuccess("Отмена восстановления");
-        //            return;
-        //        }
-        //    }
-        //}
+        if (_dialogs != null)
+        {
+            if (mesDepartmentDTO.IsArchive != true)
+            {
+                bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление производства", "Удалить производство \"" + mesDepartmentDTO.ShortName + "\" в архив ?", "Удалить", "Отмена");
+                if (selectionResult == false)
+                {
+                    await _jsRuntime.ToastrSuccess("Отмена удаления");
+                    return;
+                }
+            }
+            else
+            {
+                bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Восстановление производства", "Восстановить производство \"" + mesDepartmentDTO.ShortName + "\" из архива ?", "Восстановить", "Отмена");
+                if (selectionResult == false)
+                {
+                    await _jsRuntime.ToastrSuccess("Отмена восстановления");
+                    return;
+                }
+            }
+        }
+        
 
-        //if (mesMaterialDTO == mesMaterialDTOToInsert)
-        //{
-        //    mesMaterialDTOToInsert = null;
-        //}
 
-        //if (mesMaterialDTO == mesMaterialDTOToUpdate)
+        //if (mesDepartmentDTOs.Contains(mesDepartmentDTO))
         //{
-        //    mesMaterialDTOToUpdate = null;
-        //}
-
-        //if (mesMaterialDTOs.Contains(mesMaterialDTO))
-        //{
-        //    if (mesMaterialDTO.IsArchive)
-        //    {
-        //        await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.RestoreFromArchive);
-        //        mesMaterialDTO.IsArchive = false;
-        //        await _jsRuntime.ToastrSuccess("Материал \"" + mesMaterialDTO.Name + "\" восстановлен из архива");
-        //    }
-        //    else
-        //    {
-        //        await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.MoveToArchive);
-        //        mesMaterialDTO.IsArchive = true;
-        //        await _jsRuntime.ToastrSuccess("Материал \"" + mesMaterialDTO.Name + "\" удалён в архив");
-        //    }
-        //    await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
+            if (mesDepartmentDTO.IsArchive)
+            {
+                await _mesDepartmentRepository.Delete(mesDepartmentDTO.Id, SD.UpdateMode.RestoreFromArchive);
+                mesDepartmentDTO.IsArchive = false;
+                await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" восстановлено из архива");
+            }
+            else
+            {
+                await _mesDepartmentRepository.Delete(mesDepartmentDTO.Id, SD.UpdateMode.MoveToArchive);
+                mesDepartmentDTO.IsArchive = true;
+                await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" удалёно в архив");
+            }
+            await mesDepartmentDTOGrid.UpdateRow(mesDepartmentDTO);
         //}
         //else
         //{
-        //    mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
-        //    await mesMaterialDTOGrid.Reload();
+        //    mesDepartmentDTOGrid.CancelEditRow(mesDepartmentDTO);
+        //    await mesDepartmentDTOGrid.Reload();
         //}
     }
 

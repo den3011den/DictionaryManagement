@@ -89,10 +89,10 @@ namespace DictionaryManagement_Business.Repository
                 return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
         }
 
-        public async Task<bool> HasChild(int id)
+        public async Task<bool> HasChild(int id)        
         {
-            var hhh = _db.MesDepartment.Where(u => u.ParentDepartmentId == id).Any();
-            return hhh;
+            var hhh5 = _db.MesDepartment.Where(u => u.ParentDepartmentId == id).AsNoTracking().Any();
+            return hhh5;            
         }
 
         public async Task<MesDepartmentDTO> Update(MesDepartmentDTO objectToUpdateDTO)
@@ -101,11 +101,28 @@ namespace DictionaryManagement_Business.Repository
                     FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
-                if (objectToUpdate.ParentDepartmentId != objectToUpdateDTO.DepartmentParentDTO.Id)
+                if (objectToUpdateDTO.ParentDepartmentId == null)
                 {
-                    objectToUpdate.ParentDepartmentId = objectToUpdateDTO.DepartmentParentDTO.Id;
-                    objectToUpdate.DepartmentParent = _mapper.Map<MesDepartmentDTO, MesDepartment>(objectToUpdateDTO.DepartmentParentDTO);
+                    objectToUpdate.ParentDepartmentId = null;
+                    objectToUpdate.DepartmentParent = null;
+                }    
+                else
+                {
+                    if (objectToUpdate.ParentDepartmentId != objectToUpdateDTO.ParentDepartmentId)
+                    {
+                        objectToUpdate.ParentDepartmentId = objectToUpdateDTO.ParentDepartmentId;
+                        var objectParentToUpdate = _db.MesDepartment.Include("DepartmentParent").
+                                FirstOrDefault(u => u.Id == objectToUpdateDTO.ParentDepartmentId);
+                        objectToUpdate.DepartmentParent = objectParentToUpdate;
+                    }
                 }
+                if (objectToUpdateDTO.Name != objectToUpdate.Name)
+                    objectToUpdate.Name = objectToUpdateDTO.Name;
+                if (objectToUpdateDTO.ShortName != objectToUpdate.ShortName)
+                    objectToUpdate.ShortName = objectToUpdateDTO.ShortName;
+                if (objectToUpdateDTO.MesCode != objectToUpdate.MesCode)
+                    objectToUpdate.MesCode = objectToUpdateDTO.MesCode;
+
                 _db.MesDepartment.Update(objectToUpdate);
                 await _db.SaveChangesAsync();
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objectToUpdate);
@@ -114,19 +131,53 @@ namespace DictionaryManagement_Business.Repository
 
         }
 
-        public async Task<int> Delete(int id)
+        public async Task<int> Delete(int id, UpdateMode updateMode = UpdateMode.Update)
         {
             if (id > 0)
             {
                 var objectToDelete = _db.MesDepartment.FirstOrDefault(u => u.Id == id);
                 if (objectToDelete != null)
                 {
-                    _db.MesDepartment.Remove(objectToDelete);
+                    if (updateMode == SD.UpdateMode.MoveToArchive)
+                        objectToDelete.IsArchive = true;
+                    if (updateMode == SD.UpdateMode.RestoreFromArchive)
+                        objectToDelete.IsArchive = false;                    
+                    _db.MesDepartment.Update(objectToDelete);
                     return await _db.SaveChangesAsync();
                 }
             }
             return 0;
 
+        }
+
+        public async Task<MesDepartmentDTO> GetByCode(int mesCode = 0)
+        {
+            var objToGet = _db.MesDepartment.FirstOrDefaultAsync(u => u.MesCode == mesCode).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
+            }
+            return null;
+        }
+
+        public async Task<MesDepartmentDTO> GetByName(string name = "")
+        {
+            var objToGet = _db.MesDepartment.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
+            }
+            return null;
+        }
+
+        public async Task<MesDepartmentDTO> GetByShortName(string shortName = "")
+        {
+            var objToGet = _db.MesDepartment.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper()).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
+            }
+            return null;
         }
     }
 }
