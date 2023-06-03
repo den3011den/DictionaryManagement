@@ -12,26 +12,25 @@ namespace DictionaryManagement_Models.IntDBModels
     {
 
         [Display(Name = "Ид записи")]
-        [Required(ErrorMessage = "Код обязателен для заполнения")]
+        [Required(ErrorMessage = "ИД обязателен")]        
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Код обязателен для заполнения")]
+        [Range(1, int.MaxValue, ErrorMessage = "Код может быть от {1} до {2}")]
         [Display(Name = "Код")]
         public int MesCode { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Наименование обязателено для заполнения")]
         [Display(Name = "Наименование")]
         public string Name { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "Сокр. Наименование обязателено для заполнения")]
         [Display(Name = "Сокр. наименование")]
         public string ShortName { get; set; } = string.Empty;
-
-        [Required]
+        
         [Display(Name = "Ид родителя")]
         public int? ParentDepartmentId { get; set; }
 
-        [Required]
         [Display(Name = "Родитель")]
         public MesDepartmentDTO? DepartmentParentDTO { get; set; }
 

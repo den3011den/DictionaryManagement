@@ -55,10 +55,26 @@ namespace DictionaryManagement_Business.Repository
         }
 
 
-        public async Task<IEnumerable<MesDepartmentDTO>> GetAll()
+        public async Task<IEnumerable<MesDepartmentDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
         {
+            if (selectDictionaryScope == SD.SelectDictionaryScope.All)
+            {
                 var hhh1 = _db.MesDepartment.Include("DepartmentParent");
                 return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
+            }
+            if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
+            {
+                var hhh2 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.IsArchive == true);
+                return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh2);
+            }            
+            if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
+            {
+                var hhh3 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.IsArchive != true);
+                return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh3);
+
+            }
+            var hhh4 = _db.MesDepartment.Include("DepartmentParent");
+            return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh4);
         }
 
         public async Task<IEnumerable<MesDepartmentDTO>> GetAllTopLevel()

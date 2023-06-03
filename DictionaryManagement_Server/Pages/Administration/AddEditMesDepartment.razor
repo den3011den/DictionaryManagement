@@ -1,0 +1,300 @@
+﻿@page "/administration/MesDepartment/AddEditMesDepartment/{MesDepartmentId}"
+
+@using DictionaryManagement_Business.Repository.IRepository;
+@using DictionaryManagement_Common;
+@using DictionaryManagement_Models.IntDBModels
+
+@inject IJSRuntime _jsRuntime
+
+@inject IMesDepartmentRepository _mesDepartmentRepository
+@inject DialogService _dialogService
+
+@*@inject NavigationManager _navigationManager*@
+
+
+<div class="row my-2">
+   @* <h3 class="card-title text-primary mb-3 ml-3">@Title</h3>*@
+
+    <div class="col-md-10">
+        @if (IsLoading)
+        {
+            <div class="text-center">
+                <img src="/images/loading.gif">
+            </div>
+        }
+        else
+        {
+            <EditForm Model="ActiveMesDepartmentDTO" OnValidSubmit="AddEditMesDepartmentProcedure">
+                <DataAnnotationsValidator />
+
+                <RadzenRow Gap="1rem">
+                    <RadzenColumn Size="12">
+                        <RadzenStack>
+
+                            @*<ValidationSummary/>*@
+                            @* <div class="form-group" Style="width: 100%; max-width: 700px;">*@
+                            @*<label>Код производства</label>*@
+                            @*<InputText @bind-Value="ActiveMesDepartmentDTO.MesCode" class="form-control"></InputText>*@
+                            <RadzenFormField Text="Код производства" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                                <RadzenNumeric @bind-Value="@ActiveMesDepartmentDTO.MesCode" />
+                            </RadzenFormField>
+                            <ValidationMessage For="()=>ActiveMesDepartmentDTO.MesCode"></ValidationMessage>
+                            @*  </div>*@
+                            @*<div class="form-group" Style="width: 100%; max-width: 700px;">*@
+                            @*<label>Наименование</label>*@
+                            <RadzenFormField Text="Наименование" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                                <RadzenTextBox @bind-Value="@ActiveMesDepartmentDTO.Name" />
+                            </RadzenFormField>
+                            @*                    <InputText @bind-Value="ActiveMesDepartmentDTO.Name" class="form-control"></InputText>*@
+                            <ValidationMessage For="()=>ActiveMesDepartmentDTO.Name"></ValidationMessage>
+                            @*  </div>*@
+
+                            @*                <div class="form-group">*@
+                            @*                    <label>Сокр. наименование</label>*@
+                            @*                    <InputText @bind-Value="ActiveMesDepartmentDTO.ShortName" class="form-control"></InputText>*@
+                            <RadzenFormField Text="Сокр. наименование" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                                <RadzenTextBox @bind-Value="@ActiveMesDepartmentDTO.ShortName" />
+                            </RadzenFormField>
+                            <ValidationMessage For="()=>ActiveMesDepartmentDTO.ShortName"></ValidationMessage>
+                            @*                </div>*@
+
+                            @*<div class="form-group">*@
+                            <RadzenFormField Text="Родительское производство" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                                <RadzenDropDown @ref=@mesDepartmentDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                                                Data=@MesDepartmentDTOList TextProperty="ShortName" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveMesDepartmentDTO.ParentDepartmentId" Style="width: 100%; max-width: 700px;" />
+                            </RadzenFormField>
+                            <ValidationMessage For="()=>ActiveMesDepartmentDTO.ParentDepartmentId"></ValidationMessage>
+                            @* </div>*@
+
+                        </RadzenStack>
+                    </RadzenColumn>
+                </RadzenRow>
+
+                <div class="row pt-3">
+                    <div class="form-group col-6">
+                        <div class="form-check">
+                            <InputCheckbox @bind-Value="ActiveMesDepartmentDTO.IsArchive" class="form-check-input"></InputCheckbox>
+                            <label class="form-check-label">В архиве</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group py-2">
+                    <button class="btn btn-primary">@Title</button>
+                    <NavLink @onclick="(() => OnClickCancel())" class="btn btn-secondary">Отмена</NavLink>
+                </div>
+            </EditForm>
+        }
+    </div>
+</div>
+
+
+
+
+
+@code {
+
+    [Parameter]
+    public int MesDepartmentId { get; set; }
+
+
+    Variant variant = Variant.Outlined;
+
+    public bool IsLoading { get; set; }
+
+    public MesDepartmentDTO ActiveMesDepartmentDTO { get; set; }
+
+    IEnumerable<MesDepartmentDTO> MesDepartmentDTOList { get; set; } = new List<MesDepartmentDTO>();
+
+    public IEnumerable<object> CheckedValues { get; set; } = new List<object>();
+
+    private string Title { get; set; } = "Создать производство";
+
+    RadzenDropDown<int?> mesDepartmentDropDown;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        IsLoading = true;
+        StateHasChanged();
+
+        if (MesDepartmentId <= 0)
+        {
+            ActiveMesDepartmentDTO = new MesDepartmentDTO();
+        }
+        else
+        {
+            ActiveMesDepartmentDTO = await _mesDepartmentRepository.GetById(MesDepartmentId);
+            Title = "Изменить производство";
+        }
+
+        IsLoading = false;
+        StateHasChanged();
+
+        //employees = dbContext.Employees.Where(e => e.ReportsTo == null);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+            IsLoading = true;
+            StateHasChanged();
+
+            if (MesDepartmentId <= 0)
+            {
+                ActiveMesDepartmentDTO = new MesDepartmentDTO();
+            }
+            else
+            {
+                ActiveMesDepartmentDTO = await _mesDepartmentRepository.GetById(MesDepartmentId);
+                Title = "Изменить производство";
+            }
+            MesDepartmentDTOList = await _mesDepartmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
+
+            IsLoading = false;
+            StateHasChanged();
+        }
+
+        //base.OnAfterRender(firstRender);
+    }
+
+
+    //string GetText(object data)
+    //{
+    //    return (data as EquipmentDTO).S95Id;
+    //}
+
+
+    //bool CheckChildren(object data)
+    //{
+
+    //    return EquipmentDTOList.Where(eee => eee.ParentEquipmentId == (data as EquipmentDTO).EquipmentId).Any();
+    //}
+
+    //----------------------------------------------------
+
+    //void LoadChildren(TreeExpandEventArgs args)
+    //{
+    //    var rootNode = args.Value as EquipmentDTO;
+    //    var dataList = EquipmentDTOList.Where(entry => entry.ParentEquipmentId == rootNode.EquipmentId);
+    //    args.Children.Data = dataList;
+    //    args.Children.Text = GetText;
+    //    args.Children.HasChildren = CheckChildren;
+    //}
+
+    private async Task ToastrSuccess(string messStr)
+    {
+        await _jsRuntime.ToastrSuccess(messStr);
+    }
+
+    private async Task ToastrError(string messStr)
+    {
+        await _jsRuntime.ToastrError(messStr);
+    }
+
+    private async Task OnClickAdd()
+    {
+
+        //if (CheckedValues.Count() <= 0)
+        //{
+        //    await _jsRuntime.ToastrError("Не выбрано оборудования для добавления");
+        //    return;
+        //}
+
+        //ProcessResourcesVMDTO currentResource = await _processResourcesVMRepository.Get(Parameter1, Parameter2);
+
+        //if (currentResource == null)
+        //{
+        //    await _jsRuntime.ToastrError("Не удалось найти ресурс " + Parameter1 + " | " + Parameter2);
+        //    return;
+        //}
+
+
+        //foreach (var item in CheckedValues)
+        //{
+        //    EquipmentDTO currItem = (item as EquipmentDTO);
+        //    var getEquip = currentResource.Equipments.FirstOrDefault(a => a.EquipmentId == currItem.EquipmentId);
+        //    if (getEquip != null)
+        //    {
+        //        await _jsRuntime.ToastrError("Оборудование " + currItem.S95Id + " (" + currItem.EquipmentId.ToString() + ") уже есть в ресурсе " + Parameter2 + " | " + Parameter1);
+        //        return;
+        //    }
+
+        //}
+
+        //foreach (var item in CheckedValues)
+        //{
+        //    EquipmentDTO currItem = (item as EquipmentDTO);
+        //    var PrResVMDTO = await _processResourcesVMRepository.AddEquipment(Parameter1, Parameter2, currItem.EquipmentId);
+
+        //}
+
+        //ProcessResourcesVMDTO newCurResource = await _processResourcesVMRepository.Get(Parameter1, Parameter2);
+        //_dialogService.Close(newCurResource);
+        //await _jsRuntime.ToastrSuccess("К ресурсу " + Parameter2 + " | " + Parameter1 + " добавлено " + CheckedValues.Count().ToString() + " единиц оборудования");
+
+
+        ////_navigationManager.NavigateTo("RPM/ResourceManagement");
+
+
+    }
+
+
+    private async Task AddEditMesDepartmentProcedure()
+    {
+
+        //if (String.IsNullOrEmpty(Oldparentid) || String.IsNullOrEmpty(Oldinsideid))
+        //{  // создание
+
+        //    var foundResource = await _processResourcesRepository.Get(ProcessResourcesDTOModel.InsideId, ProcessResourcesDTOModel.ParentId);
+
+        //    if (foundResource.ParentId != null && foundResource.InsideId != null)
+        //    {
+        //        await _jsRuntime.ToastrError("Ресурс " + ProcessResourcesDTOModel.InsideId + " | " + ProcessResourcesDTOModel.ParentId + " уже существует");
+        //        return;
+        //    }
+
+        //    ProcessResourcesDTOModel.EquipmentsData = "";
+
+        //    await _processResourcesRepository.Create(ProcessResourcesDTOModel);
+
+        //    var ResourceVMDTO = await _processResourcesVMRepository.Get(ProcessResourcesDTOModel.ParentId, ProcessResourcesDTOModel.InsideId);
+        //    await _jsRuntime.ToastrSuccess("Ресурс " + ProcessResourcesDTOModel.InsideId + " | " + ProcessResourcesDTOModel.ParentId + " успешно создан");
+        //    _dialogService.Close(ResourceVMDTO);
+        //}
+        //else
+        //{ // редактирование
+
+        //    if (ProcessResourcesDTOModel.InsideId != Oldinsideid || ProcessResourcesDTOModel.ParentId != Oldparentid)
+        //    {
+
+        //        var foundResource = await _processResourcesRepository.Get(ProcessResourcesDTOModel.InsideId, ProcessResourcesDTOModel.ParentId);
+
+        //        if (foundResource.ParentId != null && foundResource.InsideId != null)
+        //        {
+        //            await _jsRuntime.ToastrError("Ресурс " + ProcessResourcesDTOModel.InsideId + " | " + ProcessResourcesDTOModel.ParentId + " уже существует");
+        //            return;
+        //        }
+
+        //    }
+
+        //    await _processResourcesRepository.Update(ProcessResourcesDTOModel, Oldparentid, Oldinsideid);
+
+        //    ProcessResourcesVMDTO ResourceVMDTO = await _processResourcesVMRepository.Get(ProcessResourcesDTOModel.ParentId, ProcessResourcesDTOModel.InsideId);
+        //    await _jsRuntime.ToastrSuccess("Ресурс " + ProcessResourcesDTOModel.InsideId + " | " + ProcessResourcesDTOModel.ParentId + " успешно изменён");
+
+        //    _dialogService.Close(ResourceVMDTO);
+        //}
+    }
+
+
+    private async Task OnClickCancel()
+    {
+        _dialogService.Close(null);
+    }
+
+
+}

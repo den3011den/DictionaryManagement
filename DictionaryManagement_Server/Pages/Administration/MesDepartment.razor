@@ -10,8 +10,8 @@
 @inject IJSRuntime _jsRuntime
 @inject IMesDepartmentRepository _mesDepartmentRepository
 
-
-<_Dialogs @ref="_dialogs"></_Dialogs>
+@inject DialogService _dialogService
+@*<_Dialogs @ref="_dialogs"></_Dialogs>*@
 
 
 
@@ -29,11 +29,11 @@
     {
 
         @*        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@InsertRow" Disabled=@(sapToMesMaterialMappingDTOToInsert != null || sapToMesMaterialMappingDTOToUpdate != null) />*@
-        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" />
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@(args => EditRow(null))" />
         <RadzenDataGrid @ref="grid" AllowColumnResize="true" ExpandMode="DataGridExpandMode.Single"
                         Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
                         RowCollapse="@(args => grid.ColumnsCollection.ToList().ForEach(c => c.ClearFilters()))"
-                        AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" AllowMultiColumnSorting="true"
+                        AllowFiltering="true" AllowPaging="true" PageSize="9" AllowSorting="true" AllowMultiColumnSorting="true"
                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                         FilterMode="FilterMode.Simple">            
             <Columns>
@@ -104,7 +104,7 @@
 
 @code {
 
-    _Dialogs? _dialogs { get; set; }
+    //_Dialogs? _dialogs { get; set; }
 
     //public bool? checkBoxValue = null;
     //public string checkBoxText = "Все записи";
@@ -139,13 +139,13 @@
     void RowRender(RowRenderEventArgs<MesDepartmentDTO> args)
     {
         //args.Expandable = dbContext.Employees.Where(e => e.ReportsTo == args.Data.EmployeeID).Any();        
-            args.Expandable = _mesDepartmentRepository.HasChild(args.Data.Id).GetAwaiter().GetResult();
+        args.Expandable = _mesDepartmentRepository.HasChild(args.Data.Id).GetAwaiter().GetResult();
     }
 
     void LoadChildData(DataGridLoadChildDataEventArgs<MesDepartmentDTO> args)
     {
         args.Data = _mesDepartmentRepository.GetChildList(args.Item.Id).GetAwaiter().GetResult();
-        
+
     }
 
     //protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -162,6 +162,42 @@
     {
         //mesMaterialDTOToUpdate = mesMaterialDTO;
         //await mesMaterialDTOGrid.EditRow(mesMaterialDTO);
+
+        IsLoading = true;
+
+        Task<dynamic> dialogResult;
+
+        if (mesDepartmentDTO == null)
+        {
+            IsLoading = false;
+            this.StateHasChanged();
+            dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Создать производство", new Dictionary<string, object>() { { "MesDepartmentId", 0 } });
+        }
+        else
+        {
+            IsLoading = false;
+            this.StateHasChanged();
+            dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Изменить производство", new Dictionary<string, object>() { { "MesDepartmentId", mesDepartmentDTO.Id }});
+        }
+        
+        
+        if (dialogResult != null)
+        {
+            //var processResourcesVMDTOListTmp = processResourcesVMDTOList.ToList();
+            //processResourcesVMDTOListTmp.Add(dialogResult);
+            //processResourcesVMDTOList = processResourcesVMDTOListTmp.OrderBy(e => e.ProcessResources.InsideId).ThenBy(e => e.ProcessResources.ParentId);
+            mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();
+            IsLoading = false;
+            this.StateHasChanged();
+        }
+
+        IsLoading = false;
+
+        //InvokeAsync(StateHasChanged);
+
+        //_navigationManager.NavigateTo("RPM/AddEquipmentToRecourse/" + parentId + "/" + insideId);
+
+
     }
 
 

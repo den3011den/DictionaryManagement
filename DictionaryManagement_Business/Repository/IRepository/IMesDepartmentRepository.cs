@@ -15,7 +15,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<MesDepartmentDTO> GetById(int mesDepartmentId);
         public Task<IEnumerable<MesDepartmentDTO>> GetChildList(int mesDepartmentId);
         public Task<bool> HasChild(int mesDepartmentId);
-        public Task<IEnumerable<MesDepartmentDTO>> GetAll();
+        public Task<IEnumerable<MesDepartmentDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All);
         public Task<IEnumerable<MesDepartmentDTO>> GetAllTopLevel();
         public Task<MesDepartmentDTO> Update(MesDepartmentDTO objDTO);
         public Task<MesDepartmentDTO> Create(MesDepartmentDTO objectToAddDTO);
