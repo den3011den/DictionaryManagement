@@ -33,6 +33,7 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.Id = objectToAddDTO.Id;
             objectToAdd.Code = objectToAddDTO.Code;
             objectToAdd.Name = objectToAddDTO.Name;
+            objectToAdd.Description = objectToAddDTO.Description;
             objectToAdd.MesParamSourceType = objectToAddDTO.MesParamSourceType;
             objectToAdd.MesParamSourceLink = objectToAddDTO.MesParamSourceLink;
             objectToAdd.DepartmentId = objectToAddDTO.DepartmentId;
@@ -326,6 +327,8 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.Code = objectToUpdateDTO.Code;
                 if (objectToUpdateDTO.Name != objectToUpdate.Name)
                     objectToUpdate.Name = objectToUpdateDTO.Name;
+                if (objectToUpdateDTO.Description != objectToUpdate.Description)
+                    objectToUpdate.Description = objectToUpdateDTO.Description;
                 if (objectToUpdateDTO.MesParamSourceLink != objectToUpdate.MesParamSourceLink)
                     objectToUpdate.MesParamSourceLink = objectToUpdateDTO.MesParamSourceLink;
                 if (objectToUpdateDTO.DaysRequestInPast != objectToUpdate.DaysRequestInPast)

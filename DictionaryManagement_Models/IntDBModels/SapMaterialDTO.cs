@@ -38,7 +38,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         public override string ToString()
         {
-            ToStringValue = $"{Code}   {ShortName}";
+            ToStringValue = $"{Code} {ShortName}";
             return ToStringValue;
         }
 
