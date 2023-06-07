@@ -347,7 +347,7 @@
             checkBoxText = "Только архивные";
 
             IsLoading = true;
-            mesParamDTOs = Enumerable.Empty<MesParamDTO>();
+            //mesParamDTOs = Enumerable.Empty<MesParamDTO>();
             StateHasChanged();            
             mesParamDTOs = _mesParamRepository.GetAll(SD.SelectDictionaryScope.ArchiveOnly).Result;
             IsLoading = false;
@@ -360,7 +360,7 @@
             checkBoxText = "Только активные";
 
             IsLoading = true;
-            mesParamDTOs = Enumerable.Empty<MesParamDTO>();
+            //mesParamDTOs = Enumerable.Empty<MesParamDTO>();
             StateHasChanged();            
             mesParamDTOs = _mesParamRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
             IsLoading = false;
@@ -375,7 +375,7 @@
             checkBoxText = "Все записи";
 
             IsLoading = true;
-            mesParamDTOs = Enumerable.Empty<MesParamDTO>();
+            //mesParamDTOs = Enumerable.Empty<MesParamDTO>();
             StateHasChanged();
             mesParamDTOs = _mesParamRepository.GetAll(SD.SelectDictionaryScope.All).Result;
             IsLoading = false;
