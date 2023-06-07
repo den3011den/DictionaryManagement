@@ -29,7 +29,7 @@
 
                 <RadzenRow Gap="1rem">
                     <RadzenColumn Size="12">
-                        <RadzenStack>
+                        <RadzenStack>                            
 
                             @if(MesDepartmentId > 0)
                             {
@@ -71,8 +71,7 @@
                                                 Data=@MesDepartmentDTOList TextProperty="ShortName" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveMesDepartmentDTO.ParentDepartmentId" Style="width: 100%; max-width: 700px;" />
                             </RadzenFormField>
                             <ValidationMessage For="()=>ActiveMesDepartmentDTO.ParentDepartmentId"></ValidationMessage>
-                            @* </div>*@
-
+                            @* </div>*@                            
                         </RadzenStack>
                     </RadzenColumn>
                 </RadzenRow>
@@ -168,17 +167,6 @@
         //base.OnAfterRender(firstRender);
     }
 
-
-    private async Task ToastrSuccess(string messStr)
-    {
-        await _jsRuntime.ToastrSuccess(messStr);
-    }
-
-    private async Task ToastrError(string messStr)
-    {
-        await _jsRuntime.ToastrError(messStr);
-    }
-
     private async Task AddEditMesDepartmentProcedure()
     {
 
@@ -197,7 +185,7 @@
                 return;
             }
 
-            var foundByShortName = await _mesDepartmentRepository.GetByName(ActiveMesDepartmentDTO.ShortName);
+            var foundByShortName = await _mesDepartmentRepository.GetByShortName(ActiveMesDepartmentDTO.ShortName);
             if (foundByShortName != null)
             {
                 await _jsRuntime.ToastrError("Уже есть производcтво с сокр. наименованием " + foundByShortName.ShortName + " (Код: " + foundByShortName.MesCode.ToString() + " ИД: " + foundByShortName.Id.ToString() + ")");
@@ -226,7 +214,7 @@
                 return;
             }
 
-            var foundByShortName = await _mesDepartmentRepository.GetByName(ActiveMesDepartmentDTO.ShortName);
+            var foundByShortName = await _mesDepartmentRepository.GetByShortName(ActiveMesDepartmentDTO.ShortName);
             if ((foundByShortName != null) && (foundByShortName.Id != ActiveMesDepartmentDTO.Id))
             {
                 await _jsRuntime.ToastrError("Уже есть производcтво с сокр. наименованием " + foundByShortName.ShortName + " (Код: " + foundByShortName.MesCode.ToString() + " ИД: " + foundByShortName.Id.ToString() + ")");

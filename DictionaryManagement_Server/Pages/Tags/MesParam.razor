@@ -21,7 +21,10 @@
 @inject DialogService _dialogService
 
 
+
 <_Dialogs @ref="_dialogs"></_Dialogs>
+
+
 
 <div class="row mt-4">
 
@@ -32,6 +35,7 @@
             <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
         </div>
     </div>
+
 
     @if (IsLoading != true)
     {
@@ -257,13 +261,13 @@
         {
             IsLoading = false;
             this.StateHasChanged();
-            dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 } });
+            dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 } }, new DialogOptions() { Width = $"{1000}px" });
         }
         else
         {
             IsLoading = false;
             this.StateHasChanged();
-            dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Изменить производство", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id } });
+            dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Изменить тэг СИР", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id } }, new DialogOptions() { Width = $"{1000}px" });
         }
 
 

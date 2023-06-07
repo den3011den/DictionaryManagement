@@ -48,11 +48,6 @@
                 <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="MesCode" Title="Код" Width="240px" />                
                 <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Name" Title="Сокр. наименование" Width="240px" />
 
-                @*<RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ShortName" Title="Hire Date" FormatString="{0:d}" Width="160px" />
-            <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="City" Title="City" Width="200px" />
-            <RadzenDataGridColumn TItem="Employee" Property="HomePhone" Title="Home Phone" Width="200px" />
-            <RadzenDataGridColumn TItem="Employee" Property="Extension" Title="Extension" />*@
-
                 <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="50px">
                     <Template Context="data">
                         <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
