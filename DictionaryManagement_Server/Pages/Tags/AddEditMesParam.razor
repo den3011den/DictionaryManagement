@@ -51,17 +51,17 @@ else
                         }*@
 
                         <RadzenFormField Text="Код тэга СИР" Variant="@variant" Style="width: 100%; max-width: 900px;">
-                            <RadzenNumeric @bind-Value="@ActiveMesParamDTO.Code" />
+                                <RadzenTextBox @bind-Value="@ActiveMesParamDTO.Code" />
                         </RadzenFormField>
                         <ValidationMessage For="()=>ActiveMesParamDTO.Code"></ValidationMessage>
 
                         <RadzenFormField Text="Наименование тэга СИР" Variant="@variant" Style="width: 100%; max-width: 900px;">
-                            <RadzenNumeric @bind-Value="@ActiveMesParamDTO.Name" />
+                                <RadzenTextBox @bind-Value="@ActiveMesParamDTO.Name" />
                         </RadzenFormField>
                         <ValidationMessage For="()=>ActiveMesParamDTO.Name"></ValidationMessage>
 
                         <RadzenFormField Text="Описание" Variant="@variant" Style="width: 100%; max-width: 900px;">
-                            <RadzenNumeric @bind-Value="@ActiveMesParamDTO.Description" />
+                                <RadzenTextBox @bind-Value="@ActiveMesParamDTO.Description" />
                         </RadzenFormField>
                         <ValidationMessage For="()=>ActiveMesParamDTO.Description"></ValidationMessage>
 
@@ -72,7 +72,7 @@ else
                         <ValidationMessage For="()=>ActiveMesParamDTO.MesParamSourceType"></ValidationMessage>
 
                         <RadzenFormField Text="Тэг/ИД источника" Variant="@variant" Style="width: 100%; max-width: 900px;">
-                            <RadzenNumeric @bind-Value="@ActiveMesParamDTO.MesParamSourceLink" />
+                                <RadzenTextBox @bind-Value="@ActiveMesParamDTO.MesParamSourceLink" />
                         </RadzenFormField>
                         <ValidationMessage For="()=>ActiveMesParamDTO.MesParamSourceLink"></ValidationMessage>
 
