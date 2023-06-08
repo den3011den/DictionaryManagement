@@ -35,8 +35,8 @@
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     FilterMode="FilterMode.Simple">
             <Columns>
-                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Id" Title="Ид записи" Width="50px" />
-                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Code" Title="Код материала">
+                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Id" Title="Ид записи" Width="60px" />
+                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Code" Title="Код материала" Width="160px">
                     <EditTemplate Context="sapMaterialDTO">
                         <RadzenTextBox @bind-Value="sapMaterialDTO.Code" Style="width:50%; display: block" Name="Code" />
                         <RadzenRequiredValidator Text="Код материала обязателен к заполнению" Component="Code" Popup="true" />
@@ -44,7 +44,7 @@
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Name" Title="Наименование">
+                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Name" Title="Наименование" Width="260px">
                     <EditTemplate Context="sapMaterialDTO">
                         <RadzenTextBox @bind-Value="sapMaterialDTO.Name" Style="width:100%; display: block" Name="Name" />
                         <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
@@ -52,7 +52,7 @@
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="ShortName" Title="Сокр. наименование">
+                <RadzenDataGridColumn TItem="SapMaterialDTO" Property="ShortName" Title="Сокр. наименование" Width="160px">
                     <EditTemplate Context="sapMaterialDTO">
                         <RadzenTextBox @bind-Value="sapMaterialDTO.ShortName" Style="width:100%; display: block" Name="ShortName" />
                         <RadzenRequiredValidator Text="Сокр. наименование обязателено к заполнению" Component="ShortName" Popup="true" />

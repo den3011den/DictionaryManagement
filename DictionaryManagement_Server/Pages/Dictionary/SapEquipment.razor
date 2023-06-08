@@ -33,29 +33,29 @@
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     FilterMode="FilterMode.Simple">
             <Columns>
-                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Id" Title="Ид записи" Width="120px" />
-                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpPlantId" Title="Код завода SAP">
+                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Id" Title="Ид записи" Width="80px" />
+                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpPlantId" Title="Код завода SAP" Width="130px">
                     <EditTemplate Context="sapEquipmentDTO">
                         <RadzenTextBox @bind-Value="sapEquipmentDTO.ErpPlantId" Style="width:100%; display: block" Name="ErpPlantId" />
                         <RadzenRequiredValidator Text="Код завода обязателен к заполнению" Component="ErpPlantId" Popup="true" />
                         <RadzenLengthValidator Max=100 Text="Код завода не может быть больше 100 символов" Component="ErpPlantId" Popup="true" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpId" Title="Код ресурса/склада SAP">
+                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpId" Title="Код ресурса/склада SAP" Width="120px">
                     <EditTemplate Context="sapEquipmentDTO">
-                        <RadzenTextBox @bind-Value="sapEquipmentDTO.ErpId" Style="width:100%; display: block" Name="ErpId" />
+                        <RadzenTextBox @bind-Value="sapEquipmentDTO.ErpId" Style="width:100%; display: block" Name="ErpId"/>
                         <RadzenRequiredValidator Text="Код ресурса/склада обязателен к заполнению" Component="ErpId" Popup="true" />
                         <RadzenLengthValidator Max=100 Text="Код ресурса/склада не может быть больше 100 символов" Component="ErpId" Popup="true" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Name" Title="Наименование">
+                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Name" Title="Наименование" Width="540px">
                     <EditTemplate Context="sapEquipmentDTO">
-                        <RadzenTextBox @bind-Value="sapEquipmentDTO.Name" Style="width:100%; display: block" Name="Name" />
+                        <RadzenTextBox @bind-Value="sapEquipmentDTO.Name" Style="width:100%; display: block" Name="Name"/>
                         <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                         <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="50px">
                     <Template Context="data">
                         <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                     </Template>
