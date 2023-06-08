@@ -22,6 +22,7 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<ReportTemplateType, ReportTemplateTypeDTO>().ReverseMap();
             CreateMap<LogEventType, LogEventTypeDTO>().ReverseMap();
             CreateMap<Settings, SettingsDTO>().ReverseMap();
+            CreateMap<User, UserDTO>().ReverseMap();
 
             CreateMap<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>().ReverseMap();
 
@@ -69,6 +70,16 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.SapMaterialDTOFK, opt => opt.MapFrom(src => src.SapMaterialFK))
                 .ForMember(dest => dest.MesUnitOfMeasureDTOFK, opt => opt.MapFrom(src => src.MesUnitOfMeasureFK))
                 .ForMember(dest => dest.SapUnitOfMeasureDTOFK, opt => opt.MapFrom(src => src.SapUnitOfMeasureFK));
+
+            CreateMap<ReportTemplate, ReportTemplateDTO>()
+                .ForMember(dest => dest.AddUserDTOFK, opt => opt.MapFrom(src => src.AddUserFK))
+                .ForMember(dest => dest.ReportTemplateTypeDTOFK, opt => opt.MapFrom(src => src.ReportTemplateTypeFK))
+                .ForMember(dest => dest.DestDataTypeDTOFK, opt => opt.MapFrom(src => src.DestDataTypeFK));
+
+            CreateMap<ReportTemplateDTO, ReportTemplate>()
+                    .ForMember(dest => dest.AddUserFK, opt => opt.MapFrom(src => src.AddUserDTOFK))
+                    .ForMember(dest => dest.ReportTemplateTypeFK, opt => opt.MapFrom(src => src.ReportTemplateTypeDTOFK))
+                    .ForMember(dest => dest.DestDataTypeFK, opt => opt.MapFrom(src => src.DestDataTypeDTOFK));
         }
     }
 }
