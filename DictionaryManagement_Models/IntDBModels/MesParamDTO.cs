@@ -20,7 +20,8 @@ namespace DictionaryManagement_Models.IntDBModels
         [StringLength(100, MinimumLength = 1, ErrorMessage = "Код может быть от 1 до 100 символов")]        
         [Display(Name = "Код СИР")]
         public string Code { get; set; }
-        
+
+        [Required(ErrorMessage = "Наименование тэга СИР обязатенльно для заполнения")]
         [StringLength(250, MinimumLength = 3, ErrorMessage = "Наименование может быть от 3 до 250 символов")]
         [Display(Name = "Наименование")]
         public string? Name { get; set; }
@@ -82,7 +83,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public SapUnitOfMeasureDTO? SapUnitOfMeasureDTOFK { get; set; }
 
         [Display(Name = "Глубина опроса (в днях)")]
-        public int? DaysRequestInPast { get; set; }
+        public int? DaysRequestInPast { get; set; } = 45;
 
         [Display(Name = "Передавать в SAP")]
         public bool? NeedWriteToSap { get; set; }
