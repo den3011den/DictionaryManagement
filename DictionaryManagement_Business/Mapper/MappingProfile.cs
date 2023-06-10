@@ -23,6 +23,7 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<LogEventType, LogEventTypeDTO>().ReverseMap();
             CreateMap<Settings, SettingsDTO>().ReverseMap();
             CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<Role, RoleDTO>().ReverseMap();
 
             CreateMap<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>().ReverseMap();
 
@@ -80,6 +81,40 @@ namespace DictionaryManagement_Business.Mapper
                     .ForMember(dest => dest.AddUserFK, opt => opt.MapFrom(src => src.AddUserDTOFK))
                     .ForMember(dest => dest.ReportTemplateTypeFK, opt => opt.MapFrom(src => src.ReportTemplateTypeDTOFK))
                     .ForMember(dest => dest.DestDataTypeFK, opt => opt.MapFrom(src => src.DestDataTypeDTOFK));
+
+            CreateMap<ReportTemplateTоDepartment, ReportTemplateTоDepartmentDTO>()
+                    .ForMember(dest => dest.ReportTemplateDTOFK, opt => opt.MapFrom(src => src.ReportTemplateFK))
+                    .ForMember(dest => dest.DepartmentDTOFK, opt => opt.MapFrom(src => src.DepartmentFK));
+
+            CreateMap<ReportTemplateTоDepartmentDTO, ReportTemplateTоDepartment>()
+                    .ForMember(dest => dest.ReportTemplateFK, opt => opt.MapFrom(src => src.ReportTemplateDTOFK))
+                    .ForMember(dest => dest.DepartmentFK, opt => opt.MapFrom(src => src.DepartmentDTOFK));
+
+            CreateMap<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>()
+                    .ForMember(dest => dest.ReportTemplateTypeDTOFK, opt => opt.MapFrom(src => src.ReportTemplateTypeFK))
+                    .ForMember(dest => dest.RoleDTOFK, opt => opt.MapFrom(src => src.RoleFK));
+
+            CreateMap<ReportTemplateTypeTоRoleDTO, ReportTemplateTypeTоRole>()
+                    .ForMember(dest => dest.ReportTemplateTypeFK, opt => opt.MapFrom(src => src.ReportTemplateTypeDTOFK))
+                    .ForMember(dest => dest.RoleFK, opt => opt.MapFrom(src => src.RoleDTOFK));
+
+
+            CreateMap<UserToRole, UserToRoleDTO>()
+                    .ForMember(dest => dest.UserDTOFK, opt => opt.MapFrom(src => src.UserFK))
+                    .ForMember(dest => dest.RoleDTOFK, opt => opt.MapFrom(src => src.RoleFK));
+
+            CreateMap<UserToRoleDTO, UserToRole>()
+                    .ForMember(dest => dest.UserFK, opt => opt.MapFrom(src => src.UserDTOFK))
+                    .ForMember(dest => dest.RoleFK, opt => opt.MapFrom(src => src.RoleDTOFK));
+
+            CreateMap<UserToDepartment, UserToDepartmentDTO>()
+                    .ForMember(dest => dest.UserDTOFK, opt => opt.MapFrom(src => src.UserFK))
+                    .ForMember(dest => dest.DepartmentDTOFK, opt => opt.MapFrom(src => src.DepartmentFK));
+
+            CreateMap<UserToDepartmentDTO, UserToDepartment>()
+                    .ForMember(dest => dest.UserFK, opt => opt.MapFrom(src => src.UserDTOFK))
+                    .ForMember(dest => dest.DepartmentFK, opt => opt.MapFrom(src => src.DepartmentDTOFK));
+
         }
     }
 }

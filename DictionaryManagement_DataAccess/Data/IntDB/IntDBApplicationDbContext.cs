@@ -36,8 +36,13 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<MesParam> MesParam { get; set; }
 
         public DbSet<User> User { get; set; }
+        public DbSet<Role> Role { get; set; }
+        public DbSet<UserToRole> UserToRole { get; set; }
+        public DbSet<UserToDepartment> UserToDepartment { get; set; }
 
         public DbSet<ReportTemplate> ReportTemplate { get; set; }
+        public DbSet<ReportTemplateTоDepartment> ReportTemplateTоDepartment { get; set; }
+        public DbSet<ReportTemplateTypeTоRole> ReportTemplateTypeTоRole { get; set; }
 
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)

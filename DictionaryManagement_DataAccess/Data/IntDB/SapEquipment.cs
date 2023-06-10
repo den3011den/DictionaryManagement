@@ -14,8 +14,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [Key]
         public int Id { get; set; }
         [Required]
-        [MaxLength(100)]
-        [MinLength(1)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string ErpPlantId { get; set; } = string.Empty;
 
         [Required]
