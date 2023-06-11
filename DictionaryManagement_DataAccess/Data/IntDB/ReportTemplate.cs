@@ -39,7 +39,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public int DestDataTypeId { get; set; }
 
         [ForeignKey("DestDataTypeId")]
-        public ReportTemplateType DestDataTypeFK { get; set; }
+        public DataType DestDataTypeFK { get; set; }
 
         [Required]
         public string TemplateFileName { get; set; }

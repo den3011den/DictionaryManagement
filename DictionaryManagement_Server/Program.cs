@@ -52,6 +52,8 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserToRoleRepository, UserToRoleRepository>();
 builder.Services.AddScoped<IUserToDepartmentRepository, UserToDepartmentRepository>();
 
+builder.Services.AddScoped<IReportTemplateRepository, ReportTemplateRepository>();
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<DialogService>();

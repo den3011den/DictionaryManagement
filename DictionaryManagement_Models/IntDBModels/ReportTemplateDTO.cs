@@ -18,13 +18,16 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Required(ErrorMessage = "Время добавления обязательно")]        
         [Display(Name = "Время добавления")]
-        public string AddTime { get; set; }
+        public DateTime AddTime { get; set; }
 
         [Required(ErrorMessage = "ИД добавившего пользователя обязательно")]
         [Display(Name = "Ид добавившего пользователя")]
         public string AddUserId { get; set; }
+        
+        [Display(Name = "Описание")]
+        public string Description { get; set; }
 
-        [Required(ErrorMessage = "Выбор пользователя обязателе")]
+        [Required(ErrorMessage = "Выбор пользователя обязателен")]
         [Display(Name = "Пользователь")]
         public UserDTO AddUserDTOFK { get; set; }
 
