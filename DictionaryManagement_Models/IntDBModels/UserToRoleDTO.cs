@@ -14,7 +14,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "Ид записи")]
         [Required(ErrorMessage = "ИД обязателен")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "ИД пользователя обязателен")]
         [Display(Name = "Ид пользователя")]
