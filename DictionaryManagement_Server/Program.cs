@@ -48,6 +48,7 @@ builder.Services.AddScoped<IMesDepartmentRepository, MesDepartmentRepository>();
 builder.Services.AddScoped<IMesParamRepository, MesParamRepository>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
