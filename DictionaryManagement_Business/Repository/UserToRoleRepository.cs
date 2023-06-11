@@ -41,8 +41,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserToRoleDTO> Get(string userId, string roleId)
         {
-            var objToGet = _db.UserToRole.Include("SapMaterial").Include("MesMaterial").
-                            FirstOrDefaultAsync(u => u.UserId.Trim().ToUpper() == userId.Trim().ToUpper() && u.UserId.Trim().ToUpper() == roleId.Trim().ToUpper()).GetAwaiter().GetResult();
+            var objToGet = _db.UserToRole.Include("UserFK").Include("RoleFK").
+                            FirstOrDefaultAsync(u => u.UserId.Trim().ToUpper() == userId.Trim().ToUpper() && u.RoleId.Trim().ToUpper() == roleId.Trim().ToUpper()).GetAwaiter().GetResult();
             if (objToGet != null)
             {
                 return _mapper.Map<UserToRole, UserToRoleDTO>(objToGet);
@@ -65,7 +65,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<UserToRoleDTO>> GetAll()
         {
             var hhh = _db.UserToRole.Include("UserFK").Include("RoleFK");
-            return _mapper.Map<IEnumerable<UserToRoleDTO>, IEnumerable<UserToRoleDTODTO>>(hhh);
+            return _mapper.Map<IEnumerable<UserToRole>, IEnumerable<UserToRoleDTO>>(hhh);
             
         }
 

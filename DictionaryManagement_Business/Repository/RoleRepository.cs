@@ -49,7 +49,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
             {                
-                return _mapper.Map<IEnumerable<Role>, IEnumerable<RoleDTO>>(_db.User);
+                return _mapper.Map<IEnumerable<Role>, IEnumerable<RoleDTO>>(_db.Role);
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
                 return _mapper.Map<IEnumerable<Role>, IEnumerable<RoleDTO>>(_db.Role.Where(u => u.IsArchive == true));
