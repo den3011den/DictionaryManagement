@@ -24,13 +24,12 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Ид добавившего пользователя")]
         public string AddUserId { get; set; }
         
-        [Display(Name = "Описание")]
-        public string Description { get; set; }
-
         [Required(ErrorMessage = "Выбор пользователя обязателен")]
         [Display(Name = "Пользователь")]
         public UserDTO AddUserDTOFK { get; set; }
 
+        [Display(Name = "Описание")]
+        public string Description { get; set; }
 
         [Required(ErrorMessage = "Ид типа отчёта обязательно")]
         [Display(Name = "Ид типа отчёта")]

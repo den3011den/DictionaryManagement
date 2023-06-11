@@ -115,6 +115,17 @@ namespace DictionaryManagement_Business.Mapper
                     .ForMember(dest => dest.UserFK, opt => opt.MapFrom(src => src.UserDTOFK))
                     .ForMember(dest => dest.DepartmentFK, opt => opt.MapFrom(src => src.DepartmentDTOFK));
 
+            CreateMap<ReportEntity, ReportEntityDTO>()
+                    .ForMember(dest => dest.ReportTemplateDTOFK, opt => opt.MapFrom(src => src.ReportTemplateFK))
+                    .ForMember(dest => dest.ReportDepartmentDTOFK, opt => opt.MapFrom(src => src.ReportDepartmentFK))
+                    .ForMember(dest => dest.UploadUserDTOFK, opt => opt.MapFrom(src => src.UploadUserFK))
+                    .ForMember(dest => dest.DownloadUserDTOFK, opt => opt.MapFrom(src => src.DownloadUserFK));
+
+            CreateMap<ReportEntityDTO, ReportEntity>()
+                    .ForMember(dest => dest.ReportTemplateFK, opt => opt.MapFrom(src => src.ReportTemplateDTOFK))
+                    .ForMember(dest => dest.ReportDepartmentFK, opt => opt.MapFrom(src => src.ReportDepartmentDTOFK))
+                    .ForMember(dest => dest.UploadUserFK, opt => opt.MapFrom(src => src.UploadUserDTOFK))
+                    .ForMember(dest => dest.DownloadUserFK, opt => opt.MapFrom(src => src.DownloadUserDTOFK));
         }
     }
 }
