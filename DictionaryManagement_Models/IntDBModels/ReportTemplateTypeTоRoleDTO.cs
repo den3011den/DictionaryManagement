@@ -14,7 +14,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "Ид записи")]
         [Required(ErrorMessage = "ИД обязателен")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "ИД типа отчёта обязателен")]
         [Display(Name = "Ид тип отчёта")]
@@ -31,6 +31,12 @@ namespace DictionaryManagement_Models.IntDBModels
         [Required(ErrorMessage = "Выбор роли обязателен")]
         [Display(Name = "Роль")]
         public RoleDTO RoleDTOFK { get; set; }
+        
+        [Display(Name = "Может скачивать")]
+        public bool CanDownload { get; set; }
+
+        [Display(Name = "Может загружать")]
+        public bool CanUpload { get; set; }
 
     }
 }
