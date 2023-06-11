@@ -216,10 +216,10 @@ namespace DictionaryManagement_Business.Repository
         {
             if (!String.IsNullOrEmpty(id))
             {
-                var objectToDelete = _db.ReportTemplate.FirstOrDefault(u => u.Id.Trim().ToUpper() == id.Trim().ToUpper());
+                var objectToDelete = _db.ReportEntity.FirstOrDefault(u => u.Id.Trim().ToUpper() == id.Trim().ToUpper());
                 if (objectToDelete != null)
                 {
-                    _db.ReportTemplate.Remove(objectToDelete);
+                    _db.ReportEntity.Remove(objectToDelete);
                     return await _db.SaveChangesAsync();
                 }
             }
