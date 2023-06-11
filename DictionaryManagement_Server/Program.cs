@@ -55,6 +55,7 @@ builder.Services.AddScoped<IUserToDepartmentRepository, UserToDepartmentReposito
 builder.Services.AddScoped<IReportTemplateRepository, ReportTemplateRepository>();
 builder.Services.AddScoped<IReportTemplateTîDepartmentRepository, ReportTemplateTîDepartmentRepository>();
 builder.Services.AddScoped<IReportTemplateTypeTîRoleRepository, ReportTemplateTypeTîRoleRepository>();
+builder.Services.AddScoped<IReportEntityRepository, ReportEntityRepository>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
