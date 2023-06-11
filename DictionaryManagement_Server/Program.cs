@@ -47,6 +47,8 @@ builder.Services.AddScoped<ISapToMesMaterialMappingRepository, SapToMesMaterialM
 builder.Services.AddScoped<IMesDepartmentRepository, MesDepartmentRepository>();
 builder.Services.AddScoped<IMesParamRepository, MesParamRepository>();
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<DialogService>();
