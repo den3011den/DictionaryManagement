@@ -30,7 +30,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public DateTime? ReportTimeEnd { get; set; }
 
         [Display(Name = "ИД производства")]
-        public string? ReportDepartmentId { get; set; }
+        public int? ReportDepartmentId { get; set; }
 
         [Display(Name = "Производство")]
         public MesDepartmentDTO? ReportDepartmentDTOFK { get; set; }

@@ -25,7 +25,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         public DateTime? ReportTimeEnd { get; set; }
 
-        public string? ReportDepartmentId { get; set; }
+        public int? ReportDepartmentId { get; set; }
         [ForeignKey("ReportDepartmentId")]
         public MesDepartment? ReportDepartmentFK { get; set; }
 
