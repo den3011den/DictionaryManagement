@@ -175,21 +175,30 @@
             var foundByCode = await _mesDepartmentRepository.GetByCode(ActiveMesDepartmentDTO.MesCode);
             if (foundByCode != null)
             {
-                await _jsRuntime.ToastrError("Уже есть производcтво с кодом " + foundByCode.MesCode.ToString() + " (наименование: " + foundByCode.ShortName + " ИД: " + foundByCode.Id.ToString() + ")");
-                return;
+                if (foundByCode.ParentDepartmentId == ActiveMesDepartmentDTO.ParentDepartmentId)
+                {
+                    await _jsRuntime.ToastrError("Уже есть производcтво с кодом " + foundByCode.MesCode.ToString() + " (наименование: " + foundByCode.ShortName + " ИД: " + foundByCode.Id.ToString() + ")");
+                    return;
+                }
             }
             var foundByName = await _mesDepartmentRepository.GetByName(ActiveMesDepartmentDTO.Name);
             if (foundByName != null)
             {
-                await _jsRuntime.ToastrError("Уже есть производcтво с наименованием " + foundByName.Name + " (Код: " + foundByName.MesCode.ToString() + " ИД: " + foundByName.Id.ToString() + ")");
-                return;
+                if (foundByName.ParentDepartmentId == ActiveMesDepartmentDTO.ParentDepartmentId)
+                {
+                    await _jsRuntime.ToastrError("Уже есть производcтво с наименованием " + foundByName.Name + " (Код: " + foundByName.MesCode.ToString() + " ИД: " + foundByName.Id.ToString() + ")");
+                    return;
+                }
             }
 
             var foundByShortName = await _mesDepartmentRepository.GetByShortName(ActiveMesDepartmentDTO.ShortName);
             if (foundByShortName != null)
             {
-                await _jsRuntime.ToastrError("Уже есть производcтво с сокр. наименованием " + foundByShortName.ShortName + " (Код: " + foundByShortName.MesCode.ToString() + " ИД: " + foundByShortName.Id.ToString() + ")");
-                return;
+                if (foundByShortName.ParentDepartmentId == ActiveMesDepartmentDTO.ParentDepartmentId)
+                {
+                    await _jsRuntime.ToastrError("Уже есть производcтво с сокр. наименованием " + foundByShortName.ShortName + " (Код: " + foundByShortName.MesCode.ToString() + " ИД: " + foundByShortName.Id.ToString() + ")");
+                    return;
+                }
             }
 
             await _mesDepartmentRepository.Create(ActiveMesDepartmentDTO);
@@ -200,25 +209,34 @@
         }
         else
         { // изменение производства
-            
+
             var foundByCode = await _mesDepartmentRepository.GetByCode(ActiveMesDepartmentDTO.MesCode);
             if ((foundByCode != null) && (foundByCode.Id != ActiveMesDepartmentDTO.Id))
             {
-                await _jsRuntime.ToastrError("Уже есть производcтво с кодом " + foundByCode.MesCode.ToString() + " (наименование: " + foundByCode.ShortName + " ИД: " + foundByCode.Id.ToString() + ")");
-                return;
+                if (foundByCode.ParentDepartmentId == ActiveMesDepartmentDTO.ParentDepartmentId)
+                {
+                    await _jsRuntime.ToastrError("Уже есть производcтво с кодом " + foundByCode.MesCode.ToString() + " (наименование: " + foundByCode.ShortName + " ИД: " + foundByCode.Id.ToString() + ")");
+                    return;
+                }
             }
             var foundByName = await _mesDepartmentRepository.GetByName(ActiveMesDepartmentDTO.Name);
             if ((foundByName != null) && (foundByName.Id != ActiveMesDepartmentDTO.Id))
             {
-                await _jsRuntime.ToastrError("Уже есть производcтво с наименованием " + foundByName.Name + " (Код: " + foundByName.MesCode.ToString() + " ИД: " + foundByName.Id.ToString() + ")");
-                return;
+                if (foundByName.ParentDepartmentId == ActiveMesDepartmentDTO.ParentDepartmentId)
+                {
+                    await _jsRuntime.ToastrError("Уже есть производcтво с наименованием " + foundByName.Name + " (Код: " + foundByName.MesCode.ToString() + " ИД: " + foundByName.Id.ToString() + ")");
+                    return;
+                }
             }
 
             var foundByShortName = await _mesDepartmentRepository.GetByShortName(ActiveMesDepartmentDTO.ShortName);
             if ((foundByShortName != null) && (foundByShortName.Id != ActiveMesDepartmentDTO.Id))
             {
-                await _jsRuntime.ToastrError("Уже есть производcтво с сокр. наименованием " + foundByShortName.ShortName + " (Код: " + foundByShortName.MesCode.ToString() + " ИД: " + foundByShortName.Id.ToString() + ")");
-                return;
+                if (foundByShortName.ParentDepartmentId == ActiveMesDepartmentDTO.ParentDepartmentId)
+                {
+                    await _jsRuntime.ToastrError("Уже есть производcтво с сокр. наименованием " + foundByShortName.ShortName + " (Код: " + foundByShortName.MesCode.ToString() + " ИД: " + foundByShortName.Id.ToString() + ")");
+                    return;
+                }
             }
 
             await _mesDepartmentRepository.Update(ActiveMesDepartmentDTO);

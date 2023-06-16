@@ -5,6 +5,7 @@
 @using DictionaryManagement_DataAccess.Data.IntDB;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using System.Text.Json;
 
 
 @inject IJSRuntime _jsRuntime
@@ -28,16 +29,16 @@
     @if (IsLoading != true)
     {
 
+        @* RowCollapse="@(args => mesDepartmentDTOGrid.ColumnsCollection.ToList().ForEach(c => c.ClearFilters()))"*@
         @*        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@InsertRow" Disabled=@(sapToMesMaterialMappingDTOToInsert != null || sapToMesMaterialMappingDTOToUpdate != null) />*@
         <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@(args => EditRow(null))" />
-        <RadzenDataGrid @ref="mesDepartmentDTOGrid" AllowColumnResize="true" ExpandMode="DataGridExpandMode.Single"
-                        Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
-                        RowCollapse="@(args => mesDepartmentDTOGrid.ColumnsCollection.ToList().ForEach(c => c.ClearFilters()))"
+        <RadzenDataGrid @bind-Settings="@MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" AllowColumnResize="true" ExpandMode="DataGridExpandMode.Single"
+                        Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"                       
                         AllowFiltering="true" AllowPaging="true" PageSize="9" AllowSorting="true" AllowMultiColumnSorting="true"
                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                         FilterMode="FilterMode.Simple">            
             <Columns>
-                <RadzenDataGridColumn TItem="MesDepartmentDTO" Title="Наименование" Frozen="true" Width="300px">
+                <RadzenDataGridColumn TItem="MesDepartmentDTO" Title="Наименование" Frozen="true" Width="340px">
                     <Template Context="data">
                         @*<RadzenImage Path="@data.Photo" class="rz-gravatar me-1" />*@
                         @*<strong>@data.MesCode @data.ShortName</strong>*@
@@ -45,15 +46,15 @@
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Id" Title="ИД" Width="60px" />
-                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="MesCode" Title="Код" Width="240px" />                
-                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Name" Title="Сокр. наименование" Width="240px" />
+                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="MesCode" Title="Код" Width="100px" />                
+                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ShortName" Title="Сокр. наименование" Width="340px" />
 
-                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="50px">
+                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="40px">
                     <Template Context="data">
-                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
+                        <RadzenCheckBox @bind-Value="data.IsArchive" ReadOnly="true" TriState="false" TValue="bool" />
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="MesDepartmentDTO" Context="mesDepartmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                <RadzenDataGridColumn TItem="MesDepartmentDTO" Context="mesDepartmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="70px">
                     <Template Context="mesDepartmentDTO">
                         <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesDepartmentDTO))" @onclick:stopPropagation="true">
                         </RadzenButton>
@@ -111,6 +112,7 @@
 
     public bool IsLoading { get; set; }
 
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -118,18 +120,61 @@
         //employees = dbContext.Employees.Where(e => e.ReportsTo == null);
     }
 
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
 
         if (firstRender)
         {
             IsLoading = true;
+            await LoadStateAsync();
             StateHasChanged();
             mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();
             IsLoading = false;
             StateHasChanged();
         }
+        else
+        {            
+            //var ffffff = 1;
+        }
     }
+
+    DataGridSettings _mesDepartmentGridSettings;
+    public DataGridSettings MesDepartmentGridSettings
+    {
+        get
+        {
+            return _mesDepartmentGridSettings;
+        }
+        set
+        {
+            if (_mesDepartmentGridSettings != value)
+            {
+                _mesDepartmentGridSettings = value;
+                InvokeAsync(SaveStateAsync);
+            }
+        }
+    }
+
+    private async Task LoadStateAsync()
+    {
+        await Task.CompletedTask;
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "MesDepartmentGridSettings");
+        if (!string.IsNullOrEmpty(result))
+        {
+            _mesDepartmentGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+        }
+    }
+
+    private async Task SaveStateAsync()
+    {
+        await Task.CompletedTask;
+
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesDepartmentGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesDepartmentGridSettings)}')");
+        //var gggg = 2;
+    }
+
 
     void RowRender(RowRenderEventArgs<MesDepartmentDTO> args)
     {
@@ -159,20 +204,23 @@
         //mesMaterialDTOToUpdate = mesMaterialDTO;
         //await mesMaterialDTOGrid.EditRow(mesMaterialDTO);
 
-        IsLoading = true;
+        //IsLoading = true;
 
         MesDepartmentDTO dialogResult;
 
+        //await SaveStateAsync();
+
         if (mesDepartmentDTO == null)
         {
-            IsLoading = false;
-            this.StateHasChanged();
+
+            //IsLoading = false;
+            //this.StateHasChanged();
             dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Создать производство", new Dictionary<string, object>() { { "MesDepartmentId", 0 } });
         }
         else
         {
-            IsLoading = false;
-            this.StateHasChanged();
+            //IsLoading = false;
+            //this.StateHasChanged();
             dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Изменить производство", new Dictionary<string, object>() { { "MesDepartmentId", mesDepartmentDTO.Id }});
         }
 
@@ -182,14 +230,26 @@
             //var processResourcesVMDTOListTmp = processResourcesVMDTOList.ToList();
             //processResourcesVMDTOListTmp.Add(dialogResult);
             //processResourcesVMDTOList = processResourcesVMDTOListTmp.OrderBy(e => e.ProcessResources.InsideId).ThenBy(e => e.ProcessResources.ParentId);
+            /////// await LoadStateAsync();            
+            /////// mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();
+
+            //this.StateHasChanged();
+            ///////IsLoading = false;     
+            ///////mesDepartmentDTOGrid.Settings = _mesDepartmentGridSettings;
+            ///////MesDepartmentGridSettings = _mesDepartmentGridSettings;
+            ///////mesDepartmentDTOGrid.Reload();
+            
+            IsLoading = true;
+            await LoadStateAsync();
+            StateHasChanged();
             mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();
             IsLoading = false;
-            this.StateHasChanged();
+            StateHasChanged();
         }        
 
         //DialogService.Clo (dialogResult
 
-        IsLoading = false;
+        //////IsLoading = false;
 
         //InvokeAsync(StateHasChanged);
 
