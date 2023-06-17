@@ -17,12 +17,6 @@
 
     <div class="col-6">
         <h4 class="card-title text-primary"><a href="/EventJournal">Журнал событий</a> - <a href="/dictionary/LogEventType">Типы событий</a></h4>
-
-        <div class="col-6">
-            <RadzenCheckBox @bind-Value=@checkBoxValue TriState="true" TValue="bool?" Change=@OnArchiveCheckBoxChange Name="ArchiveCheckBox" />
-            <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
-        </div>
-
     </div>
 
 
@@ -44,7 +38,7 @@
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
                     <Template Context="data">
                         <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                     </Template>
@@ -94,8 +88,6 @@
 
     _Dialogs? _dialogs { get; set; }
 
-    public bool? checkBoxValue = null;
-    public string checkBoxText = "Все записи";
     public string DeleteMessage { get; set; } = "";
 
     RadzenDataGrid<LogEventTypeDTO> logEventTypeDTOGrid;
@@ -110,47 +102,6 @@
 
     public bool IsLoading { get; set; }
 
-    void OnArchiveCheckBoxChange()
-    {
-        if (checkBoxValue == false)
-        {
-            checkBoxValue = null;
-            checkBoxText = "Только архивные";
-
-            IsLoading = true;
-            StateHasChanged();
-            logEventTypeDTOs = _logEventTypeRepository.GetAll(SD.SelectDictionaryScope.ArchiveOnly).Result;
-            IsLoading = false;
-            StateHasChanged();
-            return;
-        }
-        if (checkBoxValue == null)
-        {
-            checkBoxValue = true;
-            checkBoxText = "Только активные";
-
-            IsLoading = true;
-            StateHasChanged();
-            logEventTypeDTOs = _logEventTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
-            IsLoading = false;
-            StateHasChanged();
-            return;
-
-        }
-
-        if (checkBoxValue == true)
-        {
-            checkBoxValue = false;
-            checkBoxText = "Все записи";
-
-            IsLoading = true;
-            StateHasChanged();
-            logEventTypeDTOs = _logEventTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
-            IsLoading = false;
-            StateHasChanged();
-            return;
-        }
-    }
 
     void Reset()
     {
@@ -169,9 +120,6 @@
 
         if (firstRender)
         {
-            checkBoxValue = false;
-            checkBoxText = "Все записи";
-
             IsLoading = true;
             StateHasChanged();
             logEventTypeDTOs = _logEventTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;

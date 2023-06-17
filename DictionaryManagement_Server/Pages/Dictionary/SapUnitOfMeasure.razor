@@ -16,12 +16,6 @@
 
     <div class="col-6">
         <h4 class="card-title text-primary"><a href="/dictionary">Справочники</a> - <a href="/dictionary/SapUnitOfMeasure">Единицы измерения SAP</a></h4>
-
-        <div class="col-6">
-            <RadzenCheckBox @bind-Value=@checkBoxValue TriState="true" TValue="bool?" Change=@OnArchiveCheckBoxChange Name="ArchiveCheckBox" />
-            <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
-        </div>
-
     </div>
 
 
@@ -50,7 +44,7 @@
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="SapUnitOfMeasureDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                <RadzenDataGridColumn TItem="SapUnitOfMeasureDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
                     <Template Context="data">
                         <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                     </Template>
@@ -100,8 +94,6 @@
 @code {
     _Dialogs? _dialogs { get; set; }
 
-    public bool? checkBoxValue = null;
-    public string checkBoxText = "Все записи";
     public string DeleteMessage { get; set; } = "";
 
     RadzenDataGrid<SapUnitOfMeasureDTO> sapUnitOfMeasureDTOGrid;
@@ -114,50 +106,6 @@
 
     public bool IsLoading { get; set; }
 
-    void OnArchiveCheckBoxChange()
-    {
-        if (checkBoxValue == false)
-        {
-            checkBoxValue = null;
-            checkBoxText = "Только архивные";
-
-            IsLoading = true;
-            StateHasChanged();
-            sapUnitOfMeasureDTOs = _sapUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.ArchiveOnly).Result;
-            IsLoading = false;
-            StateHasChanged();
-            return;
-        }
-        if (checkBoxValue == null)
-        {
-            checkBoxValue = true;
-            checkBoxText = "Только активные";
-
-            IsLoading = true;
-            StateHasChanged();
-            sapUnitOfMeasureDTOs = _sapUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
-            IsLoading = false;
-            StateHasChanged();
-            return;
-
-        }
-
-        if (checkBoxValue == true)
-        {
-            checkBoxValue = false;
-            checkBoxText = "Все записи";
-
-            IsLoading = true;
-            StateHasChanged();
-            sapUnitOfMeasureDTOs = _sapUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.All).Result;
-            IsLoading = false;
-            StateHasChanged();
-            return;
-
-        }
-
-
-    }
 
     void Reset()
     {
@@ -176,9 +124,6 @@
 
         if (firstRender)
         {
-            checkBoxValue = false;
-            checkBoxText = "Все записи";
-
             IsLoading = true;
             StateHasChanged();
             sapUnitOfMeasureDTOs = _sapUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.All).Result;

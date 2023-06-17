@@ -19,8 +19,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<SapUnitOfMeasure> SapUnitOfMeasure { get; set; }
         public DbSet<MesUnitOfMeasure> MesUnitOfMeasure { get; set; }
         public DbSet<MesMaterial> MesMaterial { get; set; }
-        public DbSet<SapMaterial> SapMaterial { get; set; }
-        public DbSet<ErrorCriterion> ErrorCriterion { get; set; }
+        public DbSet<SapMaterial> SapMaterial { get; set; }      
         public DbSet<CorrectionReason> CorrectionReason { get; set; }
 
         public DbSet<MesParamSourceType> MesParamSourceType { get; set; }

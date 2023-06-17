@@ -33,7 +33,6 @@ builder.Services.AddScoped<ISapMaterialRepository, SapMaterialRepository>();
 builder.Services.AddScoped<IMesMaterialRepository, MesMaterialRepository>();
 builder.Services.AddScoped<IMesUnitOfMeasureRepository, MesUnitOfMeasureRepository>();
 builder.Services.AddScoped<ISapUnitOfMeasureRepository, SapUnitOfMeasureRepository>();
-builder.Services.AddScoped<IErrorCriterionRepository, ErrorCriterionRepository>();
 builder.Services.AddScoped<ICorrectionReasonRepository, CorrectionReasonRepository>();
 
 builder.Services.AddScoped<IMesParamSourceTypeRepository, MesParamSourceTypeRepository>();
