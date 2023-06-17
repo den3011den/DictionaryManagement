@@ -23,12 +23,12 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Required(ErrorMessage = "Наименование обязателено для заполнения")]
         [Display(Name = "Наименование")]
-        [MaxLength(200, ErrorMessage = "Длина наименования не может быть больше 200 символов")]
+        [MaxLength(500, ErrorMessage = "Длина наименования не может быть больше 500 символов")]
         public string Name { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Сокр. Наименование обязателено для заполнения")]
         [Display(Name = "Сокр. наименование")]
-        [MaxLength(100, ErrorMessage = "Длина сокр. наименование не может быть больше 100 символов")]
+        [MaxLength(500, ErrorMessage = "Длина сокр. наименование не может быть больше 500 символов")]
         public string ShortName { get; set; } = string.Empty;
         
         [Display(Name = "Ид родителя")]
