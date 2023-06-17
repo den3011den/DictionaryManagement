@@ -13,41 +13,44 @@
 
 @inject DialogService _dialogService
 
+@*<head>    
+    <style type="text/css">
+        .rz-celldata td {
+            padding: 0px;
+        }
+    </style>
+</head>*@
+
 
 <_Dialogs @ref="_dialogs"></_Dialogs>
 
-<div class="row mt-4">
+<div class="row">
 
     <div class="col-6">
         <h4 class="card-title text-primary"><a href="/administration">Администрирование</a> - <a href="/administration/MesDepartment">Производства</a></h4>
-@*        <div class="col-6">
-            <RadzenCheckBox @bind-Value=@checkBoxValue TriState="true" TValue="bool?" Change=@OnArchiveCheckBoxChange Name="ArchiveCheckBox" />
-            <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
-        </div>*@
     </div>
 
     @if (IsLoading != true)
     {
 
-        @* RowCollapse="@(args => mesDepartmentDTOGrid.ColumnsCollection.ToList().ForEach(c => c.ClearFilters()))"*@
-        @*        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@InsertRow" Disabled=@(sapToMesMaterialMappingDTOToInsert != null || sapToMesMaterialMappingDTOToUpdate != null) />*@
         <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@(args => EditRow(null))" />
         <RadzenDataGrid @bind-Settings="@MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" AllowColumnResize="true" ExpandMode="DataGridExpandMode.Single"
-                        Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"                       
-                        AllowFiltering="true" AllowPaging="true" PageSize="9" AllowSorting="true" AllowMultiColumnSorting="true"
+                        Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
+                        AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true"
                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                        FilterMode="FilterMode.Simple">            
+                        FilterMode="FilterMode.Simple"
+                        Density="Density.Compact"
+                        Style="height:780px">
             <Columns>
                 <RadzenDataGridColumn TItem="MesDepartmentDTO" Title="Наименование" Frozen="true" Width="340px">
                     <Template Context="data">
-                        @*<RadzenImage Path="@data.Photo" class="rz-gravatar me-1" />*@
-                        @*<strong>@data.MesCode @data.ShortName</strong>*@
+
                         <strong>@data.Name</strong>
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Id" Title="ИД" Width="60px" />
-                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="MesCode" Title="Код" Width="100px" />                
-                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ShortName" Title="Сокр. наименование" Width="340px" />
+                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Id" Title="ИД" Width="60px" FilterOperator="FilterOperator.Contains" />
+                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="MesCode" Title="Код" Width="100px" FilterOperator="FilterOperator.Contains" />
+                <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ShortName" Title="Сокр. наименование" Width="340px" FilterOperator="FilterOperator.Contains" />
 
                 <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="40px">
                     <Template Context="data">
@@ -70,16 +73,7 @@
                         }
 
                     </Template>
-@*                    <EditTemplate Context="mesDepartmentDTO">
-                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(mesMaterialDTO))">
-                        </RadzenButton>
-                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(mesMaterialDTO))">
-                        </RadzenButton>
-                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesMaterialDTO))">
-                        </RadzenButton>
-                    </EditTemplate>
-*@                </RadzenDataGridColumn>
-
+                </RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
 
@@ -98,13 +92,13 @@
 
 </div>
 
+<css>
+
+</css>
 
 @code {
 
     _Dialogs? _dialogs { get; set; }
-
-    //public bool? checkBoxValue = null;
-    //public string checkBoxText = "Все записи";
 
     IEnumerable<MesDepartmentDTO>? mesDepartmentDTOs;
 
@@ -117,7 +111,6 @@
     {
         await base.OnInitializedAsync();
 
-        //employees = dbContext.Employees.Where(e => e.ReportsTo == null);
     }
 
 
@@ -134,7 +127,7 @@
             StateHasChanged();
         }
         else
-        {            
+        {
             //var ffffff = 1;
         }
     }
@@ -178,84 +171,39 @@
 
     void RowRender(RowRenderEventArgs<MesDepartmentDTO> args)
     {
-        //args.Expandable = dbContext.Employees.Where(e => e.ReportsTo == args.Data.EmployeeID).Any();        
-        args.Expandable = _mesDepartmentRepository.HasChild(args.Data.Id).GetAwaiter().GetResult();
-        //args.Expandable = _mesDepartmentRepository.HasChild(args.Data.Id);
+        args.Expandable = _mesDepartmentRepository.HasChild(args.Data.Id).GetAwaiter().GetResult();        
     }
 
     void LoadChildData(DataGridLoadChildDataEventArgs<MesDepartmentDTO> args)
     {
         args.Data = _mesDepartmentRepository.GetChildList(args.Item.Id).GetAwaiter().GetResult();
-
     }
-
-    //protected override async Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    base.OnAfterRender(firstRender);
-
-    //    if (firstRender)
-    //    {
-    //        await grid.ExpandRow(mesDepartmentDTOs.FirstOrDefault());
-    //    }
-    //}
 
     async Task EditRow(MesDepartmentDTO mesDepartmentDTO)
     {
-        //mesMaterialDTOToUpdate = mesMaterialDTO;
-        //await mesMaterialDTOGrid.EditRow(mesMaterialDTO);
-
-        //IsLoading = true;
-
         MesDepartmentDTO dialogResult;
-
-        //await SaveStateAsync();
 
         if (mesDepartmentDTO == null)
         {
 
-            //IsLoading = false;
-            //this.StateHasChanged();
             dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Создать производство", new Dictionary<string, object>() { { "MesDepartmentId", 0 } });
         }
         else
         {
-            //IsLoading = false;
-            //this.StateHasChanged();
-            dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Изменить производство", new Dictionary<string, object>() { { "MesDepartmentId", mesDepartmentDTO.Id }});
+            dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Изменить производство", new Dictionary<string, object>() { { "MesDepartmentId", mesDepartmentDTO.Id } });
         }
 
 
         if (dialogResult != null)
         {
-            //var processResourcesVMDTOListTmp = processResourcesVMDTOList.ToList();
-            //processResourcesVMDTOListTmp.Add(dialogResult);
-            //processResourcesVMDTOList = processResourcesVMDTOListTmp.OrderBy(e => e.ProcessResources.InsideId).ThenBy(e => e.ProcessResources.ParentId);
-            /////// await LoadStateAsync();            
-            /////// mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();
 
-            //this.StateHasChanged();
-            ///////IsLoading = false;     
-            ///////mesDepartmentDTOGrid.Settings = _mesDepartmentGridSettings;
-            ///////MesDepartmentGridSettings = _mesDepartmentGridSettings;
-            ///////mesDepartmentDTOGrid.Reload();
-            
             IsLoading = true;
             await LoadStateAsync();
             StateHasChanged();
             mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();
             IsLoading = false;
             StateHasChanged();
-        }        
-
-        //DialogService.Clo (dialogResult
-
-        //////IsLoading = false;
-
-        //InvokeAsync(StateHasChanged);
-
-        //_navigationManager.NavigateTo("RPM/AddEquipmentToRecourse/" + parentId + "/" + insideId);
-
-
+        }
     }
 
 
@@ -283,24 +231,24 @@
                 }
             }
         }
-        
+
 
 
         //if (mesDepartmentDTOs.Contains(mesDepartmentDTO))
         //{
-            if (mesDepartmentDTO.IsArchive)
-            {
-                await _mesDepartmentRepository.Delete(mesDepartmentDTO.Id, SD.UpdateMode.RestoreFromArchive);
-                mesDepartmentDTO.IsArchive = false;
-                await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" восстановлено из архива");
-            }
-            else
-            {
-                await _mesDepartmentRepository.Delete(mesDepartmentDTO.Id, SD.UpdateMode.MoveToArchive);
-                mesDepartmentDTO.IsArchive = true;
-                await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" удалёно в архив");
-            }
-            await mesDepartmentDTOGrid.UpdateRow(mesDepartmentDTO);
+        if (mesDepartmentDTO.IsArchive)
+        {
+            await _mesDepartmentRepository.Delete(mesDepartmentDTO.Id, SD.UpdateMode.RestoreFromArchive);
+            mesDepartmentDTO.IsArchive = false;
+            await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" восстановлено из архива");
+        }
+        else
+        {
+            await _mesDepartmentRepository.Delete(mesDepartmentDTO.Id, SD.UpdateMode.MoveToArchive);
+            mesDepartmentDTO.IsArchive = true;
+            await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" удалёно в архив");
+        }
+        await mesDepartmentDTOGrid.UpdateRow(mesDepartmentDTO);
         //}
         //else
         //{
