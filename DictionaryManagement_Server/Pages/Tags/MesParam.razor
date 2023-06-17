@@ -6,6 +6,7 @@
 @using DictionaryManagement_DataAccess.Data.IntDB;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using System.Text.Json;
 
 
 @inject IJSRuntime _jsRuntime
@@ -30,10 +31,6 @@
 
     <div class="col-6">
         <h4 class="card-title text-primary"><a href="/tags">Тэги</a> - <a href="/tags/MesParam">Тэги СИР</a></h4>
-        <div class="col-6">
-            <RadzenCheckBox @bind-Value=@checkBoxValue TriState="true" TValue="bool?" Change=@OnArchiveCheckBoxChange Name="ArchiveCheckBox" />
-            <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
-        </div>
     </div>
 
 
@@ -42,7 +39,7 @@
 
         @*<div style="word-wrap: normal">*@
         <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тэг СИР" Click="@(args => EditRow(null))" />
-        <RadzenDataGrid @ref="mesParamDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" PageSize="5"  AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+        <RadzenDataGrid @bind-Settings="@MesParamGridSettings" @ref="mesParamDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" PageSize="5" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                         Data="@mesParamDTOs" TItem="MesParamDTO"
                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                         FilterMode="FilterMode.Simple"
@@ -73,8 +70,7 @@
                         </RadzenCard>
                 </Template>
                 </RadzenDataGridColumn>
-        
-                @*<RadzenDataGridColumn TItem="MesParamDTO" Property="Description" Title="Описание" Width="100px" />*@
+                     
                 <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceTypeDTOFK" Title="Источник" Width="80px" FilterProperty="MesParamSourceTypeDTOFK.ToStringValue" SortProperty="MesParamSourceTypeDTOFK.ToStringValue">
                     <Template Context="data1">
                         <RadzenCard Style="white-space:pre-wrap">
@@ -169,7 +165,7 @@
 
                 }
 
-                <RadzenDataGridColumn TItem="MesParamDTO" Property="IsAtchive" Title="Арх" Filterable="false" Sortable="false" Width="20px">
+                <RadzenDataGridColumn TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="20px">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool"/>
                         </Template>
@@ -215,26 +211,8 @@
 
     _Dialogs? _dialogs { get; set; }
 
-    public bool? checkBoxValue = null;
-    public string checkBoxText = "Все записи";
-
     IEnumerable<MesParamDTO>? mesParamDTOs;
-
-    //SD.AppFactoryMode = SD.FactoryMode.KOS;
-
     IEnumerable<MesParamSourceTypeDTO>? mesParamSourceTypeDTOs;
-    //IEnumerable<MesDepartmentDTO>? mesDepartmentDTOs;
-    //IEnumerable<SapEquipmentDTO>? sapEquipmentDTOs;
-    //IEnumerable<MesMaterialDTO>? mesMaterialDTOs;
-    //IEnumerable<SapMaterialDTO>? sapMaterialDTOs;
-    //IEnumerable<SapUnitOfMeasureDTO>? sapUnitOfMeasureDTOs;
-    //IEnumerable<MesUnitOfMeasureDTO>? mesUnitOfMeasureDTOs;
-
-    //    if (SD.AppFactoryMode == SD.FactoryMode.KOS)
-    //    {
-
-    //    }
-
 
     RadzenDataGrid<MesParamDTO> mesParamDTOGrid;
 
@@ -252,31 +230,53 @@
 
         if (firstRender)
         {
-            checkBoxValue = false;
-            checkBoxText = "Все записи";
 
             IsLoading = true;
+            await LoadStateAsync();
             StateHasChanged();
             mesParamDTOs = await _mesParamRepository.GetAll(SD.SelectDictionaryScope.All);
-
-            //mesParamSourceTypeDTOs = await _mesParamSourceTypeRepository.GetAll(SD.SelectDictionaryScope.All);
-            //mesDepartmentDTOs = await _mesDepartmentRepository.GetAll(SD.SelectDictionaryScope.All);
-            //sapEquipmentDTOs = await _sapEquipmentRepository.GetAll(SD.SelectDictionaryScope.All);
-            //if (SD.AppFactoryMode == SD.FactoryMode.NKNH)
-            //{
-            //    mesMaterialDTOs = await _mesMaterialRepository.GetAll(SD.SelectDictionaryScope.All);
-            //    mesUnitOfMeasureDTOs = await _mesUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.All);
-            //}
-            //if (SD.AppFactoryMode == SD.FactoryMode.KOS)
-            //{
-            //    sapMaterialDTOs = await _sapMaterialRepository.GetAll(SD.SelectDictionaryScope.All);
-            //    sapUnitOfMeasureDTOs = await _sapUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.All);
-            //}
-
             IsLoading = false;
             StateHasChanged();
         }
     }
+
+
+    DataGridSettings _mesParamGridSettings;
+    public DataGridSettings MesParamGridSettings
+    {
+        get
+        {
+            return _mesParamGridSettings;
+        }
+        set
+        {
+            if (_mesParamGridSettings != value)
+            {
+                _mesParamGridSettings = value;
+                InvokeAsync(SaveStateAsync);
+            }
+        }
+    }
+
+    private async Task LoadStateAsync()
+    {
+        await Task.CompletedTask;
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "MesParamGridSettings");
+        if (!string.IsNullOrEmpty(result))
+        {
+            _mesParamGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+        }
+    }
+
+    private async Task SaveStateAsync()
+    {
+        await Task.CompletedTask;
+
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesParamGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesParamGridSettings)}')");
+    }
+
+
 
     async Task EditRow(MesParamDTO mesParamDTO)
     {
@@ -289,36 +289,27 @@
 
         if (mesParamDTO == null)
         {
-            IsLoading = false;
-            this.StateHasChanged();
+            IsLoading = false;            
             dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 } }, new DialogOptions() { Width = $"{1000}px" });
         }
         else
         {
-            IsLoading = false;
-            this.StateHasChanged();
+            IsLoading = false;            
             dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Изменить тэг СИР", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id } }, new DialogOptions() { Width = $"{1000}px" });
         }
 
 
         if (dialogResult != null)
         {
-            //var processResourcesVMDTOListTmp = processResourcesVMDTOList.ToList();
-            //processResourcesVMDTOListTmp.Add(dialogResult);
-            //processResourcesVMDTOList = processResourcesVMDTOListTmp.OrderBy(e => e.ProcessResources.InsideId).ThenBy(e => e.ProcessResources.ParentId);
+            IsLoading = true;
+            await LoadStateAsync();
+            StateHasChanged();
             mesParamDTOs = await _mesParamRepository.GetAll(SD.SelectDictionaryScope.All);
             IsLoading = false;
-            this.StateHasChanged();
-        }
-
-        //DialogService.Clo (dialogResult
+            StateHasChanged();
+        }     
 
         IsLoading = false;
-
-        //InvokeAsync(StateHasChanged);
-
-        //_navigationManager.NavigateTo("RPM/AddEquipmentToRecourse/" + parentId + "/" + insideId);
-
 
     }
 
@@ -365,58 +356,7 @@
             await _jsRuntime.ToastrSuccess("Тэг СИР \"" + mesParamDTO.Name + "\" удалён в архив");
         }
         await mesParamDTOGrid.UpdateRow(mesParamDTO);
-        //}
-        //else
-        //{
-        //    mesParamDTOGrid.CancelEditRow(mesParamDTO);
-        //    await mesParamDTOGrid.Reload();
-        //}
+
     }
-
-    void OnArchiveCheckBoxChange()
-    {
-        if (checkBoxValue == false)
-        {
-            checkBoxValue = null;
-            checkBoxText = "Только архивные";
-
-            IsLoading = true;
-            //mesParamDTOs = Enumerable.Empty<MesParamDTO>();
-            StateHasChanged();            
-            mesParamDTOs = _mesParamRepository.GetAll(SD.SelectDictionaryScope.ArchiveOnly).Result;
-            IsLoading = false;
-            StateHasChanged();
-            return;
-        }
-        if (checkBoxValue == null)
-        {
-            checkBoxValue = true;
-            checkBoxText = "Только активные";
-
-            IsLoading = true;
-            //mesParamDTOs = Enumerable.Empty<MesParamDTO>();
-            StateHasChanged();            
-            mesParamDTOs = _mesParamRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
-            IsLoading = false;
-            StateHasChanged();
-            return;
-
-        }
-
-        if (checkBoxValue == true)
-        {
-            checkBoxValue = false;
-            checkBoxText = "Все записи";
-
-            IsLoading = true;
-            //mesParamDTOs = Enumerable.Empty<MesParamDTO>();
-            StateHasChanged();
-            mesParamDTOs = _mesParamRepository.GetAll(SD.SelectDictionaryScope.All).Result;
-            IsLoading = false;
-            StateHasChanged();
-            return;
-        }
-    }
-
 
 }
