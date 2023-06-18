@@ -96,7 +96,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .FirstOrDefaultAsync(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.DepartmentId == destDataTypeId && u.DepartmentId == departmentId).GetAwaiter().GetResult();
+                            .FirstOrDefaultAsync(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.DestDataTypeId == destDataTypeId && u.DepartmentId == departmentId).GetAwaiter().GetResult();
                 if (objToGet != null)
                 {
                     return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);
@@ -140,6 +140,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<ReportTemplateDTO> Update(ReportTemplateDTO objectToUpdateDTO)
         {
+            bool wasChanged = false;
+
             var objectToUpdate = _db.ReportTemplate
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
@@ -173,7 +175,7 @@ namespace DictionaryManagement_Business.Repository
                 else
                 {
                     if (objectToUpdate.ReportTemplateTypeId != objectToUpdateDTO.ReportTemplateTypeId)
-                    {
+                    {                        
                         objectToUpdate.ReportTemplateTypeId = objectToUpdateDTO.ReportTemplateTypeId;
                         var objectReportTemplateTypeToUpdate = _db.ReportTemplateType.
                                 FirstOrDefault(u => u.Id == objectToUpdateDTO.ReportTemplateTypeId);

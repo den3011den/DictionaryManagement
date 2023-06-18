@@ -16,6 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+   /* AddHubOptions(options => options.MaximumReceiveMessageSize = 60000 * 1024);*/
+builder.Services.AddMvc();
+    
 
 builder.WebHost.UseUrls("http://localhost:7776", "https://localhost:7777");
 builder.Services.AddHttpsRedirection(options => options.HttpsPort = 7777);
@@ -89,5 +92,13 @@ app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapRazorPages();
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
 
 app.Run();
