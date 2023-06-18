@@ -1,0 +1,265 @@
+﻿@page "/reports/ReportTemplate/AddEditReportTemplate/{ReportTemplateId}"
+
+
+@using DictionaryManagement_Business.Repository.IRepository;
+@using DictionaryManagement_Common;
+@using DictionaryManagement_Models.IntDBModels
+
+@inject IJSRuntime _jsRuntime
+
+@inject IReportTemplateRepository _reportTemplateRepository
+@inject IReportTemplateTypeRepository _reportTemplateTypeRepository
+@inject IDataTypeRepository _dataTypeRepository
+@inject IMesDepartmentRepository _mesDepartmentRepository
+
+@inject DialogService _dialogService
+
+<_Dialogs @ref="_dialogs"></_Dialogs>
+
+
+@if (IsLoading)
+{
+    <div class="text-center">
+        <img src="/images/loading.gif">
+    </div>
+}
+else
+{
+    <EditForm Model="ActiveReportTemplateDTO" OnValidSubmit="AddEditReportTemplateProcedure">
+        <DataAnnotationsValidator />
+
+        <RadzenRow Gap="1rem">
+            <RadzenColumn Size="12">
+                <RadzenStack>
+
+                    @if (ReportTemplateId != null && ReportTemplateId != Guid.Empty)
+                    {
+                        <RadzenFormField Text="ИД шаблона" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                            <RadzenNumeric @bind-Value="@ActiveReportTemplateDTO.Id" ReadOnly="true" />
+                        </RadzenFormField>
+
+                        <RadzenFormField Text="Время добавления" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                            <RadzenNumeric @bind-Value="@ActiveReportTemplateDTO.AddTime" ReadOnly="true" />
+                        </RadzenFormField>
+                        <ValidationMessage For="()=>ActiveReportTemplateDTO.AddTime"></ValidationMessage>
+
+                        <RadzenFormField Text="Кто добавил" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                            <RadzenTextBox @bind-Value="@ActiveReportTemplateDTO.AddUserDTOFK.UserName" ReadOnly="true" />
+                        </RadzenFormField>
+                        <ValidationMessage For="()=>ActiveReportTemplateDTO.AddUserDTOFK.UserName"></ValidationMessage>
+
+                    }
+
+                    <RadzenFormField Text="Тип шаблона отчёта" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                        <RadzenDropDown @ref=@reportTemplateTypeDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                                        Data=@ReportTemplateTypeDTOList TextProperty="Name" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.ReportTemplateTypeId" Style="width: 100%; max-width: 700px;"
+                                        Change=@(args => FillDescription()) />
+                    </RadzenFormField>
+                    <ValidationMessage For="()=>ActiveReportTemplateDTO.ReportTemplateTypeId"></ValidationMessage>
+
+                    <RadzenFormField Text="Тип выходных данных" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                        <RadzenDropDown @ref=@dataTypeDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                                        Data=@DataTypeDTOList TextProperty="Name" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.DestDataTypeId" Style="width: 100%; max-width: 700px;"
+                                        Change=@(args => FillDescription()) />
+                    </RadzenFormField>
+                    <ValidationMessage For="()=>ActiveReportTemplateDTO.DestDataTypeId"></ValidationMessage>
+
+                    <RadzenFormField Text="Производство" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                        <RadzenDropDown @ref=@mesDepartmentDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                                        Data=@MesDepartmentDTOList TextProperty="ShortName" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.DepartmentId" Style="width: 100%; max-width: 700px;"
+                                        Change=@(args => FillDescription()) />
+                    </RadzenFormField>
+                    <ValidationMessage For="()=>ActiveReportTemplateDTO.DepartmentId"></ValidationMessage>
+
+                    <RadzenFormField Text="Имя Файла" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                        <RadzenNumeric @bind-Value="@ActiveReportTemplateDTO.TemplateFileName" ReadOnly="true" />
+                    </RadzenFormField>
+
+                    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Описание (заполняется автоматически)</RadzenText>
+                    <RadzenTextArea Style="width: 100%; max-width: 700px;" @bind-Value="@ActiveReportTemplateDTO.Description" ReadOnly="true" Rows="5" />
+                    <ValidationMessage For="()=>ActiveReportTemplateDTO.Description"></ValidationMessage>
+
+                </RadzenStack>
+            </RadzenColumn>
+        </RadzenRow>
+
+
+
+        <div class="form-group py-2">
+            <button class="btn btn-primary">@Title</button>
+            <NavLink @onclick="(() => OnClickCancel())" class="btn btn-secondary">Отмена</NavLink>
+        </div>
+    </EditForm>
+}
+
+
+
+@code {
+
+    _Dialogs? _dialogs { get; set; }
+
+    [Parameter]
+    public Guid ReportTemplateId { get; set; }
+
+    Variant variant = Variant.Outlined;
+
+    public bool IsLoading { get; set; }
+
+
+    IEnumerable<MesDepartmentDTO>? MesDepartmentDTOList { get; set; } = new List<MesDepartmentDTO>();
+    IEnumerable<ReportTemplateTypeDTO>? ReportTemplateTypeDTOList { get; set; } = new List<ReportTemplateTypeDTO>();
+    IEnumerable<DataTypeDTO>? DataTypeDTOList { get; set; } = new List<DataTypeDTO>();
+
+    public ReportTemplateDTO ActiveReportTemplateDTO { get; set; }
+
+    private string Title { get; set; } = "Создать шаблон отчёта";
+
+    RadzenDropDown<int> mesDepartmentDropDown;
+    RadzenDropDown<int> reportTemplateTypeDropDown;
+    RadzenDropDown<int> dataTypeDropDown;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        IsLoading = true;
+        StateHasChanged();
+
+        if (ReportTemplateId == null || ReportTemplateId == Guid.Empty)
+        {
+            ActiveReportTemplateDTO = new ReportTemplateDTO();
+        }
+        else
+        {
+            ActiveReportTemplateDTO = await _reportTemplateRepository.GetById(ReportTemplateId);
+            Title = "Изменить шаблон отчёта";
+        }
+
+        IsLoading = false;
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+            IsLoading = true;
+            StateHasChanged();
+
+            if (ReportTemplateId == null || ReportTemplateId == Guid.Empty)
+            {
+                ActiveReportTemplateDTO = new ReportTemplateDTO();
+            }
+            else
+            {
+                ActiveReportTemplateDTO = await _reportTemplateRepository.GetById(ReportTemplateId);
+                Title = "Изменить шаблон отчёта";
+            }
+
+            MesDepartmentDTOList = await _mesDepartmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
+            ReportTemplateTypeDTOList = await _reportTemplateTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
+            DataTypeDTOList = await _dataTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
+
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+
+    private async Task AddEditReportTemplateProcedure()
+    {
+
+        if (ReportTemplateId == null || ReportTemplateId == Guid.Empty)
+        { // создание
+            var foundByMult = await _reportTemplateRepository.GetByReportTemplateTypeIdAndDestDataTypeIdAndDepartmentId(ActiveReportTemplateDTO.ReportTemplateTypeId,
+                ActiveReportTemplateDTO.DestDataTypeId, ActiveReportTemplateDTO.DepartmentId);
+            if (foundByMult != null)
+            {
+                await _jsRuntime.ToastrError("Уже есть шаблон отчёта с типом: '" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "' Типом вых данных: '"
+                    + ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "' для производства: '" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "'");
+                return;
+            }
+
+            ActiveReportTemplateDTO.Description = "Шаблон типа: \"" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "\" c вых данными: \"" +
+                ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "\" для производства: \"" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "\"";
+
+            await _reportTemplateRepository.Create(ActiveReportTemplateDTO);
+
+            await _jsRuntime.ToastrSuccess("Шаблон \"" + ActiveReportTemplateDTO.Description + "\" создан");
+            _dialogService.Close(ActiveReportTemplateDTO);
+
+        }
+        else
+        { // изменение производства
+
+            var foundByMult = await _reportTemplateRepository.GetByReportTemplateTypeIdAndDestDataTypeIdAndDepartmentId(ActiveReportTemplateDTO.ReportTemplateTypeId,
+                ActiveReportTemplateDTO.DestDataTypeId, ActiveReportTemplateDTO.DepartmentId);
+
+            if ((foundByMult != null) && (foundByMult.Id != ActiveReportTemplateDTO.Id))
+            {
+                await _jsRuntime.ToastrError("Уже есть шаблон отчёта с типом: '" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "' Типом вых данных: '"
+                    + ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "' для производства: '" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "'");
+                return;
+            }
+
+            ActiveReportTemplateDTO.Description = "Шаблон типа: \"" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "\" c вых данными: \"" +
+                ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "\" для производства: \"" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "\"";
+
+            await _reportTemplateRepository.Update(ActiveReportTemplateDTO);
+
+            await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + ActiveReportTemplateDTO.Id.ToString() + "\" изменён");
+
+            _dialogService.Close(ActiveReportTemplateDTO);
+
+
+        }
+
+    }
+
+    private async Task FillDescription()
+    {
+        if (ActiveReportTemplateDTO.ReportTemplateTypeId != null)
+        {
+            ActiveReportTemplateDTO.ReportTemplateTypeDTOFK = _reportTemplateTypeRepository.Get(ActiveReportTemplateDTO.ReportTemplateTypeId).GetAwaiter().GetResult();
+        }
+
+        if (ActiveReportTemplateDTO.DepartmentId != null)
+        {
+            ActiveReportTemplateDTO.MesDepartmentDTOFK = _mesDepartmentRepository.GetById(ActiveReportTemplateDTO.DepartmentId).GetAwaiter().GetResult();
+        }
+
+        if (ActiveReportTemplateDTO.DestDataTypeId != null)
+        {
+            ActiveReportTemplateDTO.DestDataTypeDTOFK = _dataTypeRepository.Get(ActiveReportTemplateDTO.DestDataTypeId).GetAwaiter().GetResult();
+        }
+
+        var repTemplateTypeName = "";
+        var dataTypeName = "";
+        var depName = "";
+
+        if (ActiveReportTemplateDTO.ReportTemplateTypeDTOFK != null)
+        {
+            repTemplateTypeName = (String.IsNullOrEmpty(ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name)) ? "" : ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name;
+        }
+        if (ActiveReportTemplateDTO.DestDataTypeDTOFK != null)
+        {
+            dataTypeName = (String.IsNullOrEmpty(ActiveReportTemplateDTO.DestDataTypeDTOFK.Name)) ? "" : ActiveReportTemplateDTO.DestDataTypeDTOFK.Name;
+        }
+        if (ActiveReportTemplateDTO.MesDepartmentDTOFK != null)
+        {
+            depName = (String.IsNullOrEmpty(ActiveReportTemplateDTO.MesDepartmentDTOFK.ShortName)) ? ("") : (ActiveReportTemplateDTO.MesDepartmentDTOFK.ShortName);
+        }
+
+        ActiveReportTemplateDTO.Description = "Шаблон типа: \"" + repTemplateTypeName + "\" c вых данными: \"" +
+                dataTypeName + "\" для производства: \"" + depName + "\"";
+
+        //StateHasChanged();
+    }
+
+    private async Task OnClickCancel()
+    {
+        _dialogService.Close(null);
+    }
+}

@@ -86,6 +86,25 @@ namespace DictionaryManagement_Business.Repository
             return null;
         }
 
+        public async Task<ReportTemplateDTO> GetByReportTemplateTypeIdAndDestDataTypeIdAndDepartmentId(int reportTemplateTypeId, int destDataTypeId, int departmentId)
+        {
+
+            if (reportTemplateTypeId > 0 && destDataTypeId > 0 && departmentId > 0)
+            { 
+                var objToGet = _db.ReportTemplate
+                            .Include("AddUserFK")
+                            .Include("ReportTemplateTypeFK")
+                            .Include("DestDataTypeFK")
+                            .Include("MesDepartmentFK")
+                            .FirstOrDefaultAsync(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.DepartmentId == destDataTypeId && u.DepartmentId == departmentId).GetAwaiter().GetResult();
+                if (objToGet != null)
+                {
+                    return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);
+                }
+            }
+            return null;
+        }
+
 
         public async Task<IEnumerable<ReportTemplateDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
         {

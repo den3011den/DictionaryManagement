@@ -73,104 +73,6 @@
                 </RadzenDataGridColumn>
 
 
-@*                <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="AddUserDTOFK" Title="Добавил" Width="100px">
-                    <Template Context="data1">
-                        <RadzenCard Style="white-space:pre-wrap">
-                            <RadzenText TextStyle="TextStyle.Body2">
-                                <strong>
-                                    @data1.Name
-                                </strong>
-                            </RadzenText>
-                        </RadzenCard>
-                    </Template>
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceTypeDTOFK" Title="Источник" Width="80px" FilterProperty="MesParamSourceTypeDTOFK.ToStringValue" SortProperty="MesParamSourceTypeDTOFK.ToStringValue">
-                    <Template Context="data1">
-                        <RadzenCard Style="white-space:pre-wrap">
-                            <RadzenText TextStyle="TextStyle.Body2">
-                                <strong>
-                                    @data1.MesParamSourceTypeDTOFK
-                                </strong>
-                            </RadzenText>
-                        </RadzenCard>
-                    </Template>
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceLink" Title="Тэг источника" Width="100px">
-
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="MesParamDTO" Property="SapEquipmentSourceDTOFK" Title="SAP источник" Width="100px" FilterProperty="SapEquipmentSourceDTOFK.ToStringValue" SortProperty="SapEquipmentSourceDTOFK.ToStringValue">
-                    <Template Context="data1">
-                        <RadzenCard Style="white-space:pre-wrap">
-                            <RadzenText TextStyle="TextStyle.Body2">
-                                @data1.SapEquipmentSourceDTOFK
-                            </RadzenText>
-                        </RadzenCard>
-                    </Template>
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="MesParamDTO" Property="SapEquipmentDestDTOFK" Title="SAP приемник" Width="100px" FilterProperty="SapEquipmentDestDTOFK.ToStringValue" SortProperty="SapEquipmentDestDTOFK.ToStringValue">
-                    <Template Context="data1">
-                        <RadzenCard Style="white-space:pre-wrap">
-                            <RadzenText TextStyle="TextStyle.Body2">
-                                @data1.SapEquipmentDestDTOFK
-                            </RadzenText>
-                        </RadzenCard>
-                    </Template>
-                </RadzenDataGridColumn>
-
-
-                @if (SD.AppFactoryMode == SD.FactoryMode.NKNH)
-                {
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesMaterialDTOFK" Title="Материал MES" Width="70px" FilterProperty="MesMaterialDTOFK.ToStringValue" SortProperty="MesMaterialDTOFK.ToStringValue">
-                        <Template Context="data1">
-                            <RadzenCard Style="white-space:pre-wrap">
-                                <RadzenText TextStyle="TextStyle.Body2">
-                                    @data1.MesMaterialDTOFK
-                                </RadzenText>
-                            </RadzenCard>
-                        </Template>
-                    </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesUnitOfMeasureDTOFK" Title="Ед.изм MES" Width="65px" FilterProperty="MesUnitOfMeasureDTOFK.ToStringValue" SortProperty="MesUnitOfMeasureDTOFK.ToStringValue">
-                        <Template Context="data1">
-                            <RadzenCard Style="white-space:pre-wrap">
-                                <RadzenText TextStyle="TextStyle.Body2">
-                                    @data1.MesUnitOfMeasureDTOFK
-                                </RadzenText>
-                            </RadzenCard>
-                        </Template>
-                    </RadzenDataGridColumn>
-                }
-
-                @if (SD.AppFactoryMode == SD.FactoryMode.KOS)
-                {
-
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapMaterialDTOFK" Title="Материал SAP" Width="70px" FilterProperty="SapMaterialDTOFK.ToStringValue" SortProperty="SapMaterialDTOFK.ToStringValue">
-                        <Template Context="data1">
-                            <RadzenCard Style="white-space:pre-wrap">
-                                <RadzenText TextStyle="TextStyle.Body2">
-                                    @data1.SapMaterialDTOFK
-                                </RadzenText>
-                            </RadzenCard>
-                        </Template>
-                    </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapUnitOfMeasureDTOFK" Title="Ед.изм SAP" Width="65px" FilterProperty="SapUnitOfMeasureDTOFK.ToStringValue" SortProperty="SapUnitOfMeasureDTOFK.ToStringValue">
-                        <Template Context="data1">
-                            <RadzenCard Style="white-space:pre-wrap">
-                                <RadzenText TextStyle="TextStyle.Body2">
-                                    @data1.SapUnitOfMeasureDTOFK
-                                </RadzenText>
-                            </RadzenCard>
-                        </Template>
-                    </RadzenDataGridColumn>
-
-
-                }*@
-
                 <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="20px">
                     <Template Context="data">
                         <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
@@ -291,12 +193,12 @@
         if (reportTemplateDTO == null)
         {
             IsLoading = false;
-            //dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Добавить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", 0 } }, new DialogOptions() { Width = $"{1000}px" });
+            dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Добавить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", Guid.Empty } }, new DialogOptions() { Width = $"{1000}px" });
         }
         else
         {
             IsLoading = false;
-            //dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Изменить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", reportTemplateDTO.Id } }, new DialogOptions() { Width = $"{1000}px" });
+            dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Изменить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", reportTemplateDTO.Id } }, new DialogOptions() { Width = $"{1000}px" });
         }
 
 

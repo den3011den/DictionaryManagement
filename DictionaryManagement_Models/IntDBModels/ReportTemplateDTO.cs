@@ -29,7 +29,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public UserDTO AddUserDTOFK { get; set; }
 
         [Display(Name = "Описание")]
-        public string Description { get; set; }
+        public string Description { get; set; } = "Шаблон типа: \"\" c вых данными: \"\" для производства: \"\"";
 
         [Required(ErrorMessage = "Ид типа отчёта обязательно")]
         [Display(Name = "Ид типа отчёта")]
