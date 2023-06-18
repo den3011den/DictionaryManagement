@@ -14,7 +14,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         [Key]        
         [Required]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public DateTime AddTime { get; set; }        
@@ -22,7 +22,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public string? Description { get; set; }
 
         [Required]
-        public string AddUserId { get; set; }
+        public Guid AddUserId { get; set; }
         
         [ForeignKey("AddUserId")]
         public User AddUserFK { get; set; }
@@ -40,6 +40,12 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         [ForeignKey("DestDataTypeId")]
         public DataType DestDataTypeFK { get; set; }
+
+        [Required]
+        public int DepartmentId { get; set; }
+
+        [ForeignKey("DepartmentId")]
+        public MesDepartment MesDepartmentFK { get; set; }
 
         [Required]
         public string TemplateFileName { get; set; }

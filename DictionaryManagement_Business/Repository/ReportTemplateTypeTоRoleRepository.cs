@@ -40,10 +40,10 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>(addedReportTemplateTypeTоRole.Entity);
         }
 
-        public async Task<ReportTemplateTypeTоRoleDTO> Get(int reportTemplateId, string roleId)
+        public async Task<ReportTemplateTypeTоRoleDTO> Get(int reportTemplateTypeId, Guid roleId)
         {
             var objToGet = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").
-                            FirstOrDefaultAsync(u => u.ReportTemplateTypeId == reportTemplateId && u.RoleId.Trim().ToUpper() == roleId.Trim().ToUpper()).GetAwaiter().GetResult();
+                            FirstOrDefaultAsync(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.RoleId == roleId).GetAwaiter().GetResult();
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>(objToGet);

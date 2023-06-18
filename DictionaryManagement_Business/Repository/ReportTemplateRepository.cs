@@ -4,6 +4,7 @@ using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,8 +31,8 @@ namespace DictionaryManagement_Business.Repository
 
             ReportTemplate objectToAdd = new ReportTemplate();
 
-            if (String.IsNullOrEmpty(objectToAddDTO.Id))
-                objectToAdd.Id = Guid.NewGuid().ToString();
+            if (objectToAddDTO.Id != null && objectToAddDTO.Id != Guid.Empty)
+                objectToAdd.Id = Guid.NewGuid();
             else
                 objectToAdd.Id = objectToAddDTO.Id;
 
@@ -40,10 +41,11 @@ namespace DictionaryManagement_Business.Repository
             else
                 objectToAdd.AddTime = objectToAddDTO.AddTime;
 
-            objectToAdd.AddUserId = objectToAddDTO.AddUserId;            
+            objectToAdd.AddUserId = objectToAddDTO.AddUserId;
             objectToAdd.Description = objectToAddDTO.Description;
             objectToAdd.ReportTemplateTypeId = objectToAddDTO.ReportTemplateTypeId;
             objectToAdd.DestDataTypeId = objectToAddDTO.DestDataTypeId;
+            objectToAdd.DepartmentId = objectToAddDTO.DepartmentId;
             objectToAdd.TemplateFileName = objectToAddDTO.TemplateFileName;
             objectToAdd.IsArchive = objectToAddDTO.IsArchive;
 
@@ -53,13 +55,14 @@ namespace DictionaryManagement_Business.Repository
         }
 
 
-        public async Task<ReportTemplateDTO> GetById(string id)
+        public async Task<ReportTemplateDTO> GetById(Guid id)
         {
             var objToGet = _db.ReportTemplate
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
-                            .FirstOrDefaultAsync(u => u.Id.Trim().ToUpper() == id.Trim().ToUpper()).GetAwaiter().GetResult();
+                            .Include("MesDepartmentFK")
+                            .FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);
@@ -74,6 +77,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
+                            .Include("MesDepartmentFK")
                             .FirstOrDefaultAsync(u => u.TemplateFileName.Trim().ToUpper() == templateFileName.Trim().ToUpper()).GetAwaiter().GetResult();
             if (objToGet != null)
             {
@@ -91,6 +95,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
+                            .Include("MesDepartmentFK")
                             .Where(u => u.IsArchive == true);
                 return _mapper.Map<IEnumerable<ReportTemplate>, IEnumerable<ReportTemplateDTO>>(hhh2);
             }
@@ -100,6 +105,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
+                            .Include("MesDepartmentFK")
                             .Where(u => u.IsArchive != true);
                 return _mapper.Map<IEnumerable<ReportTemplate>, IEnumerable<ReportTemplateDTO>>(hhh3);
 
@@ -107,7 +113,8 @@ namespace DictionaryManagement_Business.Repository
             var hhh1 = _db.ReportTemplate
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
-                            .Include("DestDataTypeFK");
+                            .Include("DestDataTypeFK")
+                            .Include("MesDepartmentFK");
             return _mapper.Map<IEnumerable<ReportTemplate>, IEnumerable<ReportTemplateDTO>>(hhh1);
         }
 
@@ -118,13 +125,14 @@ namespace DictionaryManagement_Business.Repository
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
-                        .FirstOrDefault(u => u.Id.Trim().ToUpper() == objectToUpdateDTO.Id.Trim().ToUpper());
+                            .Include("MesDepartmentFK")
+                        .FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)
             {
-                if (objectToUpdateDTO.AddUserId == null)
+                if (objectToUpdateDTO.AddUserId == null || objectToUpdateDTO.AddUserId == Guid.Empty)
                 {
-                    objectToUpdate.AddUserId = null;
+                    objectToUpdate.AddUserId = Guid.Empty;
                     objectToUpdate.AddUserFK = null;
                 }
                 else
@@ -133,12 +141,12 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.AddUserId = objectToUpdateDTO.AddUserId;
                         var objectUserToUpdate = _db.User.
-                                FirstOrDefault(u => u.Id.Trim().ToUpper() == objectToUpdateDTO.AddUserId.Trim().ToUpper());
+                                FirstOrDefault(u => u.Id == objectToUpdateDTO.AddUserId);
                         objectToUpdate.AddUserFK = objectUserToUpdate;
                     }
                 }
 
-                if (objectToUpdateDTO.ReportTemplateTypeId <= 0 )
+                if (objectToUpdateDTO.ReportTemplateTypeId <= 0)
                 {
                     objectToUpdate.ReportTemplateTypeId = 0;
                     objectToUpdate.ReportTemplateTypeFK = null;
@@ -170,6 +178,21 @@ namespace DictionaryManagement_Business.Repository
                     }
                 }
 
+                if (objectToUpdateDTO.DepartmentId <= 0)
+                {
+                    objectToUpdate.DepartmentId = 0;
+                    objectToUpdate.MesDepartmentFK = null;
+                }
+                else
+                {
+                    if (objectToUpdate.DepartmentId != objectToUpdateDTO.DepartmentId)
+                    {
+                        objectToUpdate.DepartmentId = objectToUpdateDTO.DepartmentId;
+                        var objectMesDepartmentToUpdate = _db.MesDepartment.FirstOrDefault(u => u.Id == objectToUpdateDTO.DepartmentId);
+                        objectToUpdate.MesDepartmentFK = objectMesDepartmentToUpdate;
+                    }
+                }
+
 
                 if (objectToUpdateDTO.AddTime != objectToUpdate.AddTime)
                     objectToUpdate.AddTime = objectToUpdateDTO.AddTime;
@@ -189,11 +212,11 @@ namespace DictionaryManagement_Business.Repository
 
         }
 
-        public async Task<int> Delete(string id, UpdateMode updateMode = UpdateMode.Update)
+        public async Task<int> Delete(Guid id, UpdateMode updateMode = UpdateMode.Update)
         {
-            if (!String.IsNullOrEmpty(id))
+            if (id != null && id != Guid.Empty)
             {
-                var objectToDelete = _db.ReportTemplate.FirstOrDefault(u => u.Id.Trim().ToUpper() == id.Trim().ToUpper());
+                var objectToDelete = _db.ReportTemplate.FirstOrDefault(u => u.Id == id);
                 if (objectToDelete != null)
                 {
                     if (updateMode == SD.UpdateMode.MoveToArchive)

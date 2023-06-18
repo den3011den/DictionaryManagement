@@ -14,7 +14,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         [Key]        
         [Required]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string Login { get; set; }        

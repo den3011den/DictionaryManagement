@@ -20,7 +20,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DateTime LogTime { get; set; }
 
         [Required]
-        public string ReportEntityId { get; set; }
+        public Guid ReportEntityId { get; set; }
         [ForeignKey("ReportEntityId")]
         public ReportEntity ReportEntityFK { get; set; }
 

@@ -14,7 +14,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "Ид записи")]
         [Required(ErrorMessage = "ИД обязателен")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Время добавления обязательно")]        
         [Display(Name = "Время добавления")]
@@ -22,7 +22,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Required(ErrorMessage = "ИД добавившего пользователя обязательно")]
         [Display(Name = "Ид добавившего пользователя")]
-        public string AddUserId { get; set; }
+        public Guid AddUserId { get; set; }
         
         [Required(ErrorMessage = "Выбор пользователя обязателен")]
         [Display(Name = "Пользователь")]
@@ -47,14 +47,20 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Тип данных")]
         public DataTypeDTO DestDataTypeDTOFK { get; set; }
 
+        [Required(ErrorMessage = "Ид производства обязательно")]
+        [Display(Name = "Ид производства")]
+        public int DepartmentId { get; set; }
+
+        [Required(ErrorMessage = "Выбор производства обязателен")]
+        [Display(Name = "Производство")]
+        public MesDepartmentDTO MesDepartmentDTOFK { get; set; }
+
         [Display(Name = "Имя файла")]
         [Required(ErrorMessage = "Выбор файла обязателен")]
         public string TemplateFileName { get; set; }
 
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
-
-
 
     }
 }

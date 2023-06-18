@@ -74,20 +74,14 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<ReportTemplate, ReportTemplateDTO>()
                 .ForMember(dest => dest.AddUserDTOFK, opt => opt.MapFrom(src => src.AddUserFK))
                 .ForMember(dest => dest.ReportTemplateTypeDTOFK, opt => opt.MapFrom(src => src.ReportTemplateTypeFK))
-                .ForMember(dest => dest.DestDataTypeDTOFK, opt => opt.MapFrom(src => src.DestDataTypeFK));
+                .ForMember(dest => dest.DestDataTypeDTOFK, opt => opt.MapFrom(src => src.DestDataTypeFK))
+                .ForMember(dest => dest.MesDepartmentDTOFK, opt => opt.MapFrom(src => src.MesDepartmentFK));
 
             CreateMap<ReportTemplateDTO, ReportTemplate>()
                     .ForMember(dest => dest.AddUserFK, opt => opt.MapFrom(src => src.AddUserDTOFK))
                     .ForMember(dest => dest.ReportTemplateTypeFK, opt => opt.MapFrom(src => src.ReportTemplateTypeDTOFK))
-                    .ForMember(dest => dest.DestDataTypeFK, opt => opt.MapFrom(src => src.DestDataTypeDTOFK));
-
-            CreateMap<ReportTemplateTоDepartment, ReportTemplateTоDepartmentDTO>()
-                    .ForMember(dest => dest.ReportTemplateDTOFK, opt => opt.MapFrom(src => src.ReportTemplateFK))
-                    .ForMember(dest => dest.DepartmentDTOFK, opt => opt.MapFrom(src => src.DepartmentFK));
-
-            CreateMap<ReportTemplateTоDepartmentDTO, ReportTemplateTоDepartment>()
-                    .ForMember(dest => dest.ReportTemplateFK, opt => opt.MapFrom(src => src.ReportTemplateDTOFK))
-                    .ForMember(dest => dest.DepartmentFK, opt => opt.MapFrom(src => src.DepartmentDTOFK));
+                    .ForMember(dest => dest.DestDataTypeFK, opt => opt.MapFrom(src => src.DestDataTypeDTOFK))
+                    .ForMember(dest => dest.MesDepartmentFK, opt => opt.MapFrom(src => src.MesDepartmentDTOFK));
 
             CreateMap<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>()
                     .ForMember(dest => dest.ReportTemplateTypeDTOFK, opt => opt.MapFrom(src => src.ReportTemplateTypeFK))

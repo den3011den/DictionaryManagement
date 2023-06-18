@@ -83,9 +83,9 @@ namespace DictionaryManagement_Business.Repository
 
             if (objectToUpdate != null)
             {
-                if (String.IsNullOrEmpty(objectToUpdateDTO.ReportEntityId))
+                if (objectToUpdateDTO.ReportEntityId == null || objectToUpdateDTO.ReportEntityId == Guid.Empty)
                 {
-                    objectToUpdate.ReportEntityId = null;
+                    objectToUpdate.ReportEntityId = Guid.Empty;
                     objectToUpdate.ReportEntityFK = null;
                 }
                 else
@@ -94,7 +94,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.ReportEntityId = objectToUpdateDTO.ReportEntityId;
                         var objectReportEntityToUpdate = _db.ReportEntity.
-                                FirstOrDefault(u => u.Id.Trim().ToUpper() == objectToUpdateDTO.ReportEntityId.Trim().ToUpper());
+                                FirstOrDefault(u => u.Id == objectToUpdateDTO.ReportEntityId);
                         objectToUpdate.ReportEntityFK = objectReportEntityToUpdate;
                     }
                 }

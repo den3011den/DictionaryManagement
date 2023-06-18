@@ -39,10 +39,10 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<UserToRole, UserToRoleDTO>(addedUserToRole.Entity);
         }
 
-        public async Task<UserToRoleDTO> Get(string userId, string roleId)
+        public async Task<UserToRoleDTO> Get(Guid userId, Guid roleId)
         {
             var objToGet = _db.UserToRole.Include("UserFK").Include("RoleFK").
-                            FirstOrDefaultAsync(u => u.UserId.Trim().ToUpper() == userId.Trim().ToUpper() && u.RoleId.Trim().ToUpper() == roleId.Trim().ToUpper()).GetAwaiter().GetResult();
+                            FirstOrDefaultAsync(u => u.UserId == userId && u.RoleId == roleId).GetAwaiter().GetResult();
             if (objToGet != null)
             {
                 return _mapper.Map<UserToRole, UserToRoleDTO>(objToGet);

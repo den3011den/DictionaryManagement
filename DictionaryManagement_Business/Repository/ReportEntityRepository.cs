@@ -29,8 +29,8 @@ namespace DictionaryManagement_Business.Repository
 
             ReportEntity objectToAdd = new ReportEntity();
 
-            if (String.IsNullOrEmpty(objectToAddDTO.Id))
-                objectToAdd.Id = Guid.NewGuid().ToString();
+            if (objectToAddDTO.Id == null || objectToAddDTO.Id == Guid.Empty)
+                objectToAdd.Id = Guid.NewGuid();
             else
                 objectToAdd.Id = objectToAddDTO.Id;
 
@@ -57,14 +57,14 @@ namespace DictionaryManagement_Business.Repository
         }
 
 
-        public async Task<ReportEntityDTO> GetById(string id)
+        public async Task<ReportEntityDTO> GetById(Guid id)
         {
             var objToGet = _db.ReportEntity
                             .Include("ReportTemplateFK")
                             .Include("ReportDepartmentFK")
                             .Include("DownloadUserFK")
                             .Include("UploadUserFK")
-                            .FirstOrDefaultAsync(u => u.Id.Trim().ToUpper() == id.Trim().ToUpper()).GetAwaiter().GetResult();
+                            .FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
             if (objToGet != null)
             {
                 return _mapper.Map<ReportEntity, ReportEntityDTO>(objToGet);
@@ -112,13 +112,13 @@ namespace DictionaryManagement_Business.Repository
                 .Include("ReportDepartmentFK")
                 .Include("DownloadUserFK")
                 .Include("UploadUserFK")
-               .FirstOrDefault(u => u.Id.Trim().ToUpper() == objectToUpdateDTO.Id.Trim().ToUpper());
+               .FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)
             {
-                if (String.IsNullOrEmpty(objectToUpdateDTO.ReportTemplateId))
+                if (objectToUpdateDTO.ReportTemplateId == null || objectToUpdateDTO.ReportTemplateId == Guid.Empty)
                 {
-                    objectToUpdate.ReportTemplateId = null;
+                    objectToUpdate.ReportTemplateId = Guid.Empty;
                     objectToUpdate.ReportTemplateFK = null;
                 }
                 else
@@ -127,7 +127,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.ReportTemplateId = objectToUpdateDTO.ReportTemplateId;
                         var objectReportTemplateToUpdate = _db.ReportTemplate.
-                                FirstOrDefault(u => u.Id.Trim().ToUpper() == objectToUpdateDTO.ReportTemplateId.Trim().ToUpper());
+                                FirstOrDefault(u => u.Id == objectToUpdateDTO.ReportTemplateId);
                         objectToUpdate.ReportTemplateFK = objectReportTemplateToUpdate;
                     }
                 }
@@ -148,9 +148,9 @@ namespace DictionaryManagement_Business.Repository
                     }
                 }
 
-                if (objectToUpdateDTO.DownloadUserId == null)
+                if (objectToUpdateDTO.DownloadUserId == null || objectToUpdateDTO.DownloadUserId == Guid.Empty)
                 {
-                    objectToUpdate.DownloadUserId = null;
+                    objectToUpdate.DownloadUserId = Guid.Empty;
                     objectToUpdate.DownloadUserFK = null;
                 }
                 else
@@ -159,7 +159,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.DownloadUserId = objectToUpdateDTO.DownloadUserId;
                         var objectDataTypeToUpdate = _db.User.
-                                FirstOrDefault(u => u.Id.Trim().ToUpper() == objectToUpdateDTO.DownloadUserId.Trim().ToUpper());
+                                FirstOrDefault(u => u.Id == objectToUpdateDTO.DownloadUserId);
                         objectToUpdate.DownloadUserFK = objectDataTypeToUpdate;
                     }
                 }
@@ -175,7 +175,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.UploadUserId = objectToUpdateDTO.UploadUserId;
                         var objectDataTypeToUpdate = _db.User.
-                                FirstOrDefault(u => u.Id.Trim().ToUpper() == objectToUpdateDTO.UploadUserId.Trim().ToUpper());
+                                FirstOrDefault(u => u.Id == objectToUpdateDTO.UploadUserId);
                         objectToUpdate.UploadUserFK = objectDataTypeToUpdate;
                     }
                 }
@@ -212,11 +212,11 @@ namespace DictionaryManagement_Business.Repository
 
         }
 
-        public async Task<int> Delete(string id)
+        public async Task<int> Delete(Guid id)
         {
-            if (!String.IsNullOrEmpty(id))
+            if (id!=null && id != Guid.Empty)
             {
-                var objectToDelete = _db.ReportEntity.FirstOrDefault(u => u.Id.Trim().ToUpper() == id.Trim().ToUpper());
+                var objectToDelete = _db.ReportEntity.FirstOrDefault(u => u.Id == id);
                 if (objectToDelete != null)
                 {
                     _db.ReportEntity.Remove(objectToDelete);

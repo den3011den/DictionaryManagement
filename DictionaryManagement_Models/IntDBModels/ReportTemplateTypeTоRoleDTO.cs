@@ -26,7 +26,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Required(ErrorMessage = "ИД роли обязателен")]
         [Display(Name = "Ид роли")]
-        public string RoleId { get; set; }
+        public Guid RoleId { get; set; }
 
         [Required(ErrorMessage = "Выбор роли обязателен")]
         [Display(Name = "Роль")]

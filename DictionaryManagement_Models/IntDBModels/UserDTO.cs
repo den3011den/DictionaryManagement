@@ -14,7 +14,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "Ид записи")]
         [Required(ErrorMessage = "ИД обязателен")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Логин обязателен для заполнения")]
         [StringLength(250, MinimumLength = 1, ErrorMessage = "Логин может быть от 1 до 100 символов")]        

@@ -24,7 +24,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public ReportTemplateType ReportTemplateTypeFK { get; set; }
 
         [Required]
-        public string RoleId { get; set; }
+        public Guid RoleId { get; set; }
 
         [ForeignKey("RoleId")]
         public Role RoleFK { get; set; }

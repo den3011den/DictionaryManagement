@@ -13,11 +13,11 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "Ид записи")]
         [Required(ErrorMessage = "ИД обязателен")]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required(ErrorMessage = "ИД шаблона отчёта обязательно")]
         [Display(Name = "ИД шаблона отчёта")]
-        public string ReportTemplateId { get; set; }
+        public Guid ReportTemplateId { get; set; }
 
         [Required(ErrorMessage = "Шаблон отчёта обязателен")]
         [Display(Name = "Шаблон отчёта")]
@@ -40,7 +40,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Required(ErrorMessage = "ИД скачавшего пользователя обязателен")]
         [Display(Name = "ИД скачавшего пользователя")]
-        public string DownloadUserId { get; set; }
+        public Guid DownloadUserId { get; set; }
 
         [Required(ErrorMessage = "Скачавший пользователь обязателен")]
         [Display(Name = "Кто скачал")]
@@ -56,7 +56,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public DateTime? UploadTime { get; set; }
 
         [Display(Name = "ИД кто загрузил")]
-        public string? UploadUserId { get; set; }
+        public Guid? UploadUserId { get; set; }
 
         [Display(Name = "Кто загрузил")]
         public UserDTO? UploadUserDTOFK { get; set; }

@@ -12,7 +12,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
 {
     public interface IUserToDepartmentRepository
     {
-        public Task<UserToDepartmentDTO> Get(string userId, int departmentId);
+        public Task<UserToDepartmentDTO> Get(Guid userId, int departmentId);
         public Task<UserToDepartmentDTO> GetById(int id);
         public Task<IEnumerable<UserToDepartmentDTO>> GetAll();
         public Task<UserToDepartmentDTO> Update(UserToDepartmentDTO objDTO);

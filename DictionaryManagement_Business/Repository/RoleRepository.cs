@@ -32,11 +32,11 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<Role, RoleDTO>(addedRole.Entity);
         }
 
-        public async Task<RoleDTO> Get(string Id)
+        public async Task<RoleDTO> Get(Guid Id)
         {
-            if (!String.IsNullOrEmpty(Id))
+            if (Id != null && Id != Guid.Empty)
             {
-                var objToGet = _db.Role.FirstOrDefaultAsync(u => ((u.Id.Trim().ToUpper()) == (Id.Trim().ToUpper()))).GetAwaiter().GetResult();
+                var objToGet = _db.Role.FirstOrDefaultAsync(u => (u.Id == Id)).GetAwaiter().GetResult();
                 if (objToGet != null)
                 {
                     return _mapper.Map<Role, RoleDTO>(objToGet);
@@ -71,7 +71,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<RoleDTO> Update(RoleDTO objectToUpdateDTO, SD.UpdateMode updateMode = SD.UpdateMode.Update)
         {
-            var objectToUpdate = _db.Role.FirstOrDefault(u => u.Id.Trim().ToUpper() == objectToUpdateDTO.Id.Trim().ToUpper());
+            var objectToUpdate = _db.Role.FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
                 if (updateMode == SD.UpdateMode.Update)

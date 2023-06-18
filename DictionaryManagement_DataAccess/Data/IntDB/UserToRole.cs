@@ -18,13 +18,13 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public int Id { get; set; }
 
         [Required]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
 
         [ForeignKey("UserId")]
         public User UserFK { get; set; }
 
         [Required]
-        public string RoleId { get; set; }
+        public Guid RoleId { get; set; }
 
         [ForeignKey("RoleId")]
         public Role RoleFK { get; set; }

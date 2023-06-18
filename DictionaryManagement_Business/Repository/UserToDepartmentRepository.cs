@@ -39,10 +39,10 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<UserToDepartment, UserToDepartmentDTO>(addedUserToDepartment.Entity);
         }
 
-        public async Task<UserToDepartmentDTO> Get(string userId, int departmentId)
+        public async Task<UserToDepartmentDTO> Get(Guid userId, int departmentId)
         {
             var objToGet = _db.UserToDepartment.Include("UserFK").Include("DepartmentFK").
-                            FirstOrDefaultAsync(u => u.UserId.Trim().ToUpper() == userId.Trim().ToUpper() && u.DepartmentId == departmentId).GetAwaiter().GetResult();
+                            FirstOrDefaultAsync(u => u.UserId == userId && u.DepartmentId == departmentId).GetAwaiter().GetResult();
             if (objToGet != null)
             {
                 return _mapper.Map<UserToDepartment, UserToDepartmentDTO>(objToGet);

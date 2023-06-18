@@ -21,7 +21,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "ИД экземпляра отчёта")]
         [Required(ErrorMessage = "ИД экземпляра отчёта обязателен")]
-        public string ReportEntityId { get; set; }
+        public Guid ReportEntityId { get; set; }
 
         [Display(Name = "Экземпляр отчёта")]
         [Required(ErrorMessage = "Экземпляр отчёта обязателен")]

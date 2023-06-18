@@ -32,11 +32,10 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<User, UserDTO>(addedUser.Entity);
         }
 
-        public async Task<UserDTO> Get(string Id)
+        public async Task<UserDTO> Get(Guid Id)
         {
-            if (!String.IsNullOrEmpty(Id))
-            {
-                var objToGet = _db.User.FirstOrDefaultAsync(u => ((u.Id.Trim().ToUpper()) == (Id.Trim().ToUpper()))).GetAwaiter().GetResult();
+            if (Id != null && Id != Guid.Empty)  {
+                var objToGet = _db.User.FirstOrDefaultAsync(u => u.Id == Id).GetAwaiter().GetResult();
                 if (objToGet != null)
                 {
                     return _mapper.Map<User, UserDTO>(objToGet);
@@ -80,7 +79,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserDTO> Update(UserDTO objectToUpdateDTO, SD.UpdateMode updateMode = SD.UpdateMode.Update)
         {
-            var objectToUpdate = _db.User.FirstOrDefault(u => u.Id.Trim().ToUpper() == objectToUpdateDTO.Id.Trim().ToUpper());
+            var objectToUpdate = _db.User.FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
                 if (updateMode == SD.UpdateMode.Update)

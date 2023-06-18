@@ -14,10 +14,10 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         [Key]
         [Required]
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
-        public string ReportTemplateId { get; set; }
+        public Guid ReportTemplateId { get; set; }
         [ForeignKey("ReportTemplateId")]
         public ReportTemplate ReportTemplateFK { get; set; }
 
@@ -31,7 +31,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         public DateTime? DownloadTime { get; set; }
 
-        public string DownloadUserId { get; set; }
+        public Guid DownloadUserId { get; set; }
         [ForeignKey("DownloadUserId")]
         public User DownloadUserFK { get; set; }
 
@@ -41,7 +41,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         public DateTime? UploadTime { get; set; }
 
-        public string? UploadUserId { get; set; }
+        public Guid? UploadUserId { get; set; }
         [ForeignKey("UploadUserId")]
         public User? UploadUserFK { get; set; }
 
