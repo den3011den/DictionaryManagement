@@ -76,23 +76,31 @@ else
 
                     @if (ReportTemplateId != null && ReportTemplateId != Guid.Empty)
                     {
+                        
                         <RadzenFormField Text="Имя Файла" Variant="@variant" Style="width: 100%; max-width: 700px;">
-                            <RadzenNumeric @bind-Value="@ActiveReportTemplateDTO.TemplateFileName" ReadOnly="true" />
+                            <RadzenTextBox @bind-Value="@ActiveReportTemplateDTO.TemplateFileName" ReadOnly="true" />                            
                         </RadzenFormField>
+                        @*    <div class="rz-p-12 rz-text-align-right">
+                                <RadzenLink Path="@downloadLinkPath" Text="Скачать файл шаблона" />
+                            </div>*@
+                        <a href="/DownloadFileController/DownloadReportTemplateFile/@ReportTemplateId" target="_blank">Скачать файл шаблона</a>
                     }
 
                     <RadzenCard Style="width: 100%; max-width: 700px;">
                         <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Выбрать файл шаблона отчёта</RadzenText>
                         <RadzenUpload @ref="upload" Auto="false" ChooseText="Выбрать" Multiple="false" Accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                                       Url="UploadFileController/UploadReportTemplateFile/{customParameter}"
-                                      Change=@(args => OnChange(args)) Progress=@(args => OnProgress(args)) />
-                        @*<RadzenButton Text="Upload" Click=@(args => OnUpload(args)) class="d-block mt-4" />*@
+                                      Change=@(args => OnChange(args)) Progress=@(args => OnProgress(args)) />                        
                         @if (!String.IsNullOrEmpty(uploadFileWarning))
                         {
                             <br/>
                             <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">@uploadFileWarning</RadzenText>
                         }
                     </RadzenCard>
+                    
+                    
+
+                    @*<RadzenButton Text="Upload" Click=@(args => OnDownload(args)) class="d-block mt-4" />*@
 
                    @* <div class="col-md-4 p-3">*@
 @*                    <RadzenCard Style="width: 100%; max-width: 700px;">
@@ -145,6 +153,7 @@ else
 
     string uploadFileWarning = "";
 
+    string downloadLinkPath = "";
 
     IEnumerable<MesDepartmentDTO>? MesDepartmentDTOList { get; set; } = new List<MesDepartmentDTO>();
     IEnumerable<ReportTemplateTypeDTO>? ReportTemplateTypeDTOList { get; set; } = new List<ReportTemplateTypeDTO>();
@@ -167,6 +176,7 @@ else
 
         IsLoading = true;
         StateHasChanged();
+        
 
         if (ReportTemplateId == null || ReportTemplateId == Guid.Empty)
         {
@@ -176,6 +186,7 @@ else
         {
             ActiveReportTemplateDTO = await _reportTemplateRepository.GetById(ReportTemplateId);
             Title = "Изменить шаблон отчёта";
+            downloadLinkPath = "/DownloadFileController/DownloadReportTemplateFile/" + ReportTemplateId;
         }
 
         IsLoading = false;
