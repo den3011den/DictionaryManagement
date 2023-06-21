@@ -66,8 +66,14 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<IEnumerable<ReportEntityLog>, IEnumerable<ReportEntityLogDTO>>(hhh1);
         }
 
-        public async Task<IEnumerable<ReportEntityLogDTO>> GetAllByLogTimeInterval(DateTime startLogTime, DateTime endLogTime)
+        public async Task<IEnumerable<ReportEntityLogDTO>> GetAllByLogTimeInterval(DateTime? startLogTime, DateTime? endLogTime)
         {
+
+            if (startLogTime==null)
+                startLogTime = DateTime.MinValue;
+            if (endLogTime == null)
+                endLogTime = DateTime.MaxValue;
+
             var hhh1 =  _db.ReportEntityLog
                             .Include("ReportEntityFK")
                             .Where(u => u.LogTime >= startLogTime && u.LogTime <= endLogTime);

@@ -83,8 +83,14 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<IEnumerable<ReportEntity>, IEnumerable<ReportEntityDTO>>(hhh1);
         }
 
-        public async Task<IEnumerable<ReportEntityDTO>> GetAllByDownloadTimeInterval(DateTime startDownloadTime, DateTime endDownloadTime)
+        public async Task<IEnumerable<ReportEntityDTO>> GetAllByDownloadTimeInterval(DateTime? startDownloadTime, DateTime? endDownloadTime)
         {
+
+            if (startDownloadTime == null)
+                startDownloadTime = DateTime.MinValue;
+            if (startDownloadTime == null)
+                startDownloadTime = DateTime.MaxValue;
+
             var hhh1 =  _db.ReportEntity
                             .Include("ReportTemplateFK")
                             .Include("ReportDepartmentFK")
@@ -94,8 +100,15 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<IEnumerable<ReportEntity>, IEnumerable<ReportEntityDTO>>(hhh1);
 
         }
-        public async Task<IEnumerable<ReportEntityDTO>> GetAllByUploadTimeInterval(DateTime startUploadTime, DateTime endUploadTime)
+        public async Task<IEnumerable<ReportEntityDTO>> GetAllByUploadTimeInterval(DateTime? startUploadTime, DateTime? endUploadTime)
         {
+
+            if (startUploadTime == null)
+                startUploadTime = DateTime.MinValue;
+            if (startUploadTime == null)
+                startUploadTime = DateTime.MaxValue;
+
+
             var hhh1 = _db.ReportEntity
                 .Include("ReportTemplateFK")
                 .Include("ReportDepartmentFK")

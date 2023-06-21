@@ -5,9 +5,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography.X509Certificates;
 
 namespace DictionaryManagement_Models.IntDBModels
-{    
+{
     public class ReportEntityDTO
     {
 
@@ -50,7 +51,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public string? DownloadReportFileName { get; set; }
 
         [Display(Name = "Успешно скачан")]
-        public bool? DownloadSuccessFlag { get; set; }
+        public bool DownloadSuccessFlag { get; set; } = false;
 
         [Display(Name = "Когда загружен")]
         public DateTime? UploadTime { get; set; }
@@ -65,6 +66,22 @@ namespace DictionaryManagement_Models.IntDBModels
         public string? UploadReportFileName { get; set; }
 
         [Display(Name = "Успешно загружен")]
-        public bool? UploadSuccessFlag { get; set; }
+        public bool UploadSuccessFlag { get; set; } = false;
+
+        
+        [NotMapped]
+        [Display(Name = "Ид записи")]
+        public string ToStringId
+        {
+            get
+            {
+                return Id.ToString();
+            }
+            set
+            {
+                ToStringId = value;
+            }
+        }
+
     }
 }
