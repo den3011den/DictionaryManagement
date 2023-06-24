@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RepositoryUrl>https://github.com/den3011den/DictionaryManagement</RepositoryUrl>
@@ -16,5 +16,5 @@
     <ProjectReference Include="..\DictionaryManagement_DataAccess\DictionaryManagement_DataAccess.csproj" />
     <ProjectReference Include="..\DictionaryManagement_Models\DictionaryManagement_Models.csproj" />
   </ItemGroup>
-
+  
 </Project>
