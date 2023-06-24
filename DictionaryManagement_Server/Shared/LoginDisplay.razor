@@ -1,0 +1,51 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using System.Security.Claims;
+<AuthorizeView>
+    Пользователь: @context.User.Identity?.Name
+    <br/>
+    Входит в группу BDSHOME-PC\HomeUsers:
+    <br />
+    @if (@context.User.IsInRole("BDSHOME-PC\\HomeUsers"))
+    {       
+        <div>Да</div>        
+    }
+    else
+    {
+        <div>Нет</div>
+    }
+
+    <br />
+    Входит в группу SIBUR\G601GO-S601AS-MES-CLC_Developers:
+    <br />
+    @if (@context.User.IsInRole("SIBUR\\G601GO-S601AS-MES-CLC_Developers"))
+    {
+        <div>Да</div>
+    }
+    else
+    {
+        <div>Нет</div>
+    }
+    
+</AuthorizeView>
+
+@code
+{
+ 
+    //[CascadingParameter]
+    //private Task<AuthenticationState>? authenticationState { get; set; }
+    
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    if (authenticationState is not null)
+    //    {
+    //        var authState = await authenticationState;            
+    //        IEnumerable<Claim> claimList = authState?.User.Claims.Where(c => c.Type == ClaimTypes.Role);
+
+
+    //        if (user?.Identity is not null && user.Identity.IsAuthenticated)
+    //        {
+    //            authMessage = $"{user.Identity.Name} is authenticated.";
+    //        }
+    //    }
+    //}
+}

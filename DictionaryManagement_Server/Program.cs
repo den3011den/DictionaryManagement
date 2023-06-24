@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,14 @@ using Radzen;
 using System.Runtime.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+   .AddNegotiate();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = options.DefaultPolicy;    
+});
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -66,9 +75,6 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
 
-
-
-
 System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
 System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
 SD.AppVersion = fvi.FileVersion;
@@ -89,6 +95,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
