@@ -29,8 +29,8 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddMvc();
     
 
-builder.WebHost.UseUrls("http://localhost:7776", "https://localhost:7777");
-builder.Services.AddHttpsRedirection(options => options.HttpsPort = 7777);
+builder.WebHost.UseUrls("http://localhost:7777");
+//builder.Services.AddHttpsRedirection(options => options.HttpsPort = 7777);
 
 
 SD.AppFactoryMode = SD.FactoryMode.KOS;
@@ -90,7 +90,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
