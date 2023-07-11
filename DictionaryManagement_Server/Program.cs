@@ -14,13 +14,13 @@ using System.Runtime.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-   .AddNegotiate();
+//builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+//   .AddNegotiate();
 
-builder.Services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = options.DefaultPolicy;    
-});
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.FallbackPolicy = options.DefaultPolicy;
+//});
 
 // Add services to the container.
 builder.Services.AddRazorPages();
