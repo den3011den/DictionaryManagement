@@ -29,7 +29,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddMvc();
     
 
-builder.WebHost.UseUrls("http://localhost:7777");
+//builder.WebHost.UseUrls("http://localhost:7777");
 //builder.Services.AddHttpsRedirection(options => options.HttpsPort = 7777);
 
 
@@ -87,19 +87,19 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     //app.UseForwardedHeaders();
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    //app.UseHsts();
 }
 else
    // app.UseForwardedHeaders();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
