@@ -121,7 +121,7 @@ namespace DictionaryManagement_Business.Mapper
                     .ForMember(dest => dest.DownloadUserFK, opt => opt.MapFrom(src => src.DownloadUserDTOFK));
 
             CreateMap<ReportEntityLog, ReportEntityLogDTO>()
-                    .ForMember(dest => dest.ReportEntityDTOFK, opt => opt.MapFrom(src => src.ReportEntityFK));
+                    .ForMember(dest => dest.ReportEntityDTOFK, opt => opt.MapFrom(src => src.ReportEntityFK)); 
 
             CreateMap<ReportEntityLogDTO, ReportEntityLog>()
                     .ForMember(dest => dest.ReportEntityFK, opt => opt.MapFrom(src => src.ReportEntityDTOFK));

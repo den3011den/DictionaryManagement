@@ -28,14 +28,14 @@ namespace DictionaryManagement_Business.Repository
         {
             ReportEntityLog objectToAdd = new ReportEntityLog();
 
-           objectToAdd.Id = objectToAddDTO.Id;
+            objectToAdd.Id = objectToAddDTO.Id;
 
             if (objectToAddDTO.LogTime == null)
                 objectToAdd.LogTime = DateTime.Now;
             else
                 objectToAdd.LogTime = objectToAddDTO.LogTime;
 
-            objectToAdd.ReportEntityId = objectToAddDTO.ReportEntityId;            
+            objectToAdd.ReportEntityId = objectToAddDTO.ReportEntityId;
             objectToAdd.LogMessage = objectToAddDTO.LogMessage;
             objectToAdd.LogType = objectToAddDTO.LogType;
             objectToAdd.IsError = objectToAddDTO.IsError;
@@ -66,7 +66,15 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<IEnumerable<ReportEntityLog>, IEnumerable<ReportEntityLogDTO>>(hhh1);
         }
 
-        public async Task<IEnumerable<ReportEntityLogDTO>> GetAllByLogTimeInterval(DateTime? startLogTime, DateTime? endLogTime)
+        public async Task<IEnumerable<ReportEntityLogDTO>> GetByReportEntityId(Guid reportEntityId)
+        {
+            var hhh1 = _db.ReportEntityLog.Include("ReportEntityFK").Where(u => u.ReportEntityId == reportEntityId)
+                .OrderBy(u => u.LogTime)
+                .OrderBy(u => u.LogType);
+            return _mapper.Map<IEnumerable<ReportEntityLog>, IEnumerable<ReportEntityLogDTO>>(hhh1);
+        }
+
+    public async Task<IEnumerable<ReportEntityLogDTO>> GetAllByLogTimeInterval(DateTime? startLogTime, DateTime? endLogTime)
         {
 
             if (startLogTime==null)

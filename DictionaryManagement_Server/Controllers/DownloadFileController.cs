@@ -10,11 +10,14 @@ namespace DictionaryManagement_Server.Controllers
 
         private readonly ISettingsRepository _settingsRepository;
         private readonly IReportTemplateRepository _reportTemplateRepository;
+        private readonly IReportEntityRepository _reportEntityRepository;
 
-        public DownloadFileController(ISettingsRepository settingsRepository, IReportTemplateRepository reportTemplateRepository)
+        public DownloadFileController(ISettingsRepository settingsRepository, IReportTemplateRepository reportTemplateRepository,
+            IReportEntityRepository reportEntityRepository)
         {
             _settingsRepository = settingsRepository;
             _reportTemplateRepository = reportTemplateRepository;
+            _reportEntityRepository = reportEntityRepository;
         }
         
         [HttpGet("DownloadFileController/DownloadReportTemplateFile/{reportTemplateId}")]
@@ -38,6 +41,54 @@ namespace DictionaryManagement_Server.Controllers
                 {
                     return StatusCode(500, ex.Message);
                 }                
+            }
+            return StatusCode(500, "Файл " + file + " не найден");
+        }
+
+        [HttpGet("DownloadFileController/DownloadReportEntityDownloadFile/{reportEntityId}")]
+        [RequestSizeLimit(60000000)]
+        public async Task<IActionResult> DownloadReportEntityDownloadFile(Guid reportEntityId)
+        {
+
+            string pathVar = _settingsRepository.GetByName("ReportDownloadPath").GetAwaiter().GetResult().Value;
+            ReportEntityDTO foundEntity = _reportEntityRepository.GetById(reportEntityId).GetAwaiter().GetResult();
+            string fileName = foundEntity.DownloadReportFileName;            
+            string file = System.IO.Path.Combine(pathVar, fileName);
+            var extension = Path.GetExtension(fileName);
+            if (System.IO.File.Exists(file))
+            {
+                try
+                {
+                    return File(new FileStream(file, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + extension);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, ex.Message);
+                }
+            }
+            return StatusCode(500, "Файл " + file + " не найден");
+        }
+
+        [HttpGet("DownloadFileController/DownloadReportEntityUploadFile/{reportEntityId}")]
+        [RequestSizeLimit(60000000)]
+        public async Task<IActionResult> DownloadReportEntityUploadFile(Guid reportEntityId)
+        {
+
+            string pathVar = _settingsRepository.GetByName("ReportUploadPath").GetAwaiter().GetResult().Value;
+            ReportEntityDTO foundEntity = _reportEntityRepository.GetById(reportEntityId).GetAwaiter().GetResult();
+            string fileName = foundEntity.UploadReportFileName;
+            string file = System.IO.Path.Combine(pathVar, fileName);
+            var extension = Path.GetExtension(fileName);
+            if (System.IO.File.Exists(file))
+            {
+                try
+                {
+                    return File(new FileStream(file, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + extension);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, ex.Message);
+                }
             }
             return StatusCode(500, "Файл " + file + " не найден");
         }
