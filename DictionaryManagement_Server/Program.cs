@@ -29,14 +29,6 @@ builder.Services.AddAuthorization(options =>
 
 
 
-//builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-//   .AddNegotiate();
-
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.FallbackPolicy = options.DefaultPolicy;
-//});
-
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
