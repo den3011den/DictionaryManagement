@@ -12,11 +12,20 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Radzen;
 using System.Runtime.Serialization;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 
 var builder = WebApplication.CreateBuilder(args);
-        
 
-builder.WebHost.UseIISIntegration();
+
+//builder.WebHost.UseIISIntegration();
+
+builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+   .AddNegotiate();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = options.DefaultPolicy;
+});
 
 
 
@@ -31,9 +40,9 @@ builder.WebHost.UseIISIntegration();
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-   /* AddHubOptions(options => options.MaximumReceiveMessageSize = 60000 * 1024);*/
+/* AddHubOptions(options => options.MaximumReceiveMessageSize = 60000 * 1024);*/
 builder.Services.AddMvc();
-    
+
 
 //builder.WebHost.UseUrls("http://localhost:7777");
 //builder.Services.AddHttpsRedirection(options => options.HttpsPort = 7777);
@@ -43,9 +52,9 @@ SD.AppFactoryMode = SD.FactoryMode.KOS;
 if (builder.Configuration.GetValue<string>("FactoryMode") == "NKNH")
     SD.AppFactoryMode = SD.FactoryMode.NKNH;
 
-    builder.Services.AddDbContext<IntDBApplicationDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("IntDBConnection")));
+builder.Services.AddDbContext<IntDBApplicationDbContext>(options =>
+options.UseSqlServer(
+    builder.Configuration.GetConnectionString("IntDBConnection")));
 builder.Services.AddScoped<ISapEquipmentRepository, SapEquipmentRepository>();
 builder.Services.AddScoped<ISapMaterialRepository, SapMaterialRepository>();
 builder.Services.AddScoped<IMesMaterialRepository, MesMaterialRepository>();
@@ -96,10 +105,9 @@ if (!app.Environment.IsDevelopment())
     //app.UseHsts();
 }
 else
-   // app.UseForwardedHeaders();
+    // app.UseForwardedHeaders();
 
-//app.UseHttpsRedirection();
-
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

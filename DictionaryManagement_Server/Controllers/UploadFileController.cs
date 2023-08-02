@@ -18,6 +18,7 @@ namespace DictionaryManagement_Server.Controllers
         [RequestSizeLimit(60000000)]
         public async Task<IActionResult> UploadReportTemplateFile(IFormFile file, Guid reportTemplateId)
         {
+            
 
             string pathVar = _settingsRepository.GetByName("ReportTemplatePath").GetAwaiter().GetResult().Value;
             try

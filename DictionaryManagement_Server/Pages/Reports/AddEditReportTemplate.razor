@@ -176,7 +176,7 @@ else
 
         IsLoading = true;
         StateHasChanged();
-        
+
 
         if (ReportTemplateId == null || ReportTemplateId == Guid.Empty)
         {
@@ -302,7 +302,7 @@ else
 
             _dialogService.Close(ActiveReportTemplateDTO);
         }
-        
+
 
     }
 
@@ -373,6 +373,7 @@ else
         {            
             foreach (var file in args.Files)
             {
+
                 loadedFileName = file.Name;
 
                 //console.Log($"Uploaded: {file.Name} / {file.Size} bytes");
@@ -402,6 +403,7 @@ else
                     _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Файл должен быть формата xlsx");
                 }
             }
+
             uploadFileWarning = "Файл не будет сохранён в базе данных пока не будет нажата кнопка \"Создать шаблон отчёта\"";
         }
     }
