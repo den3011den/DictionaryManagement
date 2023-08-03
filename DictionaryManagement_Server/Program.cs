@@ -74,6 +74,7 @@ builder.Services.AddScoped<IReportTemplateRepository, ReportTemplateRepository>(
 builder.Services.AddScoped<IReportTemplateTypeTîRoleRepository, ReportTemplateTypeTîRoleRepository>();
 builder.Services.AddScoped<IReportEntityRepository, ReportEntityRepository>();
 builder.Services.AddScoped<IReportEntityLogRepository, ReportEntityLogRepository>();
+builder.Services.AddScoped<ISmenaRepository, SmenaRepository>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

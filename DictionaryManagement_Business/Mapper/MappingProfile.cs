@@ -125,6 +125,13 @@ namespace DictionaryManagement_Business.Mapper
 
             CreateMap<ReportEntityLogDTO, ReportEntityLog>()
                     .ForMember(dest => dest.ReportEntityFK, opt => opt.MapFrom(src => src.ReportEntityDTOFK));
+
+            CreateMap<Smena, SmenaDTO>()
+                    .ForMember(dest => dest.DepartmentDTOFK, opt => opt.MapFrom(src => src.DepartmentFK));
+
+            CreateMap<SmenaDTO, Smena>()
+                    .ForMember(dest => dest.DepartmentFK, opt => opt.MapFrom(src => src.DepartmentDTOFK));
+
         }
     }
 }

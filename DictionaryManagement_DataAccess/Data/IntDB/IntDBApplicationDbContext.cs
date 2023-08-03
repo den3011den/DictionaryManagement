@@ -43,6 +43,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<ReportTemplateTypeTоRole> ReportTemplateTypeTоRole { get; set; }
         public DbSet<ReportEntity> ReportEntity { get; set; }
         public DbSet<ReportEntityLog> ReportEntityLog { get; set; }
+        public DbSet<Smena> Smena { get; set; }
 
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
