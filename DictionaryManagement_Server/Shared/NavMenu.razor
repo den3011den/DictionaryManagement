@@ -24,7 +24,7 @@
             </NavLink>
         </div>
 
-        @if (expandSubNavDictionary)
+@*        @if (expandSubNavDictionary)
         {
 
             <div class="nav-item px-3">
@@ -58,12 +58,6 @@
                 </NavLink>
             </div>
 
-@*            <div class="nav-item px-3">
-                <NavLink class="nav-link p-lg-4" href="dictionary/ErrorCriterion">
-                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;Критерии ошибок
-                </NavLink>
-            </div>*@
-
             <div class="nav-item px-3">
                 <NavLink class="nav-link p-lg-4" href="dictionary/CorrectionReason">
                     &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;Причины коррект.
@@ -71,7 +65,7 @@
             </div>
 
 
-        }
+        }*@
 
  
         <div class="nav-item px-3">
@@ -81,7 +75,7 @@
         </div>
 
 
-        @if (expandSubNavMapping)
+@*        @if (expandSubNavMapping)
         {
 
             <div class="nav-item px-3">
@@ -96,7 +90,7 @@
                 </NavLink>
             </div>
 
-        }
+        }*@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="tags" @onclick="()=>expandSubNavTags = !expandSubNavTags">
@@ -104,7 +98,7 @@
             </NavLink>
         </div>
 
-        @if (expandSubNavTags)
+@*        @if (expandSubNavTags)
         {
 
             <div class="nav-item px-3">
@@ -119,7 +113,7 @@
                 </NavLink>
             </div>
 
-        }
+        }*@
 
 
         <div class="nav-item px-3">
@@ -128,7 +122,7 @@
             </NavLink>
         </div>
 
-        @if (expandSubNavDataArchive)
+@*        @if (expandSubNavDataArchive)
         {
 
             <div class="nav-item px-3">
@@ -148,7 +142,7 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-database-fill" aria-hidden="true"></span>&nbsp;&nbsp;Архив данных
                 </NavLink>
             </div>
-        }
+        }*@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="SAPshowcase" @onclick="()=>expandSubNavSAPShowcase = !expandSubNavSAPShowcase">
@@ -156,7 +150,7 @@
             </NavLink>
         </div>
 
-        @if (expandSubNavSAPShowcase)
+@*        @if (expandSubNavSAPShowcase)
         {
 
             <div class="nav-item px-3">
@@ -183,7 +177,7 @@
                 </NavLink>
             </div>
 
-        }
+        }*@
 
 
         <div class="nav-item px-3">
@@ -193,7 +187,7 @@
         </div>
 
 
-        @if (expandSubNavReport)
+@*        @if (expandSubNavReport)
         {
 
             <div class="nav-item px-3">
@@ -214,7 +208,7 @@
                 </NavLink>
             </div>
 
-        }
+        }*@
         
 
         <div class="nav-item px-3">
@@ -223,7 +217,7 @@
             </NavLink>
         </div>
 
-        @if (expandSubNavEventJournal)
+@*        @if (expandSubNavEventJournal)
         {
 
             <div class="nav-item px-3">
@@ -238,7 +232,7 @@
                 </NavLink>
             </div>
 
-        }
+        }*@
 
 
         <div class="nav-item px-3">
@@ -248,7 +242,7 @@
         </div>
 
 
-        @if (expandSubNavAdministration)
+@*        @if (expandSubNavAdministration)
         {
 
             <div class="nav-item px-3">
@@ -270,12 +264,18 @@
             </div>
 
             <div class="nav-item px-3">
+                <NavLink class="nav-link p-lg-4" href="administration/Smena">
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-gear-fill" aria-hidden="true"></span>&nbsp;&nbsp;Смены
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
                 <NavLink class="nav-link p-lg-4" href="administration/Settings">
                     &nbsp;&nbsp;&nbsp;&nbsp;<span class="bi bi-gear-fill" aria-hidden="true"></span>&nbsp;&nbsp;Настройки
                 </NavLink>
             </div>
 
-        }
+        }*@
 
 
 
