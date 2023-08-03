@@ -11,13 +11,15 @@ namespace DictionaryManagement_Server.Controllers
         private readonly ISettingsRepository _settingsRepository;
         private readonly IReportTemplateRepository _reportTemplateRepository;
         private readonly IReportEntityRepository _reportEntityRepository;
+        private readonly IReportTemplateTypeRepository _reportTemplateTypeRepository;
 
         public DownloadFileController(ISettingsRepository settingsRepository, IReportTemplateRepository reportTemplateRepository,
-            IReportEntityRepository reportEntityRepository)
+            IReportEntityRepository reportEntityRepository, IReportTemplateTypeRepository reportTemplateTypeRepository)
         {
             _settingsRepository = settingsRepository;
             _reportTemplateRepository = reportTemplateRepository;
             _reportEntityRepository = reportEntityRepository;
+            _reportTemplateTypeRepository = reportTemplateTypeRepository;
         }
         
         [HttpGet("DownloadFileController/DownloadReportTemplateFile/{reportTemplateId}")]
@@ -27,15 +29,17 @@ namespace DictionaryManagement_Server.Controllers
 
             string pathVar = _settingsRepository.GetByName("ReportTemplatePath").GetAwaiter().GetResult().Value;
             ReportTemplateDTO foundTemplate = _reportTemplateRepository.GetById(reportTemplateId).GetAwaiter().GetResult();
-            string fileName = foundTemplate.TemplateFileName;
-            string description = foundTemplate.Description.Replace("\"","_").Replace(" ", "_").Trim();  
+            string fileName = foundTemplate.TemplateFileName;            
             string file = System.IO.Path.Combine(pathVar, fileName);
             var extension = Path.GetExtension(fileName);
             if (System.IO.File.Exists(file))
             {
                 try
                 {
-                    return File(new FileStream(file, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", description + extension);
+                    var forFileName = "Template_" + foundTemplate.ReportTemplateTypeDTOFK.Name + "_" 
+                        + foundTemplate.MesDepartmentDTOFK.ShortName + "_" + fileName
+                        .Replace(":", "_").Replace(",", "_").Replace("\"", "_").Replace("\'", "_");
+                    return File(new FileStream(file, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", forFileName /*+ extension*/);
                 }
                 catch (Exception ex)
                 {
@@ -58,8 +62,13 @@ namespace DictionaryManagement_Server.Controllers
             if (System.IO.File.Exists(file))
             {
                 try
-                {
-                    return File(new FileStream(file, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + extension);
+                { 
+                    var forFileName = ("Download_" + _reportTemplateTypeRepository.Get(foundEntity.ReportTemplateDTOFK.ReportTemplateTypeId).GetAwaiter().GetResult().Name + "_"
+                        + foundEntity.DownloadUserDTOFK.UserName
+                        + "_" + foundEntity.DownloadTime.ToString() + "_"
+                        + fileName)
+                        .Replace(":", "_").Replace(",", "_").Replace("\"", "_").Replace("\'", "_");
+                    return File(new FileStream(file, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", forFileName /*+ extension*/);
                 }
                 catch (Exception ex)
                 {
@@ -83,7 +92,12 @@ namespace DictionaryManagement_Server.Controllers
             {
                 try
                 {
-                    return File(new FileStream(file, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName + extension);
+                    var forFileName = ("Upload_" + _reportTemplateTypeRepository.Get(foundEntity.ReportTemplateDTOFK.ReportTemplateTypeId).GetAwaiter().GetResult().Name + "_"
+                        + foundEntity.UploadUserDTOFK.UserName
+                        + "_" + foundEntity.UploadTime.ToString() + "_"
+                        + fileName)
+                        .Replace(":", "_").Replace(",", "_").Replace("\"", "_").Replace("\'", "_");
+                    return File(new FileStream(file, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", forFileName/* + extension*/);
                 }
                 catch (Exception ex)
                 {
