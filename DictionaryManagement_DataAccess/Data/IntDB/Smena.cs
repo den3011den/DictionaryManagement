@@ -21,6 +21,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         [Required]
         public int DepartmentId { get; set; }
+
         [ForeignKey("DepartmentId")]
         public MesDepartment DepartmentFK { get; set; }
 

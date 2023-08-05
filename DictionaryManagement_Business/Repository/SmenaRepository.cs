@@ -32,6 +32,7 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.Name = objectToAddDTO.Name;
             objectToAdd.StartTime = objectToAddDTO.StartTime;
             objectToAdd.HoursDuration = objectToAddDTO.HoursDuration;
+            objectToAdd.DepartmentId = objectToAddDTO.DepartmentId;
             objectToAdd.IsArchive = objectToAddDTO.IsArchive;
 
             var addedSmena = _db.Smena.Add(objectToAdd);
@@ -51,6 +52,14 @@ namespace DictionaryManagement_Business.Repository
             }
             return null;
         }
+
+        public async Task<IEnumerable<SmenaDTO>> GetAllByDepartmentId(int departmentId)
+        {
+            var hhh1 = _db.Smena
+                            .Include("DepartmentFK").Where(u => u.DepartmentId == departmentId);
+            return _mapper.Map<IEnumerable<Smena>, IEnumerable<SmenaDTO>>(hhh1);
+        }
+
 
 
         public async Task<IEnumerable<SmenaDTO>> GetAll()

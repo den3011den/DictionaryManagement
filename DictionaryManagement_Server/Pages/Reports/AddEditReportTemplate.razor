@@ -72,7 +72,7 @@ else
                                         Data=@MesDepartmentDTOList TextProperty="ShortName" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.DepartmentId" Style="width: 100%; max-width: 700px;"
                                         Change=@(args => FillDescription()) />
                     </RadzenFormField>
-                    <ValidationMessage For="()=>ActiveReportTemplateDTO.DestDataTypeDTOFK"></ValidationMessage>
+                    <ValidationMessage For="()=>ActiveReportTemplateDTO.MesDepartmentDTOFK"></ValidationMessage>
 
                     @if (ReportTemplateId != null && ReportTemplateId != Guid.Empty)
                     {

@@ -151,7 +151,7 @@
             {
                 var objectForRestore = await _correctionReasonRepository.Get(correctionReasonDTO.Id);
                 correctionReasonDTO.Name = objectForRestore.Name;
-                await correctionReasonDTOGrid.UpdateRow(correctionReasonDTO);
+                await correctionReasonDTOGrid.UpdateRow(correctionReasonDTO);                
                 await correctionReasonDTOGrid.Reload();
                 await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись причины корректировки с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
                 return;
