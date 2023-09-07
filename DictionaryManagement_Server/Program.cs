@@ -19,13 +19,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 //builder.WebHost.UseIISIntegration();
 
-builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-   .AddNegotiate();
+//builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+//   .AddNegotiate();
 
-builder.Services.AddAuthorization(options =>
-{
-    options.FallbackPolicy = options.DefaultPolicy;
-});
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.FallbackPolicy = options.DefaultPolicy;
+//});
 
 
 
@@ -36,7 +36,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddMvc();
 
 
-//builder.WebHost.UseUrls("http://localhost:7777");
+builder.WebHost.UseUrls("http://+:5555");
 //builder.Services.AddHttpsRedirection(options => options.HttpsPort = 7777);
 
 
@@ -105,8 +105,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

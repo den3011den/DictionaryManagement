@@ -136,45 +136,106 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<MesParamDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
         {
+            //if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
+            //{
+            //    var hhh2 = _db.MesParam
+            //                .Include("MesParamSourceTypeFK")
+            //                .Include("MesDepartmentFK")
+            //                .Include("SapEquipmentSourceFK")
+            //                .Include("SapEquipmentDestFK")
+            //                .Include("MesMaterialFK")
+            //                .Include("SapMaterialFK")
+            //                .Include("MesUnitOfMeasureFK")
+            //                .Include("SapUnitOfMeasureFK")
+            //                .Where(u => u.IsArchive == true).AsNoTracking();
+            //    var retVar2 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh2);
+            //    //await _db.DisposeAsync();
+            //    GC.Collect();
+            //    return retVar2;
+            //}
+            //if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
+            //{                
+            //    var hhh3 = _db.MesParam
+            //                .Include("MesParamSourceTypeFK").AsNoTracking()
+            //                .Include("MesDepartmentFK").AsNoTracking()
+            //                .Include("SapEquipmentSourceFK").AsNoTracking()
+            //                .Include("SapEquipmentDestFK").AsNoTracking()
+            //                .Include("MesMaterialFK").AsNoTracking()
+            //                .Include("SapMaterialFK").AsNoTracking()
+            //                .Include("MesUnitOfMeasureFK").AsNoTracking()
+            //                .Include("SapUnitOfMeasureFK").AsNoTracking()
+            //                .Where(u => u.IsArchive != true).AsNoTracking();
+            //    var retVar3 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh3);
+            //    //await _db.DisposeAsync();
+            //    GC.Collect();
+            //    return retVar3;
+
+            //}
+            //var hhh1 = _db.MesParam
+            //            .Include("MesParamSourceTypeFK").AsNoTracking()
+            //            .Include("MesDepartmentFK").AsNoTracking()
+            //            .Include("SapEquipmentSourceFK").AsNoTracking()
+            //            .Include("SapEquipmentDestFK").AsNoTracking()
+            //            .Include("MesMaterialFK").AsNoTracking()
+            //            .Include("SapMaterialFK").AsNoTracking()
+            //            .Include("MesUnitOfMeasureFK").AsNoTracking()
+            //            .Include("SapUnitOfMeasureFK").AsNoTracking();
+            //var retVar1 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh1);
+            ////await _db.DisposeAsync();
+            //GC.Collect();
+            //return retVar1;
+
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
             {
                 var hhh2 = _db.MesParam
-                            .Include("MesParamSourceTypeFK")
-                            .Include("MesDepartmentFK")
-                            .Include("SapEquipmentSourceFK")
-                            .Include("SapEquipmentDestFK")
-                            .Include("MesMaterialFK")
-                            .Include("SapMaterialFK")
-                            .Include("MesUnitOfMeasureFK")
-                            .Include("SapUnitOfMeasureFK")
-                            .Where(u => u.IsArchive == true);
-                return _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh2);
+                            .Include("MesParamSourceTypeFK").AsNoTracking()
+                            .Include("MesDepartmentFK").AsNoTracking()
+                            .Include("SapEquipmentSourceFK").AsNoTracking()
+                            .Include("SapEquipmentDestFK").AsNoTracking()
+                            .Include("MesMaterialFK").AsNoTracking()
+                            .Include("SapMaterialFK").AsNoTracking()
+                            .Include("MesUnitOfMeasureFK").AsNoTracking()
+                            .Include("SapUnitOfMeasureFK").AsNoTracking()
+                            .Where(u => u.IsArchive == true).AsNoTracking();
+                var retVar2 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh2);
+                GC.Collect(2, GCCollectionMode.Forced);
+                //await _db.DisposeAsync();
+                //GC.Collect();
+                return retVar2;
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
             {
                 var hhh3 = _db.MesParam
-                            .Include("MesParamSourceTypeFK")
-                            .Include("MesDepartmentFK")
-                            .Include("SapEquipmentSourceFK")
-                            .Include("SapEquipmentDestFK")
-                            .Include("MesMaterialFK")
-                            .Include("SapMaterialFK")
-                            .Include("MesUnitOfMeasureFK")
-                            .Include("SapUnitOfMeasureFK")
-                            .Where(u => u.IsArchive != true);
-                return _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh3);
+                            .Include("MesParamSourceTypeFK").AsNoTracking()
+                            .Include("MesDepartmentFK").AsNoTracking()
+                            .Include("SapEquipmentSourceFK").AsNoTracking()
+                            .Include("SapEquipmentDestFK").AsNoTracking()
+                            .Include("MesMaterialFK").AsNoTracking()
+                            .Include("SapMaterialFK").AsNoTracking()
+                            .Include("MesUnitOfMeasureFK").AsNoTracking()
+                            .Include("SapUnitOfMeasureFK").AsNoTracking()
+                            .Where(u => u.IsArchive != true).AsNoTracking();
+                var retVar3 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh3);
+                //await _db.DisposeAsync();
+                GC.Collect(2, GCCollectionMode.Forced);
+                //GC.Collect();
+                return retVar3;
 
             }
             var hhh1 = _db.MesParam
-                        .Include("MesParamSourceTypeFK")
-                        .Include("MesDepartmentFK")
-                        .Include("SapEquipmentSourceFK")
-                        .Include("SapEquipmentDestFK")
-                        .Include("MesMaterialFK")
-                        .Include("SapMaterialFK")
-                        .Include("MesUnitOfMeasureFK")
-                        .Include("SapUnitOfMeasureFK");
-            return _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh1);
+                        .Include("MesParamSourceTypeFK").AsNoTracking()
+                        .Include("MesDepartmentFK").AsNoTracking()
+                        .Include("SapEquipmentSourceFK").AsNoTracking()
+                        .Include("SapEquipmentDestFK").AsNoTracking()
+                        .Include("MesMaterialFK").AsNoTracking()
+                        .Include("SapMaterialFK").AsNoTracking()
+                        .Include("MesUnitOfMeasureFK").AsNoTracking()
+                        .Include("SapUnitOfMeasureFK").AsNoTracking();
+            var retVar1 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh1);
+            GC.Collect(2, GCCollectionMode.Forced);
+            //await _db.DisposeAsync();
+            //GC.Collect();            
+            return retVar1;
         }
 
 
