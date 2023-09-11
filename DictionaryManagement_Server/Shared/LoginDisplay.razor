@@ -1,10 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Identity;
 @using System.Security.Claims;
 <AuthorizeView>
-    Пользователь: @context.User.Identity?.Name
-    <br/>
-    Входит в группу BDSHOME-PC\HomeUsers:
-    <br />
+    Пользователь: @context.User.Identity?.Name&nbsp&nbsp;&nbsp;
+    <div>Входит в группу BDSHOME-PC\HomeUsers:&nbsp;</div>
+    
     @if (@context.User.IsInRole("BDSHOME-PC\\HomeUsers"))
     {       
         <div>Да</div>        
@@ -25,7 +24,7 @@
     {
         <div>Нет</div>
     }
-    
+ *@    
 </AuthorizeView>
 
 @code
