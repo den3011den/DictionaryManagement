@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Authentication.Negotiate;
 var builder = WebApplication.CreateBuilder(args);
 
 
-//builder.WebHost.UseIISIntegration();
+builder.WebHost.UseIISIntegration();
 
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
    .AddNegotiate();

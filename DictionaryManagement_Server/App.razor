@@ -1,11 +1,23 @@
-﻿<CascadingAuthenticationState>
+﻿@attribute [Authorize]
+<CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+            <AuthorizeRouteView RouteData="@routeData"
+                                DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <PageTitle>Авторизация не пройдена. Доступа нет</PageTitle>
+                    @* <LayoutView Layout="@typeof(MainLayout)"> *@
+                        <p role="alert">Вы не авторизованы. Доступ без авторизации запрещён.</p>
+                    @* </LayoutView> *@
+                </NotAuthorized>
+                <Authorizing>
+                    <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+                    <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+                </Authorizing>
+            </AuthorizeRouteView>
         </Found>
         <NotFound>
-            <PageTitle>Not found</PageTitle>
+            <PageTitle>Страница не найдена</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
                 <p role="alert">По этому адресу нет страницы.</p>
             </LayoutView>
