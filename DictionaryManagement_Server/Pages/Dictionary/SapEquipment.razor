@@ -287,8 +287,16 @@
 
     async Task InsertRow()
     {
-        sapEquipmentDTOToInsert = new SapEquipmentDTO();
-        await sapEquipmentDTOGrid.InsertRow(sapEquipmentDTOToInsert);
+        if (!await _authorizationRepository.CurrentUserIsInRole())
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Пользователь " + await _authorizationRepository.GetCurrentLogin() + 
+                " не найден, находится в архиве или не имеет роли "+ SD.AdminRoleName + ". Обратитесь в техподдержку.");
+        }
+        else
+        {
+            sapEquipmentDTOToInsert = new SapEquipmentDTO();
+            await sapEquipmentDTOGrid.InsertRow(sapEquipmentDTOToInsert);
+        }
     }
 
     async Task OnCreateRow(SapEquipmentDTO sapEquipmentDTO)
