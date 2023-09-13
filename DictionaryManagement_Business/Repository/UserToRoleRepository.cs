@@ -108,5 +108,20 @@ namespace DictionaryManagement_Business.Repository
             return 0;
 
         }
+
+        public async Task<bool> IsUserInRoleByUserLoginAndRoleName(string userLogin, string roleName)
+        {
+
+            var objToGet = await _db.UserToRole.Include("UserFK").Include("RoleFK").
+                Where(u => u.UserFK != null && u.RoleFK != null
+                    && u.UserFK.Login.Trim().ToUpper() == userLogin.Trim().ToUpper()
+                    && u.UserFK.IsArchive != true
+                    && u.RoleFK.Name.Trim().ToUpper() == roleName.Trim().ToUpper()
+                    && u.RoleFK.IsArchive != true).AsNoTracking().FirstOrDefaultAsync();                    
+            if (objToGet == null ) 
+                return false;
+            else 
+                return true;
+        }
     }
 }

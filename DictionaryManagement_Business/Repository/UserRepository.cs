@@ -66,6 +66,18 @@ namespace DictionaryManagement_Business.Repository
             }
             return null;
         }
+
+        public async Task<UserDTO> GetByLoginNotInArchive(string login = "")
+        {
+            var objToGet = _db.User.FirstOrDefaultAsync(u => ((u.Login.Trim().ToUpper() == login.Trim().ToUpper()))
+                && u.IsArchive != true).GetAwaiter().GetResult();
+            if (objToGet != null)
+            {
+                return _mapper.Map<User, UserDTO>(objToGet);
+            }
+            return null;
+        }
+
         public async Task<UserDTO> GetByUserName(string userName = "")
         {
             var objToGet = _db.User.FirstOrDefaultAsync(u => ((u.UserName.Trim().ToUpper()) == (userName.Trim().ToUpper()))).GetAwaiter().GetResult();

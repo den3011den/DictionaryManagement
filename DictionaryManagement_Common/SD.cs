@@ -31,6 +31,7 @@ namespace DictionaryManagement_Common
 
         public static string AppVersion = "";
         public static FactoryMode AppFactoryMode = FactoryMode.KOS;
+        public static string AdminRoleName = "Администратор";
 
         public static UserDTO CurrentUserDTO = new UserDTO
         {
@@ -40,6 +41,5 @@ namespace DictionaryManagement_Common
             Description = "Это Пользователь 1 с логином sibur.local\\User1",
             IsArchive = false
         };
-
     }
 }

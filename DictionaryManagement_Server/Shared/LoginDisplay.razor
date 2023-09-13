@@ -1,7 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity;
 @using System.Security.Claims;
 <AuthorizeView>
-    Пользователь: @context.User.Identity?.Name&nbsp&nbsp;&nbsp;
+    @* Пользователь: @context.User.Identity?.Name&nbsp&nbsp;&nbsp; *@
+
+    Пользователь: @_authorizationRepository.GetCurrentLogin().GetAwaiter().GetResult()&nbsp&nbsp;&nbsp;
+
     @* <div>Входит в группу BDSHOME-PC\HomeUsers:&nbsp;</div>
     
     @if (@context.User.IsInRole("BDSHOME-PC\\HomeUsers"))

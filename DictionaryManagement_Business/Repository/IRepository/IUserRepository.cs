@@ -17,6 +17,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<UserDTO> Create(UserDTO objectToAddDTO);
 
         public Task<UserDTO> GetByLogin(string login = "");
+        public Task<UserDTO> GetByLoginNotInArchive(string login = "");
         public Task<UserDTO> GetByUserName(string userName = "");
 
     }
