@@ -244,10 +244,7 @@
         else
             ActiveSmenaDTO.DepartmentDTOFK = null;
     }
-    private async Task OnClickCancel()
-    {
-        _dialogService.Close(null);
-    }
+    private async Task OnClickCancel() => _dialogService.Close(null);
 
     private async Task OnChangeStartTime()
     {
