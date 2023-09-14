@@ -11,83 +11,82 @@
 @inject IJSRuntime _jsRuntime
 @inject ICorrectionReasonRepository _correctionReasonRepository
 
-@inject NavigationManager _navigationManager
 
 @if (IsAdmin == true)
 {
-<_Dialogs @ref="_dialogs"></_Dialogs>
+    <_Dialogs @ref="_dialogs"></_Dialogs>
 
 
-<div class="row mt-4">
+    <div class="row mt-4">
 
-    <div class="col-6">
-        <h4 class="card-title text-primary"><a href="/dictionary">Справочники</a> - <a href="/dictionary/CorrectionReason">Причины корректировок</a></h4>
-    </div>
-  
-    @if (IsLoading != true)
-    {        
-        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую причину корректировки" Click="@InsertRow" Disabled=@(correctionReasonDTOToInsert != null || correctionReasonDTOToUpdate != null) />
-        <RadzenDataGrid @ref="correctionReasonDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                    Data="@correctionReasonDTOs" TItem="CorrectionReasonDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    FilterMode="FilterMode.Simple">
-            <Columns>
-                <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="Id" Title="Ид записи" Width="120px" />
-                <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="Name" Title="Наименование">
-                    <EditTemplate Context="correctionReasonDTO">
-                        <RadzenTextBox @bind-Value="correctionReasonDTO.Name" Style="width:100%; display: block" Name="Name" />
-                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
-                        <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
-                    </EditTemplate>
-                </RadzenDataGridColumn>
+        <div class="col-6">
+            <h4 class="card-title text-primary"><a href="/dictionary">Справочники</a> - <a href="/dictionary/CorrectionReason">Причины корректировок</a></h4>
+        </div>
 
-                <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px">
-                    <Template Context="data">
-                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
-                    </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CorrectionReasonDTO" Context="correctionReasonDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
-                    <Template Context="correctionReasonDTO">
-                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(correctionReasonDTO))" @onclick:stopPropagation="true">
-                        </RadzenButton>
-                        @if (!correctionReasonDTO.IsArchive)
-                        {
-                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(correctionReasonDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                        }
-                        else
-                        {
-                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(correctionReasonDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                        }
-                    </Template>
-                    <EditTemplate Context="correctionReasonDTO">
-                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(correctionReasonDTO))">
-                        </RadzenButton>
-                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(correctionReasonDTO))">
-                        </RadzenButton>
-                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(correctionReasonDTO))">
-                        </RadzenButton>
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-            </Columns>
-        </RadzenDataGrid>        
-    }
-    else
-    {
-        if (IsLoading)
+        @if (IsLoading != true)
         {
-            //отображение gif загрузки
-            <div class="text-center">
-                <img src="/images/loading.gif">
-            </div>
+            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую причину корректировки" Click="@InsertRow" Disabled=@(correctionReasonDTOToInsert != null || correctionReasonDTOToUpdate != null) />
+            <RadzenDataGrid @ref="correctionReasonDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            Data="@correctionReasonDTOs" TItem="CorrectionReasonDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            FilterMode="FilterMode.Simple">
+                <Columns>
+                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="Name" Title="Наименование">
+                        <EditTemplate Context="correctionReasonDTO">
+                            <RadzenTextBox @bind-Value="correctionReasonDTO.Name" Style="width:100%; display: block" Name="Name" />
+                            <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                            <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
 
+                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Context="correctionReasonDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                        <Template Context="correctionReasonDTO">
+                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(correctionReasonDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            @if (!correctionReasonDTO.IsArchive)
+                            {
+                                <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(correctionReasonDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                            else
+                            {
+                                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(correctionReasonDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                        </Template>
+                        <EditTemplate Context="correctionReasonDTO">
+                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(correctionReasonDTO))">
+                            </RadzenButton>
+                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(correctionReasonDTO))">
+                            </RadzenButton>
+                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(correctionReasonDTO))">
+                            </RadzenButton>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
         }
-    }
-    
-  
-</div>
- } 
+        else
+        {
+            if (IsLoading)
+            {
+                //отображение gif загрузки
+                <div class="text-center">
+                    <img src="/images/loading.gif">
+                </div>
+
+            }
+        }
+
+
+    </div>
+}
 
 @code {
 
@@ -123,17 +122,17 @@
 
         if (firstRender)
         {
-            
+
             if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
             {
                 IsAdmin = true;
-                StateHasChanged();
-                IsLoading = true;
                 StateHasChanged();
                 correctionReasonDTOs = _correctionReasonRepository.GetAll(SD.SelectDictionaryScope.All).Result;
                 IsLoading = false;
                 StateHasChanged();
             }
+            else
+                _navigationManager.NavigateTo("/dictionary");
         }
     }
 
