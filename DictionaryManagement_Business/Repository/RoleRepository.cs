@@ -36,7 +36,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (Id != null && Id != Guid.Empty)
             {
-                var objToGet = _db.Role.FirstOrDefaultAsync(u => (u.Id == Id)).GetAwaiter().GetResult();
+                var objToGet = await _db.Role.FirstOrDefaultAsync(u => (u.Id == Id));
                 if (objToGet != null)
                 {
                     return _mapper.Map<Role, RoleDTO>(objToGet);
@@ -60,7 +60,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<RoleDTO> GetByName(string name = "")
         {
-            var objToGet = _db.Role.FirstOrDefaultAsync(u => ((u.Name.Trim().ToUpper()) == (name.Trim().ToUpper()))).GetAwaiter().GetResult();
+            var objToGet = await _db.Role.FirstOrDefaultAsync(u => ((u.Name.Trim().ToUpper()) == (name.Trim().ToUpper())));
             if (objToGet != null)
             {
                 return _mapper.Map<Role, RoleDTO>(objToGet);

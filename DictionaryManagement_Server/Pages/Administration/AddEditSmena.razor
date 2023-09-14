@@ -165,7 +165,7 @@
             { // создание
 
                 // проверка на не привышение обшей продолжительности смен для одного производства 24-х часов
-                int departmentSmenaHoursSum = _smenaRepository.GetAllByDepartmentId(ActiveSmenaDTO.DepartmentId).GetAwaiter().GetResult().Sum(sm => sm.HoursDuration);
+                int departmentSmenaHoursSum = (await _smenaRepository.GetAllByDepartmentId(ActiveSmenaDTO.DepartmentId)).Sum(sm => sm.HoursDuration);
                 departmentSmenaHoursSum = departmentSmenaHoursSum + ActiveSmenaDTO.HoursDuration;
 
                 if (departmentSmenaHoursSum > 24)
@@ -175,7 +175,7 @@
                 }
 
                 // проверка на не пересечение смен по интревалам времени
-                var departmentSmenaList = _smenaRepository.GetAllByDepartmentId(ActiveSmenaDTO.DepartmentId).GetAwaiter().GetResult().OrderBy(st => st.StartTime);
+                var departmentSmenaList = (await _smenaRepository.GetAllByDepartmentId(ActiveSmenaDTO.DepartmentId)).OrderBy(st => st.StartTime);
 
                 TimeSpan inerationSmenaTimeSpanEnd;
                 TimeSpan activeSmenaTimeSpanEnd = ActiveSmenaDTO.StartTime + new TimeSpan(ActiveSmenaDTO.HoursDuration, 0, 0);
@@ -199,7 +199,7 @@
             else
             { // изменение
 
-                int departmentSmenaHoursSum = _smenaRepository.GetAllByDepartmentId(ActiveSmenaDTO.DepartmentId).GetAwaiter().GetResult()
+                int departmentSmenaHoursSum = (await _smenaRepository.GetAllByDepartmentId(ActiveSmenaDTO.DepartmentId))
                         .Where(u => u.Id != ActiveSmenaDTO.Id).Sum(sm => sm.HoursDuration);
                 departmentSmenaHoursSum = departmentSmenaHoursSum + ActiveSmenaDTO.HoursDuration;
 
@@ -210,7 +210,7 @@
                 }
 
                 // проверка на не пересечение смен по интревалам времени
-                var departmentSmenaList = _smenaRepository.GetAllByDepartmentId(ActiveSmenaDTO.DepartmentId).GetAwaiter().GetResult()
+                var departmentSmenaList = (await _smenaRepository.GetAllByDepartmentId(ActiveSmenaDTO.DepartmentId))
                         .Where(u => u.Id != ActiveSmenaDTO.Id).OrderBy(st => st.StartTime);
 
                 TimeSpan inerationSmenaTimeSpanEnd;
@@ -239,7 +239,7 @@
     {
         if (ActiveSmenaDTO.DepartmentId != null)
         {
-            ActiveSmenaDTO.DepartmentDTOFK = _mesDepartmentRepository.GetById(ActiveSmenaDTO.DepartmentId).GetAwaiter().GetResult();
+            ActiveSmenaDTO.DepartmentDTOFK = await _mesDepartmentRepository.GetById(ActiveSmenaDTO.DepartmentId);
         }
         else
             ActiveSmenaDTO.DepartmentDTOFK = null;

@@ -57,12 +57,12 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<ReportTemplateDTO> GetById(Guid id)
         {
-            var objToGet = _db.ReportTemplate
+            var objToGet = await _db.ReportTemplate
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
+                            .FirstOrDefaultAsync(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);
@@ -73,12 +73,12 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<ReportTemplateDTO> GetByTemplateFileName(string templateFileName = "")
         {
-            var objToGet = _db.ReportTemplate
+            var objToGet = await _db.ReportTemplate
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .FirstOrDefaultAsync(u => u.TemplateFileName.Trim().ToUpper() == templateFileName.Trim().ToUpper()).GetAwaiter().GetResult();
+                            .FirstOrDefaultAsync(u => u.TemplateFileName.Trim().ToUpper() == templateFileName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);
@@ -91,12 +91,12 @@ namespace DictionaryManagement_Business.Repository
 
             if (reportTemplateTypeId > 0 && destDataTypeId > 0 && departmentId > 0)
             { 
-                var objToGet = _db.ReportTemplate
+                var objToGet = await _db.ReportTemplate
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .FirstOrDefaultAsync(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.DestDataTypeId == destDataTypeId && u.DepartmentId == departmentId).GetAwaiter().GetResult();
+                            .FirstOrDefaultAsync(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.DestDataTypeId == destDataTypeId && u.DepartmentId == departmentId);
                 if (objToGet != null)
                 {
                     return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);

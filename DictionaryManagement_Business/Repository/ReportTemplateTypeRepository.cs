@@ -34,7 +34,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<ReportTemplateTypeDTO> Get(int Id)
         {
-            var objToGet = _db.ReportTemplateType.FirstOrDefaultAsync(u => u.Id == Id).GetAwaiter().GetResult();
+            var objToGet = await _db.ReportTemplateType.FirstOrDefaultAsync(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplateType, ReportTemplateTypeDTO>(objToGet);
@@ -81,7 +81,7 @@ namespace DictionaryManagement_Business.Repository
         }
         public async Task<ReportTemplateTypeDTO> GetByName(string name)
         {
-            var objToGet = _db.ReportTemplateType.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            var objToGet = await _db.ReportTemplateType.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplateType, ReportTemplateTypeDTO>(objToGet);

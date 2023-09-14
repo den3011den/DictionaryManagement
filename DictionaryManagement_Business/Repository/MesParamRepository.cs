@@ -59,7 +59,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesParamDTO> GetById(int id)
         {
-            var objToGet = _db.MesParam
+            var objToGet = await _db.MesParam
                             .Include("MesParamSourceTypeFK")
                             .Include("MesDepartmentFK")
                             .Include("SapEquipmentSourceFK")
@@ -68,7 +68,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
-                            .FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
+                            .FirstOrDefaultAsync(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<MesParam, MesParamDTO>(objToGet);
@@ -79,7 +79,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesParamDTO> GetByCode(string code = "")
         {
-            var objToGet = _db.MesParam
+            var objToGet = await _db.MesParam
                             .Include("MesParamSourceTypeFK")
                             .Include("MesDepartmentFK")
                             .Include("SapEquipmentSourceFK")
@@ -88,7 +88,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
-                            .FirstOrDefaultAsync(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper()).GetAwaiter().GetResult();
+                            .FirstOrDefaultAsync(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesParam, MesParamDTO>(objToGet);
@@ -98,7 +98,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesParamDTO> GetByName(string name = "")
         {
-            var objToGet = _db.MesParam
+            var objToGet = await _db.MesParam
                             .Include("MesParamSourceTypeFK")
                             .Include("MesDepartmentFK")
                             .Include("SapEquipmentSourceFK")
@@ -107,7 +107,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
-                            .FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+                            .FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesParam, MesParamDTO>(objToGet);
@@ -116,7 +116,7 @@ namespace DictionaryManagement_Business.Repository
         }
         public async Task<MesParamDTO> GetByMesParamSourceLink(string mesParamSourceLink = "")
         {
-            var objToGet = _db.MesParam
+            var objToGet = await _db.MesParam
                             .Include("MesParamSourceTypeFK")
                             .Include("MesDepartmentFK")
                             .Include("SapEquipmentSourceFK")
@@ -125,7 +125,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
-                            .FirstOrDefaultAsync(u => u.MesParamSourceLink.Trim().ToUpper() == mesParamSourceLink.Trim().ToUpper()).GetAwaiter().GetResult();
+                            .FirstOrDefaultAsync(u => u.MesParamSourceLink.Trim().ToUpper() == mesParamSourceLink.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesParam, MesParamDTO>(objToGet);

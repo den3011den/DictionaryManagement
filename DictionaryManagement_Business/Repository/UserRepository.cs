@@ -35,7 +35,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<UserDTO> Get(Guid Id)
         {
             if (Id != null && Id != Guid.Empty)  {
-                var objToGet = _db.User.FirstOrDefaultAsync(u => u.Id == Id).GetAwaiter().GetResult();
+                var objToGet = await _db.User.FirstOrDefaultAsync(u => u.Id == Id);
                 if (objToGet != null)
                 {
                     return _mapper.Map<User, UserDTO>(objToGet);
@@ -52,14 +52,14 @@ namespace DictionaryManagement_Business.Repository
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
                 return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.Where(u => u.IsArchive == true));
-            if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
+            if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)            
                 return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.Where(u => u.IsArchive != true));
             return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User);
         }
 
         public async Task<UserDTO> GetByLogin(string login = "")
         {
-            var objToGet = _db.User.FirstOrDefaultAsync(u => ((u.Login.Trim().ToUpper() == login.Trim().ToUpper()))).GetAwaiter().GetResult();
+            var objToGet = await _db.User.FirstOrDefaultAsync(u => ((u.Login.Trim().ToUpper() == login.Trim().ToUpper())));
             if (objToGet != null)
             {
                 return _mapper.Map<User, UserDTO>(objToGet);
@@ -69,8 +69,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserDTO> GetByLoginNotInArchive(string login = "")
         {
-            var objToGet = _db.User.FirstOrDefaultAsync(u => ((u.Login.Trim().ToUpper() == login.Trim().ToUpper()))
-                && u.IsArchive != true).GetAwaiter().GetResult();
+            var objToGet = await _db.User.FirstOrDefaultAsync(u => ((u.Login.Trim().ToUpper() == login.Trim().ToUpper()))
+                && u.IsArchive != true);
             if (objToGet != null)
             {
                 return _mapper.Map<User, UserDTO>(objToGet);
@@ -80,7 +80,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserDTO> GetByUserName(string userName = "")
         {
-            var objToGet = _db.User.FirstOrDefaultAsync(u => ((u.UserName.Trim().ToUpper()) == (userName.Trim().ToUpper()))).GetAwaiter().GetResult();
+            var objToGet = await _db.User.FirstOrDefaultAsync(u => ((u.UserName.Trim().ToUpper()) == (userName.Trim().ToUpper())));
             if (objToGet != null)
             {
                 return _mapper.Map<User, UserDTO>(objToGet);

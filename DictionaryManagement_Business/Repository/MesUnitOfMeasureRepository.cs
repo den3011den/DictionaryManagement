@@ -34,7 +34,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesUnitOfMeasureDTO> Get(int Id)
         {
-            var objToGet = _db.MesUnitOfMeasure.FirstOrDefaultAsync(u => u.Id == Id).GetAwaiter().GetResult();
+            var objToGet = await _db.MesUnitOfMeasure.FirstOrDefaultAsync(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objToGet);
@@ -85,7 +85,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesUnitOfMeasureDTO> GetByName(string name)
         {
-            var objToGet = _db.MesUnitOfMeasure.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            var objToGet = await _db.MesUnitOfMeasure.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objToGet);
@@ -95,7 +95,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesUnitOfMeasureDTO> GetByShortName(string shortName)
         {
-            var objToGet = _db.MesUnitOfMeasure.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper()).GetAwaiter().GetResult();
+            var objToGet = await _db.MesUnitOfMeasure.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objToGet);

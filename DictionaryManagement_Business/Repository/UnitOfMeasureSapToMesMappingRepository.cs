@@ -42,8 +42,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UnitOfMeasureSapToMesMappingDTO> Get(int sapUnitId, int mesUnitId)
         {
-            var objToGet = _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure").
-                            FirstOrDefaultAsync(u => u.SapUnitId == sapUnitId && u.MesUnitId == mesUnitId).GetAwaiter().GetResult();
+            var objToGet = await _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure").
+                            FirstOrDefaultAsync(u => u.SapUnitId == sapUnitId && u.MesUnitId == mesUnitId);
             if (objToGet != null)
             {
                 return _mapper.Map<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>(objToGet);
@@ -53,8 +53,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UnitOfMeasureSapToMesMappingDTO> GetById(int id)
         {
-            var objToGet = _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure").
-                            FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
+            var objToGet = await _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure").
+                            FirstOrDefaultAsync(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>(objToGet);

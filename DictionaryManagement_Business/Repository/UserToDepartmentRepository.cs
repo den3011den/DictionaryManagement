@@ -41,8 +41,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserToDepartmentDTO> Get(Guid userId, int departmentId)
         {
-            var objToGet = _db.UserToDepartment.Include("UserFK").Include("DepartmentFK").
-                            FirstOrDefaultAsync(u => u.UserId == userId && u.DepartmentId == departmentId).GetAwaiter().GetResult();
+            var objToGet = await _db.UserToDepartment.Include("UserFK").Include("DepartmentFK").
+                            FirstOrDefaultAsync(u => u.UserId == userId && u.DepartmentId == departmentId);
             if (objToGet != null)
             {
                 return _mapper.Map<UserToDepartment, UserToDepartmentDTO>(objToGet);
@@ -52,8 +52,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserToDepartmentDTO> GetById(int id)
         {
-            var objToGet = _db.UserToDepartment.Include("UserFK").Include("DepartmentFK").
-                            FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
+            var objToGet = await _db.UserToDepartment.Include("UserFK").Include("DepartmentFK").
+                            FirstOrDefaultAsync(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<UserToDepartment, UserToDepartmentDTO>(objToGet);

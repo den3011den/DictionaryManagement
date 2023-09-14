@@ -42,8 +42,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapToMesMaterialMappingDTO> Get(int sapMaterialId, int mesMaterialId)
         {
-            var objToGet = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").
-                            FirstOrDefaultAsync(u => u.SapMaterialId == sapMaterialId && u.MesMaterialId == mesMaterialId).GetAwaiter().GetResult();
+            var objToGet = await _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").
+                            FirstOrDefaultAsync(u => u.SapMaterialId == sapMaterialId && u.MesMaterialId == mesMaterialId);
             if (objToGet != null)
             {
                 return _mapper.Map<SapToMesMaterialMapping, SapToMesMaterialMappingDTO>(objToGet);
@@ -53,8 +53,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapToMesMaterialMappingDTO> GetById(int id)
         {
-            var objToGet = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").
-                            FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
+            var objToGet = await _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").
+                            FirstOrDefaultAsync(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<SapToMesMaterialMapping, SapToMesMaterialMappingDTO>(objToGet);

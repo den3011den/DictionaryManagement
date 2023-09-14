@@ -36,7 +36,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (Id > 0)
             {
-                var objToGet = _db.SapEquipment.FirstOrDefaultAsync(u => u.Id == Id).GetAwaiter().GetResult();
+                var objToGet = await _db.SapEquipment.FirstOrDefaultAsync(u => u.Id == Id);
                 if (objToGet != null)
                 {
                     return _mapper.Map<SapEquipment, SapEquipmentDTO>(objToGet);
@@ -61,7 +61,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapEquipmentDTO> GetByResource(string erpPlantId = "", string erpId = "")
         {
-            var objToGet = _db.SapEquipment.FirstOrDefaultAsync(u => ((u.ErpPlantId.Trim().ToUpper() == erpPlantId.Trim().ToUpper()) && (u.ErpId.Trim().ToUpper() == erpId.Trim().ToUpper()))).GetAwaiter().GetResult();
+            var objToGet = await _db.SapEquipment.FirstOrDefaultAsync(u => ((u.ErpPlantId.Trim().ToUpper() == erpPlantId.Trim().ToUpper()) && (u.ErpId.Trim().ToUpper() == erpId.Trim().ToUpper())));
             if (objToGet != null)
             {
                 return _mapper.Map<SapEquipment, SapEquipmentDTO>(objToGet);
@@ -70,7 +70,7 @@ namespace DictionaryManagement_Business.Repository
         }
         public async Task<SapEquipmentDTO> GetByName(string name = "")
         {
-            var objToGet = _db.SapEquipment.FirstOrDefaultAsync(u => ((u.Name.Trim().ToUpper()) == (name.Trim().ToUpper()))).GetAwaiter().GetResult();
+            var objToGet = await _db.SapEquipment.FirstOrDefaultAsync(u => ((u.Name.Trim().ToUpper()) == (name.Trim().ToUpper())));
             if (objToGet != null)
             {
                 return _mapper.Map<SapEquipment, SapEquipmentDTO>(objToGet);

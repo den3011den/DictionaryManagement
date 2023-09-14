@@ -44,7 +44,7 @@ namespace DictionaryManagement_Server.Controllers
             }
 
 
-            string pathVar = _settingsRepository.GetByName("ReportTemplatePath").GetAwaiter().GetResult().Value;
+            string pathVar = (await _settingsRepository.GetByName("ReportTemplatePath")).Value;
             try
             {
 

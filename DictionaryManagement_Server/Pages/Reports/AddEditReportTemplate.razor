@@ -57,15 +57,15 @@
                         <RadzenFormField Text="Тип шаблона отчёта" Variant="@variant" Style="width: 100%; max-width: 700px;">
                             <RadzenDropDown @ref=@reportTemplateTypeDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
                                             Data=@ReportTemplateTypeDTOList TextProperty="Name" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.ReportTemplateTypeId" Style="width: 100%; max-width: 700px;"
-                                             />
-                           @* Change=@(args => FillDescription()) *@
+                                            Change=@(args => FillDescription()) />
+                            @* Change=@(args => FillDescription()) *@
                         </RadzenFormField>
                         <ValidationMessage For="()=>ActiveReportTemplateDTO.ReportTemplateTypeDTOFK"></ValidationMessage>
 
                         <RadzenFormField Text="Тип выходных данных" Variant="@variant" Style="width: 100%; max-width: 700px;">
                             <RadzenDropDown @ref=@dataTypeDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
                                             Data=@DataTypeDTOList TextProperty="Name" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.DestDataTypeId" Style="width: 100%; max-width: 700px;"
-                                             />
+                                            Change=@(args => FillDescription()) />
                             @* Change=@(args => FillDescription()) *@
                         </RadzenFormField>
                         <ValidationMessage For="()=>ActiveReportTemplateDTO.DestDataTypeDTOFK"></ValidationMessage>
@@ -73,7 +73,7 @@
                         <RadzenFormField Text="Производство" Variant="@variant" Style="width: 100%; max-width: 700px;">
                             <RadzenDropDown @ref=@mesDepartmentDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
                                             Data=@MesDepartmentDTOList TextProperty="ShortName" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.DepartmentId" Style="width: 100%; max-width: 700px;"
-                                             />
+                                            Change=@(args => FillDescription()) />
                             @* Change=@(args => FillDescription()) *@
                         </RadzenFormField>
                         <ValidationMessage For="()=>ActiveReportTemplateDTO.MesDepartmentDTOFK"></ValidationMessage>
@@ -323,17 +323,17 @@
     {
         if (ActiveReportTemplateDTO.ReportTemplateTypeId != null)
         {
-            ActiveReportTemplateDTO.ReportTemplateTypeDTOFK = _reportTemplateTypeRepository.Get(ActiveReportTemplateDTO.ReportTemplateTypeId).GetAwaiter().GetResult();
+            ActiveReportTemplateDTO.ReportTemplateTypeDTOFK = await _reportTemplateTypeRepository.Get(ActiveReportTemplateDTO.ReportTemplateTypeId);
         }
 
         if (ActiveReportTemplateDTO.DepartmentId != null)
         {
-            ActiveReportTemplateDTO.MesDepartmentDTOFK = _mesDepartmentRepository.GetById(ActiveReportTemplateDTO.DepartmentId).GetAwaiter().GetResult();
+            ActiveReportTemplateDTO.MesDepartmentDTOFK = await _mesDepartmentRepository.GetById(ActiveReportTemplateDTO.DepartmentId);
         }
 
         if (ActiveReportTemplateDTO.DestDataTypeId != null)
         {
-            ActiveReportTemplateDTO.DestDataTypeDTOFK = _dataTypeRepository.Get(ActiveReportTemplateDTO.DestDataTypeId).GetAwaiter().GetResult();
+            ActiveReportTemplateDTO.DestDataTypeDTOFK = await _dataTypeRepository.Get(ActiveReportTemplateDTO.DestDataTypeId);
         }
 
         var repTemplateTypeName = "";

@@ -45,8 +45,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesDepartmentDTO> GetById(int id)
         {
-            var objToGet = _db.MesDepartment.Include("DepartmentParent").
-                            FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
+            var objToGet = await _db.MesDepartment.Include("DepartmentParent").
+                            FirstOrDefaultAsync(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
@@ -152,7 +152,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesDepartmentDTO> GetByCode(int mesCode = 0)
         {
-            var objToGet = _db.MesDepartment.FirstOrDefaultAsync(u => u.MesCode == mesCode).GetAwaiter().GetResult();
+            var objToGet = await _db.MesDepartment.FirstOrDefaultAsync(u => u.MesCode == mesCode);
             if (objToGet != null)
             {
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
@@ -162,7 +162,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesDepartmentDTO> GetByName(string name = "")
         {
-            var objToGet = _db.MesDepartment.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            var objToGet = await _db.MesDepartment.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
@@ -172,7 +172,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesDepartmentDTO> GetByShortName(string shortName = "")
         {
-            var objToGet = _db.MesDepartment.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper()).GetAwaiter().GetResult();
+            var objToGet = await _db.MesDepartment.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);

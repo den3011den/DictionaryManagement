@@ -48,9 +48,9 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<ReportEntityLogDTO> GetById(Int64 id)
         {
-            var objToGet = _db.ReportEntityLog
+            var objToGet = await _db.ReportEntityLog
                             .Include("ReportEntityFK")
-                            .FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
+                            .FirstOrDefaultAsync(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportEntityLog, ReportEntityLogDTO>(objToGet);

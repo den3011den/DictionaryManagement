@@ -36,7 +36,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id > 0)
             {
-                var objToGet = _db.MesMaterial.FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
+                var objToGet = await _db.MesMaterial.FirstOrDefaultAsync(u => u.Id == id);
                 if (objToGet != null)
                 {
                     return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
@@ -47,7 +47,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesMaterialDTO> GetByCode(string code = "")
         {
-            var objToGet = _db.MesMaterial.FirstOrDefaultAsync(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper()).GetAwaiter().GetResult();
+            var objToGet = await _db.MesMaterial.FirstOrDefaultAsync(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
                 if (objToGet != null)
                 {
                     return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
@@ -57,7 +57,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesMaterialDTO> GetByName(string name = "")
         {
-            var objToGet = _db.MesMaterial.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper()).GetAwaiter().GetResult();
+            var objToGet = await _db.MesMaterial.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
@@ -67,7 +67,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesMaterialDTO> GetByShortName(string shortName = "")
         {
-            var objToGet = _db.MesMaterial.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper()).GetAwaiter().GetResult();
+            var objToGet = await _db.MesMaterial.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);

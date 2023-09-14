@@ -53,8 +53,8 @@ namespace DictionaryManagement_Server.Controllers
             }
 
 
-            string pathVar = _settingsRepository.GetByName("ReportTemplatePath").GetAwaiter().GetResult().Value;
-            ReportTemplateDTO foundTemplate = _reportTemplateRepository.GetById(reportTemplateId).GetAwaiter().GetResult();
+            string pathVar = (await _settingsRepository.GetByName("ReportTemplatePath")).Value;
+            ReportTemplateDTO foundTemplate = await _reportTemplateRepository.GetById(reportTemplateId);
             string fileName = foundTemplate.TemplateFileName;
             string file = System.IO.Path.Combine(pathVar, fileName);
             var extension = Path.GetExtension(fileName);
@@ -100,16 +100,17 @@ namespace DictionaryManagement_Server.Controllers
             }
 
 
-            string pathVar = _settingsRepository.GetByName("ReportDownloadPath").GetAwaiter().GetResult().Value;
-            ReportEntityDTO foundEntity = _reportEntityRepository.GetById(reportEntityId).GetAwaiter().GetResult();
+            string pathVar = (await _settingsRepository.GetByName("ReportDownloadPath")).Value;
+            ReportEntityDTO foundEntity = await _reportEntityRepository.GetById(reportEntityId);
             string fileName = foundEntity.DownloadReportFileName;
             string file = System.IO.Path.Combine(pathVar, fileName);
             var extension = Path.GetExtension(fileName);
             if (System.IO.File.Exists(file))
             {
                 try
-                {
-                    var forFileName = ("Download_" + _reportTemplateTypeRepository.Get(foundEntity.ReportTemplateDTOFK.ReportTemplateTypeId).GetAwaiter().GetResult().Name + "_"
+                { 
+                    var repTmplTypeDTO = await _reportTemplateTypeRepository.Get(foundEntity.ReportTemplateDTOFK.ReportTemplateTypeId);
+                    var forFileName = ("Download_" + repTmplTypeDTO.Name + "_"
                         + foundEntity.DownloadUserDTOFK.UserName
                         + "_" + foundEntity.DownloadTime.ToString() + "_"
                         + fileName)
@@ -151,8 +152,8 @@ namespace DictionaryManagement_Server.Controllers
 
 
 
-            string pathVar = _settingsRepository.GetByName("ReportUploadPath").GetAwaiter().GetResult().Value;
-            ReportEntityDTO foundEntity = _reportEntityRepository.GetById(reportEntityId).GetAwaiter().GetResult();
+            string pathVar = (await _settingsRepository.GetByName("ReportUploadPath")).Value;
+            ReportEntityDTO foundEntity = await _reportEntityRepository.GetById(reportEntityId);
             string fileName = foundEntity.UploadReportFileName;
             string file = System.IO.Path.Combine(pathVar, fileName);
             var extension = Path.GetExtension(fileName);
@@ -160,7 +161,8 @@ namespace DictionaryManagement_Server.Controllers
             {
                 try
                 {
-                    var forFileName = ("Upload_" + _reportTemplateTypeRepository.Get(foundEntity.ReportTemplateDTOFK.ReportTemplateTypeId).GetAwaiter().GetResult().Name + "_"
+                    var reportTemptateTypeDTO = await _reportTemplateTypeRepository.Get(foundEntity.ReportTemplateDTOFK.ReportTemplateTypeId);
+                    var forFileName = ("Upload_" + reportTemptateTypeDTO.Name + "_"
                         + foundEntity.UploadUserDTOFK.UserName
                         + "_" + foundEntity.UploadTime.ToString() + "_"
                         + fileName)

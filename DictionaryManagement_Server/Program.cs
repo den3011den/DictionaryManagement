@@ -47,6 +47,8 @@ if (builder.Configuration.GetValue<string>("FactoryMode") == "NKNH")
 builder.Services.AddDbContext<IntDBApplicationDbContext>(options =>
 options.UseSqlServer(
     builder.Configuration.GetConnectionString("IntDBConnection")));
+
+//services.AddDbContext<MyContext>(ServiceLifetime.Transient);
 builder.Services.AddScoped<ISapEquipmentRepository, SapEquipmentRepository>();
 builder.Services.AddScoped<ISapMaterialRepository, SapMaterialRepository>();
 builder.Services.AddScoped<IMesMaterialRepository, MesMaterialRepository>();

@@ -42,8 +42,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<ReportTemplateTypeTоRoleDTO> Get(int reportTemplateTypeId, Guid roleId)
         {
-            var objToGet = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").
-                            FirstOrDefaultAsync(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.RoleId == roleId).GetAwaiter().GetResult();
+            var objToGet = await _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").
+                            FirstOrDefaultAsync(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.RoleId == roleId);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>(objToGet);
@@ -53,8 +53,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<ReportTemplateTypeTоRoleDTO> GetById(int id)
         {
-            var objToGet = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").
-                            FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
+            var objToGet = await _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").
+                            FirstOrDefaultAsync(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>(objToGet);

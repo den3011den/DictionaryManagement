@@ -43,9 +43,9 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SmenaDTO> GetById(int id)
         {
-            var objToGet = _db.Smena
+            var objToGet = await _db.Smena
                             .Include("DepartmentFK")
-                            .FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
+                            .FirstOrDefaultAsync(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<Smena, SmenaDTO>(objToGet);

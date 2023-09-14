@@ -249,9 +249,9 @@
 
         ActiveReportEntityDTO = await _reportEntityRepository.GetById(ReportEntityId);
         reportEntityLogDTOs = await _reportReportEntityLogRepository.GetByReportEntityId(ReportEntityId);
-        reportUploadPath = _settingsRepository.GetByName("ReportUploadPath").GetAwaiter().GetResult().Value;
+        reportUploadPath = (await _settingsRepository.GetByName("ReportUploadPath")).Value;
         fileUploadFullPath = reportUploadPath + ActiveReportEntityDTO.UploadReportFileName;
-        reportDownloadPath = _settingsRepository.GetByName("ReportDownloadPath").GetAwaiter().GetResult().Value;
+        reportDownloadPath = (await _settingsRepository.GetByName("ReportDownloadPath")).Value;
         fileDownloadFullPath = reportDownloadPath + ActiveReportEntityDTO.DownloadReportFileName;
 
         IsLoading = false;

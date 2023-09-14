@@ -59,12 +59,12 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<ReportEntityDTO> GetById(Guid id)
         {
-            var objToGet = _db.ReportEntity
+            var objToGet = await _db.ReportEntity
                             .Include("ReportTemplateFK")
                             .Include("ReportDepartmentFK")
                             .Include("DownloadUserFK")
                             .Include("UploadUserFK")
-                            .FirstOrDefaultAsync(u => u.Id == id).GetAwaiter().GetResult();
+                            .FirstOrDefaultAsync(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportEntity, ReportEntityDTO>(objToGet);
@@ -75,7 +75,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<ReportEntityDTO>> GetAll()
         {
-            var hhh1 = _db.ReportEntity
+            var hhh1 =  _db.ReportEntity
                             .Include("ReportTemplateFK")
                             .Include("ReportDepartmentFK")
                             .Include("DownloadUserFK")

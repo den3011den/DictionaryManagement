@@ -3,7 +3,7 @@
 <AuthorizeView>
     @* Пользователь: @context.User.Identity?.Name&nbsp&nbsp;&nbsp; *@
 
-    Пользователь: @_authorizationRepository.GetCurrentLogin().GetAwaiter().GetResult()&nbsp&nbsp;&nbsp;
+    Пользователь: @UserLogin&nbsp&nbsp;&nbsp;
 
     @* <div>Входит в группу BDSHOME-PC\HomeUsers:&nbsp;</div>
     
@@ -32,22 +32,13 @@
 
 @code
 {
- 
+
     //[CascadingParameter]
     //private Task<AuthenticationState>? authenticationState { get; set; }
+    public string UserLogin { get; set; }
     
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    if (authenticationState is not null)
-    //    {
-    //        var authState = await authenticationState;            
-    //        IEnumerable<Claim> claimList = authState?.User.Claims.Where(c => c.Type == ClaimTypes.Role);
-
-
-    //        if (user?.Identity is not null && user.Identity.IsAuthenticated)
-    //        {
-    //            authMessage = $"{user.Identity.Name} is authenticated.";
-    //        }
-    //    }
-    //}
+    protected override async Task OnInitializedAsync()
+    {
+        UserLogin = await _authorizationRepository.GetCurrentLogin();
+    }
 }
