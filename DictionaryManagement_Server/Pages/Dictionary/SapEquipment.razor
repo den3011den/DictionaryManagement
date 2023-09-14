@@ -25,9 +25,9 @@
 
         <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый ресурс" Click="@InsertRow" Disabled=@(sapEquipmentDTOToInsert != null || sapEquipmentDTOToUpdate != null) />
         <RadzenDataGrid @ref="sapEquipmentDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                    Data="@sapEquipmentDTOs" TItem="SapEquipmentDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    FilterMode="FilterMode.Simple">
+                        Data="@sapEquipmentDTOs" TItem="SapEquipmentDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        FilterMode="FilterMode.Simple">
             <Columns>
                 <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Id" Title="Ид записи" Width="80px" />
                 <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpPlantId" Title="Код завода SAP" Width="130px">
@@ -39,14 +39,14 @@
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpId" Title="Код ресурса/склада SAP" Width="120px">
                     <EditTemplate Context="sapEquipmentDTO">
-                        <RadzenTextBox @bind-Value="sapEquipmentDTO.ErpId" Style="width:100%; display: block" Name="ErpId"/>
+                        <RadzenTextBox @bind-Value="sapEquipmentDTO.ErpId" Style="width:100%; display: block" Name="ErpId" />
                         <RadzenRequiredValidator Text="Код ресурса/склада обязателен к заполнению" Component="ErpId" Popup="true" />
                         <RadzenLengthValidator Max=100 Text="Код ресурса/склада не может быть больше 100 символов" Component="ErpId" Popup="true" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Name" Title="Наименование" Width="540px">
                     <EditTemplate Context="sapEquipmentDTO">
-                        <RadzenTextBox @bind-Value="sapEquipmentDTO.Name" Style="width:100%; display: block" Name="Name"/>
+                        <RadzenTextBox @bind-Value="sapEquipmentDTO.Name" Style="width:100%; display: block" Name="Name" />
                         <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                         <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                     </EditTemplate>
@@ -287,12 +287,7 @@
 
     async Task InsertRow()
     {
-        if (!await _authorizationRepository.CurrentUserIsInRole())
-        {
-            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Пользователь " + await _authorizationRepository.GetCurrentLogin() + 
-                " не найден, находится в архиве или не имеет роли "+ SD.AdminRoleName + ". Обратитесь в техподдержку.");
-        }
-        else
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
             sapEquipmentDTOToInsert = new SapEquipmentDTO();
             await sapEquipmentDTOGrid.InsertRow(sapEquipmentDTOToInsert);
