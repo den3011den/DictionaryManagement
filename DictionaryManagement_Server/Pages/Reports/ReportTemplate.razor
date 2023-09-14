@@ -15,112 +15,113 @@
 @inject NavigationManager _navigationManager
 
 
-
-<_Dialogs @ref="_dialogs"></_Dialogs>
-
-
-
-<div class="row mt-4">
-
-    <div class="col-6">
-        <h4 class="card-title text-primary"><a href="/reports">Отчёты</a> - <a href="/reports/ReportTemplate">Шаблоны отчётов</a></h4>
-    </div>
+@if (IsAdmin == true)
+{
+    <_Dialogs @ref="_dialogs"></_Dialogs>
 
 
-    @if (IsLoading != true)
-    {
 
-        @*<div style="word-wrap: normal">*@
-        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый шаблон отчёта" Click="@(args => EditRow(null))" />
-        <RadzenDataGrid @bind-Settings="@ReportTemplateGridSettings" @ref="reportTemplateDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" PageSize="6" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                        Data="@reportTemplateDTOs" TItem="ReportTemplateDTO"
-                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                        FilterMode="FilterMode.Simple"                        
-                        Density=Density.Compact
-                        ShowPagingSummary="true"
-                        EmptyText="Нет записей для отображения"
-                        AllowVirtualization="true">
-            <Columns>
-                <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="Id" Title="Ид шаблона отчёта" Width="110px">
-                </RadzenDataGridColumn>
+    <div class="row mt-4">
+
+        <div class="col-6">
+            <h4 class="card-title text-primary"><a href="/reports">Отчёты</a> - <a href="/reports/ReportTemplate">Шаблоны отчётов</a></h4>
+        </div>
 
 
-                <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" Width="60px">
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="AddUserDTOFK.UserName" Title="Добавил" Width="55px">
-                </RadzenDataGridColumn>
-
-@*                <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="Description" Title="Описание" Width="80px">
-                </RadzenDataGridColumn>*@
-
-                <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="ReportTemplateTypeDTOFK.Name" Title="Тип отчёта" Width="40px">
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="MesDepartmentDTOFK.ShortName" Title="Производство" Width="100px" FilterProperty="MesDepartmentDTOFK.ShortName" SortProperty="MesDepartmentDTOFK.ShortName">
-                     <Template Context="data1">
-                        <RadzenCard Style="white-space:pre-wrap">
-                            <RadzenText TextStyle="TextStyle.Body2">
-                                <strong>
-                                    @data1.MesDepartmentDTOFK.ShortName
-                                </strong>
-                            </RadzenText>
-                        </RadzenCard>
-                      </Template>
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="DestDataTypeDTOFK.Name" Title="Тип вых данных" Width="50px">
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="TemplateFileName" Title="Имя файла" Width="120px">
-                </RadzenDataGridColumn>
-
-
-                <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="20px">
-                    <Template Context="data">
-                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
-                    </Template>
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="55px">
-                    <Template Context="reportTemplateDTO">
-@*                        <a href="/DownloadFileController/DownloadReportTemplateFile/@reportTemplateDTO.Id">*@
-                        <RadzenButton title="Скачать файл шаблона" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadTemplate(reportTemplateDTO.Id))" @onclick:stopPropagation="true">
-                        </RadzenButton>
-                        @*</a>*@
-                        <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(reportTemplateDTO))" @onclick:stopPropagation="true">
-                        </RadzenButton>
-                        @if (!reportTemplateDTO.IsArchive)
-                        {
-                            <RadzenButton title="Удалить в архив" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                        }
-                        else
-                        {
-                            <RadzenButton title="Восстановить из архива" ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                        }
-                    </Template>
-                </RadzenDataGridColumn>
-            </Columns>
-        </RadzenDataGrid>
-        @*   </div>*@
-
-    }
-    else
-    {
-        if (IsLoading)
+        @if (IsLoading != true)
         {
-            //отображение gif загрузки
-            <div class="text-center">
-                <img src="/images/loading.gif">
-            </div>
+
+            @*<div style="word-wrap: normal">*@
+            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый шаблон отчёта" Click="@(args => EditRow(null))" />
+            <RadzenDataGrid @bind-Settings="@ReportTemplateGridSettings" @ref="reportTemplateDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" PageSize="6" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            Data="@reportTemplateDTOs" TItem="ReportTemplateDTO"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            FilterMode="FilterMode.Simple"
+                            Density=Density.Compact
+                            ShowPagingSummary="true"
+                            EmptyText="Нет записей для отображения"
+                            AllowVirtualization="true">
+                <Columns>
+                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="Id" Title="Ид шаблона отчёта" Width="110px">
+                    </RadzenDataGridColumn>
+
+
+                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" Width="60px">
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="AddUserDTOFK.UserName" Title="Добавил" Width="55px">
+                    </RadzenDataGridColumn>
+
+                    @*                <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="Description" Title="Описание" Width="80px">
+            </RadzenDataGridColumn>*@
+
+                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="ReportTemplateTypeDTOFK.Name" Title="Тип отчёта" Width="40px">
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="MesDepartmentDTOFK.ShortName" Title="Производство" Width="100px" FilterProperty="MesDepartmentDTOFK.ShortName" SortProperty="MesDepartmentDTOFK.ShortName">
+                        <Template Context="data1">
+                            <RadzenCard Style="white-space:pre-wrap">
+                                <RadzenText TextStyle="TextStyle.Body2">
+                                    <strong>
+                                        @data1.MesDepartmentDTOFK.ShortName
+                                    </strong>
+                                </RadzenText>
+                            </RadzenCard>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="DestDataTypeDTOFK.Name" Title="Тип вых данных" Width="50px">
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="TemplateFileName" Title="Имя файла" Width="120px">
+                    </RadzenDataGridColumn>
+
+
+                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="20px">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="55px">
+                        <Template Context="reportTemplateDTO">
+                            @*                        <a href="/DownloadFileController/DownloadReportTemplateFile/@reportTemplateDTO.Id">*@
+                            <RadzenButton title="Скачать файл шаблона" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadTemplate(reportTemplateDTO.Id))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            @*</a>*@
+                            <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(reportTemplateDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            @if (!reportTemplateDTO.IsArchive)
+                            {
+                                <RadzenButton title="Удалить в архив" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                            else
+                            {
+                                <RadzenButton title="Восстановить из архива" ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+            @*   </div>*@
 
         }
-    }
+        else
+        {
+            if (IsLoading)
+            {
+                //отображение gif загрузки
+                <div class="text-center">
+                    <img src="/images/loading.gif">
+                </div>
 
-</div>
+            }
+        }
 
+    </div>
+}
 
 @code {
 
@@ -131,25 +132,32 @@
     RadzenDataGrid<ReportTemplateDTO> reportTemplateDTOGrid;
 
     public bool IsLoading { get; set; }
+    public bool IsAdmin { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();        
+        await base.OnInitializedAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-
-        if (firstRender)
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
+            IsAdmin = true;
+            StateHasChanged();
+            if (firstRender)
+            {
 
-            IsLoading = true;
-            await LoadStateAsync();
-            StateHasChanged();
-            reportTemplateDTOs = await _reportTemplateRepository.GetAll(SD.SelectDictionaryScope.All);
-            IsLoading = false;
-            StateHasChanged();
+                IsLoading = true;
+                await LoadStateAsync();
+                StateHasChanged();
+                reportTemplateDTOs = await _reportTemplateRepository.GetAll(SD.SelectDictionaryScope.All);
+                IsLoading = false;
+                StateHasChanged();
+            }
         }
+        else
+            _navigationManager.NavigateTo("/reports");
     }
 
 
@@ -189,85 +197,90 @@
     }
 
     async Task DownloadTemplate(Guid id)
-    {        
-        //_navigationManager.NavigateTo("/DownloadFileController/DownloadReportTemplateFile/" + id.ToString());
-        await _jsRuntime.InvokeVoidAsync("open", "/DownloadFileController/DownloadReportTemplateFile/" + id.ToString(), "_blank");
+    {
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            //_navigationManager.NavigateTo("/DownloadFileController/DownloadReportTemplateFile/" + id.ToString());
+            await _jsRuntime.InvokeVoidAsync("open", "/DownloadFileController/DownloadReportTemplateFile/" + id.ToString(), "_blank");
+        }
     }
 
     async Task EditRow(ReportTemplateDTO reportTemplateDTO)
     {
-
-        IsLoading = true;
-
-        ReportTemplateDTO dialogResult = null;
-
-        if (reportTemplateDTO == null)
-        {
-            IsLoading = false;
-            dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Добавить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", Guid.Empty } }, new DialogOptions() { Width = $"{800}px" });
-        }
-        else
-        {
-            IsLoading = false;
-            dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Изменить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", reportTemplateDTO.Id } }, new DialogOptions() { Width = $"{800}px" });
-        }
-
-
-        if (dialogResult != null)
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
             IsLoading = true;
-            await LoadStateAsync();
-            StateHasChanged();
-            reportTemplateDTOs = await _reportTemplateRepository.GetAll(SD.SelectDictionaryScope.All);
-            IsLoading = false;
-            StateHasChanged();
-        }
 
-        IsLoading = false;
+            ReportTemplateDTO dialogResult = null;
+
+            if (reportTemplateDTO == null)
+            {
+                IsLoading = false;
+                dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Добавить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", Guid.Empty } }, new DialogOptions() { Width = $"{800}px" });
+            }
+            else
+            {
+                IsLoading = false;
+                dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Изменить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", reportTemplateDTO.Id } }, new DialogOptions() { Width = $"{800}px" });
+            }
+
+
+            if (dialogResult != null)
+            {
+                IsLoading = true;
+                await LoadStateAsync();
+                StateHasChanged();
+                reportTemplateDTOs = await _reportTemplateRepository.GetAll(SD.SelectDictionaryScope.All);
+                IsLoading = false;
+                StateHasChanged();
+            }
+
+            IsLoading = false;
+        }
 
     }
 
 
     async Task DeleteRow(ReportTemplateDTO reportTemplateDTO)
     {
-
-        if (_dialogs != null)
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            if (reportTemplateDTO.IsArchive != true)
+            if (_dialogs != null)
             {
-                bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление шаблона отчёта", "Удалить шаблон \"" + reportTemplateDTO.Description + "\" в архив ?", "Удалить", "Отмена");
-                if (selectionResult == false)
+                if (reportTemplateDTO.IsArchive != true)
                 {
-                    await _jsRuntime.ToastrSuccess("Отмена удаления");
-                    return;
+                    bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление шаблона отчёта", "Удалить шаблон \"" + reportTemplateDTO.Description + "\" в архив ?", "Удалить", "Отмена");
+                    if (selectionResult == false)
+                    {
+                        await _jsRuntime.ToastrSuccess("Отмена удаления");
+                        return;
+                    }
                 }
+                else
+                {
+                    bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Восстановление шаблона отчёта", "Восстановить шаблон отчёта \"" + reportTemplateDTO.Description + "\" из архива ?", "Восстановить", "Отмена");
+                    if (selectionResult == false)
+                    {
+                        await _jsRuntime.ToastrSuccess("Отмена восстановления");
+                        return;
+                    }
+                }
+            }
+
+
+            if (reportTemplateDTO.IsArchive)
+            {
+                await _reportTemplateRepository.Delete(reportTemplateDTO.Id, SD.UpdateMode.RestoreFromArchive);
+                reportTemplateDTO.IsArchive = false;
+                await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + reportTemplateDTO.Description + "\" восстановлен из архива");
             }
             else
             {
-                bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Восстановление шаблона отчёта", "Восстановить шаблон отчёта \"" + reportTemplateDTO.Description + "\" из архива ?", "Восстановить", "Отмена");
-                if (selectionResult == false)
-                {
-                    await _jsRuntime.ToastrSuccess("Отмена восстановления");
-                    return;
-                }
+                await _reportTemplateRepository.Delete(reportTemplateDTO.Id, SD.UpdateMode.MoveToArchive);
+                reportTemplateDTO.IsArchive = true;
+                await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + reportTemplateDTO.Description + "\" удалён в архив");
             }
+            await reportTemplateDTOGrid.UpdateRow(reportTemplateDTO);
         }
-
-
-        if (reportTemplateDTO.IsArchive)
-        {
-            await _reportTemplateRepository.Delete(reportTemplateDTO.Id, SD.UpdateMode.RestoreFromArchive);
-            reportTemplateDTO.IsArchive = false;
-            await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + reportTemplateDTO.Description + "\" восстановлен из архива");
-        }
-        else
-        {
-            await _reportTemplateRepository.Delete(reportTemplateDTO.Id, SD.UpdateMode.MoveToArchive);
-            reportTemplateDTO.IsArchive = true;
-            await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + reportTemplateDTO.Description + "\" удалён в архив");
-        }
-        await reportTemplateDTOGrid.UpdateRow(reportTemplateDTO);
-
     }
-
 }
