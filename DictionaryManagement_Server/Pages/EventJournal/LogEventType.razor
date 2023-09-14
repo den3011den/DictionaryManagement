@@ -12,77 +12,77 @@
 
 @if (IsAdmin == true)
 {
-<_Dialogs @ref="_dialogs"></_Dialogs>
+    <_Dialogs @ref="_dialogs"></_Dialogs>
 
-<div class="row mt-4">
+    <div class="row mt-4">
 
-    <div class="col-6">
-        <h4 class="card-title text-primary"><a href="/EventJournal">Журнал событий</a> - <a href="/dictionary/LogEventType">Типы событий</a></h4>
-    </div>
+        <div class="col-6">
+            <h4 class="card-title text-primary"><a href="/EventJournal">Журнал событий</a> - <a href="/dictionary/LogEventType">Типы событий</a></h4>
+        </div>
 
 
-    @if (IsLoading != true)
-    {
-
-        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тип событий" Click="@InsertRow" Disabled=@(logEventTypeDTOToInsert != null || logEventTypeDTOToUpdate != null) />
-        <RadzenDataGrid @ref="logEventTypeDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                    Data="@logEventTypeDTOs" TItem="LogEventTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    FilterMode="FilterMode.Simple">
-            <Columns>
-                <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
-                <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="Name" Title="Наименование">
-                    <EditTemplate Context="logEventTypeDTO">
-                        <RadzenTextBox @bind-Value="logEventTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
-                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
-                        <RadzenLengthValidator Max=100 Text="Наименование не может быть больше 100 символов" Component="Name" Popup="true" />
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
-                    <Template Context="data">
-                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
-                    </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="LogEventTypeDTO" Context="logEventTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
-                    <Template Context="logEventTypeDTO">
-                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(logEventTypeDTO))" @onclick:stopPropagation="true">
-                        </RadzenButton>
-                        @if (!logEventTypeDTO.IsArchive)
-                        {
-                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(logEventTypeDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                        }
-                        else
-                        {
-                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(logEventTypeDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                        }
-                    </Template>
-                    <EditTemplate Context="logEventTypeDTO">
-                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(logEventTypeDTO))">
-                        </RadzenButton>
-                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(logEventTypeDTO))">
-                        </RadzenButton>
-                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(logEventTypeDTO))">
-                        </RadzenButton>
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-            </Columns>
-        </RadzenDataGrid>
-    }
-    else
-    {
-        if (IsLoading)
+        @if (IsLoading != true)
         {
-            //отображение gif загрузки
-            <div class="text-center">
-                <img src="/images/loading.gif">
-            </div>
 
+            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тип событий" Click="@InsertRow" Disabled=@(logEventTypeDTOToInsert != null || logEventTypeDTOToUpdate != null) />
+            <RadzenDataGrid @ref="logEventTypeDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            Data="@logEventTypeDTOs" TItem="LogEventTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            FilterMode="FilterMode.Simple">
+                <Columns>
+                    <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="Name" Title="Наименование">
+                        <EditTemplate Context="logEventTypeDTO">
+                            <RadzenTextBox @bind-Value="logEventTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
+                            <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                            <RadzenLengthValidator Max=100 Text="Наименование не может быть больше 100 символов" Component="Name" Popup="true" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="LogEventTypeDTO" Context="logEventTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                        <Template Context="logEventTypeDTO">
+                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(logEventTypeDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            @if (!logEventTypeDTO.IsArchive)
+                            {
+                                <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(logEventTypeDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                            else
+                            {
+                                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(logEventTypeDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                        </Template>
+                        <EditTemplate Context="logEventTypeDTO">
+                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(logEventTypeDTO))">
+                            </RadzenButton>
+                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(logEventTypeDTO))">
+                            </RadzenButton>
+                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(logEventTypeDTO))">
+                            </RadzenButton>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
         }
-    }
-</div>
+        else
+        {
+            if (IsLoading)
+            {
+                //отображение gif загрузки
+                <div class="text-center">
+                    <img src="/images/loading.gif">
+                </div>
+
+            }
+        }
+    </div>
 }
 
 @code {
