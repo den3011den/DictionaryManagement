@@ -1,4 +1,6 @@
-﻿using DictionaryManagement_Business.Repository.IRepository;
+﻿using DictionaryManagement_Business.Repository;
+using DictionaryManagement_Business.Repository.IRepository;
+using DictionaryManagement_Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
@@ -9,10 +11,13 @@ namespace DictionaryManagement_Server.Controllers
     {
 
         private readonly ISettingsRepository _settingsRepository;
+        private readonly IAuthorizationRepository _authorizationRepository;
 
-        public UploadFileController(ISettingsRepository settingsRepository)
+        public UploadFileController(ISettingsRepository settingsRepository,
+            IAuthorizationRepository authorizationRepository)
         {
             _settingsRepository = settingsRepository;
+            _authorizationRepository = authorizationRepository;
         }
 
         [HttpPost("UploadFileController/UploadReportTemplateFile/{reportTemplateId}")]
@@ -24,6 +29,13 @@ namespace DictionaryManagement_Server.Controllers
                 if (!User.Identity.IsAuthenticated)
                 {
                     return StatusCode(401, "Вы не авторизованы. Доступ запрещён");
+                }
+                else
+                {
+                    if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.Off))
+                    {
+                        return StatusCode(401, "Вы не входите в группу " + SD.AdminRoleName + ". Доступ запрещён");
+                    }
                 }
             }
             catch
@@ -49,10 +61,16 @@ namespace DictionaryManagement_Server.Controllers
         {
             try
             {
-
                 if (!User.Identity.IsAuthenticated)
                 {
                     return;
+                }
+                else
+                {
+                    if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.Off))
+                    {
+                        return;
+                    }
                 }
             }
             catch

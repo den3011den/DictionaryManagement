@@ -1,4 +1,6 @@
-﻿using DictionaryManagement_Business.Repository.IRepository;
+﻿using DictionaryManagement_Business.Repository;
+using DictionaryManagement_Business.Repository.IRepository;
+using DictionaryManagement_Common;
 using DictionaryManagement_Models.IntDBModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +15,17 @@ namespace DictionaryManagement_Server.Controllers
         private readonly IReportTemplateRepository _reportTemplateRepository;
         private readonly IReportEntityRepository _reportEntityRepository;
         private readonly IReportTemplateTypeRepository _reportTemplateTypeRepository;
+        private readonly IAuthorizationRepository _authorizationRepository;
 
         public DownloadFileController(ISettingsRepository settingsRepository, IReportTemplateRepository reportTemplateRepository,
-            IReportEntityRepository reportEntityRepository, IReportTemplateTypeRepository reportTemplateTypeRepository)
+            IReportEntityRepository reportEntityRepository, IReportTemplateTypeRepository reportTemplateTypeRepository,
+            IAuthorizationRepository authorizationRepository)
         {
             _settingsRepository = settingsRepository;
             _reportTemplateRepository = reportTemplateRepository;
             _reportEntityRepository = reportEntityRepository;
             _reportTemplateTypeRepository = reportTemplateTypeRepository;
+            _authorizationRepository = authorizationRepository;
         }
 
         [HttpGet("DownloadFileController/DownloadReportTemplateFile/{reportTemplateId}")]
@@ -34,7 +39,13 @@ namespace DictionaryManagement_Server.Controllers
                 {
                     return StatusCode(401, "Вы не авторизованы. Доступ запрещён");
                 }
-
+                else
+                {
+                    if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.Off))
+                    {
+                        return StatusCode(401, "Вы не входите в группу " + SD.AdminRoleName + ". Доступ запрещён");
+                    }
+                }
             }
             catch
             {
@@ -75,7 +86,13 @@ namespace DictionaryManagement_Server.Controllers
                 {
                     return StatusCode(401, "Вы не авторизованы. Доступ запрещён");
                 }
-
+                else
+                {
+                    if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.Off))
+                    {
+                        return StatusCode(401, "Вы не входите в группу " + SD.AdminRoleName + ". Доступ запрещён");
+                    }
+                }
             }
             catch
             {
@@ -118,6 +135,14 @@ namespace DictionaryManagement_Server.Controllers
                 {
                     return StatusCode(401, "Вы не авторизованы. Доступ запрещён");
                 }
+                else
+                {
+                    if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.Off))
+                    {
+                        return StatusCode(401, "Вы не входите в группу " + SD.AdminRoleName + ". Доступ запрещён");
+                    }
+                }
+
             }
             catch
             {
