@@ -226,13 +226,11 @@
 
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
+            IsAdmin = true;
             if (firstRender)
-            {
-
-
-                IsAdmin = true;
-                StateHasChanged();
+            {                
                 IsLoading = true;
+                //StateHasChanged();
                 await LoadStateAsync();
                 StateHasChanged();
                 mesParamDTOs = await _mesParamRepository.GetAll(SD.SelectDictionaryScope.All);

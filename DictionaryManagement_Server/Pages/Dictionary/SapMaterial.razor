@@ -134,7 +134,6 @@
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
             IsAdmin = true;
-            StateHasChanged();
             if (firstRender)
             {
 
