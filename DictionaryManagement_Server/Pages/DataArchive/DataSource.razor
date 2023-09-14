@@ -2,7 +2,6 @@
 @attribute [Authorize]
 
 @using DictionaryManagement_Business.Repository.IRepository;
-@using DictionaryManagement_Common;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 
@@ -10,8 +9,6 @@
 
 @inject IJSRuntime _jsRuntime
 @inject IDataSourceRepository _dataSourceRepository
-
-@inject NavigationManager _navigationManager
 
 @if (IsAdmin == true)
 {
