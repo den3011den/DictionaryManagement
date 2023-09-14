@@ -2,7 +2,6 @@
 @attribute [Authorize]
 
 @using DictionaryManagement_Business.Repository.IRepository;
-@using DictionaryManagement_Common;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 
@@ -11,98 +10,99 @@
 @inject IJSRuntime _jsRuntime
 @inject IMesMaterialRepository _mesMaterialRepository
 
-@*@inject NavigationManager _navigationManager*@
+
+@if (IsAdmin == true)
+{
+    <_Dialogs @ref="_dialogs"></_Dialogs>
+
+    <div class="row mt-4">
+
+        <div class="col-6">
+            <h4 class="card-title text-primary"><a href="/dictionary">Справочники</a> - <a href="/dictionary/MesMaterial">Материалы MES</a></h4>
+        </div>
 
 
-<_Dialogs @ref="_dialogs"></_Dialogs>
-
-<div class="row mt-4">
-
-    <div class="col-6">
-        <h4 class="card-title text-primary"><a href="/dictionary">Справочники</a> - <a href="/dictionary/MesMaterial">Материалы MES</a></h4>
-    </div>
-
-
-    @if (IsLoading != true)
-    {
-
-        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый материал MES" Click="@InsertRow" Disabled=@(mesMaterialDTOToInsert != null || mesMaterialDTOToUpdate != null) />
-        <RadzenDataGrid @ref="mesMaterialDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                    Data="@mesMaterialDTOs" TItem="MesMaterialDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
-                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                    FilterMode="FilterMode.Simple">
-            <Columns>
-                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Id" Title="Ид записи" Width="50px" />
-                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Code" Title="Код материала">
-                    <EditTemplate Context="mesMaterialDTO">
-                        <RadzenTextBox @bind-Value="mesMaterialDTO.Code" Style="width:50%; display: block" Name="Code" />
-                        <RadzenRequiredValidator Text="Код материала обязателен к заполнению" Component="Code" Popup="true" />
-                        <RadzenLengthValidator Max=100 Text="Код материала не может быть больше 100 символов" Component="Code" Popup="true" />
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Name" Title="Наименование">
-                    <EditTemplate Context="mesMaterialDTO">
-                        <RadzenTextBox @bind-Value="mesMaterialDTO.Name" Style="width:100%; display: block" Name="Name" />
-                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
-                        <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="ShortName" Title="Сокр. наименование">
-                    <EditTemplate Context="mesMaterialDTO">
-                        <RadzenTextBox @bind-Value="mesMaterialDTO.ShortName" Style="width:100%; display: block" Name="ShortName" />
-                        <RadzenRequiredValidator Text="Сокр. наименование обязателено к заполнению" Component="ShortName" Popup="true" />
-                        <RadzenLengthValidator Max=100 Text="Сокр. наименование не может быть больше 100 символов" Component="ShortName" Popup="true" />
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="MesMaterialDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="50px">
-                    <Template Context="data">
-                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
-                    </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="MesMaterialDTO" Context="mesMaterialDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
-                    <Template Context="mesMaterialDTO">
-                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesMaterialDTO))" @onclick:stopPropagation="true">
-                        </RadzenButton>
-                        @if (!mesMaterialDTO.IsArchive)
-                        {
-                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesMaterialDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                        }
-                        else
-                        {
-                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesMaterialDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                        }
-
-                    </Template>
-                    <EditTemplate Context="mesMaterialDTO">
-                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(mesMaterialDTO))">
-                        </RadzenButton>
-                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(mesMaterialDTO))">
-                        </RadzenButton>
-                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesMaterialDTO))">
-                        </RadzenButton>
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-            </Columns>
-        </RadzenDataGrid>
-    }
-    else
-    {
-        if (IsLoading)
+        @if (IsLoading != true)
         {
-            //отображение gif загрузки
-            <div class="text-center">
-                <img src="/images/loading.gif">
-            </div>
 
+            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый материал MES" Click="@InsertRow" Disabled=@(mesMaterialDTOToInsert != null || mesMaterialDTOToUpdate != null) />
+            <RadzenDataGrid @ref="mesMaterialDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            Data="@mesMaterialDTOs" TItem="MesMaterialDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            FilterMode="FilterMode.Simple">
+                <Columns>
+                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Id" Title="Ид записи" Width="50px" />
+                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Code" Title="Код материала">
+                        <EditTemplate Context="mesMaterialDTO">
+                            <RadzenTextBox @bind-Value="mesMaterialDTO.Code" Style="width:50%; display: block" Name="Code" />
+                            <RadzenRequiredValidator Text="Код материала обязателен к заполнению" Component="Code" Popup="true" />
+                            <RadzenLengthValidator Max=100 Text="Код материала не может быть больше 100 символов" Component="Code" Popup="true" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Name" Title="Наименование">
+                        <EditTemplate Context="mesMaterialDTO">
+                            <RadzenTextBox @bind-Value="mesMaterialDTO.Name" Style="width:100%; display: block" Name="Name" />
+                            <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                            <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="ShortName" Title="Сокр. наименование">
+                        <EditTemplate Context="mesMaterialDTO">
+                            <RadzenTextBox @bind-Value="mesMaterialDTO.ShortName" Style="width:100%; display: block" Name="ShortName" />
+                            <RadzenRequiredValidator Text="Сокр. наименование обязателено к заполнению" Component="ShortName" Popup="true" />
+                            <RadzenLengthValidator Max=100 Text="Сокр. наименование не может быть больше 100 символов" Component="ShortName" Popup="true" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="50px">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="MesMaterialDTO" Context="mesMaterialDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                        <Template Context="mesMaterialDTO">
+                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesMaterialDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            @if (!mesMaterialDTO.IsArchive)
+                            {
+                                <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesMaterialDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                            else
+                            {
+                                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesMaterialDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+
+                        </Template>
+                        <EditTemplate Context="mesMaterialDTO">
+                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(mesMaterialDTO))">
+                            </RadzenButton>
+                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(mesMaterialDTO))">
+                            </RadzenButton>
+                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesMaterialDTO))">
+                            </RadzenButton>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
         }
-    }
+        else
+        {
+            if (IsLoading)
+            {
+                //отображение gif загрузки
+                <div class="text-center">
+                    <img src="/images/loading.gif">
+                </div>
 
-</div>
+            }
+        }
+
+    </div>
+}
 
 @code {
 
@@ -118,6 +118,7 @@
     MesMaterialDTO mesMaterialDTOToUpdate;
 
     public bool IsLoading { get; set; }
+    public bool IsAdmin { get; set; }
 
 
     void Reset()
@@ -135,88 +136,106 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
 
-        if (firstRender)
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            IsLoading = true;
+            IsAdmin = true;
             StateHasChanged();
-            mesMaterialDTOs = _mesMaterialRepository.GetAll(SD.SelectDictionaryScope.All).Result;
-            IsLoading = false;
-            StateHasChanged();
+            if (firstRender)
+            {
+                IsLoading = true;
+                StateHasChanged();
+                mesMaterialDTOs = _mesMaterialRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+                IsLoading = false;
+                StateHasChanged();
+            }
         }
+        else
+            _navigationManager.NavigateTo("/dictionary");
     }
 
     async Task EditRow(MesMaterialDTO mesMaterialDTO)
     {
-        mesMaterialDTOToUpdate = mesMaterialDTO;
-        await mesMaterialDTOGrid.EditRow(mesMaterialDTO);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            mesMaterialDTOToUpdate = mesMaterialDTO;
+            await mesMaterialDTOGrid.EditRow(mesMaterialDTO);
+        }
     }
 
     async Task OnUpdateRow(MesMaterialDTO mesMaterialDTO)
     {
-        if (mesMaterialDTO == mesMaterialDTOToInsert)
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            mesMaterialDTOToInsert = null;
-        }
 
-        mesMaterialDTOToUpdate = null;
-
-        string errorMessage = string.Empty;
-
-        var objectForCheckCode = _mesMaterialRepository.GetByCode(mesMaterialDTO.Code).Result;
-
-        if (objectForCheckCode != null)
-        {
-            if (objectForCheckCode.Id != mesMaterialDTO.Id)
+            if (mesMaterialDTO == mesMaterialDTOToInsert)
             {
-                errorMessage = "Уже есть запись с кодом материала MES \"" + objectForCheckCode.Code + "\" (ИД записи: " + objectForCheckCode.Id.ToString() + ")";
+                mesMaterialDTOToInsert = null;
             }
-        }
 
-        var objectForCheckName = _mesMaterialRepository.GetByName(mesMaterialDTO.Name).Result;
+            mesMaterialDTOToUpdate = null;
 
-        if (objectForCheckName != null)
-        {
-            if (objectForCheckName.Id != mesMaterialDTO.Id)
+            string errorMessage = string.Empty;
+
+            var objectForCheckCode = _mesMaterialRepository.GetByCode(mesMaterialDTO.Code).Result;
+
+            if (objectForCheckCode != null)
             {
-                if (errorMessage != string.Empty)
+                if (objectForCheckCode.Id != mesMaterialDTO.Id)
                 {
-                    errorMessage = errorMessage + "\n";
+                    errorMessage = "Уже есть запись с кодом материала MES \"" + objectForCheckCode.Code + "\" (ИД записи: " + objectForCheckCode.Id.ToString() + ")";
                 }
-                errorMessage = errorMessage + "Уже есть запись с наименованием материала MES \"" + objectForCheckName.Name + "\" (ИД записи: " + objectForCheckName.Id.ToString() + ")";
             }
-        }
 
-        var objectForCheckShortName = _mesMaterialRepository.GetByName(mesMaterialDTO.ShortName).Result;
+            var objectForCheckName = _mesMaterialRepository.GetByName(mesMaterialDTO.Name).Result;
 
-        if (objectForCheckShortName != null)
-        {
-            if (objectForCheckShortName.Id != mesMaterialDTO.Id)
+            if (objectForCheckName != null)
             {
-                if (errorMessage != string.Empty)
+                if (objectForCheckName.Id != mesMaterialDTO.Id)
                 {
-                    errorMessage = errorMessage + "\n";
+                    if (errorMessage != string.Empty)
+                    {
+                        errorMessage = errorMessage + "\n";
+                    }
+                    errorMessage = errorMessage + "Уже есть запись с наименованием материала MES \"" + objectForCheckName.Name + "\" (ИД записи: " + objectForCheckName.Id.ToString() + ")";
                 }
-                errorMessage = errorMessage + "Уже есть запись с сокр. наименованием материала MES \"" + objectForCheckShortName.ShortName + "\" (ИД записи: " + objectForCheckShortName.Id.ToString() + ")";
             }
-        }
 
-        if (errorMessage != string.Empty)
-        {
-            var objectForRestore = await _mesMaterialRepository.Get(mesMaterialDTO.Id);
-            mesMaterialDTO.Code = objectForRestore.Code;
-            mesMaterialDTO.Name = objectForRestore.Name;
-            mesMaterialDTO.ShortName = objectForRestore.ShortName;
-            await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
-            await mesMaterialDTOGrid.Reload();
-            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
-            return;
+            var objectForCheckShortName = _mesMaterialRepository.GetByName(mesMaterialDTO.ShortName).Result;
+
+            if (objectForCheckShortName != null)
+            {
+                if (objectForCheckShortName.Id != mesMaterialDTO.Id)
+                {
+                    if (errorMessage != string.Empty)
+                    {
+                        errorMessage = errorMessage + "\n";
+                    }
+                    errorMessage = errorMessage + "Уже есть запись с сокр. наименованием материала MES \"" + objectForCheckShortName.ShortName + "\" (ИД записи: " + objectForCheckShortName.Id.ToString() + ")";
+                }
+            }
+
+            if (errorMessage != string.Empty)
+            {
+                var objectForRestore = await _mesMaterialRepository.Get(mesMaterialDTO.Id);
+                mesMaterialDTO.Code = objectForRestore.Code;
+                mesMaterialDTO.Name = objectForRestore.Name;
+                mesMaterialDTO.ShortName = objectForRestore.ShortName;
+                await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
+                await mesMaterialDTOGrid.Reload();
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
+                return;
+            }
+            await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.Update);
         }
-        await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.Update);
     }
 
     async Task SaveRow(MesMaterialDTO mesMaterialDTO)
     {
-        await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+
+            await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
+        }
     }
 
     void CancelEdit(MesMaterialDTO mesMaterialDTO)
@@ -244,113 +263,124 @@
 
     async Task DeleteRow(MesMaterialDTO mesMaterialDTO)
     {
-
-        if (_dialogs != null)
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            if (mesMaterialDTO.IsArchive != true)
+
+            if (_dialogs != null)
             {
-                bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление материала MES", "Удалить материал MES \"" + mesMaterialDTO.ShortName + "\" в архив ?", "Удалить", "Отмена");
-                if (selectionResult == false)
+                if (mesMaterialDTO.IsArchive != true)
                 {
-                    await _jsRuntime.ToastrSuccess("Отмена удаления");
-                    return;
+                    bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление материала MES", "Удалить материал MES \"" + mesMaterialDTO.ShortName + "\" в архив ?", "Удалить", "Отмена");
+                    if (selectionResult == false)
+                    {
+                        await _jsRuntime.ToastrSuccess("Отмена удаления");
+                        return;
+                    }
                 }
+                else
+                {
+                    bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Восстановление материала MES", "Восстановить материал MES \"" + mesMaterialDTO.ShortName + "\" из архива ?", "Восстановить", "Отмена");
+                    if (selectionResult == false)
+                    {
+                        await _jsRuntime.ToastrSuccess("Отмена восстановления");
+                        return;
+                    }
+                }
+            }
+
+            if (mesMaterialDTO == mesMaterialDTOToInsert)
+            {
+                mesMaterialDTOToInsert = null;
+            }
+
+            if (mesMaterialDTO == mesMaterialDTOToUpdate)
+            {
+                mesMaterialDTOToUpdate = null;
+            }
+
+            if (mesMaterialDTOs.Contains(mesMaterialDTO))
+            {
+                if (mesMaterialDTO.IsArchive)
+                {
+                    await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.RestoreFromArchive);
+                    mesMaterialDTO.IsArchive = false;
+                    await _jsRuntime.ToastrSuccess("Материал \"" + mesMaterialDTO.Name + "\" восстановлен из архива");
+                }
+                else
+                {
+                    await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.MoveToArchive);
+                    mesMaterialDTO.IsArchive = true;
+                    await _jsRuntime.ToastrSuccess("Материал \"" + mesMaterialDTO.Name + "\" удалён в архив");
+                }
+                await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
             }
             else
             {
-                bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Восстановление материала MES", "Восстановить материал MES \"" + mesMaterialDTO.ShortName + "\" из архива ?", "Восстановить", "Отмена");
-                if (selectionResult == false)
-                {
-                    await _jsRuntime.ToastrSuccess("Отмена восстановления");
-                    return;
-                }
+                mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
+                await mesMaterialDTOGrid.Reload();
             }
-        }
-
-        if (mesMaterialDTO == mesMaterialDTOToInsert)
-        {
-            mesMaterialDTOToInsert = null;
-        }
-
-        if (mesMaterialDTO == mesMaterialDTOToUpdate)
-        {
-            mesMaterialDTOToUpdate = null;
-        }
-
-        if (mesMaterialDTOs.Contains(mesMaterialDTO))
-        {
-            if (mesMaterialDTO.IsArchive)
-            {
-                await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.RestoreFromArchive);
-                mesMaterialDTO.IsArchive = false;
-                await _jsRuntime.ToastrSuccess("Материал \"" + mesMaterialDTO.Name + "\" восстановлен из архива");
-            }
-            else
-            {
-                await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.MoveToArchive);
-                mesMaterialDTO.IsArchive = true;
-                await _jsRuntime.ToastrSuccess("Материал \"" + mesMaterialDTO.Name + "\" удалён в архив");
-            }
-            await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
-        }
-        else
-        {
-            mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
-            await mesMaterialDTOGrid.Reload();
         }
     }
 
     async Task InsertRow()
     {
-        mesMaterialDTOToInsert = new MesMaterialDTO();
-        await mesMaterialDTOGrid.InsertRow(mesMaterialDTOToInsert);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+
+            mesMaterialDTOToInsert = new MesMaterialDTO();
+            await mesMaterialDTOGrid.InsertRow(mesMaterialDTOToInsert);
+        }
     }
 
     async Task OnCreateRow(MesMaterialDTO mesMaterialDTO)
     {
 
-        mesMaterialDTOToInsert = null;
-
-        string errorMessage = string.Empty;
-        var objectForCheckCode = _mesMaterialRepository.GetByCode(mesMaterialDTO.Code).Result;
-
-        if (objectForCheckCode != null)
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            errorMessage = "Уже есть запись с кодом материала MES \"" + objectForCheckCode.Code + "\" (ИД записи: " + objectForCheckCode.Id.ToString() + ")";
-        }
 
-        var objectForCheckName = _mesMaterialRepository.GetByName(mesMaterialDTO.Name).Result;
+            mesMaterialDTOToInsert = null;
 
-        if (objectForCheckName != null)
-        {
+            string errorMessage = string.Empty;
+            var objectForCheckCode = _mesMaterialRepository.GetByCode(mesMaterialDTO.Code).Result;
+
+            if (objectForCheckCode != null)
+            {
+                errorMessage = "Уже есть запись с кодом материала MES \"" + objectForCheckCode.Code + "\" (ИД записи: " + objectForCheckCode.Id.ToString() + ")";
+            }
+
+            var objectForCheckName = _mesMaterialRepository.GetByName(mesMaterialDTO.Name).Result;
+
+            if (objectForCheckName != null)
+            {
+                if (errorMessage != string.Empty)
+                {
+                    errorMessage = errorMessage + "\n";
+                }
+                errorMessage = errorMessage + "Уже есть запись с наименованием материала MES \"" + objectForCheckName.Name + "\" (ИД записи: " + objectForCheckName.Id.ToString() + ")";
+            }
+
+            var objectForCheckShortName = _mesMaterialRepository.GetByName(mesMaterialDTO.ShortName).Result;
+
+            if (objectForCheckShortName != null)
+            {
+                if (errorMessage != string.Empty)
+                {
+                    errorMessage = errorMessage + "\n";
+                }
+                errorMessage = errorMessage + "Уже есть запись с сокр. наименованием материала MES \"" + objectForCheckShortName.ShortName + "\" (ИД записи: " + objectForCheckShortName.Id.ToString() + ")";
+            }
+
+
             if (errorMessage != string.Empty)
             {
-                errorMessage = errorMessage + "\n";
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
+                mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
+                await mesMaterialDTOGrid.Reload();
+                return;
             }
-            errorMessage = errorMessage + "Уже есть запись с наименованием материала MES \"" + objectForCheckName.Name + "\" (ИД записи: " + objectForCheckName.Id.ToString() + ")";
+
+            var newDTO = await _mesMaterialRepository.Create(mesMaterialDTO);
+            await OnAfterRenderAsync(true);
         }
-
-        var objectForCheckShortName = _mesMaterialRepository.GetByName(mesMaterialDTO.ShortName).Result;
-
-        if (objectForCheckShortName != null)
-        {
-            if (errorMessage != string.Empty)
-            {
-                errorMessage = errorMessage + "\n";
-            }
-            errorMessage = errorMessage + "Уже есть запись с сокр. наименованием материала MES \"" + objectForCheckShortName.ShortName + "\" (ИД записи: " + objectForCheckShortName.Id.ToString() + ")";
-        }
-
-
-        if (errorMessage != string.Empty)
-        {
-            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
-            mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
-            await mesMaterialDTOGrid.Reload();
-            return;
-        }
-
-        var newDTO = await _mesMaterialRepository.Create(mesMaterialDTO);
-        await OnAfterRenderAsync(true);
     }
 }
