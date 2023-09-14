@@ -13,78 +13,80 @@
 
 @inject NavigationManager _navigationManager
 
+@if (IsAdmin == true)
+{
+    <_Dialogs @ref="_dialogs"></_Dialogs>
 
-<_Dialogs @ref="_dialogs"></_Dialogs>
+    <div class="row mt-4">
 
-<div class="row mt-4">
+        <div class="col-6">
+            <h4 class="card-title text-primary"><a href="/dataarchive">Архив данных</a> - <a href="/dataarchive/DataType">Виды данных</a></h4>
+        </div>
 
-    <div class="col-6">
-        <h4 class="card-title text-primary"><a href="/dataarchive">Архив данных</a> - <a href="/dataarchive/DataType">Виды данных</a></h4>
-    </div>
-
-    @if (IsLoading != true)
-    {
-
-        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый вид данных" Click="@InsertRow" Disabled=@(dataTypeDTOToInsert != null || dataTypeDTOToUpdate != null) />
-        <RadzenDataGrid @ref="dataTypeDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                        Data="@dataTypeDTOs" TItem="DataTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
-                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                        FilterMode="FilterMode.Simple">
-            <Columns>
-                <RadzenDataGridColumn TItem="DataTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
-                <RadzenDataGridColumn TItem="DataTypeDTO" Property="Name" Title="Наименование">
-                    <EditTemplate Context="dataTypeDTO">
-                        <RadzenTextBox @bind-Value="dataTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
-                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
-                        <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-
-                <RadzenDataGridColumn TItem="DataTypeDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
-                    <Template Context="data">
-                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
-                    </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="DataTypeDTO" Context="dataTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
-                    <Template Context="dataTypeDTO">
-                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(dataTypeDTO))" @onclick:stopPropagation="true">
-                        </RadzenButton>
-                        @if (!dataTypeDTO.IsArchive)
-                        {
-                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataTypeDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                        }
-                        else
-                        {
-                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataTypeDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                        }
-                    </Template>
-                    <EditTemplate Context="dataTypeDTO">
-                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(dataTypeDTO))">
-                        </RadzenButton>
-                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(dataTypeDTO))">
-                        </RadzenButton>
-                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataTypeDTO))">
-                        </RadzenButton>
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-            </Columns>
-        </RadzenDataGrid>
-    }
-    else
-    {
-        if (IsLoading)
+        @if (IsLoading != true)
         {
-            //отображение gif загрузки
-            <div class="text-center">
-                <img src="/images/loading.gif">
-            </div>
 
+            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый вид данных" Click="@InsertRow" Disabled=@(dataTypeDTOToInsert != null || dataTypeDTOToUpdate != null) />
+            <RadzenDataGrid @ref="dataTypeDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            Data="@dataTypeDTOs" TItem="DataTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            FilterMode="FilterMode.Simple">
+                <Columns>
+                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Name" Title="Наименование">
+                        <EditTemplate Context="dataTypeDTO">
+                            <RadzenTextBox @bind-Value="dataTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
+                            <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                            <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="DataTypeDTO" Context="dataTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                        <Template Context="dataTypeDTO">
+                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(dataTypeDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            @if (!dataTypeDTO.IsArchive)
+                            {
+                                <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataTypeDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                            else
+                            {
+                                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataTypeDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                        </Template>
+                        <EditTemplate Context="dataTypeDTO">
+                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(dataTypeDTO))">
+                            </RadzenButton>
+                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(dataTypeDTO))">
+                            </RadzenButton>
+                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataTypeDTO))">
+                            </RadzenButton>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
         }
-    }
+        else
+        {
+            if (IsLoading)
+            {
+                //отображение gif загрузки
+                <div class="text-center">
+                    <img src="/images/loading.gif">
+                </div>
 
-</div>
+            }
+        }
+
+    </div>
+}
 
 @code {
 
@@ -98,10 +100,8 @@
     DataTypeDTO dataTypeDTOToInsert;
     DataTypeDTO dataTypeDTOToUpdate;
 
-
     public bool IsLoading { get; set; }
-
-
+    public bool IsAdmin { get; set; }
 
     void Reset()
     {
@@ -117,52 +117,67 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            IsLoading = true;
+            IsAdmin = true;
             StateHasChanged();
-            dataTypeDTOs = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
-            IsLoading = false;
-            StateHasChanged();
+            if (firstRender)
+            {
+                IsLoading = true;
+                StateHasChanged();
+                dataTypeDTOs = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+                IsLoading = false;
+                StateHasChanged();
+            }
         }
+        else
+            _navigationManager.NavigateTo("/dataarchive");
     }
 
     async Task EditRow(DataTypeDTO dataTypeDTO)
     {
-        dataTypeDTOToUpdate = dataTypeDTO;
-        await dataTypeDTOGrid.EditRow(dataTypeDTO);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            dataTypeDTOToUpdate = dataTypeDTO;
+            await dataTypeDTOGrid.EditRow(dataTypeDTO);
+        }
     }
 
     async Task OnUpdateRow(DataTypeDTO dataTypeDTO)
     {
-
-        if (dataTypeDTO == dataTypeDTOToInsert)
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            dataTypeDTOToInsert = null;
-        }
-
-        dataTypeDTOToUpdate = null;
-
-        var objectForCheckName = await _dataTypeRepository.GetByName(dataTypeDTO.Name);
-        if (objectForCheckName != null)
-        {
-            if (objectForCheckName.Id != dataTypeDTO.Id)
+            if (dataTypeDTO == dataTypeDTOToInsert)
             {
-                var objectForRestore = await _dataTypeRepository.Get(dataTypeDTO.Id);
-                dataTypeDTO.Name = objectForRestore.Name;
-                await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
-                await dataTypeDTOGrid.Reload();
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись вида данных с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
-                return;
+                dataTypeDTOToInsert = null;
             }
-        }
 
-        await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.Update);
+            dataTypeDTOToUpdate = null;
+
+            var objectForCheckName = await _dataTypeRepository.GetByName(dataTypeDTO.Name);
+            if (objectForCheckName != null)
+            {
+                if (objectForCheckName.Id != dataTypeDTO.Id)
+                {
+                    var objectForRestore = await _dataTypeRepository.Get(dataTypeDTO.Id);
+                    dataTypeDTO.Name = objectForRestore.Name;
+                    await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
+                    await dataTypeDTOGrid.Reload();
+                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись вида данных с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                    return;
+                }
+            }
+
+            await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.Update);
+        }
     }
 
     async Task SaveRow(DataTypeDTO dataTypeDTO)
     {
-        await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
+        }
     }
 
     void CancelEdit(DataTypeDTO dataTypeDTO)
@@ -185,89 +200,96 @@
 
     async Task DeleteRow(DataTypeDTO dataTypeDTO)
     {
-
-        if (_dialogs != null)
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            if (dataTypeDTO.IsArchive != true)
+            if (_dialogs != null)
             {
-                bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление вида данных", "Удалить вид данных \"" + dataTypeDTO.Name + "\" в архив ?", "Удалить", "Отмена");
-                if (selectionResult == false)
+                if (dataTypeDTO.IsArchive != true)
                 {
-                    await _jsRuntime.ToastrSuccess("Отмена удаления");
-                    return;
+                    bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление вида данных", "Удалить вид данных \"" + dataTypeDTO.Name + "\" в архив ?", "Удалить", "Отмена");
+                    if (selectionResult == false)
+                    {
+                        await _jsRuntime.ToastrSuccess("Отмена удаления");
+                        return;
+                    }
                 }
+                else
+                {
+                    bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Восстановление вида данных", "Восстановить вид данных \"" + dataTypeDTO.Name + "\" из архива ?", "Восстановить", "Отмена");
+                    if (selectionResult == false)
+                    {
+                        await _jsRuntime.ToastrSuccess("Отмена восстановления");
+                        return;
+                    }
+                }
+            }
+
+            if (dataTypeDTO == dataTypeDTOToInsert)
+            {
+                dataTypeDTOToInsert = null;
+            }
+
+            if (dataTypeDTO == dataTypeDTOToUpdate)
+            {
+                dataTypeDTOToUpdate = null;
+            }
+
+            if (dataTypeDTOs.Contains(dataTypeDTO))
+            {
+                if (dataTypeDTO.IsArchive)
+                {
+                    await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.RestoreFromArchive);
+                    dataTypeDTO.IsArchive = false;
+                    await _jsRuntime.ToastrSuccess("Вид данных " + dataTypeDTO.Name + " восстановлен из архива");
+                }
+                else
+                {
+                    await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.MoveToArchive);
+                    dataTypeDTO.IsArchive = true;
+                    await _jsRuntime.ToastrSuccess("Вид данных " + dataTypeDTO.Name + " удален в архив");
+                }
+                await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
+                //await sapEquipmentDTOGrid.Reload();
             }
             else
             {
-                bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Восстановление вида данных", "Восстановить вид данных \"" + dataTypeDTO.Name + "\" из архива ?", "Восстановить", "Отмена");
-                if (selectionResult == false)
-                {
-                    await _jsRuntime.ToastrSuccess("Отмена восстановления");
-                    return;
-                }
+                dataTypeDTOGrid.CancelEditRow(dataTypeDTO);
+                await dataTypeDTOGrid.Reload();
             }
-        }
-
-        if (dataTypeDTO == dataTypeDTOToInsert)
-        {
-            dataTypeDTOToInsert = null;
-        }
-
-        if (dataTypeDTO == dataTypeDTOToUpdate)
-        {
-            dataTypeDTOToUpdate = null;
-        }
-
-        if (dataTypeDTOs.Contains(dataTypeDTO))
-        {
-            if (dataTypeDTO.IsArchive)
-            {
-                await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.RestoreFromArchive);
-                dataTypeDTO.IsArchive = false;
-                await _jsRuntime.ToastrSuccess("Вид данных " + dataTypeDTO.Name + " восстановлен из архива");
-            }
-            else
-            {
-                await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.MoveToArchive);
-                dataTypeDTO.IsArchive = true;
-                await _jsRuntime.ToastrSuccess("Вид данных " + dataTypeDTO.Name + " удален в архив");
-            }
-            await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
-            //await sapEquipmentDTOGrid.Reload();
-        }
-        else
-        {
-            dataTypeDTOGrid.CancelEditRow(dataTypeDTO);
-            await dataTypeDTOGrid.Reload();
         }
     }
 
     async Task InsertRow()
     {
-        dataTypeDTOToInsert = new DataTypeDTO();
-        await dataTypeDTOGrid.InsertRow(dataTypeDTOToInsert);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            dataTypeDTOToInsert = new DataTypeDTO();
+            await dataTypeDTOGrid.InsertRow(dataTypeDTOToInsert);
+        }
     }
 
     async Task OnCreateRow(DataTypeDTO dataTypeDTO)
     {
-        dataTypeDTOToInsert = null;
-
-        var objectForCheckName = await _dataTypeRepository.GetByName(dataTypeDTO.Name);
-        if (objectForCheckName != null)
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись вида данных с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
-            dataTypeDTOGrid.CancelEditRow(dataTypeDTO);
-            await dataTypeDTOGrid.Reload();
-            return;
+            dataTypeDTOToInsert = null;
+
+            var objectForCheckName = await _dataTypeRepository.GetByName(dataTypeDTO.Name);
+            if (objectForCheckName != null)
+            {
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись вида данных с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                dataTypeDTOGrid.CancelEditRow(dataTypeDTO);
+                await dataTypeDTOGrid.Reload();
+                return;
+            }
+
+            var newDTO = await _dataTypeRepository.Create(dataTypeDTO);
+
+            //dataTypeDTOToInsert.Id = newDTO.Id;
+            //await dataTypeDTOGrid.UpdateRow(dataTypeDTOToInsert);
+
+            await OnAfterRenderAsync(true);
         }
-
-        var newDTO = await _dataTypeRepository.Create(dataTypeDTO);
-
-        //dataTypeDTOToInsert.Id = newDTO.Id;
-        //await dataTypeDTOGrid.UpdateRow(dataTypeDTOToInsert);
-
-        await OnAfterRenderAsync(true);
-
     }
 }
 
