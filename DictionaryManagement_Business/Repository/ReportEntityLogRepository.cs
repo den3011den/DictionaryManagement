@@ -41,16 +41,16 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.IsError = objectToAddDTO.IsError;
 
             var addedReportEntityLog = _db.ReportEntityLog.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<ReportEntityLog, ReportEntityLogDTO>(addedReportEntityLog.Entity);
         }
 
 
         public async Task<ReportEntityLogDTO> GetById(Int64 id)
         {
-            var objToGet = await _db.ReportEntityLog
+            var objToGet = _db.ReportEntityLog
                             .Include("ReportEntityFK")
-                            .FirstOrDefaultAsync(u => u.Id == id);
+                            .FirstOrDefault(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportEntityLog, ReportEntityLogDTO>(objToGet);
@@ -126,7 +126,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsError = objectToUpdateDTO.IsError;
 
                 _db.ReportEntityLog.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<ReportEntityLog, ReportEntityLogDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -141,7 +141,7 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToDelete != null)
                 {
                     _db.ReportEntityLog.Remove(objectToDelete);
-                    return await _db.SaveChangesAsync();
+                    return _db.SaveChanges();
                 }
             }
             return 0;

@@ -36,14 +36,14 @@ namespace DictionaryManagement_Business.Repository
 
 
             var addedUnitOfMeasureSapToMesMapping = _db.UnitOfMeasureSapToMesMapping.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>(addedUnitOfMeasureSapToMesMapping.Entity);
         }
 
         public async Task<UnitOfMeasureSapToMesMappingDTO> Get(int sapUnitId, int mesUnitId)
         {
-            var objToGet = await _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure").
-                            FirstOrDefaultAsync(u => u.SapUnitId == sapUnitId && u.MesUnitId == mesUnitId);
+            var objToGet = _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure").
+                            FirstOrDefault(u => u.SapUnitId == sapUnitId && u.MesUnitId == mesUnitId);
             if (objToGet != null)
             {
                 return _mapper.Map<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>(objToGet);
@@ -53,8 +53,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UnitOfMeasureSapToMesMappingDTO> GetById(int id)
         {
-            var objToGet = await _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure").
-                            FirstOrDefaultAsync(u => u.Id == id);
+            var objToGet = _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure").
+                            FirstOrDefault(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>(objToGet);
@@ -88,7 +88,7 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToUpdate.SapToMesTransformKoef != objectToUpdateDTO.SapToMesTransformKoef)
                     objectToUpdate.SapToMesTransformKoef = objectToUpdateDTO.SapToMesTransformKoef;
                 _db.UnitOfMeasureSapToMesMapping.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -103,7 +103,7 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToDelete != null)
                 {
                     _db.UnitOfMeasureSapToMesMapping.Remove(objectToDelete);
-                    return await _db.SaveChangesAsync();
+                    return _db.SaveChanges();
                 }
             }
             return 0;

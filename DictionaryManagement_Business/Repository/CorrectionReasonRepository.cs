@@ -28,13 +28,13 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToAdd = _mapper.Map<CorrectionReasonDTO, CorrectionReason>(objectToAddDTO);            
             var addedCorrectionReason = _db.CorrectionReason.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<CorrectionReason, CorrectionReasonDTO>(addedCorrectionReason.Entity);
         }
 
         public async Task<CorrectionReasonDTO> Get(int Id)
         {
-            var objToGet = await _db.CorrectionReason.FirstOrDefaultAsync(u => u.Id == Id);
+            var objToGet = _db.CorrectionReason.FirstOrDefault(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<CorrectionReason, CorrectionReasonDTO>(objToGet);
@@ -75,14 +75,14 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsArchive = false;
                 }
                 _db.CorrectionReason.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<CorrectionReason, CorrectionReasonDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
         }
         public async Task<CorrectionReasonDTO> GetByName(string name)
         {
-            var objToGet = await _db.CorrectionReason.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.CorrectionReason.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<CorrectionReason, CorrectionReasonDTO>(objToGet);

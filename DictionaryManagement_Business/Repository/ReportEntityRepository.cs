@@ -52,19 +52,19 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.UploadSuccessFlag = objectToAddDTO.UploadSuccessFlag;
 
             var addedReportEntity = _db.ReportEntity.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<ReportEntity, ReportEntityDTO>(addedReportEntity.Entity);
         }
 
 
         public async Task<ReportEntityDTO> GetById(Guid id)
         {
-            var objToGet = await _db.ReportEntity
+            var objToGet = _db.ReportEntity
                             .Include("ReportTemplateFK")
                             .Include("ReportDepartmentFK")
                             .Include("DownloadUserFK")
                             .Include("UploadUserFK")
-                            .FirstOrDefaultAsync(u => u.Id == id);
+                            .FirstOrDefault(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportEntity, ReportEntityDTO>(objToGet);
@@ -218,7 +218,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.UploadSuccessFlag = objectToUpdateDTO.UploadSuccessFlag;
 
                 _db.ReportEntity.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<ReportEntity, ReportEntityDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -233,7 +233,7 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToDelete != null)
                 {
                     _db.ReportEntity.Remove(objectToDelete);
-                    return await _db.SaveChangesAsync();
+                    return _db.SaveChanges();
                 }
             }
             return 0;

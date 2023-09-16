@@ -28,13 +28,13 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToAdd = _mapper.Map<DataTypeDTO, DataType>(objectToAddDTO);            
             var addedDataType = _db.DataType.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<DataType, DataTypeDTO>(addedDataType.Entity);
         }
 
         public async Task<DataTypeDTO> Get(int Id)
         {
-            var objToGet = await _db.DataType.FirstOrDefaultAsync(u => u.Id == Id);
+            var objToGet = _db.DataType.FirstOrDefault(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<DataType, DataTypeDTO>(objToGet);
@@ -74,7 +74,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsArchive = false;
                 }
                 _db.DataType.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<DataType, DataTypeDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -83,7 +83,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<DataTypeDTO> GetByName(string name)
         {
-            var objToGet = await _db.DataType.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.DataType.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<DataType, DataTypeDTO>(objToGet);

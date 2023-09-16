@@ -1,5 +1,6 @@
 ﻿using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
+using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -27,19 +28,18 @@ namespace DictionaryManagement_Business.Repository
         }
 
         public async Task<bool> CurrentUserIsInAdminRole(MessageBoxMode messageBoxModePar = SD.MessageBoxMode.Off)
-        {
+        {            
             bool retVar = false;
             bool messShownFlag = false;
 
             if (_authenticationStateProvider is not null)
-            {
-
+            {                
                 var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
                 if (authState.User != null)
                 {
                     if (authState.User.Identity is not null && authState.User.Identity.IsAuthenticated)
-                    {
-                        retVar = await _userToRoleRepository.IsUserInRoleByUserLoginAndRoleName(authState.User.Identity.Name, SD.AdminRoleName);                       
+                    {                        
+                        retVar = await _userToRoleRepository.IsUserInRoleByUserLoginAndRoleName(authState.User.Identity.Name, SD.AdminRoleName);                        
                     }
                 }
 
@@ -82,7 +82,7 @@ namespace DictionaryManagement_Business.Repository
                 {
                     if (authState.User.Identity is not null && authState.User.Identity.IsAuthenticated)
                     {
-                        retVar = await _userRepository.GetByLoginNotInArchive(authState.User.Identity.Name);                        
+                        retVar = await _userRepository.GetByLoginNotInArchive(authState.User.Identity.Name);
                     }
                 }
 
@@ -99,13 +99,13 @@ namespace DictionaryManagement_Business.Repository
 
             if (messShownFlag == false && retVar == null)
             {
-                if (messageBoxModePar == MessageBoxMode.On)
-                {
-                    messShownFlag = true;
+                    if (messageBoxModePar == MessageBoxMode.On)
+                    {
+                        messShownFlag = true;
                     await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Не удалось получить логин текущего пользователя.");
                 }
 
-            }
+                }
             return retVar;
         }
 
@@ -132,6 +132,41 @@ namespace DictionaryManagement_Business.Repository
             }
 
             return retsLoginString;
+        }
+
+        public async Task<bool> CurrentUserIsInAdminRoleByLogin(string userLogin, MessageBoxMode messageBoxModePar = SD.MessageBoxMode.Off)
+        {
+            bool retVar = false;
+            bool messShownFlag = false;
+
+            if (!userLogin.IsNullOrEmpty())
+            {
+                retVar = await _userToRoleRepository.IsUserInRoleByUserLoginAndRoleName(userLogin, SD.AdminRoleName);
+            }
+
+            if (retVar == false)
+            {
+                if (messageBoxModePar == MessageBoxMode.On)
+                {
+                    messShownFlag = true;
+                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Пользователь " + userLogin +
+                        " не найден, находится в архиве или не имеет роли " + SD.AdminRoleName + ". Обратитесь в техподдержку.");
+                }
+            }
+
+
+
+            if (retVar == false && messShownFlag == false)
+            {
+                if (messageBoxModePar == MessageBoxMode.On)
+                {
+                    messShownFlag = true;
+                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Не удалось получить логин текущего пользователя.");
+                }
+            }
+
+
+            return retVar;
         }
     }
 }

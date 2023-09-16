@@ -28,7 +28,7 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToAdd = _mapper.Map<SapMaterialDTO, SapMaterial>(objectToAddDTO);
             var addedSapMaterial = _db.SapMaterial.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<SapMaterial, SapMaterialDTO>(addedSapMaterial.Entity);
         }
 
@@ -36,7 +36,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id > 0)
             {
-                var objToGet = await _db.SapMaterial.FirstOrDefaultAsync(u => u.Id == id);
+                var objToGet = _db.SapMaterial.FirstOrDefault(u => u.Id == id);
                 if (objToGet != null)
                 {
                     return _mapper.Map<SapMaterial, SapMaterialDTO>(objToGet);
@@ -48,7 +48,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapMaterialDTO> GetByCode(string code = "")
         {
-            var objToGet = await _db.SapMaterial.FirstOrDefaultAsync(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
+            var objToGet = _db.SapMaterial.FirstOrDefault(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<SapMaterial, SapMaterialDTO>(objToGet);
@@ -58,7 +58,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapMaterialDTO> GetByName(string name = "")
         {
-            var objToGet = await _db.SapMaterial.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.SapMaterial.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<SapMaterial, SapMaterialDTO>(objToGet);
@@ -68,7 +68,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapMaterialDTO> GetByShortName(string shortName = "")
         {
-            var objToGet = await _db.SapMaterial.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
+            var objToGet = _db.SapMaterial.FirstOrDefault(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<SapMaterial, SapMaterialDTO>(objToGet);
@@ -112,7 +112,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsArchive = false;
                 }
                 _db.SapMaterial.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<SapMaterial, SapMaterialDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;

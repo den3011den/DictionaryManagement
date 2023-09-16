@@ -28,7 +28,7 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToAdd = _mapper.Map<MesMaterialDTO, MesMaterial>(objectToAddDTO);
             var addedMesMaterial = _db.MesMaterial.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<MesMaterial, MesMaterialDTO>(addedMesMaterial.Entity);
         }
 
@@ -36,7 +36,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id > 0)
             {
-                var objToGet = await _db.MesMaterial.FirstOrDefaultAsync(u => u.Id == id);
+                var objToGet = _db.MesMaterial.FirstOrDefault(u => u.Id == id);
                 if (objToGet != null)
                 {
                     return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
@@ -47,7 +47,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesMaterialDTO> GetByCode(string code = "")
         {
-            var objToGet = await _db.MesMaterial.FirstOrDefaultAsync(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
+            var objToGet = _db.MesMaterial.FirstOrDefault(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
                 if (objToGet != null)
                 {
                     return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
@@ -57,7 +57,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesMaterialDTO> GetByName(string name = "")
         {
-            var objToGet = await _db.MesMaterial.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.MesMaterial.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
@@ -67,7 +67,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesMaterialDTO> GetByShortName(string shortName = "")
         {
-            var objToGet = await _db.MesMaterial.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
+            var objToGet = _db.MesMaterial.FirstOrDefault(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
@@ -111,7 +111,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsArchive = false;
                 }
                 _db.MesMaterial.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<MesMaterial, MesMaterialDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;

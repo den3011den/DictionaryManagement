@@ -36,16 +36,16 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.IsArchive = objectToAddDTO.IsArchive;
 
             var addedSmena = _db.Smena.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<Smena, SmenaDTO>(addedSmena.Entity);
         }
 
 
         public async Task<SmenaDTO> GetById(int id)
         {
-            var objToGet = await _db.Smena
+            var objToGet = _db.Smena
                             .Include("DepartmentFK")
-                            .FirstOrDefaultAsync(u => u.Id == id);
+                            .FirstOrDefault(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<Smena, SmenaDTO>(objToGet);
@@ -107,7 +107,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsArchive = objectToUpdateDTO.IsArchive;
 
                 _db.Smena.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<Smena, SmenaDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -122,7 +122,7 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToDelete != null)
                 {
                     _db.Smena.Remove(objectToDelete);
-                    return await _db.SaveChangesAsync();
+                    return _db.SaveChanges();
                 }
             }
             return 0;

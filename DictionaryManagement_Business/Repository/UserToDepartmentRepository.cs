@@ -35,14 +35,14 @@ namespace DictionaryManagement_Business.Repository
 
 
             var addedUserToDepartment = _db.UserToDepartment.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<UserToDepartment, UserToDepartmentDTO>(addedUserToDepartment.Entity);
         }
 
         public async Task<UserToDepartmentDTO> Get(Guid userId, int departmentId)
         {
-            var objToGet = await _db.UserToDepartment.Include("UserFK").Include("DepartmentFK").
-                            FirstOrDefaultAsync(u => u.UserId == userId && u.DepartmentId == departmentId);
+            var objToGet = _db.UserToDepartment.Include("UserFK").Include("DepartmentFK").
+                            FirstOrDefault(u => u.UserId == userId && u.DepartmentId == departmentId);
             if (objToGet != null)
             {
                 return _mapper.Map<UserToDepartment, UserToDepartmentDTO>(objToGet);
@@ -52,8 +52,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserToDepartmentDTO> GetById(int id)
         {
-            var objToGet = await _db.UserToDepartment.Include("UserFK").Include("DepartmentFK").
-                            FirstOrDefaultAsync(u => u.Id == id);
+            var objToGet = _db.UserToDepartment.Include("UserFK").Include("DepartmentFK").
+                            FirstOrDefault(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<UserToDepartment, UserToDepartmentDTO>(objToGet);
@@ -87,7 +87,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.DepartmentFK = _mapper.Map<MesDepartmentDTO, MesDepartment>(objectToUpdateDTO.DepartmentDTOFK);
                 }
                 _db.UserToDepartment.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<UserToDepartment, UserToDepartmentDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -102,7 +102,7 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToDelete != null)
                 {
                     _db.UserToDepartment.Remove(objectToDelete);
-                    return await _db.SaveChangesAsync();
+                    return _db.SaveChanges();
                 }
             }
             return 0;

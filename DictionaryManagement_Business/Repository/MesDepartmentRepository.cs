@@ -38,15 +38,15 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.IsArchive = objectToAddDTO.IsArchive;
 
             var addedMesDepartment = _db.MesDepartment.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<MesDepartment, MesDepartmentDTO>(addedMesDepartment.Entity);
         }
 
 
         public async Task<MesDepartmentDTO> GetById(int id)
         {
-            var objToGet = await _db.MesDepartment.Include("DepartmentParent").
-                            FirstOrDefaultAsync(u => u.Id == id);
+            var objToGet = _db.MesDepartment.Include("DepartmentParent").
+                            FirstOrDefault(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
@@ -124,7 +124,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.MesCode = objectToUpdateDTO.MesCode;
 
                 _db.MesDepartment.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -143,7 +143,7 @@ namespace DictionaryManagement_Business.Repository
                     if (updateMode == SD.UpdateMode.RestoreFromArchive)
                         objectToDelete.IsArchive = false;                    
                     _db.MesDepartment.Update(objectToDelete);
-                    return await _db.SaveChangesAsync();
+                    return _db.SaveChanges();
                 }
             }
             return 0;
@@ -152,7 +152,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesDepartmentDTO> GetByCode(int mesCode = 0)
         {
-            var objToGet = await _db.MesDepartment.FirstOrDefaultAsync(u => u.MesCode == mesCode);
+            var objToGet = _db.MesDepartment.FirstOrDefault(u => u.MesCode == mesCode);
             if (objToGet != null)
             {
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
@@ -162,7 +162,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesDepartmentDTO> GetByName(string name = "")
         {
-            var objToGet = await _db.MesDepartment.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.MesDepartment.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
@@ -172,7 +172,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesDepartmentDTO> GetByShortName(string shortName = "")
         {
-            var objToGet = await _db.MesDepartment.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
+            var objToGet = _db.MesDepartment.FirstOrDefault(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);

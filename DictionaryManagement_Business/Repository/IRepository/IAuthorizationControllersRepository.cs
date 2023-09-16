@@ -6,11 +6,8 @@ using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
-    public interface IAuthorizationRepository
+    public interface IAuthorizationControllersRepository
     {        
-        public Task<bool> CurrentUserIsInAdminRole(MessageBoxMode messageBoxModePar = MessageBoxMode.Off);
-        public Task<UserDTO>? GetCurrentUserDTO(MessageBoxMode messageBoxModePar = MessageBoxMode.Off);
-        public Task<string> GetCurrentLogin(MessageBoxMode messageBoxModePar = MessageBoxMode.Off);
         public Task<bool> CurrentUserIsInAdminRoleByLogin(string userLogin, MessageBoxMode messageBoxModePar = MessageBoxMode.Off);
     }
 }

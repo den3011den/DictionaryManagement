@@ -35,14 +35,14 @@ namespace DictionaryManagement_Business.Repository
 
 
             var addedUserToRole = _db.UserToRole.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<UserToRole, UserToRoleDTO>(addedUserToRole.Entity);
         }
 
         public async Task<UserToRoleDTO> Get(Guid userId, Guid roleId)
         {
-            var objToGet = await _db.UserToRole.Include("UserFK").Include("RoleFK").
-                            FirstOrDefaultAsync(u => u.UserId == userId && u.RoleId == roleId);
+            var objToGet = _db.UserToRole.Include("UserFK").Include("RoleFK").
+                            FirstOrDefault(u => u.UserId == userId && u.RoleId == roleId);
             if (objToGet != null)
             {
                 return _mapper.Map<UserToRole, UserToRoleDTO>(objToGet);
@@ -52,8 +52,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserToRoleDTO> GetById(int id)
         {
-            var objToGet = await _db.UserToRole.Include("UserFK").Include("RoleFK").
-                            FirstOrDefaultAsync(u => u.Id == id);
+            var objToGet = _db.UserToRole.Include("UserFK").Include("RoleFK").
+                            FirstOrDefault(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<UserToRole, UserToRoleDTO>(objToGet);
@@ -87,7 +87,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.RoleFK = _mapper.Map<RoleDTO, Role>(objectToUpdateDTO.RoleDTOFK);
                 }
                 _db.UserToRole.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<UserToRole, UserToRoleDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -102,7 +102,7 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToDelete != null)
                 {
                     _db.UserToRole.Remove(objectToDelete);
-                    return await _db.SaveChangesAsync();
+                    return _db.SaveChanges();
                 }
             }
             return 0;
@@ -111,13 +111,20 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<bool> IsUserInRoleByUserLoginAndRoleName(string userLogin, string roleName)
         {
+            //var objToGet = await _db.UserToRole.Include("UserFK").Include("RoleFK").
+            //    Where(u => u.UserFK != null && u.RoleFK != null
+            //        && u.UserFK.Login.Trim().ToUpper() == userLogin.Trim().ToUpper()
+            //        && u.UserFK.IsArchive != true
+            //        && u.RoleFK.Name.Trim().ToUpper() == roleName.Trim().ToUpper()
+            //        && u.RoleFK.IsArchive != true).AsNoTracking().FirstOrDefaultAsync();                    
 
-            var objToGet = await _db.UserToRole.Include("UserFK").Include("RoleFK").
+            var objToGet = _db.UserToRole.Include("UserFK").Include("RoleFK").
                 Where(u => u.UserFK != null && u.RoleFK != null
                     && u.UserFK.Login.Trim().ToUpper() == userLogin.Trim().ToUpper()
                     && u.UserFK.IsArchive != true
                     && u.RoleFK.Name.Trim().ToUpper() == roleName.Trim().ToUpper()
-                    && u.RoleFK.IsArchive != true).AsNoTracking().FirstOrDefaultAsync();                    
+                    && u.RoleFK.IsArchive != true).AsNoTracking().FirstOrDefault();
+
             if (objToGet == null ) 
                 return false;
             else 

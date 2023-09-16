@@ -36,14 +36,14 @@ namespace DictionaryManagement_Business.Repository
                 objectToAdd.CanUpload = objectToAddDTO.CanUpload;
             
             var addedReportTemplateTypeTоRole = _db.ReportTemplateTypeTоRole.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>(addedReportTemplateTypeTоRole.Entity);
         }
 
         public async Task<ReportTemplateTypeTоRoleDTO> Get(int reportTemplateTypeId, Guid roleId)
         {
-            var objToGet = await _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").
-                            FirstOrDefaultAsync(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.RoleId == roleId);
+            var objToGet = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").
+                            FirstOrDefault(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.RoleId == roleId);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>(objToGet);
@@ -53,8 +53,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<ReportTemplateTypeTоRoleDTO> GetById(int id)
         {
-            var objToGet = await _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").
-                            FirstOrDefaultAsync(u => u.Id == id);
+            var objToGet = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").
+                            FirstOrDefault(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>(objToGet);
@@ -93,7 +93,7 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToUpdate.CanUpload != objectToUpdateDTO.CanUpload)
                     _db.ReportTemplateTypeTоRole.Update(objectToUpdate);
 
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -108,7 +108,7 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToDelete != null)
                 {
                     _db.ReportTemplateTypeTоRole.Remove(objectToDelete);
-                    return await _db.SaveChangesAsync();
+                    return _db.SaveChanges();
                 }
             }
             return 0;

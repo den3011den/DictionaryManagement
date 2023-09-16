@@ -50,19 +50,19 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.IsArchive = objectToAddDTO.IsArchive;
 
             var addedReportTemplate = _db.ReportTemplate.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<ReportTemplate, ReportTemplateDTO>(addedReportTemplate.Entity);
         }
 
 
         public async Task<ReportTemplateDTO> GetById(Guid id)
         {
-            var objToGet = await _db.ReportTemplate
+            var objToGet = _db.ReportTemplate
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .FirstOrDefaultAsync(u => u.Id == id);
+                            .FirstOrDefault(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);
@@ -73,12 +73,12 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<ReportTemplateDTO> GetByTemplateFileName(string templateFileName = "")
         {
-            var objToGet = await _db.ReportTemplate
+            var objToGet = _db.ReportTemplate
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .FirstOrDefaultAsync(u => u.TemplateFileName.Trim().ToUpper() == templateFileName.Trim().ToUpper());
+                            .FirstOrDefault(u => u.TemplateFileName.Trim().ToUpper() == templateFileName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);
@@ -91,12 +91,12 @@ namespace DictionaryManagement_Business.Repository
 
             if (reportTemplateTypeId > 0 && destDataTypeId > 0 && departmentId > 0)
             { 
-                var objToGet = await _db.ReportTemplate
+                var objToGet = _db.ReportTemplate
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .FirstOrDefaultAsync(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.DestDataTypeId == destDataTypeId && u.DepartmentId == departmentId);
+                            .FirstOrDefault(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.DestDataTypeId == destDataTypeId && u.DepartmentId == departmentId);
                 if (objToGet != null)
                 {
                     return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);
@@ -226,7 +226,7 @@ namespace DictionaryManagement_Business.Repository
 
 
                 _db.ReportTemplate.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -245,7 +245,7 @@ namespace DictionaryManagement_Business.Repository
                     if (updateMode == SD.UpdateMode.RestoreFromArchive)
                         objectToDelete.IsArchive = false;
                     _db.ReportTemplate.Update(objectToDelete);
-                    return await _db.SaveChangesAsync();
+                    return _db.SaveChanges();
                 }
             }
             return 0;

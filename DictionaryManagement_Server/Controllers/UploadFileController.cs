@@ -11,13 +11,13 @@ namespace DictionaryManagement_Server.Controllers
     {
 
         private readonly ISettingsRepository _settingsRepository;
-        private readonly IAuthorizationRepository _authorizationRepository;
+        private readonly IAuthorizationControllersRepository _authorizationControllersRepository;
 
         public UploadFileController(ISettingsRepository settingsRepository,
-            IAuthorizationRepository authorizationRepository)
+            IAuthorizationControllersRepository authorizationControllersRepository)
         {
             _settingsRepository = settingsRepository;
-            _authorizationRepository = authorizationRepository;
+            _authorizationControllersRepository = authorizationControllersRepository;
         }
 
         [HttpPost("UploadFileController/UploadReportTemplateFile/{reportTemplateId}")]
@@ -32,7 +32,7 @@ namespace DictionaryManagement_Server.Controllers
                 }
                 else
                 {
-                    if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.Off))
+                    if (!(await _authorizationControllersRepository.CurrentUserIsInAdminRoleByLogin(User.Identity.Name, SD.MessageBoxMode.Off)))
                     {
                         return StatusCode(401, "Вы не входите в группу " + SD.AdminRoleName + ". Доступ запрещён");
                     }
@@ -67,7 +67,7 @@ namespace DictionaryManagement_Server.Controllers
                 }
                 else
                 {
-                    if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.Off))
+                    if (!(await _authorizationControllersRepository.CurrentUserIsInAdminRoleByLogin(User.Identity.Name, SD.MessageBoxMode.Off)))
                     {
                         return;
                     }

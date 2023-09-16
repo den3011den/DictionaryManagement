@@ -59,7 +59,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesParamDTO> GetById(int id)
         {
-            var objToGet = await _db.MesParam
+            var objToGet = _db.MesParam
                             .Include("MesParamSourceTypeFK")
                             .Include("MesDepartmentFK")
                             .Include("SapEquipmentSourceFK")
@@ -68,7 +68,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
-                            .FirstOrDefaultAsync(u => u.Id == id);
+                            .FirstOrDefault(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<MesParam, MesParamDTO>(objToGet);
@@ -79,7 +79,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesParamDTO> GetByCode(string code = "")
         {
-            var objToGet = await _db.MesParam
+            var objToGet = _db.MesParam
                             .Include("MesParamSourceTypeFK")
                             .Include("MesDepartmentFK")
                             .Include("SapEquipmentSourceFK")
@@ -88,7 +88,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
-                            .FirstOrDefaultAsync(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
+                            .FirstOrDefault(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesParam, MesParamDTO>(objToGet);
@@ -98,7 +98,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesParamDTO> GetByName(string name = "")
         {
-            var objToGet = await _db.MesParam
+            var objToGet = _db.MesParam
                             .Include("MesParamSourceTypeFK")
                             .Include("MesDepartmentFK")
                             .Include("SapEquipmentSourceFK")
@@ -107,7 +107,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
-                            .FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+                            .FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesParam, MesParamDTO>(objToGet);
@@ -116,7 +116,7 @@ namespace DictionaryManagement_Business.Repository
         }
         public async Task<MesParamDTO> GetByMesParamSourceLink(string mesParamSourceLink = "")
         {
-            var objToGet = await _db.MesParam
+            var objToGet = _db.MesParam
                             .Include("MesParamSourceTypeFK")
                             .Include("MesDepartmentFK")
                             .Include("SapEquipmentSourceFK")
@@ -125,7 +125,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
-                            .FirstOrDefaultAsync(u => u.MesParamSourceLink.Trim().ToUpper() == mesParamSourceLink.Trim().ToUpper());
+                            .FirstOrDefault(u => u.MesParamSourceLink.Trim().ToUpper() == mesParamSourceLink.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesParam, MesParamDTO>(objToGet);
@@ -149,7 +149,7 @@ namespace DictionaryManagement_Business.Repository
             //                .Include("SapUnitOfMeasureFK")
             //                .Where(u => u.IsArchive == true).AsNoTracking();
             //    var retVar2 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh2);
-            //    //await _db.DisposeAsync();
+            //    //_db.Dispose();
             //    GC.Collect();
             //    return retVar2;
             //}
@@ -166,7 +166,7 @@ namespace DictionaryManagement_Business.Repository
             //                .Include("SapUnitOfMeasureFK").AsNoTracking()
             //                .Where(u => u.IsArchive != true).AsNoTracking();
             //    var retVar3 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh3);
-            //    //await _db.DisposeAsync();
+            //    //_db.Dispose();
             //    GC.Collect();
             //    return retVar3;
 
@@ -181,7 +181,7 @@ namespace DictionaryManagement_Business.Repository
             //            .Include("MesUnitOfMeasureFK").AsNoTracking()
             //            .Include("SapUnitOfMeasureFK").AsNoTracking();
             //var retVar1 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh1);
-            ////await _db.DisposeAsync();
+            ////_db.Dispose();
             //GC.Collect();
             //return retVar1;
 
@@ -199,7 +199,7 @@ namespace DictionaryManagement_Business.Repository
                             .Where(u => u.IsArchive == true).AsNoTracking();
                 var retVar2 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh2);
                 GC.Collect(2, GCCollectionMode.Forced);
-                //await _db.DisposeAsync();
+                //_db.Dispose();
                 //GC.Collect();
                 return retVar2;
             }
@@ -216,7 +216,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapUnitOfMeasureFK").AsNoTracking()
                             .Where(u => u.IsArchive != true).AsNoTracking();
                 var retVar3 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh3);
-                //await _db.DisposeAsync();
+                // _db.Dispose();
                 GC.Collect(2, GCCollectionMode.Forced);
                 //GC.Collect();
                 return retVar3;
@@ -233,7 +233,7 @@ namespace DictionaryManagement_Business.Repository
                         .Include("SapUnitOfMeasureFK").AsNoTracking();
             var retVar1 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh1);
             GC.Collect(2, GCCollectionMode.Forced);
-            //await _db.DisposeAsync();
+            //_db.Dispose();
             //GC.Collect();            
             return retVar1;
         }
@@ -409,7 +409,7 @@ namespace DictionaryManagement_Business.Repository
 
 
                 _db.MesParam.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<MesParam, MesParamDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -428,7 +428,7 @@ namespace DictionaryManagement_Business.Repository
                     if (updateMode == SD.UpdateMode.RestoreFromArchive)
                         objectToDelete.IsArchive = false;
                     _db.MesParam.Update(objectToDelete);
-                    return await _db.SaveChangesAsync();
+                    return _db.SaveChanges();
                 }
             }
             return 0;

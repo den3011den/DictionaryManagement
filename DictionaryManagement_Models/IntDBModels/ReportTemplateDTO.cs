@@ -20,11 +20,11 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Время добавления")]
         public DateTime AddTime { get; set; }
 
-        [Required(ErrorMessage = "ИД добавившего пользователя обязательно")]
+        //[Required(ErrorMessage = "ИД добавившего пользователя обязательно")]
         [Display(Name = "Ид добавившего пользователя")]
         public Guid AddUserId { get; set; }
         
-        [Required(ErrorMessage = "Выбор пользователя обязателен")]
+        //[Required(ErrorMessage = "Выбор пользователя обязателен")]
         [Display(Name = "Пользователь")]
         public UserDTO AddUserDTOFK { get; set; }
 

@@ -28,13 +28,13 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToAdd = _mapper.Map<LogEventTypeDTO, LogEventType>(objectToAddDTO);            
             var addedLogEventType = _db.LogEventType.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<LogEventType, LogEventTypeDTO>(addedLogEventType.Entity);
         }
 
         public async Task<LogEventTypeDTO> Get(int Id)
         {
-            var objToGet = await _db.LogEventType.FirstOrDefaultAsync(u => u.Id == Id);
+            var objToGet = _db.LogEventType.FirstOrDefault(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<LogEventType, LogEventTypeDTO>(objToGet);
@@ -74,7 +74,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsArchive = false;
                 }
                 _db.LogEventType.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<LogEventType, LogEventTypeDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -82,7 +82,7 @@ namespace DictionaryManagement_Business.Repository
         }
         public async Task<LogEventTypeDTO> GetByName(string name)
         {
-            var objToGet = await _db.LogEventType.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.LogEventType.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<LogEventType, LogEventTypeDTO>(objToGet);

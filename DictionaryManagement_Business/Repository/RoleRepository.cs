@@ -28,7 +28,7 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToAdd = _mapper.Map<RoleDTO, Role>(objectToAddDTO);
             var addedRole = _db.Role.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<Role, RoleDTO>(addedRole.Entity);
         }
 
@@ -36,7 +36,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (Id != null && Id != Guid.Empty)
             {
-                var objToGet = await _db.Role.FirstOrDefaultAsync(u => (u.Id == Id));
+                var objToGet = _db.Role.FirstOrDefault(u => (u.Id == Id));
                 if (objToGet != null)
                 {
                     return _mapper.Map<Role, RoleDTO>(objToGet);
@@ -60,7 +60,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<RoleDTO> GetByName(string name = "")
         {
-            var objToGet = await _db.Role.FirstOrDefaultAsync(u => ((u.Name.Trim().ToUpper()) == (name.Trim().ToUpper())));
+            var objToGet = _db.Role.FirstOrDefault(u => ((u.Name.Trim().ToUpper()) == (name.Trim().ToUpper())));
             if (objToGet != null)
             {
                 return _mapper.Map<Role, RoleDTO>(objToGet);
@@ -90,7 +90,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsArchive = false;
                 }
                 _db.Role.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<Role, RoleDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;

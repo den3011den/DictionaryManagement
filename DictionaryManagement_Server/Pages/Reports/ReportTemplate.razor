@@ -141,11 +141,12 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
-         {
-            IsAdmin = true;            
-            if (firstRender)
+
+        if (firstRender)
+        {
+            if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
             {
+                IsAdmin = true;
 
                 IsLoading = true;
                 await LoadStateAsync();
@@ -154,9 +155,10 @@
                 IsLoading = false;
                 StateHasChanged();
             }
-         }
-         else
-             _navigationManager.NavigateTo("/reports");
+            else
+                _navigationManager.NavigateTo("/reports");
+        }
+
     }
 
 

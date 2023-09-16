@@ -36,14 +36,14 @@ namespace DictionaryManagement_Business.Repository
 
 
             var addedSapToMesMaterialMapping = _db.SapToMesMaterialMapping.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<SapToMesMaterialMapping, SapToMesMaterialMappingDTO>(addedSapToMesMaterialMapping.Entity);
         }
 
         public async Task<SapToMesMaterialMappingDTO> Get(int sapMaterialId, int mesMaterialId)
         {
-            var objToGet = await _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").
-                            FirstOrDefaultAsync(u => u.SapMaterialId == sapMaterialId && u.MesMaterialId == mesMaterialId);
+            var objToGet = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").
+                            FirstOrDefault(u => u.SapMaterialId == sapMaterialId && u.MesMaterialId == mesMaterialId);
             if (objToGet != null)
             {
                 return _mapper.Map<SapToMesMaterialMapping, SapToMesMaterialMappingDTO>(objToGet);
@@ -53,8 +53,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapToMesMaterialMappingDTO> GetById(int id)
         {
-            var objToGet = await _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").
-                            FirstOrDefaultAsync(u => u.Id == id);
+            var objToGet = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").
+                            FirstOrDefault(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<SapToMesMaterialMapping, SapToMesMaterialMappingDTO>(objToGet);
@@ -88,7 +88,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.MesMaterial = _mapper.Map<MesMaterialDTO, MesMaterial>(objectToUpdateDTO.MesMaterialDTO);
                 }
                 _db.SapToMesMaterialMapping.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<SapToMesMaterialMapping, SapToMesMaterialMappingDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -103,7 +103,7 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToDelete != null)
                 {
                     _db.SapToMesMaterialMapping.Remove(objectToDelete);
-                    return await _db.SaveChangesAsync();
+                    return _db.SaveChanges();
                 }
             }
             return 0;

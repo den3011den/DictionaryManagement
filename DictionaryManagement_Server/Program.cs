@@ -48,6 +48,10 @@ builder.Services.AddDbContext<IntDBApplicationDbContext>(options =>
 options.UseSqlServer(
     builder.Configuration.GetConnectionString("IntDBConnection")));
 
+//builder.Services.AddDbContext<IntDBAuthDbContext>(options =>
+//options.UseSqlServer(
+//    builder.Configuration.GetConnectionString("IntDBConnection")));
+
 //services.AddDbContext<MyContext>(ServiceLifetime.Transient);
 builder.Services.AddScoped<ISapEquipmentRepository, SapEquipmentRepository>();
 builder.Services.AddScoped<ISapMaterialRepository, SapMaterialRepository>();
@@ -78,6 +82,8 @@ builder.Services.AddScoped<IReportEntityRepository, ReportEntityRepository>();
 builder.Services.AddScoped<IReportEntityLogRepository, ReportEntityLogRepository>();
 builder.Services.AddScoped<ISmenaRepository, SmenaRepository>();
 builder.Services.AddScoped<IAuthorizationRepository, AuthorizationRepository>();
+builder.Services.AddScoped<IAuthorizationControllersRepository, AuthorizationControllersRepository>();
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<DialogService>();

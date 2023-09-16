@@ -15,17 +15,17 @@ namespace DictionaryManagement_Server.Controllers
         private readonly IReportTemplateRepository _reportTemplateRepository;
         private readonly IReportEntityRepository _reportEntityRepository;
         private readonly IReportTemplateTypeRepository _reportTemplateTypeRepository;
-        private readonly IAuthorizationRepository _authorizationRepository;
+        private readonly IAuthorizationControllersRepository _authorizationControllersRepository;
 
         public DownloadFileController(ISettingsRepository settingsRepository, IReportTemplateRepository reportTemplateRepository,
             IReportEntityRepository reportEntityRepository, IReportTemplateTypeRepository reportTemplateTypeRepository,
-            IAuthorizationRepository authorizationRepository)
+            IAuthorizationControllersRepository authorizationControllersRepository)
         {
             _settingsRepository = settingsRepository;
             _reportTemplateRepository = reportTemplateRepository;
             _reportEntityRepository = reportEntityRepository;
             _reportTemplateTypeRepository = reportTemplateTypeRepository;
-            _authorizationRepository = authorizationRepository;
+            _authorizationControllersRepository = authorizationControllersRepository;
         }
 
         [HttpGet("DownloadFileController/DownloadReportTemplateFile/{reportTemplateId}")]
@@ -41,7 +41,7 @@ namespace DictionaryManagement_Server.Controllers
                 }
                 else
                 {
-                    if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.Off))
+                    if (!(await _authorizationControllersRepository.CurrentUserIsInAdminRoleByLogin(User.Identity.Name, SD.MessageBoxMode.Off)))
                     {
                         return StatusCode(401, "Вы не входите в группу " + SD.AdminRoleName + ". Доступ запрещён");
                     }
@@ -88,7 +88,7 @@ namespace DictionaryManagement_Server.Controllers
                 }
                 else
                 {
-                    if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.Off))
+                    if (!(await _authorizationControllersRepository.CurrentUserIsInAdminRoleByLogin(User.Identity.Name, SD.MessageBoxMode.Off)))
                     {
                         return StatusCode(401, "Вы не входите в группу " + SD.AdminRoleName + ". Доступ запрещён");
                     }
@@ -138,7 +138,7 @@ namespace DictionaryManagement_Server.Controllers
                 }
                 else
                 {
-                    if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.Off))
+                    if (!(await _authorizationControllersRepository.CurrentUserIsInAdminRoleByLogin(User.Identity.Name, SD.MessageBoxMode.Off)))
                     {
                         return StatusCode(401, "Вы не входите в группу " + SD.AdminRoleName + ". Доступ запрещён");
                     }

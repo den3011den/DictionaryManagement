@@ -28,13 +28,13 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToAdd = _mapper.Map<MesParamSourceTypeDTO, MesParamSourceType>(objectToAddDTO);            
             var addedMesParamSourceType = _db.MesParamSourceType.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<MesParamSourceType, MesParamSourceTypeDTO>(addedMesParamSourceType.Entity);
         }
 
         public async Task<MesParamSourceTypeDTO> Get(int Id)
         {
-            var objToGet = await _db.MesParamSourceType.FirstOrDefaultAsync(u => u.Id == Id);
+            var objToGet = _db.MesParamSourceType.FirstOrDefault(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<MesParamSourceType, MesParamSourceTypeDTO>(objToGet);
@@ -74,7 +74,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsArchive = false;
                 }
                 _db.MesParamSourceType.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<MesParamSourceType, MesParamSourceTypeDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -82,7 +82,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesParamSourceTypeDTO> GetByName(string name)
         {
-            var objToGet = await _db.MesParamSourceType.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.MesParamSourceType.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesParamSourceType, MesParamSourceTypeDTO>(objToGet);

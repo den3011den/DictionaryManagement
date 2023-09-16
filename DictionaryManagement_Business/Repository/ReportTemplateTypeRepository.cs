@@ -28,13 +28,13 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToAdd = _mapper.Map<ReportTemplateTypeDTO, ReportTemplateType>(objectToAddDTO);            
             var addedReportTemplateType = _db.ReportTemplateType.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<ReportTemplateType, ReportTemplateTypeDTO>(addedReportTemplateType.Entity);
         }
 
         public async Task<ReportTemplateTypeDTO> Get(int Id)
         {
-            var objToGet = await _db.ReportTemplateType.FirstOrDefaultAsync(u => u.Id == Id);
+            var objToGet = _db.ReportTemplateType.FirstOrDefault(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplateType, ReportTemplateTypeDTO>(objToGet);
@@ -74,14 +74,14 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsArchive = false;
                 }
                 _db.ReportTemplateType.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<ReportTemplateType, ReportTemplateTypeDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
         }
         public async Task<ReportTemplateTypeDTO> GetByName(string name)
         {
-            var objToGet = await _db.ReportTemplateType.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.ReportTemplateType.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplateType, ReportTemplateTypeDTO>(objToGet);

@@ -5,14 +5,14 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 
-@inject IJSRuntime _jsRuntime
-
 @inject IReportTemplateRepository _reportTemplateRepository
 @inject IReportTemplateTypeRepository _reportTemplateTypeRepository
 @inject IDataTypeRepository _dataTypeRepository
 @inject IMesDepartmentRepository _mesDepartmentRepository
 @inject ISettingsRepository _settingsRepository
 @inject IWebHostEnvironment _environment
+@inject DictionaryManagement_Business.Repository.IAuthorizationRepository _authorizationRepository
+
 
 @inject DialogService _dialogService
 
@@ -29,7 +29,7 @@
     else
     {
         @*OnSubmit = "AddEditReportTemplateProcedure2"*@
-        @**@
+        @*OnValidSubmit="AddEditReportTemplateProcedure*@
         <EditForm Model="ActiveReportTemplateDTO" OnValidSubmit="AddEditReportTemplateProcedure">
             <DataAnnotationsValidator />
 
@@ -130,7 +130,7 @@
 
 
             <div class="form-group py-2">
-                <button class="btn btn-primary" @onclick="(() => OnClickSave())">@Title</button>
+                <button class="btn btn-primary" @onclick="(() => OnClickSave())" disabled=@IsSubmited>@Title</button>
                 <NavLink @onclick="(() => OnClickCancel())" class="btn btn-secondary">Отмена</NavLink>
             </div>
         </EditForm>
@@ -146,6 +146,8 @@
 
     [Parameter]
     public Guid ReportTemplateId { get; set; }
+
+    bool IsSubmited = false;
 
     public string ReportTemplatePath;
 
@@ -179,6 +181,7 @@
 
         customParameter = Guid.NewGuid();
 
+        bool IsSubmited = false;
         IsLoading = true;
         StateHasChanged();
 
@@ -200,11 +203,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        if (firstRender)
         {
-            IsAdmin = true;
-            if (firstRender)
-            {
+            // if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+            // {
+                IsAdmin = true;
 
                 IsLoading = true;
                 StateHasChanged();
@@ -225,28 +228,35 @@
 
                 IsLoading = false;
                 StateHasChanged();
-            }
+            // }
+            // else
+            //     _navigationManager.NavigateTo("/reports/ReportTemplate");
+
+
         }
-        else
-            _navigationManager.NavigateTo("/reports/ReportTemplate");
+
     }
 
 
+    // private async Task AddEditReportTemplateProcedure()
     private async Task AddEditReportTemplateProcedure()
     {
-        // if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
-        // {
-        ReportTemplatePath = _settingsRepository.GetByName("ReportTemplatePath").Result.Value;
+        IsSubmited = true;
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+        ReportTemplatePath = (await _settingsRepository.GetByName("ReportTemplatePath")).Value;
 
         if (String.IsNullOrEmpty(ReportTemplatePath))
         {
             await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Не найдена настройка с наименованием \"ReportTemplatePath\" либо значение настройки пусто");
+            IsSubmited = false;
             return;
         }
 
         if (!Directory.Exists(ReportTemplatePath))
         {
             await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Путь \"" + ReportTemplatePath + "\", указанный в качестве значения настройки \"ReportTemplatePath\", не существует или не доступен!");
+            IsSubmited = false;
             return;
         }
 
@@ -256,6 +266,7 @@
             if (String.IsNullOrEmpty(uploadFileWarning))
             {
                 await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Выбор файла шаблона отчёта является обязательным!");
+                IsSubmited = false;
                 return;
             }
 
@@ -265,6 +276,7 @@
             {
                 await _jsRuntime.ToastrError("Уже есть шаблон отчёта с типом: '" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "' Типом вых данных: '"
                     + ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "' для производства: '" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "'");
+                IsSubmited = false;
                 return;
             }
 
@@ -281,8 +293,7 @@
             await upload.Upload();
 
             await _jsRuntime.ToastrSuccess("Шаблон \"" + ActiveReportTemplateDTO.Description + "\" создан");
-            _dialogService.Close(ActiveReportTemplateDTO);
-
+            _dialogService.Close(ActiveReportTemplateDTO);            
         }
         else
         { // изменение
@@ -294,6 +305,7 @@
             {
                 await _jsRuntime.ToastrError("Уже есть шаблон отчёта с типом: '" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "' Типом вых данных: '"
                     + ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "' для производства: '" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "'");
+                IsSubmited = false;
                 return;
             }
 
@@ -314,8 +326,10 @@
             await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + ActiveReportTemplateDTO.Id.ToString() + "\" изменён");
 
             _dialogService.Close(ActiveReportTemplateDTO);
+        }        
         }
-        // }
+
+        IsSubmited = false;
 
     }
 
@@ -356,15 +370,16 @@
         ActiveReportTemplateDTO.Description = "Шаблон типа: \"" + repTemplateTypeName + "\" c вых данными: \"" +
                 dataTypeName + "\" для производства: \"" + depName + "\"";
 
-        StateHasChanged();
+        // StateHasChanged();
     }
 
     private async Task OnClickCancel() => _dialogService.Close(null);
 
     private async Task OnClickSave()
     {
-        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
-        {
+        IsSubmited = true;
+         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+         {
             UserDTO? currentUserDTO = await _authorizationRepository.GetCurrentUserDTO(SD.MessageBoxMode.Off);
             ActiveReportTemplateDTO.AddTime = DateTime.Now;
             if (currentUserDTO != null)
@@ -375,13 +390,17 @@
                 // ActiveReportTemplateDTO.AddUserDTOFK = SD.CurrentUserDTO;
             }
             ActiveReportTemplateDTO.TemplateFileName = "sddsds";
-        }
+         }
+        IsSubmited = false;
     }
 
-    //private async Task AddEditReportTemplateProcedure2()
-    //{
-    //    var ggg = 2;
-    //}
+    // private async Task AddEditReportTemplateProcedure2()
+    // {
+
+        
+    //     var ggg = 2;
+        
+    // }
 
     void OnProgress(UploadProgressArgs args)
     {

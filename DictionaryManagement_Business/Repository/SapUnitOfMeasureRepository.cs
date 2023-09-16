@@ -28,13 +28,13 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToAdd = _mapper.Map<SapUnitOfMeasureDTO, SapUnitOfMeasure>(objectToAddDTO);            
             var addedSapUnitOfMeasure = _db.SapUnitOfMeasure.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<SapUnitOfMeasure, SapUnitOfMeasureDTO>(addedSapUnitOfMeasure.Entity);
         }
 
         public async Task<SapUnitOfMeasureDTO> Get(int Id)
         {
-            var objToGet = await _db.SapUnitOfMeasure.FirstOrDefaultAsync(u => u.Id == Id);
+            var objToGet = _db.SapUnitOfMeasure.FirstOrDefault(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<SapUnitOfMeasure, SapUnitOfMeasureDTO>(objToGet);
@@ -44,7 +44,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapUnitOfMeasureDTO> GetByName(string name)
         {
-            var objToGet = await _db.SapUnitOfMeasure.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.SapUnitOfMeasure.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<SapUnitOfMeasure, SapUnitOfMeasureDTO>(objToGet);
@@ -54,7 +54,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapUnitOfMeasureDTO> GetByShortName(string shortName)
         {
-            var objToGet = await _db.SapUnitOfMeasure.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
+            var objToGet = _db.SapUnitOfMeasure.FirstOrDefault(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<SapUnitOfMeasure, SapUnitOfMeasureDTO>(objToGet);
@@ -97,7 +97,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsArchive = false;
                 }
                 _db.SapUnitOfMeasure.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<SapUnitOfMeasure, SapUnitOfMeasureDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;

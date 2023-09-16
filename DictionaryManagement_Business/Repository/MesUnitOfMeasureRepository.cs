@@ -28,13 +28,13 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToAdd = _mapper.Map<MesUnitOfMeasureDTO, MesUnitOfMeasure>(objectToAddDTO);            
             var addedMesUnitOfMeasure = _db.MesUnitOfMeasure.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(addedMesUnitOfMeasure.Entity);
         }
 
         public async Task<MesUnitOfMeasureDTO> Get(int Id)
         {
-            var objToGet = await _db.MesUnitOfMeasure.FirstOrDefaultAsync(u => u.Id == Id);
+            var objToGet = _db.MesUnitOfMeasure.FirstOrDefault(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objToGet);
@@ -76,7 +76,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsArchive = false;
                 }
                 _db.MesUnitOfMeasure.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -85,7 +85,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesUnitOfMeasureDTO> GetByName(string name)
         {
-            var objToGet = await _db.MesUnitOfMeasure.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.MesUnitOfMeasure.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objToGet);
@@ -95,7 +95,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesUnitOfMeasureDTO> GetByShortName(string shortName)
         {
-            var objToGet = await _db.MesUnitOfMeasure.FirstOrDefaultAsync(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
+            var objToGet = _db.MesUnitOfMeasure.FirstOrDefault(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objToGet);

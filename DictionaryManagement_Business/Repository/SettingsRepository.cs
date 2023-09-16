@@ -28,14 +28,14 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToAdd = _mapper.Map<SettingsDTO, Settings>(objectToAddDTO);
             var addedSettings = _db.Settings.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<Settings, SettingsDTO>(addedSettings.Entity);
         }
 
 
         public async Task<SettingsDTO> Get(int Id)
         {
-            var objToGet = await _db.Settings.FirstOrDefaultAsync(u => u.Id == Id);
+            var objToGet = _db.Settings.FirstOrDefault(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<Settings, SettingsDTO>(objToGet);
@@ -45,7 +45,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SettingsDTO> GetByName(string name)
         {
-            var objToGet = await _db.Settings.FirstOrDefaultAsync(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.Settings.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<Settings, SettingsDTO>(objToGet);
@@ -71,7 +71,7 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.Value != objectToUpdateDTO.Value)
                         objectToUpdate.Value = objectToUpdateDTO.Value;
                 _db.Settings.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<Settings, SettingsDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
@@ -86,7 +86,7 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToDelete!= null)
                 {
                     _db.Settings.Remove(objectToDelete);
-                    return await _db.SaveChangesAsync();
+                    return _db.SaveChanges();
                 }
             }
             return 0;

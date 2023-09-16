@@ -28,7 +28,7 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToAdd = _mapper.Map<SapEquipmentDTO, SapEquipment>(objectToAddDTO);
             var addedSapEquipment = _db.SapEquipment.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<SapEquipment, SapEquipmentDTO>(addedSapEquipment.Entity);
         }
 
@@ -36,7 +36,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (Id > 0)
             {
-                var objToGet = await _db.SapEquipment.FirstOrDefaultAsync(u => u.Id == Id);
+                var objToGet = _db.SapEquipment.FirstOrDefault(u => u.Id == Id);
                 if (objToGet != null)
                 {
                     return _mapper.Map<SapEquipment, SapEquipmentDTO>(objToGet);
@@ -61,7 +61,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapEquipmentDTO> GetByResource(string erpPlantId = "", string erpId = "")
         {
-            var objToGet = await _db.SapEquipment.FirstOrDefaultAsync(u => ((u.ErpPlantId.Trim().ToUpper() == erpPlantId.Trim().ToUpper()) && (u.ErpId.Trim().ToUpper() == erpId.Trim().ToUpper())));
+            var objToGet = _db.SapEquipment.FirstOrDefault(u => ((u.ErpPlantId.Trim().ToUpper() == erpPlantId.Trim().ToUpper()) && (u.ErpId.Trim().ToUpper() == erpId.Trim().ToUpper())));
             if (objToGet != null)
             {
                 return _mapper.Map<SapEquipment, SapEquipmentDTO>(objToGet);
@@ -70,7 +70,7 @@ namespace DictionaryManagement_Business.Repository
         }
         public async Task<SapEquipmentDTO> GetByName(string name = "")
         {
-            var objToGet = await _db.SapEquipment.FirstOrDefaultAsync(u => ((u.Name.Trim().ToUpper()) == (name.Trim().ToUpper())));
+            var objToGet = _db.SapEquipment.FirstOrDefault(u => ((u.Name.Trim().ToUpper()) == (name.Trim().ToUpper())));
             if (objToGet != null)
             {
                 return _mapper.Map<SapEquipment, SapEquipmentDTO>(objToGet);
@@ -102,7 +102,7 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.IsArchive = false;
                 }
                 _db.SapEquipment.Update(objectToUpdate);
-                await _db.SaveChangesAsync();
+                _db.SaveChanges();
                 return _mapper.Map<SapEquipment, SapEquipmentDTO>(objectToUpdate);
             }
             return objectToUpdateDTO;
