@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<MesDepartmentDTO> GetById(int id)
         {
             var objToGet = _db.MesDepartment.Include("DepartmentParent").
-                            FirstOrDefault(u => u.Id == id);
+                            FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
@@ -59,46 +60,46 @@ namespace DictionaryManagement_Business.Repository
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
             {
-                var hhh1 = _db.MesDepartment.Include("DepartmentParent");
+                var hhh1 = _db.MesDepartment.Include("DepartmentParent").ToListWithNoLock();
                 return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
             {
-                var hhh2 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.IsArchive == true);
+                var hhh2 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.IsArchive == true).ToListWithNoLock();
                 return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh2);
             }            
             if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
             {
-                var hhh3 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.IsArchive != true);
+                var hhh3 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.IsArchive != true).ToListWithNoLock();
                 return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh3);
 
             }
-            var hhh4 = _db.MesDepartment.Include("DepartmentParent");
+            var hhh4 = _db.MesDepartment.Include("DepartmentParent").ToListWithNoLock();
             return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh4);
         }
 
         public async Task<IEnumerable<MesDepartmentDTO>> GetAllTopLevel()
         {
-                var hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => (u.ParentDepartmentId == null || u.ParentDepartmentId <= 0));
+                var hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => (u.ParentDepartmentId == null || u.ParentDepartmentId <= 0)).ToListWithNoLock();
                 return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
         }
 
         public async Task<IEnumerable<MesDepartmentDTO>> GetChildList(int id)
         {
-                var hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.ParentDepartmentId == id);
+                var hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.ParentDepartmentId == id).ToListWithNoLock();
                 return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
         }
 
         public async Task<bool> HasChild(int id)        
         {
-            var hhh5 = _db.MesDepartment.Where(u => u.ParentDepartmentId == id).AsNoTracking().Any();
+            var hhh5 = _db.MesDepartment.Where(u => u.ParentDepartmentId == id).AsNoTracking().ToListWithNoLock().Any();
             return hhh5;            
         }
 
         public async Task<MesDepartmentDTO> Update(MesDepartmentDTO objectToUpdateDTO)
         {
             var objectToUpdate = _db.MesDepartment.Include("DepartmentParent").
-                    FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+                    FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
                 if (objectToUpdateDTO.ParentDepartmentId == null)
@@ -112,7 +113,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.ParentDepartmentId = objectToUpdateDTO.ParentDepartmentId;
                         var objectParentToUpdate = _db.MesDepartment.Include("DepartmentParent").
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.ParentDepartmentId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.ParentDepartmentId);
                         objectToUpdate.DepartmentParent = objectParentToUpdate;
                     }
                 }
@@ -135,7 +136,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id > 0)
             {
-                var objectToDelete = _db.MesDepartment.FirstOrDefault(u => u.Id == id);
+                var objectToDelete = _db.MesDepartment.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete != null)
                 {
                     if (updateMode == SD.UpdateMode.MoveToArchive)
@@ -152,7 +153,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesDepartmentDTO> GetByCode(int mesCode = 0)
         {
-            var objToGet = _db.MesDepartment.FirstOrDefault(u => u.MesCode == mesCode);
+            var objToGet = _db.MesDepartment.FirstOrDefaultWithNoLock(u => u.MesCode == mesCode);
             if (objToGet != null)
             {
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
@@ -162,7 +163,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesDepartmentDTO> GetByName(string name = "")
         {
-            var objToGet = _db.MesDepartment.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.MesDepartment.FirstOrDefaultWithNoLock(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
@@ -172,7 +173,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesDepartmentDTO> GetByShortName(string shortName = "")
         {
-            var objToGet = _db.MesDepartment.FirstOrDefault(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
+            var objToGet = _db.MesDepartment.FirstOrDefaultWithNoLock(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);

@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -68,7 +69,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
-                            .FirstOrDefault(u => u.Id == id);
+                            .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<MesParam, MesParamDTO>(objToGet);
@@ -88,7 +89,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
-                            .FirstOrDefault(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
+                            .FirstOrDefaultWithNoLock(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesParam, MesParamDTO>(objToGet);
@@ -107,7 +108,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
-                            .FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+                            .FirstOrDefaultWithNoLock(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesParam, MesParamDTO>(objToGet);
@@ -125,7 +126,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
-                            .FirstOrDefault(u => u.MesParamSourceLink.Trim().ToUpper() == mesParamSourceLink.Trim().ToUpper());
+                            .FirstOrDefaultWithNoLock(u => u.MesParamSourceLink.Trim().ToUpper() == mesParamSourceLink.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesParam, MesParamDTO>(objToGet);
@@ -196,7 +197,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK").AsNoTracking()
                             .Include("MesUnitOfMeasureFK").AsNoTracking()
                             .Include("SapUnitOfMeasureFK").AsNoTracking()
-                            .Where(u => u.IsArchive == true).AsNoTracking();
+                            .Where(u => u.IsArchive == true).AsNoTracking().ToListWithNoLock();
                 var retVar2 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh2);
                 GC.Collect(2, GCCollectionMode.Forced);
                 //_db.Dispose();
@@ -214,7 +215,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("SapMaterialFK").AsNoTracking()
                             .Include("MesUnitOfMeasureFK").AsNoTracking()
                             .Include("SapUnitOfMeasureFK").AsNoTracking()
-                            .Where(u => u.IsArchive != true).AsNoTracking();
+                            .Where(u => u.IsArchive != true).AsNoTracking().ToListWithNoLock();
                 var retVar3 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh3);
                 // _db.Dispose();
                 GC.Collect(2, GCCollectionMode.Forced);
@@ -230,7 +231,7 @@ namespace DictionaryManagement_Business.Repository
                         .Include("MesMaterialFK").AsNoTracking()
                         .Include("SapMaterialFK").AsNoTracking()
                         .Include("MesUnitOfMeasureFK").AsNoTracking()
-                        .Include("SapUnitOfMeasureFK").AsNoTracking();
+                        .Include("SapUnitOfMeasureFK").AsNoTracking().ToListWithNoLock();
             var retVar1 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh1);
             GC.Collect(2, GCCollectionMode.Forced);
             //_db.Dispose();
@@ -250,7 +251,7 @@ namespace DictionaryManagement_Business.Repository
                         .Include("SapMaterialFK")
                         .Include("MesUnitOfMeasureFK")
                         .Include("SapUnitOfMeasureFK")
-                        .FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+                        .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)
             {
@@ -265,7 +266,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.MesParamSourceType = objectToUpdateDTO.MesParamSourceType;
                         var objectMesParamSourceTypeToUpdate = _db.MesParamSourceType.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.MesParamSourceType);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.MesParamSourceType);
                         objectToUpdate.MesParamSourceTypeFK = objectMesParamSourceTypeToUpdate;
                     }
                 }
@@ -281,7 +282,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.DepartmentId = objectToUpdateDTO.DepartmentId;
                         var objectMesDepartmentToUpdate = _db.MesDepartment.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.DepartmentId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.DepartmentId);
                         objectToUpdate.MesDepartmentFK = objectMesDepartmentToUpdate;
                     }
                 }
@@ -297,7 +298,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.SapEquipmentIdSource = objectToUpdateDTO.SapEquipmentIdSource;
                         var objectSapEquipmentToUpdate = _db.SapEquipment.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.SapEquipmentIdSource);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.SapEquipmentIdSource);
                         objectToUpdate.SapEquipmentSourceFK = objectSapEquipmentToUpdate;
                     }
                 }
@@ -313,7 +314,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.SapEquipmentIdDest = objectToUpdateDTO.SapEquipmentIdDest;
                         var objectSapEquipmentToUpdate = _db.SapEquipment.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.SapEquipmentIdDest);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.SapEquipmentIdDest);
                         objectToUpdate.SapEquipmentDestFK = objectSapEquipmentToUpdate;
                     }
                 }
@@ -330,7 +331,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.MesMaterialId = objectToUpdateDTO.MesMaterialId;
                         var objectMesMaterialToUpdate = _db.MesMaterial.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.MesMaterialId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.MesMaterialId);
                         objectToUpdate.MesMaterialFK = objectMesMaterialToUpdate;
                     }
                 }
@@ -347,7 +348,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.SapMaterialId = objectToUpdateDTO.SapMaterialId;
                         var objectSapMaterialToUpdate = _db.SapMaterial.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.SapMaterialId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.SapMaterialId);
                         objectToUpdate.SapMaterialFK = objectSapMaterialToUpdate;
                     }
                 }
@@ -363,7 +364,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.MesUnitOfMeasureId = objectToUpdateDTO.MesUnitOfMeasureId;
                         var objectMesUnitOfMeasureToUpdate = _db.MesUnitOfMeasure.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.MesUnitOfMeasureId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.MesUnitOfMeasureId);
                         objectToUpdate.MesUnitOfMeasureFK = objectMesUnitOfMeasureToUpdate;
                     }
                 }
@@ -379,7 +380,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.SapUnitOfMeasureId = objectToUpdateDTO.SapUnitOfMeasureId;
                         var objectSapUnitOfMeasureToUpdate = _db.SapUnitOfMeasure.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.SapUnitOfMeasureId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.SapUnitOfMeasureId);
                         objectToUpdate.SapUnitOfMeasureFK = objectSapUnitOfMeasureToUpdate;
                     }
                 }
@@ -420,7 +421,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id > 0)
             {
-                var objectToDelete = _db.MesParam.FirstOrDefault(u => u.Id == id);
+                var objectToDelete = _db.MesParam.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete != null)
                 {
                     if (updateMode == SD.UpdateMode.MoveToArchive)

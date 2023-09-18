@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<SapToMesMaterialMappingDTO> Get(int sapMaterialId, int mesMaterialId)
         {
             var objToGet = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").
-                            FirstOrDefault(u => u.SapMaterialId == sapMaterialId && u.MesMaterialId == mesMaterialId);
+                            FirstOrDefaultWithNoLock(u => u.SapMaterialId == sapMaterialId && u.MesMaterialId == mesMaterialId);
             if (objToGet != null)
             {
                 return _mapper.Map<SapToMesMaterialMapping, SapToMesMaterialMappingDTO>(objToGet);
@@ -54,7 +55,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<SapToMesMaterialMappingDTO> GetById(int id)
         {
             var objToGet = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").
-                            FirstOrDefault(u => u.Id == id);
+                            FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<SapToMesMaterialMapping, SapToMesMaterialMappingDTO>(objToGet);
@@ -65,7 +66,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<SapToMesMaterialMappingDTO>> GetAll()
         {
-            var hhh = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial");            
+            var hhh = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").ToListWithNoLock();            
             return _mapper.Map<IEnumerable<SapToMesMaterialMapping>, IEnumerable<SapToMesMaterialMappingDTO>>(hhh);
             
         }
@@ -73,7 +74,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<SapToMesMaterialMappingDTO> Update(SapToMesMaterialMappingDTO objectToUpdateDTO)
         {
             var objectToUpdate = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").
-                    FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+                    FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
 
@@ -99,7 +100,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id > 0)
             {
-                var objectToDelete = _db.SapToMesMaterialMapping.FirstOrDefault(u => u.Id == id);
+                var objectToDelete = _db.SapToMesMaterialMapping.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete != null)
                 {
                     _db.SapToMesMaterialMapping.Remove(objectToDelete);

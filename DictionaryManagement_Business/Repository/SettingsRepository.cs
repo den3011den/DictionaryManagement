@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SettingsDTO> Get(int Id)
         {
-            var objToGet = _db.Settings.FirstOrDefault(u => u.Id == Id);
+            var objToGet = _db.Settings.FirstOrDefaultWithNoLock(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<Settings, SettingsDTO>(objToGet);
@@ -45,7 +46,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SettingsDTO> GetByName(string name)
         {
-            var objToGet = _db.Settings.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.Settings.FirstOrDefaultWithNoLock(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<Settings, SettingsDTO>(objToGet);
@@ -55,12 +56,12 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<SettingsDTO>> GetAll()
         {                      
-            return _mapper.Map<IEnumerable<Settings>, IEnumerable<SettingsDTO>>(_db.Settings);
+            return _mapper.Map<IEnumerable<Settings>, IEnumerable<SettingsDTO>>(_db.Settings.ToListWithNoLock());
         }
 
         public async Task<SettingsDTO> Update(SettingsDTO objectToUpdateDTO)
         {
-            var objectToUpdate = _db.Settings.FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+            var objectToUpdate = _db.Settings.FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {                
 
@@ -82,7 +83,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id > 0)
             {
-                var objectToDelete = _db.Settings.FirstOrDefault(u => u.Id == id);
+                var objectToDelete = _db.Settings.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete!= null)
                 {
                     _db.Settings.Remove(objectToDelete);

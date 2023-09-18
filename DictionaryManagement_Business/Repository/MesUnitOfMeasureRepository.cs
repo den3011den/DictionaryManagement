@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesUnitOfMeasureDTO> Get(int Id)
         {
-            var objToGet = _db.MesUnitOfMeasure.FirstOrDefault(u => u.Id == Id);
+            var objToGet = _db.MesUnitOfMeasure.FirstOrDefaultWithNoLock(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objToGet);
@@ -46,18 +47,18 @@ namespace DictionaryManagement_Business.Repository
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
             {                
-                return _mapper.Map<IEnumerable<MesUnitOfMeasure>, IEnumerable<MesUnitOfMeasureDTO>>(_db.MesUnitOfMeasure);
+                return _mapper.Map<IEnumerable<MesUnitOfMeasure>, IEnumerable<MesUnitOfMeasureDTO>>(_db.MesUnitOfMeasure.ToListWithNoLock());
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
-                return _mapper.Map<IEnumerable<MesUnitOfMeasure>, IEnumerable<MesUnitOfMeasureDTO>>(_db.MesUnitOfMeasure.Where(u => u.IsArchive == true));
+                return _mapper.Map<IEnumerable<MesUnitOfMeasure>, IEnumerable<MesUnitOfMeasureDTO>>(_db.MesUnitOfMeasure.Where(u => u.IsArchive == true).ToListWithNoLock());
             if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
-                return _mapper.Map<IEnumerable<MesUnitOfMeasure>, IEnumerable<MesUnitOfMeasureDTO>>(_db.MesUnitOfMeasure.Where(u => u.IsArchive != true));
-            return _mapper.Map<IEnumerable<MesUnitOfMeasure>, IEnumerable<MesUnitOfMeasureDTO>>(_db.MesUnitOfMeasure);
+                return _mapper.Map<IEnumerable<MesUnitOfMeasure>, IEnumerable<MesUnitOfMeasureDTO>>(_db.MesUnitOfMeasure.Where(u => u.IsArchive != true).ToListWithNoLock());
+            return _mapper.Map<IEnumerable<MesUnitOfMeasure>, IEnumerable<MesUnitOfMeasureDTO>>(_db.MesUnitOfMeasure.ToListWithNoLock());
         }
 
         public async Task<MesUnitOfMeasureDTO> Update(MesUnitOfMeasureDTO objectToUpdateDTO, UpdateMode updateMode = UpdateMode.Update)
         {
-            var objectToUpdate = _db.MesUnitOfMeasure.FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+            var objectToUpdate = _db.MesUnitOfMeasure.FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
                 if (updateMode == SD.UpdateMode.Update)
@@ -85,7 +86,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesUnitOfMeasureDTO> GetByName(string name)
         {
-            var objToGet = _db.MesUnitOfMeasure.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.MesUnitOfMeasure.FirstOrDefaultWithNoLock(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objToGet);
@@ -95,7 +96,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesUnitOfMeasureDTO> GetByShortName(string shortName)
         {
-            var objToGet = _db.MesUnitOfMeasure.FirstOrDefault(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
+            var objToGet = _db.MesUnitOfMeasure.FirstOrDefaultWithNoLock(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(objToGet);

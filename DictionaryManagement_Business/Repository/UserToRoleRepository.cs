@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -53,7 +54,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<UserToRoleDTO> GetById(int id)
         {
             var objToGet = _db.UserToRole.Include("UserFK").Include("RoleFK").
-                            FirstOrDefault(u => u.Id == id);
+                            FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<UserToRole, UserToRoleDTO>(objToGet);
@@ -64,7 +65,7 @@ namespace DictionaryManagement_Business.Repository
 
         public Task<IEnumerable<UserToRoleDTO>> GetAll()
         {
-            var hhh = _db.UserToRole.Include("UserFK").Include("RoleFK").AsNoTracking();
+            var hhh = _db.UserToRole.Include("UserFK").Include("RoleFK").AsNoTracking().ToListWithNoLock();
             return _mapper.Map<IEnumerable<UserToRole>, Task<IEnumerable<UserToRoleDTO>>>(hhh);
 
         }
@@ -72,7 +73,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<UserToRoleDTO> Update(UserToRoleDTO objectToUpdateDTO)
         {
             var objectToUpdate = _db.UserToRole.Include("UserFK").Include("RoleFK").
-                    FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+                    FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
 
@@ -98,7 +99,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id > 0)
             {
-                var objectToDelete = _db.UserToRole.FirstOrDefault(u => u.Id == id);
+                var objectToDelete = _db.UserToRole.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete != null)
                 {
                     _db.UserToRole.Remove(objectToDelete);
@@ -123,7 +124,7 @@ namespace DictionaryManagement_Business.Repository
                     && u.UserFK.Login.Trim().ToUpper() == userLogin.Trim().ToUpper()
                     && u.UserFK.IsArchive != true
                     && u.RoleFK.Name.Trim().ToUpper() == roleName.Trim().ToUpper()
-                    && u.RoleFK.IsArchive != true).AsNoTracking().FirstOrDefault();
+                    && u.RoleFK.IsArchive != true).AsNoTracking().FirstOrDefaultWithNoLock();
 
             if (objToGet == null ) 
                 return false;

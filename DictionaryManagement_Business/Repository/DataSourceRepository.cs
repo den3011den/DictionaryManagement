@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<DataSourceDTO> Get(int Id)
         {
-            var objToGet = _db.DataSource.FirstOrDefault(u => u.Id == Id);
+            var objToGet = _db.DataSource.FirstOrDefaultWithNoLock(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<DataSource, DataSourceDTO>(objToGet);
@@ -46,18 +47,18 @@ namespace DictionaryManagement_Business.Repository
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
             {                
-                return _mapper.Map<IEnumerable<DataSource>, IEnumerable<DataSourceDTO>>(_db.DataSource);
+                return _mapper.Map<IEnumerable<DataSource>, IEnumerable<DataSourceDTO>>(_db.DataSource.ToListWithNoLock());
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
-                return _mapper.Map<IEnumerable<DataSource>, IEnumerable<DataSourceDTO>>(_db.DataSource.Where(u => u.IsArchive == true));
+                return _mapper.Map<IEnumerable<DataSource>, IEnumerable<DataSourceDTO>>(_db.DataSource.Where(u => u.IsArchive == true).ToListWithNoLock());
             if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
-                return _mapper.Map<IEnumerable<DataSource>, IEnumerable<DataSourceDTO>>(_db.DataSource.Where(u => u.IsArchive != true));
-            return _mapper.Map<IEnumerable<DataSource>, IEnumerable<DataSourceDTO>>(_db.DataSource);
+                return _mapper.Map<IEnumerable<DataSource>, IEnumerable<DataSourceDTO>>(_db.DataSource.Where(u => u.IsArchive != true).ToListWithNoLock());
+            return _mapper.Map<IEnumerable<DataSource>, IEnumerable<DataSourceDTO>>(_db.DataSource.ToListWithNoLock());
         }
 
         public async Task<DataSourceDTO> Update(DataSourceDTO objectToUpdateDTO, UpdateMode updateMode = UpdateMode.Update)
         {
-            var objectToUpdate = _db.DataSource.FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+            var objectToUpdate = _db.DataSource.FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
                 if (updateMode == SD.UpdateMode.Update)
@@ -83,7 +84,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<DataSourceDTO> GetByName(string name)
         {
-            var objToGet = _db.DataSource.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.DataSource.FirstOrDefaultWithNoLock(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<DataSource, DataSourceDTO>(objToGet);

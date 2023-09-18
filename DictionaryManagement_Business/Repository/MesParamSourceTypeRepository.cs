@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesParamSourceTypeDTO> Get(int Id)
         {
-            var objToGet = _db.MesParamSourceType.FirstOrDefault(u => u.Id == Id);
+            var objToGet = _db.MesParamSourceType.FirstOrDefaultWithNoLock(u => u.Id == Id);
             if (objToGet != null)
             {
                 return _mapper.Map<MesParamSourceType, MesParamSourceTypeDTO>(objToGet);
@@ -46,18 +47,18 @@ namespace DictionaryManagement_Business.Repository
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
             {                
-                return _mapper.Map<IEnumerable<MesParamSourceType>, IEnumerable<MesParamSourceTypeDTO>>(_db.MesParamSourceType);
+                return _mapper.Map<IEnumerable<MesParamSourceType>, IEnumerable<MesParamSourceTypeDTO>>(_db.MesParamSourceType.ToListWithNoLock());
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
-                return _mapper.Map<IEnumerable<MesParamSourceType>, IEnumerable<MesParamSourceTypeDTO>>(_db.MesParamSourceType.Where(u => u.IsArchive == true));
+                return _mapper.Map<IEnumerable<MesParamSourceType>, IEnumerable<MesParamSourceTypeDTO>>(_db.MesParamSourceType.Where(u => u.IsArchive == true).ToListWithNoLock());
             if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
-                return _mapper.Map<IEnumerable<MesParamSourceType>, IEnumerable<MesParamSourceTypeDTO>>(_db.MesParamSourceType.Where(u => u.IsArchive != true));
-            return _mapper.Map<IEnumerable<MesParamSourceType>, IEnumerable<MesParamSourceTypeDTO>>(_db.MesParamSourceType);
+                return _mapper.Map<IEnumerable<MesParamSourceType>, IEnumerable<MesParamSourceTypeDTO>>(_db.MesParamSourceType.Where(u => u.IsArchive != true).ToListWithNoLock());
+            return _mapper.Map<IEnumerable<MesParamSourceType>, IEnumerable<MesParamSourceTypeDTO>>(_db.MesParamSourceType.ToListWithNoLock());
         }
 
         public async Task<MesParamSourceTypeDTO> Update(MesParamSourceTypeDTO objectToUpdateDTO, UpdateMode updateMode = UpdateMode.Update)
         {
-            var objectToUpdate = _db.MesParamSourceType.FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+            var objectToUpdate = _db.MesParamSourceType.FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
                 if (updateMode == SD.UpdateMode.Update)
@@ -82,7 +83,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesParamSourceTypeDTO> GetByName(string name)
         {
-            var objToGet = _db.MesParamSourceType.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.MesParamSourceType.FirstOrDefaultWithNoLock(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<MesParamSourceType, MesParamSourceTypeDTO>(objToGet);

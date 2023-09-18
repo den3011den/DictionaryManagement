@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -50,7 +51,7 @@ namespace DictionaryManagement_Business.Repository
         {
             var objToGet = _db.ReportEntityLog
                             .Include("ReportEntityFK")
-                            .FirstOrDefault(u => u.Id == id);
+                            .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportEntityLog, ReportEntityLogDTO>(objToGet);
@@ -62,7 +63,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<ReportEntityLogDTO>> GetAll()
         {
             var hhh1 = _db.ReportEntityLog
-                            .Include("ReportEntityFK");
+                            .Include("ReportEntityFK").ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportEntityLog>, IEnumerable<ReportEntityLogDTO>>(hhh1);
         }
 
@@ -70,7 +71,8 @@ namespace DictionaryManagement_Business.Repository
         {
             var hhh1 = _db.ReportEntityLog.Include("ReportEntityFK").Where(u => u.ReportEntityId == reportEntityId)
                 .OrderBy(u => u.LogTime)
-                .OrderBy(u => u.LogType);
+                .OrderBy(u => u.LogType)
+                .ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportEntityLog>, IEnumerable<ReportEntityLogDTO>>(hhh1);
         }
 
@@ -84,7 +86,7 @@ namespace DictionaryManagement_Business.Repository
 
             var hhh1 =  _db.ReportEntityLog
                             .Include("ReportEntityFK")
-                            .Where(u => u.LogTime >= startLogTime && u.LogTime <= endLogTime);
+                            .Where(u => u.LogTime >= startLogTime && u.LogTime <= endLogTime).ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportEntityLog>, IEnumerable<ReportEntityLogDTO>>(hhh1);
 
         }
@@ -93,7 +95,7 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToUpdate = _db.ReportEntityLog
                 .Include("ReportEntityFK")
-               .FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+               .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)
             {
@@ -108,7 +110,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.ReportEntityId = objectToUpdateDTO.ReportEntityId;
                         var objectReportEntityToUpdate = _db.ReportEntity.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.ReportEntityId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.ReportEntityId);
                         objectToUpdate.ReportEntityFK = objectReportEntityToUpdate;
                     }
                 }
@@ -137,7 +139,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id > 0)
             {
-                var objectToDelete = _db.ReportEntityLog.FirstOrDefault(u => u.Id == id);
+                var objectToDelete = _db.ReportEntityLog.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete != null)
                 {
                     _db.ReportEntityLog.Remove(objectToDelete);

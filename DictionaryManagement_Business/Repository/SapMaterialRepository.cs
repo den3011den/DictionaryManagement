@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id > 0)
             {
-                var objToGet = _db.SapMaterial.FirstOrDefault(u => u.Id == id);
+                var objToGet = _db.SapMaterial.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objToGet != null)
                 {
                     return _mapper.Map<SapMaterial, SapMaterialDTO>(objToGet);
@@ -48,7 +49,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapMaterialDTO> GetByCode(string code = "")
         {
-            var objToGet = _db.SapMaterial.FirstOrDefault(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
+            var objToGet = _db.SapMaterial.FirstOrDefaultWithNoLock(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<SapMaterial, SapMaterialDTO>(objToGet);
@@ -58,7 +59,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapMaterialDTO> GetByName(string name = "")
         {
-            var objToGet = _db.SapMaterial.FirstOrDefault(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            var objToGet = _db.SapMaterial.FirstOrDefaultWithNoLock(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<SapMaterial, SapMaterialDTO>(objToGet);
@@ -68,7 +69,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapMaterialDTO> GetByShortName(string shortName = "")
         {
-            var objToGet = _db.SapMaterial.FirstOrDefault(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
+            var objToGet = _db.SapMaterial.FirstOrDefaultWithNoLock(u => u.ShortName.Trim().ToUpper() == shortName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<SapMaterial, SapMaterialDTO>(objToGet);
@@ -80,18 +81,18 @@ namespace DictionaryManagement_Business.Repository
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
             {                
-                return _mapper.Map<IEnumerable<SapMaterial>, IEnumerable<SapMaterialDTO>>(_db.SapMaterial);
+                return _mapper.Map<IEnumerable<SapMaterial>, IEnumerable<SapMaterialDTO>>(_db.SapMaterial.ToListWithNoLock());
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
-                return _mapper.Map<IEnumerable<SapMaterial>, IEnumerable<SapMaterialDTO>>(_db.SapMaterial.Where(u => u.IsArchive == true));
+                return _mapper.Map<IEnumerable<SapMaterial>, IEnumerable<SapMaterialDTO>>(_db.SapMaterial.Where(u => u.IsArchive == true).ToListWithNoLock());
             if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
-                return _mapper.Map<IEnumerable<SapMaterial>, IEnumerable<SapMaterialDTO>>(_db.SapMaterial.Where(u => u.IsArchive != true));
-            return _mapper.Map<IEnumerable<SapMaterial>, IEnumerable<SapMaterialDTO>>(_db.SapMaterial);
+                return _mapper.Map<IEnumerable<SapMaterial>, IEnumerable<SapMaterialDTO>>(_db.SapMaterial.Where(u => u.IsArchive != true).ToListWithNoLock());
+            return _mapper.Map<IEnumerable<SapMaterial>, IEnumerable<SapMaterialDTO>>(_db.SapMaterial.ToListWithNoLock());
         }
 
         public async Task<SapMaterialDTO> Update(SapMaterialDTO objectToUpdateDTO, UpdateMode updateMode = UpdateMode.Update)
         {
-            var objectToUpdate = _db.SapMaterial.FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+            var objectToUpdate = _db.SapMaterial.FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
                 if (updateMode == SD.UpdateMode.Update)

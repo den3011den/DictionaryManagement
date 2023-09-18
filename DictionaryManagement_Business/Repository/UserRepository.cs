@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<UserDTO> Get(Guid Id)
         {
             if (Id != null && Id != Guid.Empty)  {
-                var objToGet = _db.User.FirstOrDefault(u => u.Id == Id);
+                var objToGet = _db.User.FirstOrDefaultWithNoLock(u => u.Id == Id);
                 if (objToGet != null)
                 {
                     return _mapper.Map<User, UserDTO>(objToGet);
@@ -51,15 +52,15 @@ namespace DictionaryManagement_Business.Repository
                 return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User);
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
-                return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.Where(u => u.IsArchive == true));
+                return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.Where(u => u.IsArchive == true).ToListWithNoLock());
             if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)            
-                return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.Where(u => u.IsArchive != true));
-            return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User);
+                return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.Where(u => u.IsArchive != true).ToListWithNoLock());
+            return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.ToListWithNoLock());
         }
 
         public async Task<UserDTO> GetByLogin(string login = "")
         {
-            var objToGet = _db.User.FirstOrDefault(u => ((u.Login.Trim().ToUpper() == login.Trim().ToUpper())));
+            var objToGet = _db.User.FirstOrDefaultWithNoLock(u => ((u.Login.Trim().ToUpper() == login.Trim().ToUpper())));
             if (objToGet != null)
             {
                 return _mapper.Map<User, UserDTO>(objToGet);
@@ -69,7 +70,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserDTO> GetByLoginNotInArchive(string login = "")
         {
-            var objToGet = _db.User.FirstOrDefault(u => ((u.Login.Trim().ToUpper() == login.Trim().ToUpper()))
+            var objToGet = _db.User.FirstOrDefaultWithNoLock(u => ((u.Login.Trim().ToUpper() == login.Trim().ToUpper()))
                 && u.IsArchive != true);
             if (objToGet != null)
             {
@@ -80,7 +81,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserDTO> GetByUserName(string userName = "")
         {
-            var objToGet = _db.User.FirstOrDefault(u => ((u.UserName.Trim().ToUpper()) == (userName.Trim().ToUpper())));
+            var objToGet = _db.User.FirstOrDefaultWithNoLock(u => ((u.UserName.Trim().ToUpper()) == (userName.Trim().ToUpper())));
             if (objToGet != null)
             {
                 return _mapper.Map<User, UserDTO>(objToGet);
@@ -91,7 +92,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserDTO> Update(UserDTO objectToUpdateDTO, SD.UpdateMode updateMode = SD.UpdateMode.Update)
         {
-            var objectToUpdate = _db.User.FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+            var objectToUpdate = _db.User.FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
                 if (updateMode == SD.UpdateMode.Update)

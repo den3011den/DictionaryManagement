@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<ReportTemplateTypeTоRoleDTO> Get(int reportTemplateTypeId, Guid roleId)
         {
             var objToGet = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").
-                            FirstOrDefault(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.RoleId == roleId);
+                            FirstOrDefaultWithNoLock(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.RoleId == roleId);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>(objToGet);
@@ -54,7 +55,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<ReportTemplateTypeTоRoleDTO> GetById(int id)
         {
             var objToGet = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").
-                            FirstOrDefault(u => u.Id == id);
+                            FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>(objToGet);
@@ -65,7 +66,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<ReportTemplateTypeTоRoleDTO>> GetAll()
         {
-            var hhh = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK");
+            var hhh = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportTemplateTypeTоRole>, IEnumerable<ReportTemplateTypeTоRoleDTO>>(hhh);
             
         }
@@ -73,7 +74,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<ReportTemplateTypeTоRoleDTO> Update(ReportTemplateTypeTоRoleDTO objectToUpdateDTO)
         {
             var objectToUpdate = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").
-                    FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+                    FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
                 if (objectToUpdate.ReportTemplateTypeId != objectToUpdateDTO.ReportTemplateTypeDTOFK.Id)
@@ -104,7 +105,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id > 0)
             {
-                var objectToDelete = _db.ReportTemplateTypeTоRole.FirstOrDefault(u => u.Id == id);
+                var objectToDelete = _db.ReportTemplateTypeTоRole.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete != null)
                 {
                     _db.ReportTemplateTypeTоRole.Remove(objectToDelete);

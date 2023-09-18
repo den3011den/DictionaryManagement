@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -64,7 +65,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportDepartmentFK")
                             .Include("DownloadUserFK")
                             .Include("UploadUserFK")
-                            .FirstOrDefault(u => u.Id == id);
+                            .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportEntity, ReportEntityDTO>(objToGet);
@@ -79,7 +80,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateFK")
                             .Include("ReportDepartmentFK")
                             .Include("DownloadUserFK")
-                            .Include("UploadUserFK");
+                            .Include("UploadUserFK").ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportEntity>, IEnumerable<ReportEntityDTO>>(hhh1);
         }
 
@@ -96,7 +97,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportDepartmentFK")
                             .Include("DownloadUserFK")
                             .Include("UploadUserFK")
-                            .Where(u => u.DownloadTime >= startDownloadTime && u.DownloadTime <= endDownloadTime);
+                            .Where(u => u.DownloadTime >= startDownloadTime && u.DownloadTime <= endDownloadTime).ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportEntity>, IEnumerable<ReportEntityDTO>>(hhh1);
 
         }
@@ -114,7 +115,7 @@ namespace DictionaryManagement_Business.Repository
                 .Include("ReportDepartmentFK")
                 .Include("DownloadUserFK")
                 .Include("UploadUserFK")
-                .Where(u => u.UploadTime >= startUploadTime && u.DownloadTime <= endUploadTime);
+                .Where(u => u.UploadTime >= startUploadTime && u.DownloadTime <= endUploadTime).ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportEntity>, IEnumerable<ReportEntityDTO>>(hhh1);
         }
 
@@ -125,7 +126,7 @@ namespace DictionaryManagement_Business.Repository
                 .Include("ReportDepartmentFK")
                 .Include("DownloadUserFK")
                 .Include("UploadUserFK")
-               .FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+               .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)
             {
@@ -140,7 +141,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.ReportTemplateId = objectToUpdateDTO.ReportTemplateId;
                         var objectReportTemplateToUpdate = _db.ReportTemplate.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.ReportTemplateId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.ReportTemplateId);
                         objectToUpdate.ReportTemplateFK = objectReportTemplateToUpdate;
                     }
                 }
@@ -156,7 +157,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.ReportDepartmentId = objectToUpdateDTO.ReportDepartmentId;
                         var objectDataTypeToUpdate = _db.MesDepartment.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.ReportDepartmentId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.ReportDepartmentId);
                         objectToUpdate.ReportDepartmentFK = objectDataTypeToUpdate;
                     }
                 }
@@ -172,7 +173,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.DownloadUserId = objectToUpdateDTO.DownloadUserId;
                         var objectDataTypeToUpdate = _db.User.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.DownloadUserId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.DownloadUserId);
                         objectToUpdate.DownloadUserFK = objectDataTypeToUpdate;
                     }
                 }
@@ -188,7 +189,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.UploadUserId = objectToUpdateDTO.UploadUserId;
                         var objectDataTypeToUpdate = _db.User.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.UploadUserId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.UploadUserId);
                         objectToUpdate.UploadUserFK = objectDataTypeToUpdate;
                     }
                 }
@@ -229,7 +230,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id!=null && id != Guid.Empty)
             {
-                var objectToDelete = _db.ReportEntity.FirstOrDefault(u => u.Id == id);
+                var objectToDelete = _db.ReportEntity.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete != null)
                 {
                     _db.ReportEntity.Remove(objectToDelete);

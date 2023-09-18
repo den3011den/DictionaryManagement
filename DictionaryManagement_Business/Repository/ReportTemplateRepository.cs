@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -62,7 +63,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .FirstOrDefault(u => u.Id == id);
+                            .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);
@@ -78,7 +79,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .FirstOrDefault(u => u.TemplateFileName.Trim().ToUpper() == templateFileName.Trim().ToUpper());
+                            .FirstOrDefaultWithNoLock(u => u.TemplateFileName.Trim().ToUpper() == templateFileName.Trim().ToUpper());
             if (objToGet != null)
             {
                 return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);
@@ -96,7 +97,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .FirstOrDefault(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.DestDataTypeId == destDataTypeId && u.DepartmentId == departmentId);
+                            .FirstOrDefaultWithNoLock(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.DestDataTypeId == destDataTypeId && u.DepartmentId == departmentId);
                 if (objToGet != null)
                 {
                     return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);
@@ -115,7 +116,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .Where(u => u.IsArchive == true);
+                            .Where(u => u.IsArchive == true).ToListWithNoLock();
                 return _mapper.Map<IEnumerable<ReportTemplate>, IEnumerable<ReportTemplateDTO>>(hhh2);
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
@@ -125,7 +126,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .Where(u => u.IsArchive != true);
+                            .Where(u => u.IsArchive != true).ToListWithNoLock();
                 return _mapper.Map<IEnumerable<ReportTemplate>, IEnumerable<ReportTemplateDTO>>(hhh3);
 
             }
@@ -133,7 +134,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
-                            .Include("MesDepartmentFK");
+                            .Include("MesDepartmentFK").ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportTemplate>, IEnumerable<ReportTemplateDTO>>(hhh1);
         }
 
@@ -147,7 +148,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                        .FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+                        .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)
             {
@@ -162,7 +163,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.AddUserId = objectToUpdateDTO.AddUserId;
                         var objectUserToUpdate = _db.User.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.AddUserId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.AddUserId);
                         objectToUpdate.AddUserFK = objectUserToUpdate;
                     }
                 }
@@ -178,7 +179,7 @@ namespace DictionaryManagement_Business.Repository
                     {                        
                         objectToUpdate.ReportTemplateTypeId = objectToUpdateDTO.ReportTemplateTypeId;
                         var objectReportTemplateTypeToUpdate = _db.ReportTemplateType.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.ReportTemplateTypeId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.ReportTemplateTypeId);
                         objectToUpdate.ReportTemplateTypeFK = objectReportTemplateTypeToUpdate;
                     }
                 }
@@ -194,7 +195,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.DestDataTypeId = objectToUpdateDTO.DestDataTypeId;
                         var objectDataTypeToUpdate = _db.DataType.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.DestDataTypeId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.DestDataTypeId);
                         objectToUpdate.DestDataTypeFK = objectDataTypeToUpdate;
                     }
                 }
@@ -209,7 +210,7 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.DepartmentId != objectToUpdateDTO.DepartmentId)
                     {
                         objectToUpdate.DepartmentId = objectToUpdateDTO.DepartmentId;
-                        var objectMesDepartmentToUpdate = _db.MesDepartment.FirstOrDefault(u => u.Id == objectToUpdateDTO.DepartmentId);
+                        var objectMesDepartmentToUpdate = _db.MesDepartment.FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.DepartmentId);
                         objectToUpdate.MesDepartmentFK = objectMesDepartmentToUpdate;
                     }
                 }
@@ -237,7 +238,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id != null && id != Guid.Empty)
             {
-                var objectToDelete = _db.ReportTemplate.FirstOrDefault(u => u.Id == id);
+                var objectToDelete = _db.ReportTemplate.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete != null)
                 {
                     if (updateMode == SD.UpdateMode.MoveToArchive)

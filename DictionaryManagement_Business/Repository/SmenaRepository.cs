@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,7 @@ namespace DictionaryManagement_Business.Repository
         {
             var objToGet = _db.Smena
                             .Include("DepartmentFK")
-                            .FirstOrDefault(u => u.Id == id);
+                            .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<Smena, SmenaDTO>(objToGet);
@@ -56,7 +57,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<SmenaDTO>> GetAllByDepartmentId(int departmentId)
         {
             var hhh1 = _db.Smena
-                            .Include("DepartmentFK").Where(u => u.DepartmentId == departmentId);
+                            .Include("DepartmentFK").Where(u => u.DepartmentId == departmentId).ToListWithNoLock();
             return _mapper.Map<IEnumerable<Smena>, IEnumerable<SmenaDTO>>(hhh1);
         }
 
@@ -65,7 +66,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<SmenaDTO>> GetAll()
         {
             var hhh1 = _db.Smena
-                            .Include("DepartmentFK");
+                            .Include("DepartmentFK").ToListWithNoLock();
             return _mapper.Map<IEnumerable<Smena>, IEnumerable<SmenaDTO>>(hhh1);
         }
 
@@ -74,7 +75,7 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToUpdate = _db.Smena                
                 .Include("DepartmentFK")
-                .FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+                .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)
             {
@@ -89,7 +90,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         objectToUpdate.DepartmentId = objectToUpdateDTO.DepartmentId;
                         var objectDepartmentToUpdate = _db.MesDepartment.
-                                FirstOrDefault(u => u.Id == objectToUpdateDTO.DepartmentId);
+                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.DepartmentId);
                         objectToUpdate.DepartmentFK = objectDepartmentToUpdate;
                     }
                 }
@@ -118,7 +119,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id!=null && id != 0)
             {
-                var objectToDelete = _db.Smena.FirstOrDefault(u => u.Id == id);
+                var objectToDelete = _db.Smena.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete != null)
                 {
                     _db.Smena.Remove(objectToDelete);

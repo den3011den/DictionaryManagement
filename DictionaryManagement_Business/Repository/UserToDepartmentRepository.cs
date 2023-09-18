@@ -3,6 +3,7 @@ using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<UserToDepartmentDTO> Get(Guid userId, int departmentId)
         {
             var objToGet = _db.UserToDepartment.Include("UserFK").Include("DepartmentFK").
-                            FirstOrDefault(u => u.UserId == userId && u.DepartmentId == departmentId);
+                            FirstOrDefaultWithNoLock(u => u.UserId == userId && u.DepartmentId == departmentId);
             if (objToGet != null)
             {
                 return _mapper.Map<UserToDepartment, UserToDepartmentDTO>(objToGet);
@@ -53,7 +54,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<UserToDepartmentDTO> GetById(int id)
         {
             var objToGet = _db.UserToDepartment.Include("UserFK").Include("DepartmentFK").
-                            FirstOrDefault(u => u.Id == id);
+                            FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
                 return _mapper.Map<UserToDepartment, UserToDepartmentDTO>(objToGet);
@@ -64,7 +65,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<UserToDepartmentDTO>> GetAll()
         {
-            var hhh = _db.UserToDepartment.Include("UserFK").Include("DepartmentFK");
+            var hhh = _db.UserToDepartment.Include("UserFK").Include("DepartmentFK").ToListWithNoLock();
             return _mapper.Map<IEnumerable<UserToDepartment>, IEnumerable<UserToDepartmentDTO>>(hhh);
             
         }
@@ -72,7 +73,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<UserToDepartmentDTO> Update(UserToDepartmentDTO objectToUpdateDTO)
         {
             var objectToUpdate = _db.UserToDepartment.Include("UserFK").Include("DeaprtmentFK").
-                    FirstOrDefault(u => u.Id == objectToUpdateDTO.Id);
+                    FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
             {
 
@@ -98,7 +99,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (id > 0)
             {
-                var objectToDelete = _db.UserToDepartment.FirstOrDefault(u => u.Id == id);
+                var objectToDelete = _db.UserToDepartment.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete != null)
                 {
                     _db.UserToDepartment.Remove(objectToDelete);
