@@ -23,12 +23,12 @@
 
         <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тип шаблонов отчётов" Click="@InsertRow" Disabled=@(reportTemplateTypeDTOToInsert != null || reportTemplateTypeDTOToUpdate != null) />
         <RadzenDataGrid @ref="reportTemplateTypeDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                    Data="@reportTemplateTypeDTOs" TItem="ReportTemplateTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                            Data="@reportTemplateTypeDTOs" TItem="ReportTemplateTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                     FilterMode="FilterMode.Simple">
             <Columns>
-                <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
-                <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="Name" Title="Наименование">
+                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="Name" Title="Наименование">
                     <EditTemplate Context="reportTemplateTypeDTO">
                         <RadzenTextBox @bind-Value="reportTemplateTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
                         <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
@@ -36,12 +36,12 @@
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
+                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
                     <Template Context="data">
                         <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Context="reportTemplateTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Context="reportTemplateTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                     <Template Context="reportTemplateTypeDTO">
                         <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(reportTemplateTypeDTO))" @onclick:stopPropagation="true">
                         </RadzenButton>

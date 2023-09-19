@@ -132,6 +132,9 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<SmenaDTO, Smena>()
                     .ForMember(dest => dest.DepartmentFK, opt => opt.MapFrom(src => src.DepartmentDTOFK));
 
+            CreateMap<RoleVMDTO, Role>().ReverseMap();
+            CreateMap<RoleVMDTO, RoleDTO>().ReverseMap();
+
         }
     }
 }
