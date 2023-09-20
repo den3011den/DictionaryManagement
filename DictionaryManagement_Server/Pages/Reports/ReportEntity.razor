@@ -209,18 +209,18 @@
 
                 await GetRows();
 
-                //startDate = DateTime.Today.AddDays(-7);
-                //endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
-                //maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
-                //minEndDate = DateTime.Today.AddDays(-8);
+                startDate = DateTime.Today.AddDays(-7);
+                endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
+                maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
+                minEndDate = DateTime.Today.AddDays(-8);
 
-                //IsLoading = true;
-                //await LoadStateAsync();
-                //StateHasChanged();
-                //reportEntityDTOs = await _reportEntityRepository.GetAllByDownloadTimeInterval(startDate, endDate);
+                IsLoading = true;
+                await LoadStateAsync();
+                StateHasChanged();
+                reportEntityDTOs = await _reportEntityRepository.GetAllByDownloadTimeInterval(startDate, endDate);
 
-                //IsLoading = false;
-                //StateHasChanged();
+                IsLoading = false;
+                StateHasChanged();
             }
         }
         else

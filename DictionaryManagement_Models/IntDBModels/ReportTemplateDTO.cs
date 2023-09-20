@@ -61,7 +61,21 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
-        
+
+        [NotMapped]
+        [Display(Name = "Ид записи")]
+        public string ToStringId
+        {
+            get
+            {
+                return Id.ToString();
+            }
+            set
+            {
+                ToStringId = value;
+            }
+        }
+
     }
 }
 

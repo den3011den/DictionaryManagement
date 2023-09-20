@@ -42,9 +42,10 @@
                             EmptyText="Нет записей для отображения"
                             AllowVirtualization="true">
                 <Columns>
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="Id" Title="Ид шаблона отчёта" Width="110px">
-                    </RadzenDataGridColumn>
 
+                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="ToStringId" Title="Ид шаблона отчёта" Width="110px"
+                                          FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
+                    </RadzenDataGridColumn>                   
 
                     <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" Width="60px">
                     </RadzenDataGridColumn>

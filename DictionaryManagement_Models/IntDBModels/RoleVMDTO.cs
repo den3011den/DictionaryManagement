@@ -14,7 +14,7 @@ namespace DictionaryManagement_Models.IntDBModels
     public class RoleVMDTO
     {
 
-        [Display(Name = "Ид записи")]
+        [Display(Name = "Ид роли")]
         [Required(ErrorMessage = "ИД обязателен")]
         public Guid Id { get; set; }
 
@@ -33,6 +33,20 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; } = false;
+
+        [NotMapped]
+        [Display(Name = "Ид записи")]
+        public string ToStringId
+        {
+            get
+            {
+                return Id.ToString();
+            }
+            set
+            {
+                ToStringId = value;
+            }
+        }
 
     }
 }
