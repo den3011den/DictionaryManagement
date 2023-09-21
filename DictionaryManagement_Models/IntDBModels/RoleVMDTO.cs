@@ -48,6 +48,25 @@ namespace DictionaryManagement_Models.IntDBModels
             }
         }
 
+        [NotMapped]
+        [Display(Name = "Для фильтра по пользователям")]
+        public string UsersLoginAndNameString
+        {
+            get
+            {
+                string retVar = "";
+                foreach(var userToRoleItem in UserToRoleDTOs)
+                {
+                    retVar = retVar + userToRoleItem.UserDTOFK.Login + " " + userToRoleItem.UserDTOFK.UserName + " ";
+                }
+                return retVar;
+            }
+            set
+            {
+                UsersLoginAndNameString = value;
+            }
+        }
+
     }
 }
 

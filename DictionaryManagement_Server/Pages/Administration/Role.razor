@@ -45,7 +45,7 @@
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="Name" Title="Наименование" Width="100px" FilterProperty="Name" SortProperty="Name">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="Name" Title="Наименование" Width="100px" FilterProperty="Name" SortProperty="Name" FilterOperator="FilterOperator.Contains">
                         <Template Context="data2">
                             <RadzenCard Style="white-space:pre-wrap">
                                 <RadzenText TextStyle="TextStyle.Body2">
@@ -57,7 +57,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="Description" Title="Описание" Width="100px" FilterProperty="Description" SortProperty="Description">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="Description" Title="Описание" Width="100px" FilterProperty="Description" SortProperty="Description" FilterOperator="FilterOperator.Contains">
                         <Template Context="data3">
                             <RadzenCard Style="white-space:pre-wrap">
                                 <RadzenText TextStyle="TextStyle.Body2">
@@ -90,20 +90,18 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="UserToRoleDTOs" Title="Пользователи роли" Sortable="false" Filterable="true" Width="100px">
-                        <Template Context="data">
-                                    @* <RadzenCard Style="white-space:pre-wrap; width: 100%; padding: 10px 10px 10px 10px; overflow: hidden;"> *@
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="UserToRoleDTOs" FilterProperty="UsersLoginAndNameString" Title="Пользователи роли" Sortable="false" Filterable="true" Width="100px" FilterOperator="FilterOperator.Contains">
+@*                         <FilterTemplate>
+                            <RadzenTextBox @bind-Value=usersFilter Style="width:100%" />
+                        </FilterTemplate> *@
 
+                        <Template Context="data">
                             <div class="row" style="width: 100%; padding: 5px 5px 5px 5px; overflow: hidden;justify-content: center;">
                                 <div class="text-center" style="width: 100%;">
                                     <button title=@($"Добавить пользователя к роли {data.Name}") class="btn btn-primary" style="width: 90%; padding: 0; overflow: hidden; font-size:14px;align-items: center; justify-content: center;" @onclick="()=>AddUser(data)"> +  Добавить пользователя к роли </button>
                                     </div>
                                 </div>
-                        @*     </RadzenCard> *@
-                           
-                            
-                            
-
+                        
                             <RadzenDataList WrapItems="true" Density=Density.Compact AllowPaging="true" Data="data.UserToRoleDTOs" PagerHorizontalAlign="HorizontalAlign.Left" TItem="UserToRoleDTO" PageSize="5" ShowPagingSummary="false">
                                 <Template Context="user">
                                     @* Style=" width:300px;" *@
@@ -114,12 +112,7 @@
                                             </div>
                                             <div class="col-md-1 col-lg-0" style="width: 10%;">
                                                 <b><a href="" title=@($"Отвязать пользователя {user.UserDTOFK?.UserName} от роли {data.Name}") @onclick="@(()=>DeleteUser(data))" style="text-decoration: none !important; color:#DC143C;" @onclick:preventDefault>X</a></b>
-                                               @* <RadzenLink @onclick="()=>DeleteUser(data)" Style="margin-bottom: 1px; margin-top: 1px;" Text="X" /> *@
                                             </div>
-
-                                            @* <div class="col-lg-0" style="width: 10%; cursor: pointer; top: 0">
-                                                <RadzenIcon Icon="delete_forever" title=@($"Отвязать пользователя {user.UserDTOFK?.UserName} от роли {data.Name}") @onclick="()=>DeleteUser(data)" />
-                                            </div> *@
                                         </div>
                                     </RadzenCard>
                                 </Template>
@@ -153,6 +146,8 @@
     IEnumerable<RoleVMDTO>? roleVMDTOs;
 
     RadzenDataGrid<RoleVMDTO> roleVMDTOGrid;
+
+    public string? usersFilter = "";
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
