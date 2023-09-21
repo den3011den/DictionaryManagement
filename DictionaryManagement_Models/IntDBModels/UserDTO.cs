@@ -31,6 +31,20 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 
+        [NotMapped]
+        [Display(Name = "Имя и логин")]
+        public string UserNameAndLogin
+        {
+            get
+            {
+                return UserName + " " + Login;
+            }
+            set
+            {
+                UserNameAndLogin = value;
+            }
+        }
+
     }
 }
 
