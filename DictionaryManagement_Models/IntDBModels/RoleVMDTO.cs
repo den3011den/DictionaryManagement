@@ -67,6 +67,25 @@ namespace DictionaryManagement_Models.IntDBModels
             }
         }
 
+        [NotMapped]
+        [Display(Name = "Для фильтра по типам шаблонов отчётов")]
+        public string ReportTemplateTypeString
+        {
+            get
+            {
+                string retVar = "";
+                foreach (var reportTemplateTypeTоRoleItem in ReportTemplateTypeTоRoleDTOs)
+                {
+                    retVar = retVar + reportTemplateTypeTоRoleItem.ReportTemplateTypeDTOFK.Name + " ";
+                }
+                return retVar;
+            }
+            set
+            {
+                ReportTemplateTypeString = value;
+            }
+        }
+
     }
 }
 
