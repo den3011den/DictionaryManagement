@@ -74,7 +74,7 @@ builder.Services.AddScoped<IMesParamRepository, MesParamRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserToRoleRepository, UserToRoleRepository>();
-builder.Services.AddScoped<IUserToDepartmentRepository, UserToDepartmentRepository>();
+builder.Services.AddScoped<IRoleToDepartmentRepository, RoleToDepartmentRepository>();
 
 builder.Services.AddScoped<IReportTemplateRepository, ReportTemplateRepository>();
 builder.Services.AddScoped<IReportTemplateTypeTîRoleRepository, ReportTemplateTypeTîRoleRepository>();
@@ -82,6 +82,8 @@ builder.Services.AddScoped<IReportEntityRepository, ReportEntityRepository>();
 builder.Services.AddScoped<IReportEntityLogRepository, ReportEntityLogRepository>();
 builder.Services.AddScoped<ISmenaRepository, SmenaRepository>();
 builder.Services.AddScoped<IRoleVMRepository, RoleVMRepository>();
+builder.Services.AddScoped<IADGroupRepository, ADGroupRepository>();
+builder.Services.AddScoped<IRoleToADGroupRepository, RoleToADGroupRepository>();
 builder.Services.AddScoped<IAuthorizationRepository, AuthorizationRepository>();
 builder.Services.AddScoped<IAuthorizationControllersRepository, AuthorizationControllersRepository>();
 

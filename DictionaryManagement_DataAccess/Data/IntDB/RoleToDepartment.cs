@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace DictionaryManagement_DataAccess.Data.IntDB
 {
-    [Table("UserToDepartment", Schema = "dbo")]
-    public class UserToDepartment
+    [Table("RoleToDepartment", Schema = "dbo")]
+    public class RoleToDepartment
     {
 
         [Key]
@@ -18,10 +18,10 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public int Id { get; set; }
 
         [Required]
-        public Guid UserId { get; set; }
+        public Guid RoleId { get; set; }
 
-        [ForeignKey("UserId")]
-        public User UserFK { get; set; }
+        [ForeignKey("RoleId")]
+        public Role RoleFK { get; set; }
 
         [Required]
         public int DepartmentId { get; set; }

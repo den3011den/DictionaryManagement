@@ -36,8 +36,10 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         public DbSet<User> User { get; set; }
         public DbSet<Role> Role { get; set; }
+        public DbSet<ADGroup> ADGroup { get; set; }
         public DbSet<UserToRole> UserToRole { get; set; }
-        public DbSet<UserToDepartment> UserToDepartment { get; set; }
+        public DbSet<RoleToADGroup> RoleToADGroup { get; set; }
+        public DbSet<RoleToDepartment> RoleToDepartment { get; set; }
 
         public DbSet<ReportTemplate> ReportTemplate { get; set; }      
         public DbSet<ReportTemplateTypeTоRole> ReportTemplateTypeTоRole { get; set; }

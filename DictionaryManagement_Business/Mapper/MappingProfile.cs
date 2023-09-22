@@ -100,12 +100,12 @@ namespace DictionaryManagement_Business.Mapper
                     .ForMember(dest => dest.UserFK, opt => opt.MapFrom(src => src.UserDTOFK))
                     .ForMember(dest => dest.RoleFK, opt => opt.MapFrom(src => src.RoleDTOFK));
 
-            CreateMap<UserToDepartment, UserToDepartmentDTO>()
-                    .ForMember(dest => dest.UserDTOFK, opt => opt.MapFrom(src => src.UserFK))
+            CreateMap<RoleToDepartment, RoleToDepartmentDTO>()
+                    .ForMember(dest => dest.RoleDTOFK, opt => opt.MapFrom(src => src.RoleFK))
                     .ForMember(dest => dest.DepartmentDTOFK, opt => opt.MapFrom(src => src.DepartmentFK));
 
-            CreateMap<UserToDepartmentDTO, UserToDepartment>()
-                    .ForMember(dest => dest.UserFK, opt => opt.MapFrom(src => src.UserDTOFK))
+            CreateMap<RoleToDepartmentDTO, RoleToDepartment>()
+                    .ForMember(dest => dest.RoleFK, opt => opt.MapFrom(src => src.RoleDTOFK))
                     .ForMember(dest => dest.DepartmentFK, opt => opt.MapFrom(src => src.DepartmentDTOFK));
 
             CreateMap<ReportEntity, ReportEntityDTO>()
@@ -133,7 +133,16 @@ namespace DictionaryManagement_Business.Mapper
                     .ForMember(dest => dest.DepartmentFK, opt => opt.MapFrom(src => src.DepartmentDTOFK));
 
             CreateMap<RoleVMDTO, Role>().ReverseMap();
+            CreateMap<ADGroupDTO, ADGroup>().ReverseMap();
             CreateMap<RoleVMDTO, RoleDTO>().ReverseMap();
+
+            CreateMap<RoleToADGroup, RoleToADGroupDTO>()
+                    .ForMember(dest => dest.RoleDTOFK, opt => opt.MapFrom(src => src.RoleFK))
+                    .ForMember(dest => dest.ADGroupDTOFK, opt => opt.MapFrom(src => src.ADGroupFK));
+
+            CreateMap<RoleToADGroupDTO, RoleToADGroup>()
+                    .ForMember(dest => dest.RoleFK, opt => opt.MapFrom(src => src.RoleDTOFK))
+                    .ForMember(dest => dest.ADGroupFK, opt => opt.MapFrom(src => src.ADGroupDTOFK));
 
         }
     }
