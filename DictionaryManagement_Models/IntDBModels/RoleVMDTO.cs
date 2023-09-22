@@ -31,6 +31,13 @@ namespace DictionaryManagement_Models.IntDBModels
         [NotMapped]
         public IEnumerable<ReportTemplateTypeTоRoleDTO>? ReportTemplateTypeTоRoleDTOs { get; set; }
 
+        [NotMapped]
+        public IEnumerable<RoleToDepartmentDTO>? RoleToDepartmentDTOs { get; set; }
+
+        [NotMapped]
+        public IEnumerable<RoleToADGroupDTO>? RoleToADGroupDTOs { get; set; }
+
+
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; } = false;
 
@@ -85,6 +92,46 @@ namespace DictionaryManagement_Models.IntDBModels
                 ReportTemplateTypeString = value;
             }
         }
+
+        [NotMapped]
+        [Display(Name = "Для фильтра по группам AD")]
+        public string RoleToADGroupString
+        {
+            get
+            {
+                string retVar = "";
+                foreach (var roleToADGroupItem in RoleToADGroupDTOs)
+                {
+                    retVar = retVar + roleToADGroupItem.ADGroupDTOFK.Name + " ";
+                }
+                return retVar;
+            }
+            set
+            {
+                RoleToADGroupString = value;
+            }
+        }
+
+        [NotMapped]
+        [Display(Name = "Для фильтра по производствам")]
+        public string RoleToDepartmentString
+        {
+            get
+            {
+                string retVar = "";
+                foreach (var roleToDepartmentItem in RoleToDepartmentDTOs)
+                {
+                    retVar = retVar + roleToDepartmentItem.DepartmentDTOFK.ShortName + " ";
+                }
+                return retVar;
+            }
+            set
+            {
+                RoleToDepartmentString = value;
+            }
+        }
+
+
 
     }
 }

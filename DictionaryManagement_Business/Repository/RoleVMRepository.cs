@@ -21,14 +21,21 @@ namespace DictionaryManagement_Business.Repository
         private readonly IMapper _mapper;
         private readonly IUserToRoleRepository _userToRoleRepository;
         private readonly IReportTemplateTypeTоRoleRepository _reportTemplateTypeTоRoleRepository;
+        private readonly IRoleToDepartmentRepository _roleToDepartmentRepository;
+        private readonly IRoleToADGroupRepository _roleToADGroupRepository;
 
         public RoleVMRepository(IntDBApplicationDbContext db, IMapper mapper
-            ,IUserToRoleRepository userToRoleRepository, IReportTemplateTypeTоRoleRepository reportTemplateTypeTоRoleRepository)
+            ,IUserToRoleRepository userToRoleRepository
+            ,IReportTemplateTypeTоRoleRepository reportTemplateTypeTоRoleRepository
+            ,IRoleToDepartmentRepository roleToDepartmentRepository
+            ,IRoleToADGroupRepository roleToADGroupRepository)
         {
             _db = db;
             _mapper = mapper;
             _userToRoleRepository = userToRoleRepository;
             _reportTemplateTypeTоRoleRepository = reportTemplateTypeTоRoleRepository;
+            _roleToDepartmentRepository = roleToDepartmentRepository;
+            _roleToADGroupRepository = roleToADGroupRepository;
         }
 
         public async Task<RoleVMDTO?> Create(RoleVMDTO objectToAddDTO)
@@ -52,6 +59,11 @@ namespace DictionaryManagement_Business.Repository
                             OrderBy(u => u.UserFK.UserName).ToListWithNoLock();
                     var objReportTemplateTypeToRole = _db.ReportTemplateTypeTоRole.Where(u => u.RoleId == Id).Include("ReportTemplateTypeFK").Include("RoleFK")
                         .OrderBy(u => u.ReportTemplateTypeFK.Name).ToListWithNoLock();
+                    var objRoleToDepartment = _db.RoleToDepartment.Where(u => u.RoleId == Id).Include("DepartmentFK").Include("RoleFK")
+                        .OrderBy(u => u.DepartmentFK.ShortName).ToListWithNoLock();
+                    var objRoleToADGroup = _db.RoleToADGroup.Where(u => u.RoleId == Id).Include("ADGroupFK").Include("RoleFK")
+                        .OrderBy(u => u.ADGroupFK.Name).ToListWithNoLock();
+
 
                     RoleVMDTOToReturn = _mapper.Map<Role, RoleVMDTO>(objToGet);
                     if (objUserToRole != null)
@@ -63,6 +75,18 @@ namespace DictionaryManagement_Business.Repository
                     {
                         RoleVMDTOToReturn.ReportTemplateTypeTоRoleDTOs = _mapper.Map<IEnumerable<ReportTemplateTypeTоRole>, IEnumerable<ReportTemplateTypeTоRoleDTO>>(objReportTemplateTypeToRole);
                     }
+
+                    if (objRoleToDepartment != null)
+                    {
+                        RoleVMDTOToReturn.RoleToDepartmentDTOs = _mapper.Map<IEnumerable<RoleToDepartment>, IEnumerable<RoleToDepartmentDTO>>(objRoleToDepartment);
+                    }
+
+                    if (objRoleToADGroup != null)
+                    {
+                        RoleVMDTOToReturn.RoleToADGroupDTOs = _mapper.Map<IEnumerable<RoleToADGroup>, IEnumerable<RoleToADGroupDTO>>(objRoleToADGroup);
+                    }
+
+
 
                 }
             }
@@ -88,6 +112,10 @@ namespace DictionaryManagement_Business.Repository
                     OrderBy(u => u.UserFK.UserName).ToListWithNoLock();
                 var objReportTemplateTypeToRole = _db.ReportTemplateTypeTоRole.Where(u => u.RoleId == roleId).Include("ReportTemplateTypeFK").Include("RoleFK")
                     .OrderBy(u => u.ReportTemplateTypeFK.Name).ToListWithNoLock();
+                var objRoleToDepartment = _db.RoleToDepartment.Where(u => u.RoleId == roleId).Include("DepartmentFK").Include("RoleFK").
+                    OrderBy(u => u.DepartmentFK.ShortName).ToListWithNoLock();
+                var objRoleToADGroup = _db.RoleToADGroup.Where(u => u.RoleId == roleId).Include("ADGroupFK").Include("RoleFK").
+                    OrderBy(u => u.ADGroupFK.Name).ToListWithNoLock();
 
                 var addRoleVMDTO = _mapper.Map<RoleDTO, RoleVMDTO>(roleDTO);
                 if (objUserToRole != null)
@@ -99,6 +127,17 @@ namespace DictionaryManagement_Business.Repository
                 {
                     addRoleVMDTO.ReportTemplateTypeTоRoleDTOs = _mapper.Map<IEnumerable<ReportTemplateTypeTоRole>, IEnumerable<ReportTemplateTypeTоRoleDTO>>(objReportTemplateTypeToRole);
                 }
+
+                if (objRoleToDepartment != null)
+                {
+                    addRoleVMDTO.RoleToDepartmentDTOs = _mapper.Map<IEnumerable<RoleToDepartment>, IEnumerable<RoleToDepartmentDTO>>(objRoleToDepartment);
+                }
+
+                if (objRoleToADGroup != null)
+                {
+                    addRoleVMDTO.RoleToADGroupDTOs = _mapper.Map<IEnumerable<RoleToADGroup>, IEnumerable<RoleToADGroupDTO>>(objRoleToADGroup);
+                }
+
 
                 if (addRoleVMDTO != null) {
                     roleVMDTOs.Add(addRoleVMDTO);
@@ -122,6 +161,10 @@ namespace DictionaryManagement_Business.Repository
                             OrderBy(u => u.UserFK.UserName).ToListWithNoLock();
                     var objReportTemplateTypeToRole = _db.ReportTemplateTypeTоRole.Where(u => u.RoleId == roleId).Include("ReportTemplateTypeFK").Include("RoleFK")
                         .OrderBy(u => u.ReportTemplateTypeFK.Name).ToListWithNoLock();
+                    var objRoleToDepartment = _db.RoleToDepartment.Where(u => u.RoleId == roleId).Include("DepartmentFK").Include("RoleFK").
+                        OrderBy(u => u.DepartmentFK.ShortName).ToListWithNoLock();
+                    var objRoleToADGroup = _db.RoleToADGroup.Where(u => u.RoleId == roleId).Include("ADGroupFK").Include("RoleFK").
+                        OrderBy(u => u.ADGroupFK.Name).ToListWithNoLock();
 
                     RoleVMDTOToReturn = _mapper.Map<Role, RoleVMDTO>(objToGet);
                     if (objUserToRole != null)
@@ -134,6 +177,17 @@ namespace DictionaryManagement_Business.Repository
                         RoleVMDTOToReturn.ReportTemplateTypeTоRoleDTOs = _mapper.Map<IEnumerable<ReportTemplateTypeTоRole>, IEnumerable<ReportTemplateTypeTоRoleDTO>>(objReportTemplateTypeToRole);
 
                     }
+
+                    if (objRoleToDepartment != null)
+                    {
+                        RoleVMDTOToReturn.RoleToDepartmentDTOs = _mapper.Map<IEnumerable<RoleToDepartment>, IEnumerable<RoleToDepartmentDTO>>(objRoleToDepartment);
+                    }
+
+                    if (objRoleToADGroup != null)
+                    {
+                        RoleVMDTOToReturn.RoleToADGroupDTOs = _mapper.Map<IEnumerable<RoleToADGroup>, IEnumerable<RoleToADGroupDTO>>(objRoleToADGroup);
+                    }
+
 
                 }
             }
@@ -212,6 +266,51 @@ namespace DictionaryManagement_Business.Repository
 
         }
 
+        public async Task<RoleToDepartmentDTO?> AddRoleToDepartment(RoleVMDTO roleVMDTO, MesDepartmentDTO addDepartmentDTO)
+        {
+            var checkRoleToDepartment = _db.RoleToDepartment.FirstOrDefaultWithNoLock(u => u.RoleId == roleVMDTO.Id && u.DepartmentId == addDepartmentDTO.Id);
+            if (checkRoleToDepartment != null)
+            {
+                // уже есть связка роли и производства
+                return null;
+            }
+
+            RoleToDepartment objectRoleToDepartmentToAdd = new RoleToDepartment();
+
+            objectRoleToDepartmentToAdd.DepartmentId = addDepartmentDTO.Id;
+            objectRoleToDepartmentToAdd.RoleId = roleVMDTO.Id;
+
+            var addedRoleToDepartment = _db.RoleToDepartment.Add(objectRoleToDepartmentToAdd);
+            _db.SaveChanges();
+
+            return _mapper.Map<RoleToDepartment, RoleToDepartmentDTO>(addedRoleToDepartment.Entity);
+
+        }
+
+
+        public async Task<RoleToADGroupDTO?> AddRoleToADGroup(RoleVMDTO roleVMDTO, ADGroupDTO addADGroupDTO)
+        {
+            var checkRoleToADGroup = _db.RoleToADGroup.FirstOrDefaultWithNoLock(u => u.RoleId == roleVMDTO.Id && u.ADGroupId == addADGroupDTO.Id);
+            if (checkRoleToADGroup != null)
+            {
+                // уже есть связка роли и группы AD
+                return null;
+            }
+
+            RoleToADGroup objectRoleToADGroupToAdd = new RoleToADGroup();
+
+            objectRoleToADGroupToAdd.ADGroupId = addADGroupDTO.Id;
+            objectRoleToADGroupToAdd.RoleId = roleVMDTO.Id;
+
+            var addedRoleToADGroup = _db.RoleToADGroup.Add(objectRoleToADGroupToAdd);
+            _db.SaveChanges();
+
+            return _mapper.Map<RoleToADGroup, RoleToADGroupDTO>(addedRoleToADGroup.Entity);
+
+        }
+
+
+
         public async Task<int> DeleteUserToRole(int userToRoleId)
         {
             if (userToRoleId > 0)
@@ -229,5 +328,25 @@ namespace DictionaryManagement_Business.Repository
             }
             return 0;
         }
+
+        public async Task<int> DeleteRoleToDepartment(int roleToDepartmentId)
+        {
+            if (roleToDepartmentId > 0)
+            {
+                return await _roleToDepartmentRepository.Delete(roleToDepartmentId);
+            }
+            return 0;
+        }
+
+        public async Task<int> DeleteRoleToADGroup(int roleToADGroupId)
+        {
+            if (roleToADGroupId > 0)
+            {
+                return await _roleToADGroupRepository.Delete(roleToADGroupId);
+            }
+            return 0;
+        }
+
+
     }
 }
