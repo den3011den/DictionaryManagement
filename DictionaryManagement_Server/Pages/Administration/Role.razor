@@ -42,26 +42,31 @@
                             AllowVirtualization="true"
                             Style="height:720px">
                 <Columns>
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="ToStringId" Title="Ид роли" Width="95px"
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="ToStringId" Title="Ид роли" Width="45px"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
+                        <Template Context="data1">
+                            <div style="white-space:pre-wrap; font-size: 10px">
+                                @data1.ToStringId
+                            </div>
+                        </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="Name" Title="Наименование" Width="90px" FilterProperty="Name" SortProperty="Name" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="Name" Title="Наименование" Width="50px" FilterProperty="Name" SortProperty="Name" FilterOperator="FilterOperator.Contains">
                         <Template Context="data2">
                             @* <RadzenCard Style="white-space:pre-wrap"> *@
-                            <div style="white-space:pre-wrap">
+                            <div style="white-space:pre-wrap; font-size: 12px">
 @*                                 <RadzenText TextStyle="TextStyle.Body2"> *@
-                                   @*  <strong> *@
+                                     <strong> 
                                         @data2.Name
-                                    @* </strong> *@
+                                     </strong>
 @*                                 </RadzenText> *@
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="Description" Title="Описание" Width="80px" FilterProperty="Description" SortProperty="Description" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="Description" Title="Описание" Width="35px" FilterProperty="Description" SortProperty="Description" FilterOperator="FilterOperator.Contains">
                         <Template Context="data3">
-                            <div style="white-space:pre-wrap">
+                            <div style="white-space:pre-wrap; font-size: 10px">
 @*                             <RadzenCard Style="white-space:pre-wrap">
                                 <RadzenText TextStyle="TextStyle.Body2"> *@
                                     @data3.Description
@@ -71,13 +76,13 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="15px">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="8px">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Context="roleVMDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="30px">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Context="roleVMDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="18px">
                         <Template Context="roleVMDTO">
                             <RadzenButton title="Редактировать роль" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(roleVMDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -94,50 +99,49 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="UserToRoleDTOs" FilterProperty="UsersLoginAndNameString" Title="Пользователи роли" Sortable="false" Filterable="true" Width="110px" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="UserToRoleDTOs" FilterProperty="UsersLoginAndNameString" Title="Пользователи роли" Sortable="false" Filterable="true" Width="30px" FilterOperator="FilterOperator.Contains">
 
                         <Template Context="data">
-                            <div class="row" style="width: 100%; padding: 5px 5px 5px 5px; overflow: hidden;justify-content: center;">
-                                <div class="text-center" style="width: 100%;">
-                                    <button title=@($"Добавить пользователя к роли {data.Name}") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:14px;align-items: center; justify-content: center;" @onclick="()=>AddUser(data)"> + Добавить пользователя к роли + </button>
+                            <div class="row" style="width: 100%; padding: 0; overflow: hidden;justify-content: center; font-size: 10px">
+                                <div class="text-center" style="width: 100%;font-size: 10px">
+                                    <button title=@($"Добавить пользователя к роли {data.Name}") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>AddUser(data)"> + Добавить пользователя + </button>
                                 </div>
                             </div>
 
                             <RadzenDataList WrapItems="true" Density=Density.Compact AllowPaging="true" Data="data.UserToRoleDTOs" PagerHorizontalAlign="HorizontalAlign.Left" TItem="UserToRoleDTO" PageSize="4" ShowPagingSummary="false">
-                                <Template Context="user">
-                                    @* Style=" width:300px;" *@
-                                    <RadzenCard Style="white-space:pre-wrap; width: 100%; padding: 10px 10px 10px 10px; overflow: hidden;">
-                                        <div class="row">
-                                            <div class="col-md-11 col-lg-0" style="width: 90%;">
+                                <Template Context="user">                                                                       
+                                    <RadzenCard Style="white-space:pre-wrap; width: 100%; padding: 1px 1px 1px 1px; overflow: hidden;font-size: 10px">
+                                        <div class="row" style="width: 100%; padding: 0">
+                                            <div class="col-md-11 col-lg-0" style="width: 82%; font-size: 10px">
                                                 <b>@user.UserDTOFK?.UserName (@(@user.UserDTOFK?.Login))</b>
                                             </div>
-                                            <div class="col-md-1 col-lg-0" style="width: 10%;">
-                                                <b><a href="" title=@($"Отвязать пользователя {user.UserDTOFK?.UserName} от роли {data.Name}") @onclick="@(()=>DeleteUser(data))" style="text-decoration: none !important; color:#DC143C;" @onclick:preventDefault>X</a></b>
+                                            <div class="col-md-1 col-lg-0" style="width: 10%; font-size: 10px;">
+                                                <b><a href="" title=@($"Отвязать пользователя {user.UserDTOFK?.UserName} от роли {data.Name}") @onclick="@(()=>DeleteUser(data))" style="text-decoration: none !important; color:#DC143C;  text-align: right !important" @onclick:preventDefault>X</a></b>
                                             </div>
-                                        </div>
-                                    </RadzenCard>
+                                        </div>                                    
+                                    </RadzenCard>                                    
                                 </Template>
                             </RadzenDataList>
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="ReportTemplateTypeTоRoleDTOs" FilterProperty="ReportTemplateTypeString" Title="Шаблоны отчётов" Sortable="false" Filterable="true" Width="110px" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="ReportTemplateTypeTоRoleDTOs" FilterProperty="ReportTemplateTypeString" Title="Шаблоны отчётов" Sortable="false" Filterable="true" Width="30px" FilterOperator="FilterOperator.Contains">
 
                         <Template Context="data">
-                            <div class="row" style="width: 100%; padding: 5px 5px 5px 5px; overflow: hidden;justify-content: center;">
-                                <div class="text-center" style="width: 100%;">
-                                    <button title=@($"Добавить шаблон отчёта к роли {data.Name}") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:14px;align-items: center; justify-content: center;" @onclick="()=>AddReportTemplateType(data)"> +  Добавить шаблон отчёта к роли + </button>
+                            <div class="row" style="width: 100%; padding: 0; overflow: hidden;justify-content: center; font-size: 10px">
+                                <div class="text-center" style="width: 100%; font-size: 10px">
+                                    <button title=@($"Добавить шаблон отчёта к роли {data.Name}") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>AddReportTemplateType(data)"> + Добавить шаблон отчёта + </button>
                                 </div>
                             </div>
 
                             <RadzenDataList WrapItems="true" Density=Density.Compact AllowPaging="true" Data="data.ReportTemplateTypeTоRoleDTOs" PagerHorizontalAlign="HorizontalAlign.Left" TItem="ReportTemplateTypeTоRoleDTO" PageSize="4" ShowPagingSummary="false">
                                 <Template Context="reportTemplate">
-                                    <RadzenCard Style="white-space:pre-wrap; width: 100%; padding: 10px 10px 10px 10px; overflow: hidden;">
-                                        <div class="row">
-                                            <div class="col-md-11 col-lg-0" style="width: 90%;">
+                                    <RadzenCard Style="white-space:pre-wrap; width: 100%; padding: 1px 1px 1px 1px; overflow: hidden; font-size: 10px">
+                                        <div class="row" style="width: 100%; padding: 0">
+                                            <div class="col-md-12 col-lg-0" style="width: 82%; font-size: 10px">
                                                 <b>@reportTemplate.ReportTemplateTypeDTOFK?.Name</b>
                                             </div>
-                                            <div class="col-md-1 col-lg-0" style="width: 10%;">
+                                            <div class="col-md-1 col-lg-0" style="width: 10%; font-size: 10px;">
                                                 <b><a href="" title=@($"Отвязать тип шаблона отчёта {reportTemplate.ReportTemplateTypeDTOFK?.Name} от роли {data.Name}") @onclick="@(()=>DeleteReportTemplateType(data))" style="text-decoration: none !important; color:#DC143C;" @onclick:preventDefault>X</a></b>
                                             </div>
                                         </div>
