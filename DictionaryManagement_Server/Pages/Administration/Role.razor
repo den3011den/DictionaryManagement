@@ -225,7 +225,7 @@
         }
 
     </div>
-    }
+}
 
 @code {
 
@@ -316,7 +316,7 @@
             if (roleVMDTO == null)
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditRole>("Создать роль СИР", new Dictionary<string, object>() { { "RoleId", Guid.Empty } }, new DialogOptions() { Width = $"{700}px" });                
+                dialogResult = await _dialogService.OpenAsync<AddEditRole>("Создать роль СИР", new Dictionary<string, object>() { { "RoleId", Guid.Empty } }, new DialogOptions() { Width = $"{700}px" });
             }
             else
             {
@@ -327,15 +327,24 @@
 
             if (dialogResult != null)
             {
-                IsLoading = true;
-                await LoadStateAsync();
-                StateHasChanged();
-                roleVMDTOs = await _roleVMRepository.GetAll(SD.SelectDictionaryScope.All);
-                IsLoading = false;
-                StateHasChanged();
-            }
+                if (roleVMDTO == null)
+                {
+                    IsLoading = true;
+                    await LoadStateAsync();
+                    StateHasChanged();
+                    roleVMDTOs = await _roleVMRepository.GetAll(SD.SelectDictionaryScope.All);
+                    IsLoading = false;
+                    StateHasChanged();
+                    IsLoading = false;
+                }
+                else
+                {
+                    roleVMDTO.Name = dialogResult.Name;
+                    roleVMDTO.Description = dialogResult.Description;
 
-            IsLoading = false;
+                    await roleVMDTOGrid.UpdateRow(roleVMDTO);
+                }
+            }
         }
 
     }
@@ -353,7 +362,7 @@
                     bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление роли СИР", "Удалить роль \"" + roleVMDTO.Name + "\" в архив ?", "Удалить", "Отмена");
                     if (selectionResult == false)
                     {
-                        await _jsRuntime.ToastrSuccess("Отмена удаления");
+                        // await _jsRuntime.ToastrSuccess("Отмена удаления");
                         return;
                     }
                 }
@@ -362,7 +371,7 @@
                     bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Восстановление роли СИР", "Восстановить роль СИР \"" + roleVMDTO.Name + "\" из архива ?", "Восстановить", "Отмена");
                     if (selectionResult == false)
                     {
-                        await _jsRuntime.ToastrSuccess("Отмена восстановления");
+                        // await _jsRuntime.ToastrSuccess("Отмена восстановления");
                         return;
                     }
                 }
@@ -399,7 +408,7 @@
                         " (" + userDTO.Login + ")" + "\" из роли \"" + roleVMDTO.Name + "\" ?", "Удалить из роли", "Отмена");
                 if (selectionResult == false)
                 {
-                    await _jsRuntime.ToastrSuccess("Отмена действия");
+                    // await _jsRuntime.ToastrSuccess("Отмена действия");
                     return;
                 }
             }
@@ -409,7 +418,7 @@
 
         if (userToRoleDTO != null)
         {
-            await _roleVMRepository.DeleteUserToRole(userToRoleDTO.Id);            
+            await _roleVMRepository.DeleteUserToRole(userToRoleDTO.Id);
             await _jsRuntime.ToastrSuccess("Пользователь \"" + userDTO.UserName + " (" + userDTO.Login + ")" + "\" удалён из роли \"" + roleVMDTO.Name + "\"");
         }
         else
@@ -440,7 +449,7 @@
                         "\" из роли \"" + roleVMDTO.Name + "\" ?", "Удалить из роли", "Отмена");
                 if (selectionResult == false)
                 {
-                    await _jsRuntime.ToastrSuccess("Отмена действия");
+                    // await _jsRuntime.ToastrSuccess("Отмена действия");
                     return;
                 }
             }
@@ -481,7 +490,7 @@
                         "\" из роли \"" + roleVMDTO.Name + "\" ?", "Удалить из роли", "Отмена");
                 if (selectionResult == false)
                 {
-                    await _jsRuntime.ToastrSuccess("Отмена действия");
+                    // await _jsRuntime.ToastrSuccess("Отмена действия");
                     return;
                 }
             }
