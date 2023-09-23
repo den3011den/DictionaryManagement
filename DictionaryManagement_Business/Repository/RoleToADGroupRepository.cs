@@ -40,7 +40,7 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<RoleToADGroup, RoleToADGroupDTO>(addedRoleToADGroup.Entity);
         }
 
-        public async Task<RoleToADGroupDTO> Get(Guid roleId, Guid adGroupId)
+        public async Task<RoleToADGroupDTO> Get(Guid adGroupId, Guid roleId)
         {
             var objToGet = _db.RoleToADGroup.Include("RoleFK").Include("ADGroupFK").
                             FirstOrDefault(u => u.RoleId == roleId && u.ADGroupId == adGroupId);

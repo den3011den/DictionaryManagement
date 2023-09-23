@@ -19,9 +19,11 @@ namespace DictionaryManagement_Business.Repository.IRepository
 
         public Task<UserToRoleDTO?> AddUserToRole(RoleVMDTO roleVMDTO, UserDTO addUserDTO);
         public Task<ReportTemplateTypeTоRoleDTO?> AddReportTemplateTypeToRole(RoleVMDTO roleVMDTO, ReportTemplateTypeDTO addreportTemplateTypeDTO);
+        public Task<RoleToADGroupDTO?> AddRoleToADGroup(RoleVMDTO roleVMDTO, ADGroupDTO addADGroupDTO);
 
         public Task<int> DeleteUserToRole(int userToRoleId);
         public Task<int> DeleteReportTemplateTypeToRole(int reportTemplateTypeToRoleId);
+        public Task<int> DeleteRoleToADGroup(int roleToAdGroupId);
 
 
     }

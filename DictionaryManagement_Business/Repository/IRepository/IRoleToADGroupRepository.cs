@@ -12,7 +12,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
 {
     public interface IRoleToADGroupRepository
     {
-        public Task<RoleToADGroupDTO> Get(Guid roleId, Guid adGroupId);
+        public Task<RoleToADGroupDTO> Get(Guid adGroupId, Guid roleId);
         public Task<RoleToADGroupDTO> GetById(int id);
         public Task<IEnumerable<RoleToADGroupDTO>> GetAll();
         public Task<RoleToADGroupDTO> Update(RoleToADGroupDTO objDTO);
