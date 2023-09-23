@@ -33,7 +33,7 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<Role, RoleDTO>(addedRole.Entity);
         }
 
-        public async Task<RoleDTO> Get(Guid Id)
+        public async Task<RoleDTO> GetById(Guid Id)
         {
             if (Id != null && Id != Guid.Empty)
             {
