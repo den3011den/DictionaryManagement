@@ -1,4 +1,5 @@
 ﻿using DictionaryManagement_Common;
+using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,11 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<int> DeleteUserToRole(int userToRoleId);
         public Task<int> DeleteReportTemplateTypeToRole(int reportTemplateTypeToRoleId);
         public Task<int> DeleteRoleToADGroup(int roleToAdGroupId);
+        public Task<IEnumerable<UserDTO>> GetAllNotArchiveUsersExceptAlreadyInRole(Guid roleId);
 
+        public Task<IEnumerable<UserToRoleDTO>?> GetUsersLinkedToRoleByRoleId(Guid roleId);
+        public Task<IEnumerable<ReportTemplateTypeTоRoleDTO>?> GetReportTemplateTypesLinkedToRoleByRoleId(Guid roleId);
+        public Task<IEnumerable<RoleToADGroupDTO>?> GetADGroupsLinkedToRoleByRoleId(Guid roleId);
 
     }
 }

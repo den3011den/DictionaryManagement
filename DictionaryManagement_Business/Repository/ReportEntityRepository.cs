@@ -42,7 +42,7 @@ namespace DictionaryManagement_Business.Repository
 
             objectToAdd.ReportTimeStart = objectToAddDTO.ReportTimeStart;
             objectToAdd.ReportTimeEnd = objectToAddDTO.ReportTimeEnd;
-            objectToAdd.ReportDepartmentId = objectToAddDTO.ReportDepartmentId;            
+            objectToAdd.ReportDepartmentId = objectToAddDTO.ReportDepartmentId;
             objectToAdd.DownloadUserId = objectToAddDTO.DownloadUserId;
             objectToAdd.DownloadReportFileName = objectToAddDTO.DownloadReportFileName;
             objectToAdd.DownloadSuccessFlag = objectToAddDTO.DownloadSuccessFlag;
@@ -76,7 +76,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<ReportEntityDTO>> GetAll()
         {
-            var hhh1 =  _db.ReportEntity
+            var hhh1 = _db.ReportEntity
                             .Include("ReportTemplateFK")
                             .Include("ReportDepartmentFK")
                             .Include("DownloadUserFK")
@@ -92,7 +92,7 @@ namespace DictionaryManagement_Business.Repository
             if (startDownloadTime == null)
                 startDownloadTime = DateTime.MaxValue;
 
-            var hhh1 =  _db.ReportEntity
+            var hhh1 = _db.ReportEntity
                             .Include("ReportTemplateFK")
                             .Include("ReportDepartmentFK")
                             .Include("DownloadUserFK")
@@ -228,7 +228,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<int> Delete(Guid id)
         {
-            if (id!=null && id != Guid.Empty)
+            if (id != null && id != Guid.Empty)
             {
                 var objectToDelete = _db.ReportEntity.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete != null)

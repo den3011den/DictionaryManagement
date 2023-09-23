@@ -107,7 +107,7 @@
                         <Template Context="data">
                             <div class="row" style="width: 100%; padding: 0; overflow: hidden;justify-content: center; font-size: 10px">
                                 <div class="text-center" style="width: 100%;font-size: 10px">
-                                    <button title=@($"Добавить пользователя к роли {data.Name}") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>AddUser(data)"> + Добавить пользователя + </button>
+                                    <button title=@($"Добавить пользователя к роли {data.Name}") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>LinkUserToRole(data)"> + Добавить пользователя + </button>
                                 </div>
                             </div>
 
@@ -393,10 +393,36 @@
         }
     }
 
-    async Task AddUser(RoleVMDTO roleVMDTO)
+    async Task LinkUserToRole(RoleVMDTO roleVMDTO)
     {
-        await _jsRuntime.ToastrSuccess("Метод AddUser");
+
+        await _roleVMRepository.GetAllNotArchiveUsersExceptAlreadyInRole(roleVMDTO.Id);
+
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            IsLoading = true;
+
+            RoleVMDTO dialogResult = null;
+
+            if (roleVMDTO == null)
+            {
+                await _jsRuntime.ToastrError("Пустой объект роли для привязки пользователей");
+                IsLoading = false;
+                return;
+            }
+            else
+            {
+                IsLoading = false;
+                dialogResult = await _dialogService.OpenAsync<LinkUsersToRole>("Привязка пользователей к роли " + roleVMDTO.Name, new Dictionary<string, object>() { { "RoleId", roleVMDTO.Id } }, new DialogOptions() { Width = $"{1100}px" });
+
+                roleVMDTO.UserToRoleDTOs = await _roleVMRepository.GetUsersLinkedToRoleByRoleId(roleVMDTO.Id);
+                await roleVMDTOGrid.UpdateRow(roleVMDTO);
+            }
+
+            IsLoading = false;
+        }
     }
+
 
     async Task DeleteUser(RoleVMDTO roleVMDTO, UserDTO userDTO)
     {

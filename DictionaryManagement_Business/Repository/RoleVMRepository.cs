@@ -348,5 +348,59 @@ namespace DictionaryManagement_Business.Repository
         }
 
 
+        public async Task<IEnumerable<UserDTO>> GetAllNotArchiveUsersExceptAlreadyInRole(Guid roleId)
+        {
+            IEnumerable<UserDTO> userListDTOs = null;
+            IEnumerable<User> userInRoleDTOs = null;
+            userInRoleDTOs = _db.UserToRole.Include("UserFK").Where(u => u.RoleId == roleId).Select(u => u.UserFK).AsNoTracking().ToListWithNoLock();
+
+            userListDTOs = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>
+                (
+                _db.User.Where(u => u.IsArchive != true)
+                    .Where(u => !userInRoleDTOs.Contains(u)).AsNoTracking().ToListWithNoLock()
+                );
+            //userListDTOs = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>
+            //    (
+            //        _db.UserToRole.Include("UserFK").Where(u => u.UserFK.IsArchive != true && u.RoleId != roleId).Select(x => x.UserFK).AsNoTracking().ToListWithNoLock()
+            //    );
+            return userListDTOs;
+        }
+
+        public async Task<IEnumerable<UserToRoleDTO?>> GetUsersLinkedToRoleByRoleId(Guid roleId)
+        {
+
+            IEnumerable<UserToRoleDTO> userToRoleDTOs =
+                _mapper.Map<IEnumerable<UserToRole>, IEnumerable<UserToRoleDTO>>
+                (
+                    _db.UserToRole.Include("UserFK").Include("RoleFK").Where(u => u.RoleId == roleId).AsNoTracking().ToListWithNoLock()
+                );
+
+            return userToRoleDTOs;
+
+        }
+
+        public async Task<IEnumerable<ReportTemplateTypeTоRoleDTO>?> GetReportTemplateTypesLinkedToRoleByRoleId(Guid roleId)
+        {
+            IEnumerable<ReportTemplateTypeTоRoleDTO> reportTemplateTypeTоRoleDTOs =
+                _mapper.Map<IEnumerable<ReportTemplateTypeTоRole>, IEnumerable<ReportTemplateTypeTоRoleDTO>>
+                (
+                    _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").Where(u => u.RoleId == roleId).AsNoTracking().ToListWithNoLock()
+                );
+
+            return reportTemplateTypeTоRoleDTOs;
+
+        }
+
+        public async Task<IEnumerable<RoleToADGroupDTO>?> GetADGroupsLinkedToRoleByRoleId(Guid roleId)
+        {
+            IEnumerable<RoleToADGroupDTO> roleToADGroupDTOs =
+                _mapper.Map<IEnumerable<RoleToADGroup>, IEnumerable<RoleToADGroupDTO>>
+                (
+                    _db.RoleToADGroup.Include("ADGroupFK").Include("RoleFK").Where(u => u.RoleId == roleId).AsNoTracking().ToListWithNoLock()
+                );
+
+            return roleToADGroupDTOs;
+
+        }
     }
 }

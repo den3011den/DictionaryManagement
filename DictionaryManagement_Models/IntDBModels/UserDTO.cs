@@ -31,6 +31,24 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 
+        [NotMapped]
+        [Display(Name = " ")]
+        public bool Checked { get; set; } = false;
+
+        [NotMapped]
+        [Display(Name = "Ид записи")]
+        public string ToStringId
+        {
+            get
+            {
+                return Id.ToString();
+            }
+            set
+            {
+                ToStringId = value;
+            }
+        }
+
         //[NotMapped]
         //[Display(Name = "Имя и логин")]
         //public string UserNameAndLogin
