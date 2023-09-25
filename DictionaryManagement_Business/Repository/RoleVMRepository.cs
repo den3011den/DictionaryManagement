@@ -258,6 +258,8 @@ namespace DictionaryManagement_Business.Repository
 
             objectReportTemplateTypeTоRoleToAdd.ReportTemplateTypeId = addreportTemplateTypeDTO.Id;
             objectReportTemplateTypeTоRoleToAdd.RoleId = roleVMDTO.Id;
+            objectReportTemplateTypeTоRoleToAdd.CanDownload = addreportTemplateTypeDTO.CanDownload;
+            objectReportTemplateTypeTоRoleToAdd.CanUpload = addreportTemplateTypeDTO.CanUpload;
 
             var addedReportTemplateTypeTоRole = _db.ReportTemplateTypeTоRole.Add(objectReportTemplateTypeTоRoleToAdd);
             _db.SaveChanges();
@@ -359,11 +361,23 @@ namespace DictionaryManagement_Business.Repository
                 _db.User.Where(u => u.IsArchive != true)
                     .Where(u => !userInRoleDTOs.Contains(u)).AsNoTracking().ToListWithNoLock()
                 );
-            //userListDTOs = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>
-            //    (
-            //        _db.UserToRole.Include("UserFK").Where(u => u.UserFK.IsArchive != true && u.RoleId != roleId).Select(x => x.UserFK).AsNoTracking().ToListWithNoLock()
-            //    );
             return userListDTOs;
+        }
+
+
+        public async Task<IEnumerable<ReportTemplateTypeDTO>> GetAllNotArchiveReportTemplateTypesExceptAlreadyInRole(Guid roleId)
+        {
+            IEnumerable<ReportTemplateTypeDTO> reportTemplateTypeListDTOs = null;
+            IEnumerable<ReportTemplateType> reportTemplateTypeInRoleDTOs = null;
+            reportTemplateTypeInRoleDTOs = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Where(u => u.RoleId == roleId).Select(u => u.ReportTemplateTypeFK).AsNoTracking().ToListWithNoLock();
+
+            reportTemplateTypeListDTOs = _mapper.Map<IEnumerable<ReportTemplateType>, IEnumerable<ReportTemplateTypeDTO>>
+                (
+                _db.ReportTemplateType.Where(u => u.IsArchive != true)
+                    .Where(u => !reportTemplateTypeInRoleDTOs.Contains(u)).AsNoTracking().ToListWithNoLock()
+                );
+            return reportTemplateTypeListDTOs;
+
         }
 
         public async Task<IEnumerable<UserToRoleDTO?>> GetUsersLinkedToRoleByRoleId(Guid roleId)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,5 +21,28 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Чтение")]
+        public bool CanDownload { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Запись")]
+        public bool CanUpload { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Ид записи")]
+        public string ToStringId
+        {
+            get
+            {
+                return Id.ToString();
+            }
+            set
+            {
+                ToStringId = value;
+            }
+        }
+
     }
 }

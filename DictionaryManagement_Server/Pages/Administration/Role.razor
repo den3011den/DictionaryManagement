@@ -133,7 +133,7 @@
                         <Template Context="data">
                             <div class="row" style="width: 100%; padding: 0; overflow: hidden;justify-content: center; font-size: 10px">
                                 <div class="text-center" style="width: 100%; font-size: 10px">
-                                    <button title=@($"Добавить шаблон отчёта к роли {data.Name}") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>AddReportTemplateType(data)"> + Добавить шаблон отчёта + </button>
+                                    <button title=@($"Добавить шаблон отчёта к роли {data.Name}") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>LinkReportTemplateTypeToRole(data)"> + Добавить шаблон отчёта + </button>
                                 </div>
                             </div>
 
@@ -153,6 +153,7 @@
                             </RadzenDataList>
                         </Template>
                     </RadzenDataGridColumn>
+
 
 
                     <RadzenDataGridColumn TItem="RoleVMDTO" Property="RoleToADGroupDTOs" FilterProperty="RoleToADGroupString" Title="Группы AD" Sortable="false" Filterable="true" Width="42px" FilterOperator="FilterOperator.Contains">
@@ -460,10 +461,35 @@
 
     }
 
-    async Task AddReportTemplateType(RoleVMDTO roleVMDTO)
+    async Task LinkReportTemplateTypeToRole(RoleVMDTO roleVMDTO)
     {
-        await _jsRuntime.ToastrSuccess("Метод AddReportTemplateType");
+        await _roleVMRepository.GetAllNotArchiveReportTemplateTypesExceptAlreadyInRole(roleVMDTO.Id);
+
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            IsLoading = true;
+
+            RoleVMDTO dialogResult = null;
+
+            if (roleVMDTO == null)
+            {
+                await _jsRuntime.ToastrError("Пустой объект роли для привязки типов шаблонов отчётов");
+                IsLoading = false;
+                return;
+            }
+            else
+            {
+                IsLoading = false;
+                dialogResult = await _dialogService.OpenAsync<LinkReportTemplateTypeToRole>("Привязка типов шаблонов отчётов к роли " + roleVMDTO.Name, new Dictionary<string, object>() { { "RoleId", roleVMDTO.Id } }, new DialogOptions() { Width = $"{1100}px" });
+
+                roleVMDTO.ReportTemplateTypeTоRoleDTOs = await _roleVMRepository.GetReportTemplateTypesLinkedToRoleByRoleId(roleVMDTO.Id);
+                await roleVMDTOGrid.UpdateRow(roleVMDTO);
+            }
+
+            IsLoading = false;
+        }
     }
+
 
     async Task DeleteReportTemplateType(RoleVMDTO roleVMDTO, ReportTemplateTypeDTO reportTemplateTypeDTO)
     {
