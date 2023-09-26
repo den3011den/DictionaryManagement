@@ -9,87 +9,85 @@
 @inject IJSRuntime _jsRuntime
 @inject IMesUnitOfMeasureRepository _mesUnitOfMeasureRepository
 
-@if (IsAdmin == true)
-{
-    <_Dialogs @ref="_dialogs"></_Dialogs>
+<_Dialogs @ref="_dialogs"></_Dialogs>
 
-    <div class="row">
-        <div class="col-6">
-            <h4 class="card-title text-primary"><a href="/dictionary">Справочники</a> - <a href="/dictionary/MesUnitOfMeasure">Единицы измерения MES</a></h4>
-        </div>
-
-
-        @if (IsLoading != true)
-        {
-
-            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую единицу измерения SAP" Click="@InsertRow" Disabled=@(mesUnitOfMeasureDTOToInsert != null || mesUnitOfMeasureDTOToUpdate != null) />
-            <RadzenDataGrid @ref="mesUnitOfMeasureDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@mesUnitOfMeasureDTOs" TItem="MesUnitOfMeasureDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            FilterMode="FilterMode.Simple">
-                <Columns>
-                    <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Name" Title="Наименование">
-                        <EditTemplate Context="mesUnitOfMeasureDTO">
-                            <RadzenTextBox @bind-Value="mesUnitOfMeasureDTO.Name" Style="width:100%; display: block" Name="Name" />
-                            <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
-                            <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
-                        </EditTemplate>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="ShortName" Title="Сокр. наименование">
-                        <EditTemplate Context="mesUnitOfMeasureDTO">
-                            <RadzenTextBox @bind-Value="mesUnitOfMeasureDTO.ShortName" Style="width:100%; display: block" Name="ShortName" />
-                            <RadzenRequiredValidator Text="Сокр. наименование обязателено к заполнению" Component="ShortName" Popup="true" />
-                            <RadzenLengthValidator Max=100 Text="Сокр. наименование не может быть больше 100 символов" Component="ShortName" Popup="true" />
-                        </EditTemplate>
-                    </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
-                        <Template Context="data">
-                            <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Context="mesUnitOfMeasureDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
-                        <Template Context="mesUnitOfMeasureDTO">
-                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesUnitOfMeasureDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                            @if (!mesUnitOfMeasureDTO.IsArchive)
-                            {
-                                <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesUnitOfMeasureDTO))" @onclick:stopPropagation="true">
-                                </RadzenButton>
-                            }
-                            else
-                            {
-                                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesUnitOfMeasureDTO))" @onclick:stopPropagation="true">
-                                </RadzenButton>
-                            }
-                        </Template>
-                        <EditTemplate Context="mesUnitOfMeasureDTO">
-                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(mesUnitOfMeasureDTO))">
-                            </RadzenButton>
-                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(mesUnitOfMeasureDTO))">
-                            </RadzenButton>
-                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesUnitOfMeasureDTO))">
-                            </RadzenButton>
-                        </EditTemplate>
-                    </RadzenDataGridColumn>
-                </Columns>
-            </RadzenDataGrid>
-        }
-        else
-        {
-            if (IsLoading)
-            {
-                //отображение gif загрузки
-                <div class="text-center">
-                    <img src="/images/loading.gif">
-                </div>
-
-            }
-        }
-
+<div class="row">
+    <div class="col-6">
+        <h4 class="card-title text-primary"><a href="/dictionary">Справочники</a> - <a href="/dictionary/MesUnitOfMeasure">Единицы измерения MES</a></h4>
     </div>
-}
+
+
+    @if (IsAdmin == true && IsLoading != true)
+    {
+
+        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую единицу измерения SAP" Click="@InsertRow" Disabled=@(mesUnitOfMeasureDTOToInsert != null || mesUnitOfMeasureDTOToUpdate != null) />
+        <RadzenDataGrid @ref="mesUnitOfMeasureDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                        Data="@mesUnitOfMeasureDTOs" TItem="MesUnitOfMeasureDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                        FilterMode="FilterMode.Simple">
+            <Columns>
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Id" Title="Ид записи" Width="120px" />
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Name" Title="Наименование">
+                    <EditTemplate Context="mesUnitOfMeasureDTO">
+                        <RadzenTextBox @bind-Value="mesUnitOfMeasureDTO.Name" Style="width:100%; display: block" Name="Name" />
+                        <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
+                        <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="ShortName" Title="Сокр. наименование">
+                    <EditTemplate Context="mesUnitOfMeasureDTO">
+                        <RadzenTextBox @bind-Value="mesUnitOfMeasureDTO.ShortName" Style="width:100%; display: block" Name="ShortName" />
+                        <RadzenRequiredValidator Text="Сокр. наименование обязателено к заполнению" Component="ShortName" Popup="true" />
+                        <RadzenLengthValidator Max=100 Text="Сокр. наименование не может быть больше 100 символов" Component="ShortName" Popup="true" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
+                    <Template Context="data">
+                        <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Context="mesUnitOfMeasureDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <Template Context="mesUnitOfMeasureDTO">
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesUnitOfMeasureDTO))" @onclick:stopPropagation="true">
+                        </RadzenButton>
+                        @if (!mesUnitOfMeasureDTO.IsArchive)
+                        {
+                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesUnitOfMeasureDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                        else
+                        {
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesUnitOfMeasureDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        }
+                    </Template>
+                    <EditTemplate Context="mesUnitOfMeasureDTO">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(mesUnitOfMeasureDTO))">
+                        </RadzenButton>
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(mesUnitOfMeasureDTO))">
+                        </RadzenButton>
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesUnitOfMeasureDTO))">
+                        </RadzenButton>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    }
+    else
+    {
+        if (IsLoading)
+        {
+            //отображение gif загрузки
+            <div class="text-center">
+                <img src="/images/loading.gif">
+            </div>
+
+        }
+    }
+
+</div>
+
 
 @code {
 
@@ -124,6 +122,7 @@
 
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
+            IsAdmin = true;
             if (firstRender)
             {
                 IsLoading = true;
