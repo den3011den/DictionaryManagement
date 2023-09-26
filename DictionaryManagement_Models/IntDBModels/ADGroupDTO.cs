@@ -20,9 +20,31 @@ namespace DictionaryManagement_Models.IntDBModels
         [StringLength(300, MinimumLength = 1, ErrorMessage = "Наименование может быть от 1 до 300 символов")]
         [Display(Name = "Наименование")]
         public string Name { get; set; }
-                        
+
+        [StringLength(300, MinimumLength = 1, ErrorMessage = "Наименование может быть от 1 до 300 символов")]
+        [Display(Description = "Описание")]
+        public string? Description { get; set; }
+
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; } = false;
+
+        [NotMapped]
+        [Display(Name = " ")]
+        public bool Checked { get; set; } = false;
+
+        [NotMapped]
+        [Display(Name = "Ид записи")]
+        public string ToStringId
+        {
+            get
+            {
+                return Id.ToString();
+            }
+            set
+            {
+                ToStringId = value;
+            }
+        }
 
     }
 }

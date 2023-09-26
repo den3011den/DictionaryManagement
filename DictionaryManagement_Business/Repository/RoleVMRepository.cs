@@ -377,6 +377,20 @@ namespace DictionaryManagement_Business.Repository
                     .Where(u => !reportTemplateTypeInRoleDTOs.Contains(u)).AsNoTracking().ToListWithNoLock()
                 );
             return reportTemplateTypeListDTOs;
+        }
+
+        public async Task<IEnumerable<ADGroupDTO>> GetAllNotArchiveADGroupsExceptAlreadyInRole(Guid roleId)
+        {
+            IEnumerable<ADGroupDTO> adGroupListDTOs = null;
+            IEnumerable<ADGroup> adGroupsInRole = null;
+            adGroupsInRole = _db.RoleToADGroup.Include("ADGroupFK").Where(u => u.RoleId == roleId).Select(u => u.ADGroupFK).AsNoTracking().ToListWithNoLock();
+
+            adGroupListDTOs = _mapper.Map<IEnumerable<ADGroup>, IEnumerable<ADGroupDTO>>
+                (
+                _db.ADGroup.Where(u => u.IsArchive != true)
+                    .Where(u => !adGroupsInRole.Contains(u)).AsNoTracking().ToListWithNoLock()
+                );
+            return adGroupListDTOs;
 
         }
 
