@@ -5,6 +5,7 @@ using DictionaryManagement_Models.IntDBModels;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.JSInterop;
+using System.Security.Claims;
 using static DictionaryManagement_Business.Repository.IAuthorizationRepository;
 using static DictionaryManagement_Common.SD;
 
@@ -17,29 +18,36 @@ namespace DictionaryManagement_Business.Repository
 
         private readonly IUserToRoleRepository _userToRoleRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IADGroupRepository _adGroupRepository;
+        private readonly IRoleToADGroupRepository _roleToADGroupRepository;
         private readonly IJSRuntime _jsRuntime;
 
-        public AuthorizationRepository(AuthenticationStateProvider authenticationStateProvider, IUserToRoleRepository userToRoleRepository, IUserRepository userRepository, IJSRuntime jsRuntime)
+        public AuthorizationRepository(AuthenticationStateProvider authenticationStateProvider, IUserToRoleRepository userToRoleRepository,
+            IUserRepository userRepository, IJSRuntime jsRuntime,
+            IADGroupRepository adGroupRepository, IRoleToADGroupRepository roleToADGroupRepository)
         {
             _authenticationStateProvider = authenticationStateProvider;
             _userToRoleRepository = userToRoleRepository;
             _userRepository = userRepository;
             _jsRuntime = jsRuntime;
+            _adGroupRepository = adGroupRepository;
+            _roleToADGroupRepository = roleToADGroupRepository;
         }
 
         public async Task<bool> CurrentUserIsInAdminRole(MessageBoxMode messageBoxModePar = SD.MessageBoxMode.Off)
-        {            
+        {
             bool retVar = false;
             bool messShownFlag = false;
 
             if (_authenticationStateProvider is not null)
-            {                
+            {
                 var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
                 if (authState.User != null)
                 {
                     if (authState.User.Identity is not null && authState.User.Identity.IsAuthenticated)
-                    {                        
-                        retVar = await _userToRoleRepository.IsUserInRoleByUserLoginAndRoleName(authState.User.Identity.Name, SD.AdminRoleName);                        
+                    {
+                        await AddUserToRolesByLoginAndADGroup(authState);
+                        retVar = await _userToRoleRepository.IsUserInRoleByUserLoginAndRoleName(authState.User.Identity.Name, SD.AdminRoleName);
                     }
                 }
 
@@ -99,13 +107,13 @@ namespace DictionaryManagement_Business.Repository
 
             if (messShownFlag == false && retVar == null)
             {
-                    if (messageBoxModePar == MessageBoxMode.On)
-                    {
-                        messShownFlag = true;
+                if (messageBoxModePar == MessageBoxMode.On)
+                {
+                    messShownFlag = true;
                     await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Не удалось получить логин текущего пользователя.");
                 }
 
-                }
+            }
             return retVar;
         }
 
@@ -167,6 +175,78 @@ namespace DictionaryManagement_Business.Repository
 
 
             return retVar;
+        }
+
+        public async Task<int> AddUserToRolesByLoginAndADGroup(AuthenticationState authStatePar)
+        {
+            string userLogin = authStatePar.User.Identity.Name;
+
+            int userToRoleAddCount = 0;
+
+            if (!userLogin.IsNullOrEmpty())
+            {
+                IEnumerable<RoleToADGroupDTO> RoleToADGroupDTOList = await _roleToADGroupRepository.GetAll();
+                UserDTO userDTO = null;
+                UserToRoleDTO userToRoleDTO = null;
+                
+
+                foreach (var item in RoleToADGroupDTOList)
+                {
+                    if (item.ADGroupDTOFK.Name == "S-1-1-0")
+                    {
+                                               
+                        var ggg = authStatePar.User.Claims.ToList();
+                        var fff = authStatePar.User.HasClaim(ClaimTypes.Role, item.ADGroupDTOFK.Name.Trim());
+
+                        int a = 1;
+                    }
+
+                    
+
+                    if (authStatePar.User.IsInRole(item.ADGroupDTOFK.Name.Trim()))
+                    {
+                        if (userDTO == null)
+                        {
+                            userDTO = await _userRepository.GetByLogin(userLogin);
+                            if (userDTO == null)
+                            {
+                                UserDTO userToAddDTO = new UserDTO
+                                {
+                                    UserName = authStatePar.User.Identity.Name,
+                                    Login = userLogin,
+                                    Description = "Добавлено автоматически " + DateTime.Now.ToString(),
+                                    IsArchive = false
+                                };
+                                userDTO = await _userRepository.Create(userToAddDTO);
+                                userToRoleAddCount++;
+                            }
+                        }
+
+                        if (userDTO != null)
+                        {
+                            if ((!userDTO.IsArchive) && (!item.RoleDTOFK.IsArchive))
+                            {
+                                {
+                                    userToRoleDTO = await _userToRoleRepository.Get(userDTO.Id, item.RoleId);
+
+                                    if (userToRoleDTO == null)
+                                    {
+                                        UserToRoleDTO userToRoleAddDTO = new UserToRoleDTO
+                                        {
+                                            UserId = userDTO.Id,
+                                            RoleId = item.RoleId,
+                                            UserDTOFK = userDTO,
+                                            RoleDTOFK = item.RoleDTOFK
+                                        };
+                                        _userToRoleRepository.Create(userToRoleAddDTO);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return userToRoleAddCount;
         }
     }
 }

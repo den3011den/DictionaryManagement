@@ -2,6 +2,7 @@
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using Microsoft.AspNetCore.Components.Authorization;
 using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
@@ -12,5 +13,6 @@ namespace DictionaryManagement_Business.Repository
         public Task<UserDTO>? GetCurrentUserDTO(MessageBoxMode messageBoxModePar = MessageBoxMode.Off);
         public Task<string> GetCurrentLogin(MessageBoxMode messageBoxModePar = MessageBoxMode.Off);
         public Task<bool> CurrentUserIsInAdminRoleByLogin(string userLogin, MessageBoxMode messageBoxModePar = MessageBoxMode.Off);
+        public Task<int> AddUserToRolesByLoginAndADGroup(AuthenticationState authStatePar);
     }
 }
