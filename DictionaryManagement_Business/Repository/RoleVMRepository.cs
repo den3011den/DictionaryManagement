@@ -20,20 +20,20 @@ namespace DictionaryManagement_Business.Repository
         private readonly IntDBApplicationDbContext _db;
         private readonly IMapper _mapper;
         private readonly IUserToRoleRepository _userToRoleRepository;
-        private readonly IReportTemplateTypeTоRoleRepository _reportTemplateTypeTоRoleRepository;
+        private readonly IReportTemplateTypeToRoleRepository _reportTemplateTypeToRoleRepository;
         private readonly IRoleToADGroupRepository _roleToADGroupRepository;
         //private readonly IRoleToDepartmentRepository _roleToDepartmentRepository;
 
         public RoleVMRepository(IntDBApplicationDbContext db, IMapper mapper
             ,IUserToRoleRepository userToRoleRepository
-            ,IReportTemplateTypeTоRoleRepository reportTemplateTypeTоRoleRepository            
+            ,IReportTemplateTypeToRoleRepository reportTemplateTypeToRoleRepository            
             ,IRoleToADGroupRepository roleToADGroupRepository
             /*,IRoleToDepartmentRepository roleToDepartmentRepository*/)
         {
             _db = db;
             _mapper = mapper;
             _userToRoleRepository = userToRoleRepository;
-            _reportTemplateTypeTоRoleRepository = reportTemplateTypeTоRoleRepository;            
+            _reportTemplateTypeToRoleRepository = reportTemplateTypeToRoleRepository;            
             _roleToADGroupRepository = roleToADGroupRepository;
             //_roleToDepartmentRepository = roleToDepartmentRepository;
         }
@@ -326,7 +326,7 @@ namespace DictionaryManagement_Business.Repository
         {
             if (reportTemplateTypeToRoleId > 0)
             {
-                return await _reportTemplateTypeTоRoleRepository.Delete(reportTemplateTypeToRoleId);
+                return await _reportTemplateTypeToRoleRepository.Delete(reportTemplateTypeToRoleId);
             }
             return 0;
         }

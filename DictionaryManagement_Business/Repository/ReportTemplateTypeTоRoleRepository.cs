@@ -14,12 +14,12 @@ using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
-    public class ReportTemplateTypeTоRoleRepository : IReportTemplateTypeTоRoleRepository
+    public class ReportTemplateTypeToRoleRepository : IReportTemplateTypeToRoleRepository
     {
         private readonly IntDBApplicationDbContext _db;
         private readonly IMapper _mapper;
 
-        public ReportTemplateTypeTоRoleRepository(IntDBApplicationDbContext db, IMapper mapper)
+        public ReportTemplateTypeToRoleRepository(IntDBApplicationDbContext db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;

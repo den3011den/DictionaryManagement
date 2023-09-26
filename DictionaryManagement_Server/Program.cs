@@ -77,7 +77,7 @@ builder.Services.AddScoped<IUserToRoleRepository, UserToRoleRepository>();
 builder.Services.AddScoped<IRoleToDepartmentRepository, RoleToDepartmentRepository>();
 
 builder.Services.AddScoped<IReportTemplateRepository, ReportTemplateRepository>();
-builder.Services.AddScoped<IReportTemplateTypeTîRoleRepository, ReportTemplateTypeTîRoleRepository>();
+builder.Services.AddScoped<IReportTemplateTypeToRoleRepository, ReportTemplateTypeToRoleRepository>();
 builder.Services.AddScoped<IReportEntityRepository, ReportEntityRepository>();
 builder.Services.AddScoped<IReportEntityLogRepository, ReportEntityLogRepository>();
 builder.Services.AddScoped<ISmenaRepository, SmenaRepository>();

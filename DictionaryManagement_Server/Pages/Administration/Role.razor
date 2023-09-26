@@ -11,7 +11,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IRoleVMRepository _roleVMRepository
 @inject IUserToRoleRepository _userToRoleRepository
-@inject IReportTemplateTypeTоRoleRepository _reportTemplateTypeTоRoleRepository
+@inject IReportTemplateTypeToRoleRepository _reportTemplateTypeToRoleRepository
 @inject IRoleToADGroupRepository _roleToADGroupRepository
 @* @inject IRoleRepository _roleRepository *@
 
@@ -507,7 +507,7 @@
             }
         }
 
-        var reportTemplateTypeTоRoleDTO = await _reportTemplateTypeTоRoleRepository.Get(reportTemplateTypeDTO.Id, roleVMDTO.Id);
+        var reportTemplateTypeTоRoleDTO = await _reportTemplateTypeToRoleRepository.Get(reportTemplateTypeDTO.Id, roleVMDTO.Id);
 
         if (reportTemplateTypeTоRoleDTO != null)
         {
