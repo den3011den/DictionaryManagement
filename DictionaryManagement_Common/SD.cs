@@ -35,6 +35,13 @@ namespace DictionaryManagement_Common
             Off
         }
 
+        public enum LoginReturnMode
+        {
+            LoginOnly,
+            NameOnly,
+            LoginAndName
+        }
+
         public static string AppVersion = "";
         public static FactoryMode AppFactoryMode = FactoryMode.KOS;
         public static string AdminRoleName = "Администратор";

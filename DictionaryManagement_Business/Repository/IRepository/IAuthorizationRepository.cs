@@ -11,7 +11,7 @@ namespace DictionaryManagement_Business.Repository
     {        
         public Task<bool> CurrentUserIsInAdminRole(MessageBoxMode messageBoxModePar = MessageBoxMode.Off);
         public Task<UserDTO>? GetCurrentUserDTO(MessageBoxMode messageBoxModePar = MessageBoxMode.Off);
-        public Task<string> GetCurrentLogin(MessageBoxMode messageBoxModePar = MessageBoxMode.Off);
+        public Task<string> GetCurrentUser(MessageBoxMode messageBoxModePar = MessageBoxMode.Off, LoginReturnMode loginReturnMode = LoginReturnMode.LoginOnly);
         public Task<bool> CurrentUserIsInAdminRoleByLogin(string userLogin, MessageBoxMode messageBoxModePar = MessageBoxMode.Off);
         public Task<int> AddUserToRolesByLoginAndADGroup(AuthenticationState authStatePar);
     }

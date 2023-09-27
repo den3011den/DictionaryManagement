@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.JSInterop;
 using System.Security.Claims;
-using static DictionaryManagement_Business.Repository.IAuthorizationRepository;
 using static DictionaryManagement_Common.SD;
+using Microsoft.Extensions.Configuration;
+using System.DirectoryServices.AccountManagement;
+using Microsoft.AspNetCore.Authentication;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -21,10 +23,12 @@ namespace DictionaryManagement_Business.Repository
         private readonly IADGroupRepository _adGroupRepository;
         private readonly IRoleToADGroupRepository _roleToADGroupRepository;
         private readonly IJSRuntime _jsRuntime;
+        private readonly IConfiguration _config;
 
         public AuthorizationRepository(AuthenticationStateProvider authenticationStateProvider, IUserToRoleRepository userToRoleRepository,
             IUserRepository userRepository, IJSRuntime jsRuntime,
-            IADGroupRepository adGroupRepository, IRoleToADGroupRepository roleToADGroupRepository)
+            IADGroupRepository adGroupRepository, IRoleToADGroupRepository roleToADGroupRepository,
+            IConfiguration config)
         {
             _authenticationStateProvider = authenticationStateProvider;
             _userToRoleRepository = userToRoleRepository;
@@ -32,7 +36,8 @@ namespace DictionaryManagement_Business.Repository
             _jsRuntime = jsRuntime;
             _adGroupRepository = adGroupRepository;
             _roleToADGroupRepository = roleToADGroupRepository;
-        }
+            _config = config;
+    }
 
         public async Task<bool> CurrentUserIsInAdminRole(MessageBoxMode messageBoxModePar = SD.MessageBoxMode.Off)
         {
@@ -117,10 +122,10 @@ namespace DictionaryManagement_Business.Repository
             return retVar;
         }
 
-        public async Task<string> GetCurrentLogin(MessageBoxMode messageBoxModePar = MessageBoxMode.Off)
+        public async Task<string> GetCurrentUser(MessageBoxMode messageBoxModePar = MessageBoxMode.Off, LoginReturnMode loginReturnMode = LoginReturnMode.LoginOnly)
         {
 
-            string retsLoginString = "";
+            string? returnString = "";
 
             if (_authenticationStateProvider is not null)
             {
@@ -129,17 +134,60 @@ namespace DictionaryManagement_Business.Repository
                 {
                     if (authState.User.Identity is not null && authState.User.Identity.IsAuthenticated)
                     {
-                        retsLoginString = authState.User.Identity.Name;
+
+                        string? loginStr = authState.User.Identity.Name;
+
+                        if (loginReturnMode == LoginReturnMode.LoginOnly)
+                            returnString = loginStr;
+                        else
+                        {                            
+                            if (OperatingSystem.IsWindows())
+                            {
+                                try
+                                {
+                                    //#pragma warning disable CA1416 // Validate platform compatibility
+                                    var context = new PrincipalContext(ContextType.Domain);
+                                    var principal = UserPrincipal.FindByIdentity(context, authState.User.Identity.Name);
+                                    //#pragma warning restore CA1416 // Validate platform compatibility
+
+                                    var varString = principal.Name;
+                                    
+                                    if (varString.IsNullOrEmpty())
+                                        varString = principal.DisplayName;
+                                    if (varString.IsNullOrEmpty())
+                                        varString = principal.Surname + " " + principal.GivenName + " ";
+
+                                    if (loginReturnMode == LoginReturnMode.NameOnly)
+                                    {                                        
+                                        returnString = varString;
+                                    }    
+                                    if (loginReturnMode == LoginReturnMode.LoginAndName)
+                                    {
+                                        returnString = varString + " ( " + loginStr + " )";
+                                    }
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    returnString = loginStr;
+                                }
+                            }
+                            else
+                            {
+                                returnString = loginStr;
+                            }
+                        }
                     }
                 }
             }
 
-            if (retsLoginString.IsNullOrEmpty() && messageBoxModePar == MessageBoxMode.On)
+            if (returnString.IsNullOrEmpty() && messageBoxModePar == MessageBoxMode.On)
             {
                 await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Не удалось получить логин текущего пользователя.");
             }
 
-            return retsLoginString;
+
+            return returnString;
         }
 
         public async Task<bool> CurrentUserIsInAdminRoleByLogin(string userLogin, MessageBoxMode messageBoxModePar = SD.MessageBoxMode.Off)
@@ -179,8 +227,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<int> AddUserToRolesByLoginAndADGroup(AuthenticationState authStatePar)
         {
-            string userLogin = authStatePar.User.Identity.Name;
-
+            string userLogin = await GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
+            
             int userToRoleAddCount = 0;
 
             if (!userLogin.IsNullOrEmpty())
@@ -192,17 +240,7 @@ namespace DictionaryManagement_Business.Repository
 
                 foreach (var item in RoleToADGroupDTOList)
                 {
-                    if (item.ADGroupDTOFK.Name == "S-1-1-0")
-                    {
-                                               
-                        var ggg = authStatePar.User.Claims.ToList();
-                        var fff = authStatePar.User.HasClaim(ClaimTypes.Role, item.ADGroupDTOFK.Name.Trim());
-
-                        int a = 1;
-                    }
-
-                    
-
+                   
                     if (authStatePar.User.IsInRole(item.ADGroupDTOFK.Name.Trim()))
                     {
                         if (userDTO == null)
@@ -212,7 +250,7 @@ namespace DictionaryManagement_Business.Repository
                             {
                                 UserDTO userToAddDTO = new UserDTO
                                 {
-                                    UserName = authStatePar.User.Identity.Name,
+                                    UserName = await GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.NameOnly),
                                     Login = userLogin,
                                     Description = "Добавлено автоматически " + DateTime.Now.ToString(),
                                     IsArchive = false
