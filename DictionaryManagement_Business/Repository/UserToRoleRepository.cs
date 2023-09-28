@@ -110,6 +110,23 @@ namespace DictionaryManagement_Business.Repository
 
         }
 
+
+        public async Task<int> DeleteByRoleId(Guid roleId)
+        {
+            if (roleId != Guid.Empty)
+            {
+                var listToDelete = _db.UserToRole.Where(u => u.RoleId == roleId).ToListWithNoLock();
+                if (listToDelete != null)
+                {
+                    foreach (var item in listToDelete)
+                        _db.UserToRole.Remove(item);
+                    return _db.SaveChanges();
+                }
+            }
+            return 0;
+
+        }
+
         public async Task<bool> IsUserInRoleByUserLoginAndRoleName(string userLogin, string roleName)
         {
             //var objToGet = await _db.UserToRole.Include("UserFK").Include("RoleFK").

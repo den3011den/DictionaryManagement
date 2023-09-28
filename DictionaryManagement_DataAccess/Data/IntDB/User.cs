@@ -23,6 +23,8 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         public string? Description { get; set; }
 
+        public bool? IsSyncWithAD { get; set; }
+
         public bool IsArchive { get; set; } = false;
     }
 

@@ -17,6 +17,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<IEnumerable<RoleToADGroupDTO>> GetAll();
         public Task<RoleToADGroupDTO> Update(RoleToADGroupDTO objDTO);
         public Task<RoleToADGroupDTO> Create(RoleToADGroupDTO objectToAddDTO);
+        public Task<IEnumerable<RoleToADGroupDTO>> GetByRoleId(Guid roleId);
         public Task<int> Delete(int Id);        
     }
 }

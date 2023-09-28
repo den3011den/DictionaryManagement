@@ -28,6 +28,9 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Описание")]
         public string? Description { get; set; }
 
+        [Display(Name = "Синхронизация с AD")]
+        public bool IsSyncWithAD { get; set; }
+
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 

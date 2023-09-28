@@ -62,6 +62,16 @@ namespace DictionaryManagement_Business.Repository
             return null;
         }
 
+        public async Task<IEnumerable<RoleToADGroupDTO>> GetByRoleId(Guid roleId)
+        {
+            var objToGet = _db.RoleToADGroup.Include("RoleFK").Include("ADGroupFK").Where(u => u.RoleId == roleId).AsNoTracking().ToListWithNoLock();                            
+            if (objToGet != null)
+            {
+                return _mapper.Map<IEnumerable<RoleToADGroup>, IEnumerable<RoleToADGroupDTO>>(objToGet);
+            }
+            return null;
+        }
+
 
         public async Task<IEnumerable<RoleToADGroupDTO>> GetAll()
         {

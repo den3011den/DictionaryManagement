@@ -51,7 +51,7 @@ namespace DictionaryManagement_Business.Repository
                 {
                     if (authState.User.Identity is not null && authState.User.Identity.IsAuthenticated)
                     {
-                        await AddUserToRolesByLoginAndADGroup(authState);
+                        await SyncRolesByLoginWithADGroup(authState);
                         retVar = await _userToRoleRepository.IsUserInRoleByUserLoginAndRoleName(authState.User.Identity.Name, SD.AdminRoleName);
                     }
                 }
@@ -225,66 +225,135 @@ namespace DictionaryManagement_Business.Repository
             return retVar;
         }
 
-        public async Task<int> AddUserToRolesByLoginAndADGroup(AuthenticationState authStatePar)
+        public async Task SyncRolesByLoginWithADGroup(AuthenticationState authStatePar)
         {
             string userLogin = await GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
-            
+            string userName = await GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.NameOnly);
+
             int userToRoleAddCount = 0;
 
             if (!userLogin.IsNullOrEmpty())
             {
-                IEnumerable<RoleToADGroupDTO> RoleToADGroupDTOList = await _roleToADGroupRepository.GetAll();
-                UserDTO userDTO = null;
-                UserToRoleDTO userToRoleDTO = null;
                 
+                UserDTO userFromDBDTO = await _userRepository.GetByLogin(userLogin);
+                UserToRoleDTO userToRoleDTO = null;
 
-                foreach (var item in RoleToADGroupDTOList)
+                bool needAddUser = false;
+                bool needCheckAddGroups = false;
+                bool needCheckDeleteGroups = false;
+                if (userFromDBDTO != null)
                 {
-                   
-                    if (authStatePar.User.IsInRole(item.ADGroupDTOFK.Name.Trim()))
+                    needAddUser = false;
+                    if (userFromDBDTO.IsArchive != true)
                     {
-                        if (userDTO == null)
+                        if (userFromDBDTO.IsSyncWithAD == true)
                         {
-                            userDTO = await _userRepository.GetByLogin(userLogin);
-                            if (userDTO == null)
+                            needCheckAddGroups = true;
+                            needCheckDeleteGroups = true;
+                        }
+                        else
+                        {
+                            needCheckAddGroups = false;
+                            needCheckDeleteGroups = false;
+                        }
+                    }
+                    else
+                    {
+                        needCheckAddGroups = false;
+                        needCheckDeleteGroups = false;
+                    }
+                }
+                else
+                {
+                    needAddUser = true;
+                    needCheckAddGroups = true;
+                    needCheckDeleteGroups = false;
+                }
+
+                if (needAddUser == true)
+                {
+                    userFromDBDTO = new UserDTO
+                    {
+                        UserName = await GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.NameOnly),
+                        Login = userLogin,
+                        Description = "Добавлено автоматически " + DateTime.Now.ToString(),
+                        IsArchive = false
+                    };
+                    userFromDBDTO = await _userRepository.Create(userFromDBDTO);
+                }
+
+                IEnumerable<RoleToADGroupDTO> RoleToADGroupDTOList = null;
+                if ((needCheckAddGroups == true) || (needCheckDeleteGroups == true))
+                    RoleToADGroupDTOList = (await _roleToADGroupRepository.GetAll()).OrderBy(u => u.RoleId);
+
+                if (needCheckAddGroups == true)
+                {                    
+                    foreach (var item in RoleToADGroupDTOList)
+                        {
+                            if (item.ADGroupDTOFK.IsArchive != true)
                             {
-                                UserDTO userToAddDTO = new UserDTO
-                                {
-                                    UserName = await GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.NameOnly),
-                                    Login = userLogin,
-                                    Description = "Добавлено автоматически " + DateTime.Now.ToString(),
-                                    IsArchive = false
-                                };
-                                userDTO = await _userRepository.Create(userToAddDTO);
-                                userToRoleAddCount++;
+                                if (authStatePar.User.IsInRole(item.ADGroupDTOFK.Name.Trim()))
+                                    {                         
+                                        userToRoleDTO = await _userToRoleRepository.Get(userFromDBDTO.Id, item.RoleId);
+                                        if (userToRoleDTO == null)
+                                            {
+                                                UserToRoleDTO userToRoleAddDTO = new UserToRoleDTO
+                                                    {
+                                                        UserId = userFromDBDTO.Id,
+                                                        RoleId = item.RoleId,
+                                                        UserDTOFK = userFromDBDTO,
+                                                        RoleDTOFK = item.RoleDTOFK
+                                                    };
+                                                _userToRoleRepository.Create(userToRoleAddDTO);
+                                            }
+                                    }                                
                             }
                         }
+                    }
+                if (needCheckDeleteGroups == true)
+                {
+                    List<Guid> roleIdList = RoleToADGroupDTOList.Select(u => u.RoleId).Distinct().ToList();
+                    IEnumerable<RoleToADGroupDTO> roleToADDelDTOList = null;
+                    UserToRoleDTO foundUserToRoleDTO = null;
+                    bool needDeleteUserInRoleFlag = false;
+                    foreach (var roleId in roleIdList)
+                    {
 
-                        if (userDTO != null)
+                        needDeleteUserInRoleFlag = true;
+                        foundUserToRoleDTO = await _userToRoleRepository.Get(userFromDBDTO.Id, roleId);
+
+                        if (foundUserToRoleDTO != null)
                         {
-                            if ((!userDTO.IsArchive) && (!item.RoleDTOFK.IsArchive))
+                            roleToADDelDTOList = RoleToADGroupDTOList.Where(u => u.RoleId == roleId && u.ADGroupDTOFK.IsArchive != true);
+                            if (roleToADDelDTOList.Count() > 0)
                             {
+                                foreach(var varitem in roleToADDelDTOList)
                                 {
-                                    userToRoleDTO = await _userToRoleRepository.Get(userDTO.Id, item.RoleId);
-
-                                    if (userToRoleDTO == null)
+                                    if (authStatePar.User.IsInRole(varitem.ADGroupDTOFK.Name.Trim()))
                                     {
-                                        UserToRoleDTO userToRoleAddDTO = new UserToRoleDTO
+                                        if (varitem.ADGroupDTOFK.IsArchive != true)
                                         {
-                                            UserId = userDTO.Id,
-                                            RoleId = item.RoleId,
-                                            UserDTOFK = userDTO,
-                                            RoleDTOFK = item.RoleDTOFK
-                                        };
-                                        _userToRoleRepository.Create(userToRoleAddDTO);
+                                            needDeleteUserInRoleFlag = false;
+                                            break;
+                                        }
                                     }
                                 }
                             }
+                            else
+                                needDeleteUserInRoleFlag = true;
+                        }
+                        else
+                        {
+                            needDeleteUserInRoleFlag = false;
+                        }
+                        
+                        if(needDeleteUserInRoleFlag)
+                        {
+                            await _userToRoleRepository.DeleteByRoleId(roleId);
                         }
                     }
                 }
             }
-            return userToRoleAddCount;
         }
     }
 }
