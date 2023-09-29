@@ -22,6 +22,7 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<LogEventType, LogEventTypeDTO>().ReverseMap();
             CreateMap<Settings, SettingsDTO>().ReverseMap();
             CreateMap<User, UserDTO>().ReverseMap();
+
             CreateMap<Role, RoleDTO>().ReverseMap();
 
             CreateMap<UnitOfMeasureSapToMesMapping, UnitOfMeasureSapToMesMappingDTO>().ReverseMap();
@@ -91,15 +92,6 @@ namespace DictionaryManagement_Business.Mapper
                     .ForMember(dest => dest.ReportTemplateTypeFK, opt => opt.MapFrom(src => src.ReportTemplateTypeDTOFK))
                     .ForMember(dest => dest.RoleFK, opt => opt.MapFrom(src => src.RoleDTOFK));
 
-
-            CreateMap<UserToRole, UserToRoleDTO>()
-                    .ForMember(dest => dest.UserDTOFK, opt => opt.MapFrom(src => src.UserFK))
-                    .ForMember(dest => dest.RoleDTOFK, opt => opt.MapFrom(src => src.RoleFK));
-
-            CreateMap<UserToRoleDTO, UserToRole>()
-                    .ForMember(dest => dest.UserFK, opt => opt.MapFrom(src => src.UserDTOFK))
-                    .ForMember(dest => dest.RoleFK, opt => opt.MapFrom(src => src.RoleDTOFK));
-
             CreateMap<RoleToDepartment, RoleToDepartmentDTO>()
                     .ForMember(dest => dest.RoleDTOFK, opt => opt.MapFrom(src => src.RoleFK))
                     .ForMember(dest => dest.DepartmentDTOFK, opt => opt.MapFrom(src => src.DepartmentFK));
@@ -143,6 +135,14 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<RoleToADGroupDTO, RoleToADGroup>()
                     .ForMember(dest => dest.RoleFK, opt => opt.MapFrom(src => src.RoleDTOFK))
                     .ForMember(dest => dest.ADGroupFK, opt => opt.MapFrom(src => src.ADGroupDTOFK));
+
+            CreateMap<UserToRole, UserToRoleDTO>()
+                    .ForMember(dest => dest.UserDTOFK, opt => opt.MapFrom(src => src.UserFK))
+                    .ForMember(dest => dest.RoleDTOFK, opt => opt.MapFrom(src => src.RoleFK));
+    
+            CreateMap<UserToRoleDTO, UserToRole>()
+                    .ForMember(dest => dest.UserFK, opt => opt.MapFrom(src => src.UserDTOFK))
+                    .ForMember(dest => dest.RoleFK, opt => opt.MapFrom(src => src.RoleDTOFK));
 
         }
     }

@@ -28,11 +28,14 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Описание")]
         public string? Description { get; set; }
 
-        [Display(Name = "Синхронизация с AD")]
-        public bool IsSyncWithAD { get; set; }
-
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
+
+        [Display(Name = "Синх с AD")]
+        public bool? IsSyncWithAD { get; set; }
+
+        [Display(Name = "Время последней синхронизации с группами AD")]
+        public DateTime? SyncWithADGroupsLastTime { get; set; }
 
         [NotMapped]
         [Display(Name = " ")]

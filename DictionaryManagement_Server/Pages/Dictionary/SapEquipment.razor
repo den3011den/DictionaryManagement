@@ -18,7 +18,6 @@
             <h4 class="card-title text-primary"><a href="/dictionary">Справочники</a> - <a href="/dictionary/SapEquipment">Ресурсы SAP</a></h4>
         </div>
 
-
         @if (IsLoading != true)
         {
 
@@ -142,7 +141,7 @@
             }
         }
         else
-            _navigationManager.NavigateTo("/dictionary");
+            _navigationManager.NavigateTo("/dictionary");        
     }
 
     async Task EditRow(SapEquipmentDTO sapEquipmentDTO)

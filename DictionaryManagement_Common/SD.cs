@@ -45,6 +45,7 @@ namespace DictionaryManagement_Common
         public static string AppVersion = "";
         public static FactoryMode AppFactoryMode = FactoryMode.KOS;
         public static string AdminRoleName = "Администратор";
+        public static string SyncUserADGroupsIntervalInMinutesSettingName = "SyncUserADGroupsIntervalInMinutes";
 
         //public static UserDTO CurrentUserDTO = new UserDTO
         //{

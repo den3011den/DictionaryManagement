@@ -63,10 +63,11 @@ namespace DictionaryManagement_Business.Repository
         }
 
 
-        public Task<IEnumerable<UserToRoleDTO>> GetAll()
+        public async Task<IEnumerable<UserToRoleDTO>> GetAll()
         {
-            var hhh = _db.UserToRole.Include("UserFK").Include("RoleFK").AsNoTracking().ToListWithNoLock();
-            return _mapper.Map<IEnumerable<UserToRole>, Task<IEnumerable<UserToRoleDTO>>>(hhh);
+            IEnumerable<UserToRole> hhh = _db.UserToRole.Include("UserFK").Include("RoleFK").AsNoTracking().ToListWithNoLock();
+            return _mapper.Map<IEnumerable<UserToRole>, IEnumerable<UserToRoleDTO>>(hhh);
+            
 
         }
 

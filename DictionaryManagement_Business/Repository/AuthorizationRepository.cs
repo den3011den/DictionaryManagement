@@ -22,13 +22,13 @@ namespace DictionaryManagement_Business.Repository
         private readonly IUserRepository _userRepository;
         private readonly IADGroupRepository _adGroupRepository;
         private readonly IRoleToADGroupRepository _roleToADGroupRepository;
+        private readonly ISettingsRepository _settingsRepository;
         private readonly IJSRuntime _jsRuntime;
-        private readonly IConfiguration _config;
 
         public AuthorizationRepository(AuthenticationStateProvider authenticationStateProvider, IUserToRoleRepository userToRoleRepository,
             IUserRepository userRepository, IJSRuntime jsRuntime,
             IADGroupRepository adGroupRepository, IRoleToADGroupRepository roleToADGroupRepository,
-            IConfiguration config)
+            ISettingsRepository settingsRepository)
         {
             _authenticationStateProvider = authenticationStateProvider;
             _userToRoleRepository = userToRoleRepository;
@@ -36,8 +36,8 @@ namespace DictionaryManagement_Business.Repository
             _jsRuntime = jsRuntime;
             _adGroupRepository = adGroupRepository;
             _roleToADGroupRepository = roleToADGroupRepository;
-            _config = config;
-    }
+            _settingsRepository = settingsRepository;
+        }
 
         public async Task<bool> CurrentUserIsInAdminRole(MessageBoxMode messageBoxModePar = SD.MessageBoxMode.Off)
         {
@@ -76,7 +76,6 @@ namespace DictionaryManagement_Business.Repository
                     await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Не удалось получить логин текущего пользователя.");
                 }
             }
-
 
             return retVar;
         }
@@ -140,7 +139,7 @@ namespace DictionaryManagement_Business.Repository
                         if (loginReturnMode == LoginReturnMode.LoginOnly)
                             returnString = loginStr;
                         else
-                        {                            
+                        {
                             if (OperatingSystem.IsWindows())
                             {
                                 try
@@ -151,16 +150,16 @@ namespace DictionaryManagement_Business.Repository
                                     //#pragma warning restore CA1416 // Validate platform compatibility
 
                                     var varString = principal.Name;
-                                    
+
                                     if (varString.IsNullOrEmpty())
                                         varString = principal.DisplayName;
                                     if (varString.IsNullOrEmpty())
                                         varString = principal.Surname + " " + principal.GivenName + " ";
 
                                     if (loginReturnMode == LoginReturnMode.NameOnly)
-                                    {                                        
+                                    {
                                         returnString = varString;
-                                    }    
+                                    }
                                     if (loginReturnMode == LoginReturnMode.LoginAndName)
                                     {
                                         returnString = varString + " ( " + loginStr + " )";
@@ -230,11 +229,9 @@ namespace DictionaryManagement_Business.Repository
             string userLogin = await GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
             string userName = await GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.NameOnly);
 
-            int userToRoleAddCount = 0;
-
             if (!userLogin.IsNullOrEmpty())
             {
-                
+
                 UserDTO userFromDBDTO = await _userRepository.GetByLogin(userLogin);
                 UserToRoleDTO userToRoleDTO = null;
 
@@ -247,15 +244,42 @@ namespace DictionaryManagement_Business.Repository
                     if (userFromDBDTO.IsArchive != true)
                     {
                         if (userFromDBDTO.IsSyncWithAD == true)
-                        {
-                            needCheckAddGroups = true;
-                            needCheckDeleteGroups = true;
-                        }
+                            if (userFromDBDTO.SyncWithADGroupsLastTime != null)
+                            {
+                                {
+                                    int syncMinutes = 0;
+                                    try
+                                    {
+                                        syncMinutes = int.Parse((await _settingsRepository.GetByName(SD.SyncUserADGroupsIntervalInMinutesSettingName)).Value);
+                                    }
+                                    catch
+                                    {
+                                        syncMinutes = 0;
+                                    }
+                                                                                                            
+                                    if ((DateTime.Now - (DateTime)userFromDBDTO.SyncWithADGroupsLastTime).Minutes >= syncMinutes)
+                                    {
+                                        needCheckAddGroups = true;
+                                        needCheckDeleteGroups = true;
+                                    }
+                                    else
+                                    {
+                                        needCheckAddGroups = false;
+                                        needCheckDeleteGroups = false;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                needCheckAddGroups = true;
+                                needCheckDeleteGroups = true;
+                            }
                         else
                         {
                             needCheckAddGroups = false;
                             needCheckDeleteGroups = false;
                         }
+
                     }
                     else
                     {
@@ -274,82 +298,108 @@ namespace DictionaryManagement_Business.Repository
                 {
                     userFromDBDTO = new UserDTO
                     {
-                        UserName = await GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.NameOnly),
+                        UserName = userName,
                         Login = userLogin,
                         Description = "Добавлено автоматически " + DateTime.Now.ToString(),
-                        IsArchive = false
+                        IsArchive = false,
+                        IsSyncWithAD = true
                     };
                     userFromDBDTO = await _userRepository.Create(userFromDBDTO);
                 }
 
                 IEnumerable<RoleToADGroupDTO> RoleToADGroupDTOList = null;
                 if ((needCheckAddGroups == true) || (needCheckDeleteGroups == true))
+                {
+                    _jsRuntime.InvokeVoidAsync("ShowSwal", "loading", "Подождите. Выполняется синхронизация с AD ...");
                     RoleToADGroupDTOList = (await _roleToADGroupRepository.GetAll()).OrderBy(u => u.RoleId);
+                }
 
                 if (needCheckAddGroups == true)
-                {                    
+                {
                     foreach (var item in RoleToADGroupDTOList)
+                    {
+                        if (item.ADGroupDTOFK.IsArchive != true)
                         {
-                            if (item.ADGroupDTOFK.IsArchive != true)
+                            userToRoleDTO = await _userToRoleRepository.Get(userFromDBDTO.Id, item.RoleId);
+                            if (userToRoleDTO == null)
                             {
                                 if (authStatePar.User.IsInRole(item.ADGroupDTOFK.Name.Trim()))
-                                    {                         
-                                        userToRoleDTO = await _userToRoleRepository.Get(userFromDBDTO.Id, item.RoleId);
-                                        if (userToRoleDTO == null)
-                                            {
-                                                UserToRoleDTO userToRoleAddDTO = new UserToRoleDTO
-                                                    {
-                                                        UserId = userFromDBDTO.Id,
-                                                        RoleId = item.RoleId,
-                                                        UserDTOFK = userFromDBDTO,
-                                                        RoleDTOFK = item.RoleDTOFK
-                                                    };
-                                                _userToRoleRepository.Create(userToRoleAddDTO);
-                                            }
-                                    }                                
-                            }
-                        }
-                    }
-                if (needCheckDeleteGroups == true)
-                {
-                    List<Guid> roleIdList = RoleToADGroupDTOList.Select(u => u.RoleId).Distinct().ToList();
-                    IEnumerable<RoleToADGroupDTO> roleToADDelDTOList = null;
-                    UserToRoleDTO foundUserToRoleDTO = null;
-                    bool needDeleteUserInRoleFlag = false;
-                    foreach (var roleId in roleIdList)
-                    {
-
-                        needDeleteUserInRoleFlag = true;
-                        foundUserToRoleDTO = await _userToRoleRepository.Get(userFromDBDTO.Id, roleId);
-
-                        if (foundUserToRoleDTO != null)
-                        {
-                            roleToADDelDTOList = RoleToADGroupDTOList.Where(u => u.RoleId == roleId && u.ADGroupDTOFK.IsArchive != true);
-                            if (roleToADDelDTOList.Count() > 0)
-                            {
-                                foreach(var varitem in roleToADDelDTOList)
                                 {
-                                    if (authStatePar.User.IsInRole(varitem.ADGroupDTOFK.Name.Trim()))
                                     {
-                                        if (varitem.ADGroupDTOFK.IsArchive != true)
+                                        UserToRoleDTO userToRoleAddDTO = new UserToRoleDTO
                                         {
-                                            needDeleteUserInRoleFlag = false;
-                                            break;
-                                        }
+                                            UserId = userFromDBDTO.Id,
+                                            RoleId = item.RoleId,
+                                            UserDTOFK = userFromDBDTO,
+                                            RoleDTOFK = item.RoleDTOFK
+                                        };
+                                        _userToRoleRepository.Create(userToRoleAddDTO);
                                     }
                                 }
                             }
+
+                        }
+                    }
+                }
+
+                if (needCheckDeleteGroups == true)
+                {
+                    IEnumerable<UserToRoleDTO> rolesFormDBList = await _userToRoleRepository.GetAll();
+                    List<RoleDTO> roledList = rolesFormDBList.Select(u => u.RoleDTOFK).Distinct().ToList();
+                    IEnumerable<RoleToADGroupDTO> roleToADDelDTOList = null;
+                    UserToRoleDTO foundUserToRoleDTO = null;
+                    bool needDeleteUserInRoleFlag = false;
+                    foreach (var itemRoleDTO in roledList)
+                    {
+
+                        needDeleteUserInRoleFlag = true;
+
+                        if (itemRoleDTO.IsArchive != true)
+                        {
+                            foundUserToRoleDTO = await _userToRoleRepository.Get(userFromDBDTO.Id, itemRoleDTO.Id);
+
+                            if (foundUserToRoleDTO != null)
+                            {
+                                roleToADDelDTOList = RoleToADGroupDTOList.Where(u => u.RoleId == itemRoleDTO.Id && u.ADGroupDTOFK.IsArchive != true);
+                                if (roleToADDelDTOList.Count() > 0)
+                                {
+                                    foreach (var varitem in roleToADDelDTOList)
+                                    {
+                                        if (authStatePar.User.IsInRole(varitem.ADGroupDTOFK.Name.Trim()))
+                                        {
+                                            if (varitem.ADGroupDTOFK.IsArchive != true)
+                                            {
+                                                needDeleteUserInRoleFlag = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                    needDeleteUserInRoleFlag = true;
+                            }
                             else
-                                needDeleteUserInRoleFlag = true;
+                            {
+                                needDeleteUserInRoleFlag = false;
+                            }
                         }
                         else
                         {
-                            needDeleteUserInRoleFlag = false;
+                            needDeleteUserInRoleFlag = true;
                         }
-                        
-                        if(needDeleteUserInRoleFlag)
+
+                        if (needDeleteUserInRoleFlag)
                         {
-                            await _userToRoleRepository.DeleteByRoleId(roleId);
+                            await _userToRoleRepository.DeleteByRoleId(itemRoleDTO.Id);
+                        }
+                    }
+                    if ((needCheckAddGroups) || (needCheckAddGroups))
+                    {
+                        if (userFromDBDTO != null)
+                        {
+                            userFromDBDTO.SyncWithADGroupsLastTime = DateTime.Now;
+                            await _userRepository.Update(userFromDBDTO, UpdateMode.Update);
+                            await _jsRuntime.InvokeVoidAsync("CloseSwal");
                         }
                     }
                 }

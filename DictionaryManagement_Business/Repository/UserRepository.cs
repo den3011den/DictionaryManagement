@@ -103,6 +103,10 @@ namespace DictionaryManagement_Business.Repository
                         objectToUpdate.UserName = objectToUpdateDTO.UserName;
                     if (objectToUpdate.Description != objectToUpdateDTO.Description)
                         objectToUpdate.Description = objectToUpdateDTO.Description;
+                    if (objectToUpdate.IsSyncWithAD != objectToUpdateDTO.IsSyncWithAD)
+                        objectToUpdate.IsSyncWithAD = objectToUpdateDTO.IsSyncWithAD;
+                    if (objectToUpdate.SyncWithADGroupsLastTime != objectToUpdateDTO.SyncWithADGroupsLastTime)
+                        objectToUpdate.SyncWithADGroupsLastTime = objectToUpdateDTO.SyncWithADGroupsLastTime;
                 }
                 if (updateMode == SD.UpdateMode.MoveToArchive)
                 {
