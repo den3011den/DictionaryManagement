@@ -21,7 +21,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Код СИР")]
         public string Code { get; set; }
 
-        [Required(ErrorMessage = "Наименование тэга СИР обязатенльно для заполнения")]
+        //[Required(ErrorMessage = "Наименование тэга СИР обязательно для заполнения")]
         [StringLength(250, MinimumLength = 3, ErrorMessage = "Наименование может быть от 3 до 250 символов")]
         [Display(Name = "Наименование")]
         public string? Name { get; set; }
@@ -38,7 +38,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "Тэг источника")]
         [StringLength(300, MinimumLength = 1, ErrorMessage = "Тэг источника может быть от 3 до 300 символов")]
-        public string MesParamSourceLink { get; set; }
+        public string? MesParamSourceLink { get; set; }
 
         [Display(Name = "Ид производства")]
         public int? DepartmentId { get; set; }

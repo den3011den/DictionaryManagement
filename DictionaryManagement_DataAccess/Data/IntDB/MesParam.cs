@@ -28,7 +28,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [ForeignKey("MesParamSourceType")]
         public MesParamSourceType? MesParamSourceTypeFK { get; set; }
 
-        public string MesParamSourceLink { get; set; }
+        public string? MesParamSourceLink { get; set; }
 
         public int? DepartmentId { get; set; }
 
