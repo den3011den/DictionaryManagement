@@ -17,7 +17,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Логин обязателен для заполнения")]
-        [StringLength(250, MinimumLength = 1, ErrorMessage = "Логин может быть от 1 до 100 символов")]        
+        [StringLength(250, MinimumLength = 1, ErrorMessage = "Логин может быть от 1 до 250 символов")]        
         [Display(Name = "Логин")]
         public string Login { get; set; }
         
@@ -31,11 +31,13 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 
+        [Required(ErrorMessage = "Параметр является обязательным")]
         [Display(Name = "Синх с AD")]
-        public bool? IsSyncWithAD { get; set; }
+        public bool IsSyncWithAD { get; set; } = true;
 
+        [Required(ErrorMessage = "Параметр является обязательным")]
         [Display(Name = "Время последней синхронизации с группами AD")]
-        public DateTime? SyncWithADGroupsLastTime { get; set; }
+        public DateTime? SyncWithADGroupsLastTime { get; set; } = DateTime.MinValue;
 
         [NotMapped]
         [Display(Name = " ")]
