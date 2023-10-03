@@ -324,12 +324,12 @@
                     await _jsRuntime.ToastrError("Уже есть тэг СИР с кодом " + foundByCode.Code.ToString() + " (наименование: " + foundByCode.Name + " ИД: " + foundByCode.Id.ToString() + ")");
                     return;
                 }
-                var foundByName = await _mesParamRepository.GetByName(ActiveMesParamDTO.Name);
-                if (foundByName != null)
-                {
-                    await _jsRuntime.ToastrError("Уже есть тэг СИР с наименованием " + foundByName.Name + " (Код: " + foundByName.Code.ToString() + " ИД: " + foundByName.Id.ToString() + ")");
-                    return;
-                }
+                // var foundByName = await _mesParamRepository.GetByName(ActiveMesParamDTO.Name);
+                // if (foundByName != null)
+                // {
+                //     await _jsRuntime.ToastrError("Уже есть тэг СИР с наименованием " + foundByName.Name + " (Код: " + foundByName.Code.ToString() + " ИД: " + foundByName.Id.ToString() + ")");
+                //     return;
+                // }
 
                 if (ActiveMesParamDTO.MesParamSourceLink != null)
                 {
@@ -360,12 +360,12 @@
                     await _jsRuntime.ToastrError("Уже есть тэг СИР с кодом " + foundByCode.Code.ToString() + " (наименование: " + foundByCode.Name + " ИД: " + foundByCode.Id.ToString() + ")");
                     return;
                 }
-                var foundByName = await _mesParamRepository.GetByName(ActiveMesParamDTO.Name);
-                if ((foundByName != null) && (foundByName.Id != ActiveMesParamDTO.Id))
-                {
-                    await _jsRuntime.ToastrError("Уже есть тэг СИР с наименованием " + foundByName.Name + " (Код: " + foundByName.Code.ToString() + " ИД: " + foundByName.Id.ToString() + ")");
-                    return;
-                }
+                // var foundByName = await _mesParamRepository.GetByName(ActiveMesParamDTO.Name);
+                // if ((foundByName != null) && (foundByName.Id != ActiveMesParamDTO.Id))
+                // {
+                //     await _jsRuntime.ToastrError("Уже есть тэг СИР с наименованием " + foundByName.Name + " (Код: " + foundByName.Code.ToString() + " ИД: " + foundByName.Id.ToString() + ")");
+                //     return;
+                // }
 
 
                 if (ActiveMesParamDTO.MesParamSourceLink != null)
@@ -381,6 +381,9 @@
                         }
                     }
                 }
+
+                if (ActiveMesParamDTO.Name == null)
+                    ActiveMesParamDTO.Name = "";
 
                 await _mesParamRepository.Update(ActiveMesParamDTO);
 

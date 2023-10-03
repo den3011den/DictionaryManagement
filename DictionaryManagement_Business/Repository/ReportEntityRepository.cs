@@ -115,7 +115,7 @@ namespace DictionaryManagement_Business.Repository
                 .Include("ReportDepartmentFK")
                 .Include("DownloadUserFK")
                 .Include("UploadUserFK")
-                .Where(u => u.UploadTime >= startUploadTime && u.DownloadTime <= endUploadTime).ToListWithNoLock();
+                .Where(u => u.UploadTime >= startUploadTime && u.UploadTime <= endUploadTime).ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportEntity>, IEnumerable<ReportEntityDTO>>(hhh1);
         }
 
