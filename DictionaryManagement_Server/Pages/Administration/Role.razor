@@ -118,9 +118,19 @@
                                             <div class="col-md-11 col-lg-0" style="width: 82%; font-size: 10px">
                                                 <b>@user.UserDTOFK?.UserName (@(@user.UserDTOFK?.Login))</b>
                                             </div>
-                                            <div class="col-md-1 col-lg-0" style="width: 10%; font-size: 10px;">
-                                                <b><a href="" title=@($"Отвязать пользователя {user.UserDTOFK?.UserName} от роли {data.Name}") @onclick="@(()=>DeleteUser(data, user.UserDTOFK))" style="text-decoration: none !important; color:#DC143C;  text-align: right !important" @onclick:preventDefault>X</a></b>
-                                            </div>
+                                            @if (@user.UserDTOFK?.IsSyncWithAD != true)
+                                            {
+                                                <div class="col-md-1 col-lg-0" style="width: 10%; font-size: 10px;">
+                                                    <b><a href="" title=@($"Отвязать пользователя {user.UserDTOFK?.UserName} от роли {data.Name}") @onclick="@(()=>DeleteUser(data, user.UserDTOFK))" style="text-decoration: none !important; color:#DC143C;  text-align: right !important" @onclick:preventDefault>X</a></b>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-md-1 col-lg-0" style="width: 10%; font-size: 10px;">
+                                                    <b><a href="" title=@($"Принадлежность пользователя {user.UserDTOFK?.UserName} к роли синхронизируется с AD (пользователь \"автоматический\")") style="text-decoration: none !important; color:#ebc0a7;  text-align: right !important" @onclick:preventDefault>Авто</a></b>
+                                                </div>
+
+                                            }
                                         </div>
                                     </RadzenCard>
                                 </Template>
@@ -141,12 +151,29 @@
                                 <Template Context="reportTemplate">
                                     <RadzenCard Style="white-space:pre-wrap; width: 100%; padding: 1px 1px 1px 1px; overflow: hidden; font-size: 10px">
                                         <div class="row" style="width: 100%; padding: 0">
-                                            <div class="col-md-12 col-lg-0" style="width: 82%; font-size: 10px">
+                                            <div class="col-md-12 col-lg-0" style="width: 50%; font-size: 10px">
                                                 <b>@reportTemplate.ReportTemplateTypeDTOFK?.Name</b>
                                             </div>
-                                            <div class="col-md-1 col-lg-0" style="width: 10%; font-size: 10px;">
-                                                <b><a href="" title=@($"Отвязать тип шаблона отчёта {reportTemplate.ReportTemplateTypeDTOFK?.Name} от роли {data.Name}") @onclick="@(()=>DeleteReportTemplateType(data, reportTemplate.ReportTemplateTypeDTOFK))" style="text-decoration: none !important; color:#DC143C;" @onclick:preventDefault>X</a></b>
-                                            </div>
+                                                                                        <div class="col-md-1 col-lg-0" style="width: 48%; font-size: 10px;">
+                                    @if (@reportTemplate.CanDownload == true)
+                                    {
+                                    <b><a href="" title=@($"Есть право на чтение") style="text-decoration: none !important; color:#00FF00; font-size: 9px !important;" @onclick="@(()=>ChangeReadWriteRights(data, reportTemplate.Id, "READ"))" @onclick:preventDefault>Чтение </a></b>
+                                    }
+                                    else
+                                    {
+                                                    <b><a href="" title=@($"Нет права на чтение") style="text-decoration: none !important; color:#CACFD2 ; font-size: 9px !important;" @onclick="@(()=>ChangeReadWriteRights(data, reportTemplate.Id, "READ"))" @onclick:preventDefault>Чтение </a></b>
+                                    }
+                                    @if (@reportTemplate.CanUpload == true)
+                                    {
+                                    <b><a href="" title=@($"Есть право на запись") style="text-decoration: none !important; color:#00FF00; font-size: 9px !important;" @onclick="@(()=>ChangeReadWriteRights(data, reportTemplate.Id, "WRITE"))" @onclick:preventDefault>Запись  </a></b>
+                                    }
+                                    else
+                                    {
+                                                    <b><a href="" title=@($"Нет права на запись") style="text-decoration: none !important; color:#CACFD2; font-size: 9px !important;" @onclick="@(()=>ChangeReadWriteRights(data, reportTemplate.Id, "WRITE"))" @onclick:preventDefault>Запись  </a></b>
+                                    }
+
+                                    <b><a href="" title=@($"Отвязать тип шаблона отчёта {reportTemplate.ReportTemplateTypeDTOFK?.Name} от роли {data.Name}") @onclick="@(()=>DeleteReportTemplateType(data, reportTemplate.ReportTemplateTypeDTOFK))" style="text-decoration: none !important; color:#DC143C;" @onclick:preventDefault>X</a></b>
+                                    </div>
                                         </div>
                                     </RadzenCard>
                                 </Template>
@@ -584,14 +611,75 @@
 
     }
 
-    // async Task AddDepartment(RoleVMDTO roleVMDTO)
-    // {
-    //     await _jsRuntime.ToastrSuccess("Метод AddDepartment");
-    // }
+    async Task ChangeReadWriteRights(RoleVMDTO roleVMDTO, int reportTemplateTypeToRoleId, string modeString)
+    {
+        if (!((modeString.Trim().ToUpper() == "READ") || (modeString.Trim().ToUpper() == "WRITE")))
+        {
+            await _jsRuntime.ToastrError("Не предусмотренный параметр modeString = \"" + modeString.Trim().ToUpper() + "\" передан в процедуру ChangeReadWriteRights!");
+            return;
+        }
 
-    // async Task DeleteDepartment(RoleVMDTO roleVMDTO)
-    // {
-    //     await _jsRuntime.ToastrSuccess("Метод DeleteDepartment");
-    //}
+        if (reportTemplateTypeToRoleId == null)
+        {
+            await _jsRuntime.ToastrError("Пустой код связки ролди и типа шаблона отчёта!");
+            return;
+        }
+
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            var roleToReportTemplateTypeDTO = await _reportTemplateTypeToRoleRepository.GetById(reportTemplateTypeToRoleId);
+
+            if (roleToReportTemplateTypeDTO == null)
+            {
+                await _jsRuntime.ToastrError("Не найдена связка роли и типа шаблона отчёта!");
+                return;
+            }
+
+            string messageString = "";
+            if (modeString.Trim().ToUpper() == "READ")
+            {
+                roleToReportTemplateTypeDTO.CanDownload = !roleToReportTemplateTypeDTO.CanDownload;                
+                if (roleToReportTemplateTypeDTO.CanDownload == true)
+                    messageString = "Роли установлено право на чтение для типа шаблона отчёта";
+                else
+                    messageString = "У роли снято право на чтение для типа шаблона отчёта";
+            }
+            else
+                if (modeString.Trim().ToUpper() == "WRITE")
+            {
+                roleToReportTemplateTypeDTO.CanUpload = !roleToReportTemplateTypeDTO.CanUpload;
+                if (roleToReportTemplateTypeDTO.CanUpload == true)
+                    messageString = "Роли установлено право на запись для типа шаблона отчёта";
+                else
+                    messageString = "У роли снято право на запись для типа шаблона отчёта";
+
+            }
+
+            if ((roleToReportTemplateTypeDTO.CanDownload != true) && ((roleToReportTemplateTypeDTO.CanUpload != true)))
+            {
+                await DeleteReportTemplateType(roleVMDTO, roleToReportTemplateTypeDTO.ReportTemplateTypeDTOFK);
+            }
+            else
+            {
+                await _reportTemplateTypeToRoleRepository.Update(roleToReportTemplateTypeDTO);
+                await _jsRuntime.ToastrSuccess(messageString);
+            }
+
+            roleVMDTO.ReportTemplateTypeTоRoleDTOs = (await _roleVMRepository.GetReportTemplateTypesLinkedToRoleByRoleId(roleVMDTO.Id));
+
+            await roleVMDTOGrid.UpdateRow(roleVMDTO);            
+        }
+
+    }
+
+    async Task AddDepartment(RoleVMDTO roleVMDTO)
+    {
+        await _jsRuntime.ToastrSuccess("Метод AddDepartment");
+    }
+
+    async Task DeleteDepartment(RoleVMDTO roleVMDTO)
+    {
+        await _jsRuntime.ToastrSuccess("Метод DeleteDepartment");
+    }
 
 }

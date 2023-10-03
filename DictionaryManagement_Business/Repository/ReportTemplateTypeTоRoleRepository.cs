@@ -89,11 +89,12 @@ namespace DictionaryManagement_Business.Repository
                 }
 
                 if (objectToUpdate.CanDownload != objectToUpdateDTO.CanDownload)
-                    _db.ReportTemplateTypeTоRole.Update(objectToUpdate);
-
+                    objectToUpdate.CanDownload = objectToUpdateDTO.CanDownload;
+                
                 if (objectToUpdate.CanUpload != objectToUpdateDTO.CanUpload)
-                    _db.ReportTemplateTypeTоRole.Update(objectToUpdate);
+                    objectToUpdate.CanUpload = objectToUpdateDTO.CanUpload;
 
+                _db.ReportTemplateTypeTоRole.Update(objectToUpdate);
                 _db.SaveChanges();
                 return _mapper.Map<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>(objectToUpdate);
             }

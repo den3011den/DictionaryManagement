@@ -350,7 +350,7 @@ namespace DictionaryManagement_Business.Repository
         }
 
 
-        public async Task<IEnumerable<UserDTO>> GetAllNotArchiveUsersExceptAlreadyInRole(Guid roleId)
+        public async Task<IEnumerable<UserDTO>> GetAllNotArchiveAndNotAutomaticUsersExceptAlreadyInRole(Guid roleId)
         {
             IEnumerable<UserDTO> userListDTOs = null;
             IEnumerable<User> userInRoleDTOs = null;
@@ -358,7 +358,7 @@ namespace DictionaryManagement_Business.Repository
 
             userListDTOs = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>
                 (
-                _db.User.Where(u => u.IsArchive != true)
+                _db.User.Where(u => u.IsArchive != true && u.IsSyncWithAD != true)
                     .Where(u => !userInRoleDTOs.Contains(u)).AsNoTracking().ToListWithNoLock()
                 );
             return userListDTOs;
@@ -369,7 +369,8 @@ namespace DictionaryManagement_Business.Repository
         {
             IEnumerable<ReportTemplateTypeDTO> reportTemplateTypeListDTOs = null;
             IEnumerable<ReportTemplateType> reportTemplateTypeInRoleDTOs = null;
-            reportTemplateTypeInRoleDTOs = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Where(u => u.RoleId == roleId).Select(u => u.ReportTemplateTypeFK).AsNoTracking().ToListWithNoLock();
+            reportTemplateTypeInRoleDTOs = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Where(u => u.RoleId == roleId).Select(u => u.ReportTemplateTypeFK)
+                .OrderBy(u => u.Name).AsNoTracking().ToListWithNoLock();
 
             reportTemplateTypeListDTOs = _mapper.Map<IEnumerable<ReportTemplateType>, IEnumerable<ReportTemplateTypeDTO>>
                 (
@@ -412,7 +413,8 @@ namespace DictionaryManagement_Business.Repository
             IEnumerable<ReportTemplateTypeTоRoleDTO> reportTemplateTypeTоRoleDTOs =
                 _mapper.Map<IEnumerable<ReportTemplateTypeTоRole>, IEnumerable<ReportTemplateTypeTоRoleDTO>>
                 (
-                    _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").Where(u => u.RoleId == roleId).AsNoTracking().ToListWithNoLock()
+                    _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").Where(u => u.RoleId == roleId)
+                        .OrderBy(u=>u.ReportTemplateTypeFK.Name).AsNoTracking().ToListWithNoLock()
                 );
 
             return reportTemplateTypeTоRoleDTOs;

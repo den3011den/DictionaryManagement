@@ -25,7 +25,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<int> DeleteUserToRole(int userToRoleId);
         public Task<int> DeleteReportTemplateTypeToRole(int reportTemplateTypeToRoleId);
         public Task<int> DeleteRoleToADGroup(int roleToAdGroupId);
-        public Task<IEnumerable<UserDTO>> GetAllNotArchiveUsersExceptAlreadyInRole(Guid roleId);
+        public Task<IEnumerable<UserDTO>> GetAllNotArchiveAndNotAutomaticUsersExceptAlreadyInRole(Guid roleId);
         public Task<IEnumerable<ReportTemplateTypeDTO>> GetAllNotArchiveReportTemplateTypesExceptAlreadyInRole(Guid roleId);
         public Task<IEnumerable<ADGroupDTO>> GetAllNotArchiveADGroupsExceptAlreadyInRole(Guid roleId);
 

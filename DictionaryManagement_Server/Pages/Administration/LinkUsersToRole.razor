@@ -29,10 +29,6 @@
                     <RadzenRow Gap="1rem">
                         <RadzenColumn Size="12">
                             <RadzenStack>
-@*                                 <RadzenFormField Text="Добавление пользователей к роли" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                    <RadzenTextBox Value="@ActiveRoleVMDTO.Name" ReadOnly="true" />
-                                </RadzenFormField> *@
-
                                 <RadzenStack Gap="1rem">
                                     <RadzenDataGrid AllowAlternatingRows="true" AllowFiltering="true" PageSize="15" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                                     Data="UserDTOList" TItem="UserDTO"
@@ -63,8 +59,10 @@
                         </RadzenColumn>
                     </RadzenRow>
 
-
-
+                    <br />
+                    <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">
+                        * в списке только НЕ архивные и НЕ автоматические пользователи и не включённые в роль @ActiveRoleVMDTO.Name
+                    </RadzenText>
 
                     <div class="form-group py-2">
                         <button class="btn btn-primary">@Title</button>
@@ -125,7 +123,7 @@
                 ActiveRoleVMDTO = await _roleVMRepository.Get(RoleId);
                 Title = "Добавить пользователей к роли";
 
-                UserDTOList = await _roleVMRepository.GetAllNotArchiveUsersExceptAlreadyInRole(ActiveRoleVMDTO.Id);
+                UserDTOList = await _roleVMRepository.GetAllNotArchiveAndNotAutomaticUsersExceptAlreadyInRole(ActiveRoleVMDTO.Id);
 
                 IsLoading = false;
                 StateHasChanged();
