@@ -35,10 +35,13 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserDTO> Get(Guid Id)
         {
-            if (Id != null && Id != Guid.Empty)  {
+            if (Id != null && Id != Guid.Empty)
+            {
                 var objToGet = _db.User.FirstOrDefaultWithNoLock(u => u.Id == Id);
                 if (objToGet != null)
                 {
+                    if (objToGet.SyncWithADGroupsLastTime == null)
+                        objToGet.SyncWithADGroupsLastTime = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
                     return _mapper.Map<User, UserDTO>(objToGet);
                 }
             }
@@ -47,15 +50,24 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<UserDTO>> GetAll(SD.SelectDictionaryScope selectDictionaryScope = SD.SelectDictionaryScope.All)
         {
+
+            IEnumerable<UserDTO> hhh = null;
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
-            {                
-                return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User);
-            }
+                hhh = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.ToListWithNoLock());
+
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
-                return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.Where(u => u.IsArchive == true).ToListWithNoLock());
-            if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)            
-                return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.Where(u => u.IsArchive != true).ToListWithNoLock());
-            return _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.ToListWithNoLock());
+                hhh = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.Where(u => u.IsArchive == true).ToListWithNoLock());
+
+            if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
+                hhh = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.Where(u => u.IsArchive != true).ToListWithNoLock());
+
+            //           hhh = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>(_db.User.ToListWithNoLock());
+
+            hhh.ToList().FindAll(s => s.SyncWithADGroupsLastTime == DateTime.MinValue)
+                .ForEach(x => x.SyncWithADGroupsLastTime = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue);
+
+            return hhh;
+
         }
 
         public async Task<UserDTO> GetByLogin(string login = "")
@@ -63,6 +75,9 @@ namespace DictionaryManagement_Business.Repository
             var objToGet = _db.User.FirstOrDefaultWithNoLock(u => ((u.Login.Trim().ToUpper() == login.Trim().ToUpper())));
             if (objToGet != null)
             {
+                if (objToGet.SyncWithADGroupsLastTime == null)
+                    objToGet.SyncWithADGroupsLastTime = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
+
                 return _mapper.Map<User, UserDTO>(objToGet);
             }
             return null;
@@ -74,6 +89,9 @@ namespace DictionaryManagement_Business.Repository
                 && u.IsArchive != true);
             if (objToGet != null)
             {
+                if (objToGet.SyncWithADGroupsLastTime == null)
+                    objToGet.SyncWithADGroupsLastTime = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
+
                 return _mapper.Map<User, UserDTO>(objToGet);
             }
             return null;
@@ -84,6 +102,9 @@ namespace DictionaryManagement_Business.Repository
             var objToGet = _db.User.FirstOrDefaultWithNoLock(u => ((u.UserName.Trim().ToUpper()) == (userName.Trim().ToUpper())));
             if (objToGet != null)
             {
+                if (objToGet.SyncWithADGroupsLastTime == null)
+                    objToGet.SyncWithADGroupsLastTime = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
+
                 return _mapper.Map<User, UserDTO>(objToGet);
             }
             return null;

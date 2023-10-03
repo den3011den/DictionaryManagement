@@ -43,7 +43,7 @@
                                 <ValidationMessage For="()=>ActiveUserDTO.Login"></ValidationMessage>
 
 
-                                <RadzenFormField Text="Логин" Variant="@variant" Style="width: 100%; max-width: 600px;">
+                                <RadzenFormField Text="ФИО" Variant="@variant" Style="width: 100%; max-width: 600px;">
                                     <RadzenTextBox @bind-Value="@ActiveUserDTO.UserName" />
                                 </RadzenFormField>
                                 <ValidationMessage For="()=>ActiveUserDTO.UserName"></ValidationMessage>
@@ -53,7 +53,7 @@
                                 </RadzenFormField>
                                 <ValidationMessage For="()=>ActiveUserDTO.Description"></ValidationMessage>
 
-                                <RadzenLabel Text="Синхронизировать группы AD:" Component="CheckBox4" Style="margin-left: 8px; margin-top: 8px;" />
+                                <RadzenLabel Text="Синхронизировать роли с группами AD (автоматический пользователь):" Component="CheckBox4" Style="margin-left: 8px; margin-top: 8px;" />
                                 <RadzenSelectBar @bind-Value="@ActiveUserDTO.IsSyncWithAD" TValue="bool" class="mb-4" Name="CheckBox4">
                                     <Items>
                                         <RadzenSelectBarItem Text="Да" Value="true" />
@@ -61,8 +61,8 @@
                                     </Items>
                                 </RadzenSelectBar>
 
-                                <RadzenLabel Text="Время поледней синх-ции с группами AD:"Style="margin-left: 8px; margin-top: 8px;" />
-                                <RadzenDatePicker @bind-Value=@ActiveUserDTO.SyncWithADGroupsLastTime ShowTime="true" HourFormat="24" DateFormat="dd.MM.yyyy hh:mm tt" />
+                                <RadzenLabel Text="Время поледней синхронизации ролей с группами AD:"Style="margin-left: 8px; margin-top: 8px;" />
+                                <RadzenDatePicker TValue = "DateTime" @bind-Value=@ActiveUserDTO.SyncWithADGroupsLastTime ShowSeconds="true" ShowTime="true" HourFormat="24" DateFormat="dd.MM.yyyy hh:mm:ss" />
 
                             </RadzenStack>
                         </RadzenColumn>
@@ -93,12 +93,10 @@
     public bool IsAdmin { get; set; }
 
     public UserDTO ActiveUserDTO { get; set; }
-
-    IEnumerable<UserDTO> UserDTOList { get; set; } = new List<UserDTO>();
-
+    
     public IEnumerable<object> CheckedValues { get; set; } = new List<object>();
 
-    private string Title { get; set; } = "Создать пзользователя";
+    private string Title { get; set; } = "Создать пользователя";
 
     protected override async Task OnInitializedAsync()
     {
@@ -110,10 +108,14 @@
         if (UserId == Guid.Empty)
         {
             ActiveUserDTO = new UserDTO();
+            // ActiveUserDTO.SyncWithADGroupsLastTime = DateTime.MinValue.AddSeconds(1);
         }
         else
         {
             ActiveUserDTO = await _userRepository.Get(UserId);
+            // if (ActiveUserDTO.SyncWithADGroupsLastTime == null)
+            //     ActiveUserDTO.SyncWithADGroupsLastTime = DateTime.MinValue.AddSeconds(1);
+
             Title = "Изменить пользователя";
         }
 
@@ -136,13 +138,15 @@
                 if (UserId == Guid.Empty)
                 {
                     ActiveUserDTO = new UserDTO();
+                    // ActiveUserDTO.SyncWithADGroupsLastTime = DateTime.MinValue.AddSeconds(1);
                 }
                 else
                 {
                     ActiveUserDTO = await _userRepository.Get(UserId);
                     Title = "Изменить пользователя";
+                    // if (ActiveUserDTO.SyncWithADGroupsLastTime == null)
+                    //     ActiveUserDTO.SyncWithADGroupsLastTime = DateTime.MinValue.AddSeconds(1);
                 }
-                UserDTOList = await _userRepository.GetAll(SD.SelectDictionaryScope.All);
 
                 IsLoading = false;
                 StateHasChanged();
@@ -172,8 +176,8 @@
                     return;
                 }
 
-                if (ActiveUserDTO.SyncWithADGroupsLastTime == null)
-                    ActiveUserDTO.SyncWithADGroupsLastTime = DateTime.MinValue;
+                // if (ActiveUserDTO.SyncWithADGroupsLastTime == null)
+                //     ActiveUserDTO.SyncWithADGroupsLastTime = DateTime.MinValue;
 
                 await _userRepository.Create(ActiveUserDTO);
 

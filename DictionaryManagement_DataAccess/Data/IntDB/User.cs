@@ -27,7 +27,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         public bool? IsSyncWithAD { get; set; } = true;
 
-        public DateTime? SyncWithADGroupsLastTime { get; set; } = DateTime.MinValue;
+        public DateTime? SyncWithADGroupsLastTime { get; set; } =  (DateTime) System.Data.SqlTypes.SqlDateTime.MinValue;
     }
 
 }
