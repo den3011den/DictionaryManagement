@@ -4,6 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_DataAccess.Data.IntDB;
 @using DictionaryManagement_Models.IntDBModels
+@using DictionaryManagement_Server.Pages.Reports;
 @using Microsoft.EntityFrameworkCore;
 @using System.Text.Json;
 
@@ -152,7 +153,7 @@
                                     <RadzenCard Style="white-space:pre-wrap; width: 100%; padding: 1px 1px 1px 1px; overflow: hidden; font-size: 10px">
                                         <div class="row" style="width: 100%; padding: 0">
                                             <div class="col-md-12 col-lg-0" style="width: 50%; font-size: 10px">
-                                                <b>@reportTemplate.ReportTemplateTypeDTOFK?.Name</b>
+                                                <b><a href="" title=@($"Редактировать тип шаблона отчёта {reportTemplate.ReportTemplateTypeDTOFK?.Name}") @onclick="@(()=>EditReportTemplateType(data, reportTemplate.ReportTemplateTypeDTOFK.Id))" @onclick:preventDefault>@reportTemplate.ReportTemplateTypeDTOFK?.Name</a></b>
                                             </div>
                                             <div class="col-md-1 col-lg-0" style="width: 48%; font-size: 10px;">
                                                 @if (@reportTemplate.CanDownload == true)
@@ -715,6 +716,27 @@
         }
     }
 
+
+    async Task EditReportTemplateType(RoleVMDTO roleVMDTO, int reportTemplateTypeId)
+    {
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            IsLoading = true;
+
+            ReportTemplateTypeDTO dialogResult;
+
+            IsLoading = false;
+            dialogResult = await _dialogService.OpenAsync<AddEditReportTemplateType>("Изменить тип шаблона отчёта", new Dictionary<string, object>() { { "ReportTemplateTypeId", reportTemplateTypeId } }, new DialogOptions() { Width = $"{700}px", Left = $"{300}px" });
+
+            if (dialogResult != null)
+            {
+                roleVMDTO.ReportTemplateTypeTоRoleDTOs = await _roleVMRepository.GetReportTemplateTypesLinkedToRoleByRoleId(roleVMDTO.Id);
+                await roleVMDTOGrid.UpdateRow(roleVMDTO);
+            }
+
+            IsLoading = false;
+        }
+    }
 
     async Task AddDepartment(RoleVMDTO roleVMDTO)
     {
