@@ -354,12 +354,14 @@ namespace DictionaryManagement_Business.Repository
         {
             IEnumerable<UserDTO> userListDTOs = null;
             IEnumerable<User> userInRoleDTOs = null;
-            userInRoleDTOs = _db.UserToRole.Include("UserFK").Where(u => u.RoleId == roleId).Select(u => u.UserFK).AsNoTracking().ToListWithNoLock();
+            userInRoleDTOs = _db.UserToRole.Include("UserFK").Where(u => u.RoleId == roleId).Select(u => u.UserFK)
+                .OrderBy(u => u.UserName).AsNoTracking().ToListWithNoLock();
 
             userListDTOs = _mapper.Map<IEnumerable<User>, IEnumerable<UserDTO>>
                 (
                 _db.User.Where(u => u.IsArchive != true && u.IsSyncWithAD != true)
-                    .Where(u => !userInRoleDTOs.Contains(u)).AsNoTracking().ToListWithNoLock()
+                    .Where(u => !userInRoleDTOs.Contains(u))
+                    .OrderBy(u => u.UserName).AsNoTracking().ToListWithNoLock()
                 );
             return userListDTOs;
         }
@@ -375,7 +377,8 @@ namespace DictionaryManagement_Business.Repository
             reportTemplateTypeListDTOs = _mapper.Map<IEnumerable<ReportTemplateType>, IEnumerable<ReportTemplateTypeDTO>>
                 (
                 _db.ReportTemplateType.Where(u => u.IsArchive != true)
-                    .Where(u => !reportTemplateTypeInRoleDTOs.Contains(u)).AsNoTracking().ToListWithNoLock()
+                    .Where(u => !reportTemplateTypeInRoleDTOs.Contains(u))
+                    .OrderBy(u => u.Name).AsNoTracking().ToListWithNoLock()
                 );
             return reportTemplateTypeListDTOs;
         }
@@ -384,12 +387,13 @@ namespace DictionaryManagement_Business.Repository
         {
             IEnumerable<ADGroupDTO> adGroupListDTOs = null;
             IEnumerable<ADGroup> adGroupsInRole = null;
-            adGroupsInRole = _db.RoleToADGroup.Include("ADGroupFK").Where(u => u.RoleId == roleId).Select(u => u.ADGroupFK).AsNoTracking().ToListWithNoLock();
+            adGroupsInRole = _db.RoleToADGroup.Include("ADGroupFK").Where(u => u.RoleId == roleId).Select(u => u.ADGroupFK)
+                .OrderBy(u => u.Name).AsNoTracking().ToListWithNoLock();
 
             adGroupListDTOs = _mapper.Map<IEnumerable<ADGroup>, IEnumerable<ADGroupDTO>>
                 (
                 _db.ADGroup.Where(u => u.IsArchive != true)
-                    .Where(u => !adGroupsInRole.Contains(u)).AsNoTracking().ToListWithNoLock()
+                    .Where(u => !adGroupsInRole.Contains(u)).OrderBy(u => u.Name).AsNoTracking().ToListWithNoLock()
                 );
             return adGroupListDTOs;
 
@@ -401,7 +405,8 @@ namespace DictionaryManagement_Business.Repository
             IEnumerable<UserToRoleDTO> userToRoleDTOs =
                 _mapper.Map<IEnumerable<UserToRole>, IEnumerable<UserToRoleDTO>>
                 (
-                    _db.UserToRole.Include("UserFK").Include("RoleFK").Where(u => u.RoleId == roleId).AsNoTracking().ToListWithNoLock()
+                    _db.UserToRole.Include("UserFK").Include("RoleFK").Where(u => u.RoleId == roleId)
+                        .OrderBy(u => u.UserFK.UserName).AsNoTracking().ToListWithNoLock()
                 );
 
             return userToRoleDTOs;
@@ -426,7 +431,8 @@ namespace DictionaryManagement_Business.Repository
             IEnumerable<RoleToADGroupDTO> roleToADGroupDTOs =
                 _mapper.Map<IEnumerable<RoleToADGroup>, IEnumerable<RoleToADGroupDTO>>
                 (
-                    _db.RoleToADGroup.Include("ADGroupFK").Include("RoleFK").Where(u => u.RoleId == roleId).AsNoTracking().ToListWithNoLock()
+                    _db.RoleToADGroup.Include("ADGroupFK").Include("RoleFK").Where(u => u.RoleId == roleId)
+                        .OrderBy(u => u.ADGroupFK.Name).AsNoTracking().ToListWithNoLock()
                 );
 
             return roleToADGroupDTOs;
