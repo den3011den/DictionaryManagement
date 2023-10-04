@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,20 +24,23 @@ namespace DictionaryManagement_Business.Repository
         private readonly IUserToRoleRepository _userToRoleRepository;
         private readonly IReportTemplateTypeToRoleRepository _reportTemplateTypeToRoleRepository;
         private readonly IRoleToADGroupRepository _roleToADGroupRepository;
-        //private readonly IRoleToDepartmentRepository _roleToDepartmentRepository;
+        private readonly IRoleToDepartmentRepository _roleToDepartmentRepository;
+        private readonly IMesDepartmentRepository _mesDepartmentRepository;
 
         public RoleVMRepository(IntDBApplicationDbContext db, IMapper mapper
             ,IUserToRoleRepository userToRoleRepository
             ,IReportTemplateTypeToRoleRepository reportTemplateTypeToRoleRepository            
             ,IRoleToADGroupRepository roleToADGroupRepository
-            /*,IRoleToDepartmentRepository roleToDepartmentRepository*/)
+            ,IRoleToDepartmentRepository roleToDepartmentRepository
+            ,IMesDepartmentRepository mesDepartmentRepository)
         {
             _db = db;
             _mapper = mapper;
             _userToRoleRepository = userToRoleRepository;
             _reportTemplateTypeToRoleRepository = reportTemplateTypeToRoleRepository;            
             _roleToADGroupRepository = roleToADGroupRepository;
-            //_roleToDepartmentRepository = roleToDepartmentRepository;
+            _roleToDepartmentRepository = roleToDepartmentRepository;
+            _mesDepartmentRepository = mesDepartmentRepository;
         }
 
         public async Task<RoleVMDTO?> Create(RoleVMDTO objectToAddDTO)
@@ -438,5 +443,93 @@ namespace DictionaryManagement_Business.Repository
             return roleToADGroupDTOs;
 
         }
+
+        public async Task<IEnumerable<MesDepartmentVMDTO>> GetAllDepartmentWithChildrenCheckedWithLinkRole(Guid roleId, int? mesDepartmentRootId)
+        {
+
+            List<MesDepartmentVMDTO>? resutlList = new List<MesDepartmentVMDTO>();
+
+            IEnumerable<MesDepartmentVMDTO> topLevelList = _mapper.Map<IEnumerable<MesDepartmentDTO>, IEnumerable<MesDepartmentVMDTO>>(await _mesDepartmentRepository.GetChildList(mesDepartmentRootId));
+            IEnumerable<MesDepartmentVMDTO>? childList = null;
+
+            if (topLevelList != null)
+            {
+                foreach (var topLevelItem in topLevelList)
+                {
+                    
+
+                    MesDepartmentVMDTO mesDepartmentVMDTO = new MesDepartmentVMDTO();
+                    mesDepartmentVMDTO.Id = topLevelItem.Id;
+                    mesDepartmentVMDTO.MesCode = topLevelItem.MesCode;
+                    mesDepartmentVMDTO.Name = topLevelItem.Name;
+                    mesDepartmentVMDTO.ShortName = topLevelItem.ShortName;
+                    mesDepartmentVMDTO.ParentDepartmentId = topLevelItem.ParentDepartmentId;
+                    mesDepartmentVMDTO.DepartmentParentVMDTO = topLevelItem.DepartmentParentVMDTO;
+                    mesDepartmentVMDTO.IsArchive = topLevelItem.IsArchive;
+                    mesDepartmentVMDTO.ToStringValue = topLevelItem.ToStringValue;
+
+                    var foundRoleToDepartmentDTO = await _roleToDepartmentRepository.Get(roleId, topLevelItem.Id);
+                    if (foundRoleToDepartmentDTO != null)
+                    {
+                        mesDepartmentVMDTO.Checked = true;
+                    }
+                    else
+                    {
+                        mesDepartmentVMDTO.Checked = false;
+                    }              
+                    mesDepartmentVMDTO.ChildrenDTO = (await GetAllDepartmentWithChildrenCheckedWithLinkRole(roleId, topLevelItem.Id));
+                    resutlList.Add(mesDepartmentVMDTO);
+                    
+                }
+                return resutlList;
+            }
+            else
+            {
+                return resutlList;
+            }
+
+        }
+
+
+        //public async Task<IEnumerable<object>> GetAllDepartmentCheckedObjects(Guid roleId, int? mesDepartmentRootId)
+        //{
+
+        //    List<object>? resutlList = new List<object>();
+
+        //    IEnumerable<MesDepartmentVMDTO> topLevelList = _mapper.Map<IEnumerable<MesDepartmentDTO>, IEnumerable<MesDepartmentVMDTO>>(await _mesDepartmentRepository.GetChildList(mesDepartmentRootId));
+        //    IEnumerable<MesDepartmentVMDTO>? childList = null;
+
+        //    if (topLevelList != null)
+        //    {
+        //        foreach (var topLevelItem in topLevelList)
+        //        {
+
+
+        //            MesDepartmentVMDTO mesDepartmentVMDTO = new MesDepartmentVMDTO();
+        //            mesDepartmentVMDTO.Id = topLevelItem.Id;
+        //            mesDepartmentVMDTO.MesCode = topLevelItem.MesCode;
+        //            mesDepartmentVMDTO.Name = topLevelItem.Name;
+        //            mesDepartmentVMDTO.ShortName = topLevelItem.ShortName;
+        //            mesDepartmentVMDTO.ParentDepartmentId = topLevelItem.ParentDepartmentId;
+        //            mesDepartmentVMDTO.DepartmentParentVMDTO = topLevelItem.DepartmentParentVMDTO;
+        //            mesDepartmentVMDTO.IsArchive = topLevelItem.IsArchive;
+        //            mesDepartmentVMDTO.ToStringValue = topLevelItem.ToStringValue;
+
+        //            await GetAllDepartmentCheckedObjects(roleId, topLevelItem.Id);                    
+        //            var foundRoleToDepartmentDTO = await _roleToDepartmentRepository.Get(roleId, topLevelItem.Id);
+        //            if (foundRoleToDepartmentDTO != null)
+        //            {
+        //                resutlList.Add(mesDepartmentVMDTO);
+        //            }
+
+        //        }
+        //        return resutlList;
+        //    }
+        //    else
+        //    {
+        //        return resutlList;
+        //    }
+
+        //}
     }
 }

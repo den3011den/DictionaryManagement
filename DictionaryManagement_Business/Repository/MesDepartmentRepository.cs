@@ -84,9 +84,14 @@ namespace DictionaryManagement_Business.Repository
                 return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
         }
 
-        public async Task<IEnumerable<MesDepartmentDTO>> GetChildList(int id)
+        public async Task<IEnumerable<MesDepartmentDTO>> GetChildList(int? id)
         {
-                var hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.ParentDepartmentId == id).ToListWithNoLock();
+            IEnumerable<MesDepartment> hhh1 = null;
+                if (id == null)
+                    hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.ParentDepartmentId == null || u.ParentDepartmentId == 0
+                        || u.ParentDepartmentId == u.Id).ToListWithNoLock();
+                else
+                    hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.ParentDepartmentId == id).ToListWithNoLock();
                 return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
         }
 

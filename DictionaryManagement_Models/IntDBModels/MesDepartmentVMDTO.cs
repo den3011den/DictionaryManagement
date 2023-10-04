@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
-    public class MesDepartmentDTO
+    public class MesDepartmentVMDTO
     {
 
         [Display(Name = "Ид записи")]
@@ -35,7 +35,11 @@ namespace DictionaryManagement_Models.IntDBModels
         public int? ParentDepartmentId { get; set; }
 
         [Display(Name = "Родитель")]
-        public MesDepartmentDTO? DepartmentParentDTO { get; set; }
+        public MesDepartmentVMDTO? DepartmentParentVMDTO { get; set; }
+
+        [Display(Name = "Дети")]
+        public IEnumerable<MesDepartmentVMDTO>? ChildrenDTO { get; set; }
+
 
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }

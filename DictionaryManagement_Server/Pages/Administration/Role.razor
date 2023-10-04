@@ -239,7 +239,8 @@
 
                 </Columns>
             </RadzenDataGrid>
-
+            <button title=@($"Тест производства") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>LinkDepartmentToRole(testGuid)"> + Тест производства + </button>
+            
         }
         else
         {
@@ -263,6 +264,8 @@
     IEnumerable<RoleVMDTO>? roleVMDTOs;
 
     RadzenDataGrid<RoleVMDTO> roleVMDTOGrid;
+
+    Guid testGuid = new Guid("4315D633-D536-46F3-A857-07D051009438");
 
     public string? usersFilter = "";
 
@@ -444,6 +447,36 @@
                 roleVMDTO.UserToRoleDTOs = await _roleVMRepository.GetUsersLinkedToRoleByRoleId(roleVMDTO.Id);
                 await roleVMDTOGrid.UpdateRow(roleVMDTO);
             }
+
+            IsLoading = false;
+        }
+    }
+
+
+    // async Task LinkDepartmentToRole(RoleVMDTO roleVMDTO)
+    async Task LinkDepartmentToRole(Guid roleguid)
+    {
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            IsLoading = true;
+
+            RoleVMDTO dialogResult = null;
+
+            // if (roleVMDTO == null)
+            // {
+            //     await _jsRuntime.ToastrError("Пустой объект роли для привязки пользователей");
+            //     IsLoading = false;
+            //     return;
+            // }
+            // else
+            // {
+                IsLoading = false;
+                // dialogResult = await _dialogService.OpenAsync<LinkUsersToRole>("Привязка производств к роли " + roleVMDTO.Name, new Dictionary<string, object>() { { "RoleId", roleVMDTO.Id } }, new DialogOptions() { Width = $"{1100}px", Left = $"{200}px" });
+                dialogResult = await _dialogService.OpenAsync<LinkDepartmentToRole>("Привязка производств к роли ", new Dictionary<string, object>() { { "RoleId", roleguid} }, new DialogOptions() { Width = $"{1100}px", Left = $"{200}px" });
+
+                // roleVMDTO.RoleToDepartmentDTOs = await _roleVMRepository.GetDepartmentsLinkedToRoleByRoleId(roleVMDTO.Id);
+                // await roleVMDTOGrid.UpdateRow(roleVMDTO);
+            // }
 
             IsLoading = false;
         }

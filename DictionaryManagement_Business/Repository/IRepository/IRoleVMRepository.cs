@@ -32,6 +32,8 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<IEnumerable<UserToRoleDTO>?> GetUsersLinkedToRoleByRoleId(Guid roleId);
         public Task<IEnumerable<ReportTemplateTypeTоRoleDTO>?> GetReportTemplateTypesLinkedToRoleByRoleId(Guid roleId);
         public Task<IEnumerable<RoleToADGroupDTO>?> GetADGroupsLinkedToRoleByRoleId(Guid roleId);
+        public Task<IEnumerable<MesDepartmentVMDTO>> GetAllDepartmentWithChildrenCheckedWithLinkRole(Guid roleId, int? mesDepartmentRootId);
+        //public Task<IEnumerable<object>> GetAllDepartmentCheckedObjects(Guid roleId, int? mesDepartmentRootId);
 
     }
 }

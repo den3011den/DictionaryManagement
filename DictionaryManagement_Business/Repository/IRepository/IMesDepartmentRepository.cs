@@ -13,7 +13,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
     public interface IMesDepartmentRepository
     {
         public Task<MesDepartmentDTO> GetById(int mesDepartmentId);
-        public Task<IEnumerable<MesDepartmentDTO>> GetChildList(int mesDepartmentId);
+        public Task<IEnumerable<MesDepartmentDTO>> GetChildList(int? mesDepartmentId);
         public Task<bool> HasChild(int mesDepartmentId);
         //public bool HasChild(int mesDepartmentId);
         public Task<IEnumerable<MesDepartmentDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All);
