@@ -491,45 +491,30 @@ namespace DictionaryManagement_Business.Repository
         }
 
 
-        //public async Task<IEnumerable<object>> GetAllDepartmentCheckedObjects(Guid roleId, int? mesDepartmentRootId)
-        //{
-
-        //    List<object>? resutlList = new List<object>();
-
-        //    IEnumerable<MesDepartmentVMDTO> topLevelList = _mapper.Map<IEnumerable<MesDepartmentDTO>, IEnumerable<MesDepartmentVMDTO>>(await _mesDepartmentRepository.GetChildList(mesDepartmentRootId));
-        //    IEnumerable<MesDepartmentVMDTO>? childList = null;
-
-        //    if (topLevelList != null)
-        //    {
-        //        foreach (var topLevelItem in topLevelList)
-        //        {
 
 
-        //            MesDepartmentVMDTO mesDepartmentVMDTO = new MesDepartmentVMDTO();
-        //            mesDepartmentVMDTO.Id = topLevelItem.Id;
-        //            mesDepartmentVMDTO.MesCode = topLevelItem.MesCode;
-        //            mesDepartmentVMDTO.Name = topLevelItem.Name;
-        //            mesDepartmentVMDTO.ShortName = topLevelItem.ShortName;
-        //            mesDepartmentVMDTO.ParentDepartmentId = topLevelItem.ParentDepartmentId;
-        //            mesDepartmentVMDTO.DepartmentParentVMDTO = topLevelItem.DepartmentParentVMDTO;
-        //            mesDepartmentVMDTO.IsArchive = topLevelItem.IsArchive;
-        //            mesDepartmentVMDTO.ToStringValue = topLevelItem.ToStringValue;
+        public async Task<IEnumerable<object>> GetAllDepartmentCheckedObjects(IEnumerable<MesDepartmentVMDTO> topLevelList)
+        {
 
-        //            await GetAllDepartmentCheckedObjects(roleId, topLevelItem.Id);                    
-        //            var foundRoleToDepartmentDTO = await _roleToDepartmentRepository.Get(roleId, topLevelItem.Id);
-        //            if (foundRoleToDepartmentDTO != null)
-        //            {
-        //                resutlList.Add(mesDepartmentVMDTO);
-        //            }
+            List<object>? resutlList = new List<object>();
+                        
+            if (topLevelList != null)
+            {
+                foreach (var topLevelItem in topLevelList)
+                {
+                    resutlList.AddRange(await GetAllDepartmentCheckedObjects(topLevelItem.ChildrenDTO));
+                    if (topLevelItem.Checked == true)
+                    {
+                        resutlList.Add(topLevelItem);
+                    }
+                }
+                return resutlList;
+            }
+            else
+            {
+                return resutlList;
+            }
 
-        //        }
-        //        return resutlList;
-        //    }
-        //    else
-        //    {
-        //        return resutlList;
-        //    }
-
-        //}
+        }
     }
 }
