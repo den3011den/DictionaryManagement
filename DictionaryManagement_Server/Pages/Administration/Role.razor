@@ -115,7 +115,7 @@
                                 <Template Context="user">
                                     <RadzenCard Style="white-space:pre-wrap; width: 100%; padding: 1px 1px 1px 1px; overflow: hidden;font-size: 10px">
                                         <div class="row g-2" style="width: 100%; padding: 0">
-                                            <div class="col-md-11 col-lg-0" style="width: 82%; font-size: 10px">                                                 
+                                            <div class="col-md-11 col-lg-0" style="width: 82%; font-size: 10px">
                                                 <b><a href="" title=@($"Редактировать пользователя {user.UserDTOFK?.UserName}") @onclick="@(()=>EditUser(data, user.UserDTOFK.Id))" @onclick:preventDefault>@user.UserDTOFK?.UserName (@(@user.UserDTOFK?.Login))</a></b>
                                             </div>
                                             @if (@user.UserDTOFK?.IsSyncWithAD != true)
@@ -154,26 +154,26 @@
                                             <div class="col-md-12 col-lg-0" style="width: 50%; font-size: 10px">
                                                 <b>@reportTemplate.ReportTemplateTypeDTOFK?.Name</b>
                                             </div>
-                                                                                        <div class="col-md-1 col-lg-0" style="width: 48%; font-size: 10px;">
-                                    @if (@reportTemplate.CanDownload == true)
-                                    {
-                                    <b><a href="" title=@($"Есть право на чтение") style="text-decoration: none !important; color:#00FF00; font-size: 9px !important;" @onclick="@(()=>ChangeReadWriteRights(data, reportTemplate.Id, "READ"))" @onclick:preventDefault>Чтение </a></b>
-                                    }
-                                    else
-                                    {
+                                            <div class="col-md-1 col-lg-0" style="width: 48%; font-size: 10px;">
+                                                @if (@reportTemplate.CanDownload == true)
+                                                {
+                                                    <b><a href="" title=@($"Есть право на чтение") style="text-decoration: none !important; color:#00FF00; font-size: 9px !important;" @onclick="@(()=>ChangeReadWriteRights(data, reportTemplate.Id, "READ"))" @onclick:preventDefault>Чтение </a></b>
+                                                }
+                                                else
+                                                {
                                                     <b><a href="" title=@($"Нет права на чтение") style="text-decoration: none !important; color:#CACFD2 ; font-size: 9px !important;" @onclick="@(()=>ChangeReadWriteRights(data, reportTemplate.Id, "READ"))" @onclick:preventDefault>Чтение </a></b>
-                                    }
-                                    @if (@reportTemplate.CanUpload == true)
-                                    {
-                                    <b><a href="" title=@($"Есть право на запись") style="text-decoration: none !important; color:#00FF00; font-size: 9px !important;" @onclick="@(()=>ChangeReadWriteRights(data, reportTemplate.Id, "WRITE"))" @onclick:preventDefault>Запись  </a></b>
-                                    }
-                                    else
-                                    {
+                                                }
+                                                @if (@reportTemplate.CanUpload == true)
+                                                {
+                                                    <b><a href="" title=@($"Есть право на запись") style="text-decoration: none !important; color:#00FF00; font-size: 9px !important;" @onclick="@(()=>ChangeReadWriteRights(data, reportTemplate.Id, "WRITE"))" @onclick:preventDefault>Запись  </a></b>
+                                                }
+                                                else
+                                                {
                                                     <b><a href="" title=@($"Нет права на запись") style="text-decoration: none !important; color:#CACFD2; font-size: 9px !important;" @onclick="@(()=>ChangeReadWriteRights(data, reportTemplate.Id, "WRITE"))" @onclick:preventDefault>Запись  </a></b>
-                                    }
+                                                }
 
-                                    <b><a href="" title=@($"Отвязать тип шаблона отчёта {reportTemplate.ReportTemplateTypeDTOFK?.Name} от роли {data.Name}") @onclick="@(()=>DeleteReportTemplateType(data, reportTemplate.ReportTemplateTypeDTOFK))" style="text-decoration: none !important; color:#DC143C;" @onclick:preventDefault>X</a></b>
-                                    </div>
+                                                <b><a href="" title=@($"Отвязать тип шаблона отчёта {reportTemplate.ReportTemplateTypeDTOFK?.Name} от роли {data.Name}") @onclick="@(()=>DeleteReportTemplateType(data, reportTemplate.ReportTemplateTypeDTOFK))" style="text-decoration: none !important; color:#DC143C;" @onclick:preventDefault>X</a></b>
+                                            </div>
                                         </div>
                                     </RadzenCard>
                                 </Template>
@@ -197,7 +197,7 @@
                                     <RadzenCard Style="white-space:pre-wrap; width: 100%; padding: 1px 1px 1px 1px; overflow: hidden; font-size: 10px">
                                         <div class="row" style="width: 100%; padding: 0">
                                             <div class="col-md-12 col-lg-0" style="width: 82%; font-size: 10px">
-                                                <b>@adGroup.ADGroupDTOFK?.Name</b>
+                                                <b><a href="" title=@($"Редактировать группу AD {@adGroup.ADGroupDTOFK?.Name}") @onclick="@(()=>EditADGroup(data, adGroup.ADGroupDTOFK.Id))" @onclick:preventDefault>@adGroup.ADGroupDTOFK?.Name</a></b>
                                             </div>
                                             <div class="col-md-1 col-lg-0" style="width: 10%; font-size: 10px;">
                                                 <b><a href="" title=@($"Отвязать группу AD {adGroup.ADGroupDTOFK?.Name} от роли {data.Name}") @onclick="@(()=>DeleteADGroup(data, adGroup.ADGroupDTOFK))" style="text-decoration: none !important; color:#DC143C;" @onclick:preventDefault>X</a></b>
@@ -638,7 +638,7 @@
             string messageString = "";
             if (modeString.Trim().ToUpper() == "READ")
             {
-                roleToReportTemplateTypeDTO.CanDownload = !roleToReportTemplateTypeDTO.CanDownload;                
+                roleToReportTemplateTypeDTO.CanDownload = !roleToReportTemplateTypeDTO.CanDownload;
                 if (roleToReportTemplateTypeDTO.CanDownload == true)
                     messageString = "Роли установлено право на чтение для типа шаблона отчёта";
                 else
@@ -667,7 +667,7 @@
 
             roleVMDTO.ReportTemplateTypeTоRoleDTOs = (await _roleVMRepository.GetReportTemplateTypesLinkedToRoleByRoleId(roleVMDTO.Id));
 
-            await roleVMDTOGrid.UpdateRow(roleVMDTO);            
+            await roleVMDTOGrid.UpdateRow(roleVMDTO);
         }
 
     }
@@ -682,10 +682,32 @@
 
             IsLoading = false;
             dialogResult = await _dialogService.OpenAsync<AddEditUser>("Изменить пользователя", new Dictionary<string, object>() { { "UserId", userId } }, new DialogOptions() { Width = $"{700}px", Left = $"{300}px" });
- 
+
             if (dialogResult != null)
             {
                 roleVMDTO.UserToRoleDTOs = await _roleVMRepository.GetUsersLinkedToRoleByRoleId(roleVMDTO.Id);
+                await roleVMDTOGrid.UpdateRow(roleVMDTO);
+            }
+
+            IsLoading = false;
+        }
+    }
+
+
+    async Task EditADGroup(RoleVMDTO roleVMDTO, Guid adGroupId)
+    {
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            IsLoading = true;
+
+            ADGroupDTO dialogResult;
+
+            IsLoading = false;
+            dialogResult = await _dialogService.OpenAsync<AddEditADGroup>("Изменить группу AD", new Dictionary<string, object>() { { "ADGroupId", adGroupId } }, new DialogOptions() { Width = $"{700}px", Left = $"{300}px" });
+
+            if (dialogResult != null)
+            {
+                roleVMDTO.RoleToADGroupDTOs = await _roleVMRepository.GetADGroupsLinkedToRoleByRoleId(roleVMDTO.Id);
                 await roleVMDTOGrid.UpdateRow(roleVMDTO);
             }
 
