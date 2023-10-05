@@ -14,6 +14,7 @@
 @inject IUserToRoleRepository _userToRoleRepository
 @inject IReportTemplateTypeToRoleRepository _reportTemplateTypeToRoleRepository
 @inject IRoleToADGroupRepository _roleToADGroupRepository
+@inject IRoleToDepartmentRepository _roleToToDepartmentRepository
 @* @inject IRoleRepository _roleRepository *@
 
 @inject DialogService _dialogService
@@ -46,7 +47,7 @@
                             AllowVirtualization="true"
                             Style="height:720px">
                 <Columns>
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="ToStringId" Title="Ид роли" Width="35px"
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="ToStringId" Title="Ид роли" Width="10px"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 10px">
@@ -55,7 +56,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="Name" Title="Наименование" Width="45px" FilterProperty="Name" SortProperty="Name" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="Name" Title="Наименование" Width="37px" FilterProperty="Name" SortProperty="Name" FilterOperator="FilterOperator.Contains">
                         <Template Context="data2">
                             @* <RadzenCard Style="white-space:pre-wrap"> *@
                             <div style="white-space:pre-wrap; font-size: 12px">
@@ -139,7 +140,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="ReportTemplateTypeTоRoleDTOs" FilterProperty="ReportTemplateTypeString" Title="Шаблоны отчётов" Sortable="false" Filterable="true" Width="42px" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="ReportTemplateTypeTоRoleDTOs" FilterProperty="ReportTemplateTypeString" Title="Шаблоны отчётов" Sortable="false" Filterable="true" Width="44px" FilterOperator="FilterOperator.Contains">
 
                         <Template Context="data">
                             <div class="row" style="width: 100%; padding: 0; overflow: hidden;justify-content: center; font-size: 10px">
@@ -210,36 +211,35 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    @*                      <RadzenDataGridColumn TItem="RoleVMDTO" Property="RoleToDepartmentDTOs" FilterProperty="RoleToDepartmentString" Title="Производства" Sortable="false" Filterable="true" Width="32px" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="RoleToDepartmentDTOs" FilterProperty="RoleToDepartmentString" Title="Производства" Sortable="false" Filterable="true" Width="42px" FilterOperator="FilterOperator.Contains">
+                        <Template Context="data">
+                            <div class="row" style="width: 100%; padding: 0; overflow: hidden;justify-content: center; font-size: 10px">
+                                <div class="text-center" style="width: 100%; font-size: 10px">
+                                    <button title=@($"Добавить производтсва к роли {data.Name}") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>LinkDepartmentToRole(data)"> + Добавить производства + </button>
+                                </div>
+                            </div>
 
-            <Template Context="data">
-            <div class="row" style="width: 100%; padding: 0; overflow: hidden;justify-content: center; font-size: 10px">
-            <div class="text-center" style="width: 100%; font-size: 10px">
-            <button title=@($"Добавить производство к роли {data.Name}") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>AddDepartment(data)"> + Добавить производство + </button>
-            </div>
-            </div>
-
-            <RadzenDataList WrapItems="true" Density=Density.Compact AllowPaging="true" Data="data.RoleToDepartmentDTOs" PagerHorizontalAlign="HorizontalAlign.Left" TItem="RoleToDepartmentDTO" PageSize="4" ShowPagingSummary="false">
-            <Template Context="department">
-            <RadzenCard Style="white-space:pre-wrap; width: 100%; padding: 1px 1px 1px 1px; overflow: hidden; font-size: 10px">
-            <div class="row" style="width: 100%; padding: 0">
-            <div class="col-md-12 col-lg-0" style="width: 82%; font-size: 10px">
-            <b>@department.DepartmentDTOFK?.ShortName</b>
-            </div>
-            <div class="col-md-1 col-lg-0" style="width: 10%; font-size: 10px;">
-            <b><a href="" title=@($"Отвязать производство {department.DepartmentDTOFK?.Name} от роли {data.Name}") @onclick="@(()=>DeleteDepartment(data))" style="text-decoration: none !important; color:#DC143C;" @onclick:preventDefault>X</a></b>
-            </div>
-            </div>
-            </RadzenCard>
-            </Template>
-            </RadzenDataList>
-            </Template>
-            </RadzenDataGridColumn> *@
+                            <RadzenDataList WrapItems="true" Density=Density.Compact AllowPaging="true" Data="data.RoleToDepartmentDTOs" PagerHorizontalAlign="HorizontalAlign.Left" TItem="RoleToDepartmentDTO" PageSize="4" ShowPagingSummary="false">
+                                <Template Context="department">
+                                    <RadzenCard Style="white-space:pre-wrap; width: 100%; padding: 1px 1px 1px 1px; overflow: hidden; font-size: 10px">
+                                        <div class="row" style="width: 100%; padding: 0">
+                                            <div class="col-md-12 col-lg-0" style="width: 82%; font-size: 10px">
+                                                <b><a href="" title=@($"Редактировать производство {@department.DepartmentDTOFK?.Name}") @onclick="@(()=>EditDepartment(data, department.DepartmentDTOFK.Id))" @onclick:preventDefault>@department.DepartmentDTOFK?.Name</a></b>
+                                            </div>
+                                            <div class="col-md-1 col-lg-0" style="width: 10%; font-size: 10px;">
+                                                <b><a href="" title=@($"Отвязать производство {department.DepartmentDTOFK?.Name} от роли {data.Name}") @onclick="@(()=>DeleteDepartment(data, department.DepartmentDTOFK))" style="text-decoration: none !important; color:#DC143C;" @onclick:preventDefault>X</a></b>
+                                            </div>
+                                        </div>
+                                    </RadzenCard>
+                                </Template>
+                            </RadzenDataList>
+                        </Template>
+                    </RadzenDataGridColumn>
 
 
                 </Columns>
             </RadzenDataGrid>
-            <button title=@($"Тест производства") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>LinkDepartmentToRole(testGuid)"> + Тест производства + </button>
+@*             <button title=@($"Тест производства") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>LinkDepartmentToRole(testGuid)"> + Тест производства + </button> *@
             
         }
         else
@@ -453,31 +453,27 @@
     }
 
 
-    // async Task LinkDepartmentToRole(RoleVMDTO roleVMDTO)
-    async Task LinkDepartmentToRole(Guid roleguid)
+    async Task LinkDepartmentToRole(RoleVMDTO roleVMDTO)    
     {
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
             IsLoading = true;
-
             RoleVMDTO dialogResult = null;
 
-            // if (roleVMDTO == null)
-            // {
-            //     await _jsRuntime.ToastrError("Пустой объект роли для привязки пользователей");
-            //     IsLoading = false;
-            //     return;
-            // }
-            // else
-            // {
+            if (roleVMDTO == null)
+            {
+                await _jsRuntime.ToastrError("Пустой объект роли для привязки производств");
                 IsLoading = false;
-                // dialogResult = await _dialogService.OpenAsync<LinkUsersToRole>("Привязка производств к роли " + roleVMDTO.Name, new Dictionary<string, object>() { { "RoleId", roleVMDTO.Id } }, new DialogOptions() { Width = $"{1100}px", Left = $"{200}px" });
-                dialogResult = await _dialogService.OpenAsync<LinkDepartmentToRole>("Привязка производств к роли ", new Dictionary<string, object>() { { "RoleId", roleguid} }, new DialogOptions() { Width = $"{1100}px", Left = $"{200}px" });
+                return;
+            }
+            else
+            {
+                IsLoading = false;
+                dialogResult = await _dialogService.OpenAsync<LinkDepartmentToRole>("Привязка производств к роли " + roleVMDTO.Name, new Dictionary<string, object>() { { "RoleId", roleVMDTO.Id } }, new DialogOptions() { Width = $"{1100}px", Left = $"{200}px" });
 
-                // roleVMDTO.RoleToDepartmentDTOs = await _roleVMRepository.GetDepartmentsLinkedToRoleByRoleId(roleVMDTO.Id);
-                // await roleVMDTOGrid.UpdateRow(roleVMDTO);
-            // }
-
+                roleVMDTO.RoleToDepartmentDTOs = await _roleVMRepository.GetDepartmentsLinkedToRoleByRoleId(roleVMDTO.Id);
+                await roleVMDTOGrid.UpdateRow(roleVMDTO);
+            }
             IsLoading = false;
         }
     }
@@ -645,6 +641,39 @@
 
     }
 
+    async Task DeleteDepartment(RoleVMDTO roleVMDTO, MesDepartmentDTO mesDepartmentDTO)
+    {
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            if (_dialogs != null)
+            {
+                bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление производства", "Удалить производство \"" + mesDepartmentDTO.ShortName +
+                        "\" из роли \"" + roleVMDTO.Name + "\" ?", "Удалить из роли", "Отмена");
+                if (selectionResult == false)
+                {                    
+                    return;
+                }
+            }
+        }
+
+        var roleToDepartmentDTO = await _roleToToDepartmentRepository.Get(roleVMDTO.Id, mesDepartmentDTO.Id);
+
+        if (roleToDepartmentDTO != null)
+        {
+            await _roleVMRepository.DeleteRoleToDepartment(roleToDepartmentDTO.Id);
+            await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.ShortName + "\" удалёно из роли \"" + roleVMDTO.Name + "\"");
+        }
+        else
+        {
+            await _jsRuntime.ToastrError("Производство \"" + mesDepartmentDTO.ShortName + "\" не найдено в роли \"" + roleVMDTO.Name + "\"!");
+        }
+
+        roleVMDTO.RoleToDepartmentDTOs = await _roleVMRepository.GetDepartmentsLinkedToRoleByRoleId(roleVMDTO.Id);
+
+        await roleVMDTOGrid.UpdateRow(roleVMDTO);
+
+    }
+
     async Task ChangeReadWriteRights(RoleVMDTO roleVMDTO, int reportTemplateTypeToRoleId, string modeString)
     {
         if (!((modeString.Trim().ToUpper() == "READ") || (modeString.Trim().ToUpper() == "WRITE")))
@@ -745,6 +774,25 @@
                 await roleVMDTOGrid.UpdateRow(roleVMDTO);
             }
 
+            IsLoading = false;
+        }
+    }
+
+
+    async Task EditDepartment(RoleVMDTO roleVMDTO, int departmentId)
+    {
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            IsLoading = true;
+            MesDepartmentDTO dialogResult;
+            IsLoading = false;
+            dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Изменить производство", new Dictionary<string, object>() { { "MesDepartmentId", departmentId } }, new DialogOptions() { Width = $"{700}px", Left = $"{300}px" });
+
+            if (dialogResult != null)
+            {
+                roleVMDTO.RoleToDepartmentDTOs = await _roleVMRepository.GetDepartmentsLinkedToRoleByRoleId(roleVMDTO.Id);
+                await roleVMDTOGrid.UpdateRow(roleVMDTO);
+            }
             IsLoading = false;
         }
     }

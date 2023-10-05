@@ -35,5 +35,11 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<IEnumerable<MesDepartmentVMDTO>> GetAllDepartmentWithChildrenCheckedWithLinkRole(Guid roleId, int? mesDepartmentRootId);
         public Task<IEnumerable<object>> GetAllDepartmentCheckedObjects(IEnumerable<MesDepartmentVMDTO> topLevelList);
 
+        public Task<IEnumerable<RoleToDepartmentDTO>?> GetDepartmentsLinkedToRoleByRoleId(Guid roleId);
+
+        public Task<int> DeleteRoleToDepartment(int roleToDepartmentId);
+
+        public Task DeleteAllLikedDepartmentsToRoleByRoleId(Guid roleId);
+        public Task<int> AddDepartmentsToRole(IEnumerable<object> objectList, RoleVMDTO roleVMDTO);
     }
 }

@@ -146,7 +146,10 @@ namespace DictionaryManagement_Business.Mapper
 
             CreateMap<MesDepartmentDTO, MesDepartmentVMDTO>()
                 .ForMember(dest => dest.ChildrenDTO, opt => opt.AllowNull())
-                .ForMember(dest => dest.DepartmentParentVMDTO, opt => opt.MapFrom(src => src.DepartmentParentDTO)); 
+                .ForMember(dest => dest.DepartmentParentVMDTO, opt => opt.MapFrom(src => src.DepartmentParentDTO));
+            CreateMap<MesDepartmentVMDTO, MesDepartmentDTO>()                
+                .ForMember(dest => dest.DepartmentParentDTO, opt => opt.MapFrom(src => src.DepartmentParentVMDTO));
+
 
         }
     }
