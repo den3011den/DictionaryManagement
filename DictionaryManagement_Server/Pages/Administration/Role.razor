@@ -224,10 +224,10 @@
                                     <RadzenCard Style="white-space:pre-wrap; width: 100%; padding: 1px 1px 1px 1px; overflow: hidden; font-size: 10px">
                                         <div class="row" style="width: 100%; padding: 0">
                                             <div class="col-md-12 col-lg-0" style="width: 82%; font-size: 10px">
-                                                <b><a href="" title=@($"Редактировать производство {@department.DepartmentDTOFK?.Name}") @onclick="@(()=>EditDepartment(data, department.DepartmentDTOFK.Id))" @onclick:preventDefault>@department.DepartmentDTOFK?.Name</a></b>
+                                                <b><a href="" title=@($"Редактировать производство {@department.DepartmentDTOFK?.ShortName}") @onclick="@(()=>EditDepartment(data, department.DepartmentDTOFK.Id))" @onclick:preventDefault>@department.DepartmentDTOFK?.ShortName</a></b>
                                             </div>
                                             <div class="col-md-1 col-lg-0" style="width: 10%; font-size: 10px;">
-                                                <b><a href="" title=@($"Отвязать производство {department.DepartmentDTOFK?.Name} от роли {data.Name}") @onclick="@(()=>DeleteDepartment(data, department.DepartmentDTOFK))" style="text-decoration: none !important; color:#DC143C;" @onclick:preventDefault>X</a></b>
+                                                <b><a href="" title=@($"Отвязать производство {department.DepartmentDTOFK?.ShortName} от роли {data.Name}") @onclick="@(()=>DeleteDepartment(data, department.DepartmentDTOFK))" style="text-decoration: none !important; color:#DC143C;" @onclick:preventDefault>X</a></b>
                                             </div>
                                         </div>
                                     </RadzenCard>
