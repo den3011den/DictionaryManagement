@@ -65,6 +65,9 @@ namespace DictionaryManagement_Business.Repository
                 {
                     if (objectToUpdate.Name != objectToUpdateDTO.Name)
                         objectToUpdate.Name = objectToUpdateDTO.Name;
+                    if (objectToUpdate.Priority != objectToUpdateDTO.Priority)
+                        objectToUpdate.Priority = objectToUpdateDTO.Priority;
+
                 }
                 if (updateMode == SD.UpdateMode.MoveToArchive)
                 {
@@ -89,6 +92,20 @@ namespace DictionaryManagement_Business.Repository
             {
                 return _mapper.Map<DataType, DataTypeDTO>(objToGet);
             }
+            return null;
+        }
+
+        public async Task<DataTypeDTO> GetByPriority(int? priority)
+        {
+            if (priority != null)
+                if (priority != 0)
+                {
+                    var objToGet = _db.DataType.FirstOrDefaultWithNoLock(u => u.Priority == priority);
+                    if (objToGet != null)
+                    {
+                        return _mapper.Map<DataType, DataTypeDTO>(objToGet);
+                    }
+                }
             return null;
         }
     }

@@ -16,5 +16,6 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<DataTypeDTO> Update(DataTypeDTO objDTO, UpdateMode updateMode = UpdateMode.Update);
         public Task<DataTypeDTO> Create(DataTypeDTO objectToAddDTO);
         public Task<DataTypeDTO> GetByName(string Name);
+        public Task<DataTypeDTO> GetByPriority(int? priority);
     }
 }

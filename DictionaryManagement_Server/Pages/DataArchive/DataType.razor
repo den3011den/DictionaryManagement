@@ -40,6 +40,13 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
+                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Priority" Title="Приоритет передачи в SAP (чем больше число - тем выше приоритет)" Width="120px">
+                        <EditTemplate Context="dataTypeDTO">
+                            <RadzenNumeric @bind-Value="dataTypeDTO.Priority" Style="width:100%; display: block" Name="Priority" />
+                            <RadzenNumericRangeValidator Min=1 Max=@(int.MaxValue) Text="Приоритет передачи в SAP не может быть меньше 1" Component="Priority" Popup="true" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+
                     <RadzenDataGridColumn TItem="DataTypeDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
@@ -159,9 +166,26 @@
                 {
                     var objectForRestore = await _dataTypeRepository.Get(dataTypeDTO.Id);
                     dataTypeDTO.Name = objectForRestore.Name;
+                    dataTypeDTO.Priority = objectForRestore.Priority;
                     await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
                     await dataTypeDTOGrid.Reload();
                     await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись вида данных с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                    return;
+                }
+            }
+
+            var objectForCheckPriority = await _dataTypeRepository.GetByPriority(dataTypeDTO.Priority);
+            if (objectForCheckPriority != null)
+            {
+                if (objectForCheckPriority.Id != dataTypeDTO.Id)
+                {
+                    var objectForRestore = await _dataTypeRepository.Get(dataTypeDTO.Id);
+                    dataTypeDTO.Name = objectForRestore.Name;
+                    dataTypeDTO.Priority = objectForRestore.Priority;
+                    await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
+                    await dataTypeDTOGrid.Reload();
+                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с приоритетеом передачи в SAP равным " + objectForCheckPriority.Priority.ToString() +
+                        " Наименование: \"" + objectForCheckPriority.Name + "\" ИД записи = " + objectForCheckPriority.Id.ToString());
                     return;
                 }
             }
@@ -279,6 +303,19 @@
                 dataTypeDTOGrid.CancelEditRow(dataTypeDTO);
                 await dataTypeDTOGrid.Reload();
                 return;
+            }
+
+            var objectForCheckPriority = await _dataTypeRepository.GetByPriority(dataTypeDTO.Priority);
+            if (objectForCheckPriority != null)
+            {
+                if (objectForCheckPriority.Id != dataTypeDTO.Id)
+                {                    
+                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с приоритетеом передачи в SAP равным " + objectForCheckPriority.Priority.ToString() +
+                        " Наименование: \"" + objectForCheckPriority.Name + "\" ИД записи = " + objectForCheckPriority.Id.ToString());
+                    dataTypeDTOGrid.CancelEditRow(dataTypeDTO);
+                    await dataTypeDTOGrid.Reload();
+                    return;
+                }
             }
 
             var newDTO = await _dataTypeRepository.Create(dataTypeDTO);

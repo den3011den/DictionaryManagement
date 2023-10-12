@@ -20,6 +20,8 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [MinLength(1)]
         public string Name { get; set; } = string.Empty;
 
+        public int? Priority { get; set; }
+
         public bool IsArchive { get; set; }
 
     }

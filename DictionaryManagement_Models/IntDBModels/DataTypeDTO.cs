@@ -23,6 +23,10 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 
+        [Display(Name = "Приоритет выгрузки данных в SAP")]
+        [Range(1, int.MaxValue, ErrorMessage = "Приоритет может быть от 1 до {2}")]
+        public int? Priority { get; set; }
+
         [NotMapped]
         public string ToStringValue { get; set; } = string.Empty;
 
