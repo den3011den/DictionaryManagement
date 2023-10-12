@@ -34,6 +34,7 @@
             <RadzenDataGrid @ref="mesParamSourceTypeDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="8" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@mesParamSourceTypeDTOs" TItem="MesParamSourceTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            EmptyText="Нет записей для отображения"
                             FilterMode="FilterMode.Simple">
                 <Columns>
                     <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
@@ -168,7 +169,7 @@
     {
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            IsAdmin = true;           
+            IsAdmin = true;
             if (firstRender)
             {
                 checkBoxValue = false;

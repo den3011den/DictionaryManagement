@@ -154,7 +154,10 @@ namespace DictionaryManagement_Server.Controllers
 
             string pathVar = (await _settingsRepository.GetByName("ReportUploadPath")).Value;
             ReportEntityDTO foundEntity = await _reportEntityRepository.GetById(reportEntityId);
-            string fileName = foundEntity.UploadReportFileName;
+            //string fileName = foundEntity.UploadReportFileName;
+            // в шестёрке решили в UploadReportFileName сохранять имя загружаемого пользователем файла
+            // теперь приходится брать реально храняшееся имя файла из DownloadReportFileName
+            string fileName = foundEntity.DownloadReportFileName;
             string file = System.IO.Path.Combine(pathVar, fileName);
             var extension = Path.GetExtension(fileName);
             if (System.IO.File.Exists(file))

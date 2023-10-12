@@ -56,7 +56,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="Name" Title="Наименование" Width="37px" FilterProperty="Name" SortProperty="Name" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="Name" Title="Наименование" Width="33px" FilterProperty="Name" SortProperty="Name" FilterOperator="FilterOperator.Contains">
                         <Template Context="data2">
                             @* <RadzenCard Style="white-space:pre-wrap"> *@
                             <div style="white-space:pre-wrap; font-size: 12px">
@@ -87,7 +87,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Context="roleVMDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="16px">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Context="roleVMDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="20px">
                         <Template Context="roleVMDTO">
                             <RadzenButton title="Редактировать роль" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(roleVMDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

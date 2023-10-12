@@ -27,9 +27,10 @@
         {
             <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую связку ед. изм." Click="@InsertRow" Disabled=@(unitOfMeasureSapToMesMappingDTOToInsert != null || unitOfMeasureSapToMesMappingDTOToUpdate != null) />
             <RadzenDataGrid @ref="unitOfMeasureSapToMesMappingDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="8" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-            Data="@unitOfMeasureSapToMesMappingDTOs" TItem="UnitOfMeasureSapToMesMappingDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
-            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-            FilterMode="FilterMode.Simple">
+                            Data="@unitOfMeasureSapToMesMappingDTOs" TItem="UnitOfMeasureSapToMesMappingDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                            EmptyText="Нет записей для отображения"
+                            FilterMode="FilterMode.Simple">
                 <Columns>
                     <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapUnitOfMeasureDTO" FilterProperty="SapUnitOfMeasureDTO.ShortName" Title="Ед. изм. SAP" Width="280px" Filterable="true">
                         <EditTemplate Context="unitOfMeasureSapToMesMappingDTO">
@@ -48,11 +49,11 @@
                     <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapToMesTransformKoef" Title="Коэф. пересчёта из SAP в MES" FilterProperty="SapToMesTransformKoef" Filterable="true">
                         <Template Context="unitOfMeasureSapToMesMappingDTO">
                             @String.Format(new System.Globalization.CultureInfo("en-US"), "{0:0.0000}", unitOfMeasureSapToMesMappingDTO.SapToMesTransformKoef)
-                        </Template>                    
-                        <EditTemplate Context="unitOfMeasureSapToMesMappingDTO">                        
-                            <RadzenNumeric @bind-Value="unitOfMeasureSapToMesMappingDTO.SapToMesTransformKoef" Style="width:100%" Name="Koef"/>
-                            <RadzenRequiredValidator Text="Коэффициент обязателено к заполнению" Component="Koef" Popup="true" />                        
-                        </EditTemplate>                    
+                        </Template>
+                        <EditTemplate Context="unitOfMeasureSapToMesMappingDTO">
+                            <RadzenNumeric @bind-Value="unitOfMeasureSapToMesMappingDTO.SapToMesTransformKoef" Style="width:100%" Name="Koef" />
+                            <RadzenRequiredValidator Text="Коэффициент обязателено к заполнению" Component="Koef" Popup="true" />
+                        </EditTemplate>
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Context="UnitOfMeasureSapToMesMappingDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
@@ -79,7 +80,7 @@
         {
             if (IsLoading)
             {
-                        //отображение gif загрузки
+                //отображение gif загрузки
                 <div class="text-center">
                     <img src="/images/loading.gif">
                 </div>

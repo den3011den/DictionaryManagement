@@ -111,7 +111,7 @@
                             <RadzenDataGridColumn TItem="ReportEntityDTO" Property="DownloadSuccessFlag" Title="Файл" Width="100px" TextAlign="TextAlign.Center" Filterable="true">
                                 <Template Context="data">
                                     @*<RadzenCheckBox @bind-Value=data.DownloadSuccessFlag ReadOnly="true" TriState="false" TValue="bool" />*@
-                                    <RadzenButton title="Скачать файл" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityDownloadFile(data.Id))" @onclick:stopPropagation="true">
+                                    <RadzenButton title="Скачать файл" Icon="download" ButtonStyle="ButtonStyle.Light" Disabled="@(String.IsNullOrEmpty(data.DownloadReportFileName))" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityDownloadFile(data.Id))" @onclick:stopPropagation="true">
                                     </RadzenButton>
 
                                 </Template>
@@ -137,7 +137,7 @@
 
                             <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadSuccessFlag" Title="Файл" Filterable="true" Width="100px" TextAlign="TextAlign.Center">
                                 <Template Context="data">
-                                    <RadzenButton title="Скачать файл" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityUploadFile(data.Id))" @onclick:stopPropagation="true">
+                                    <RadzenButton title="Скачать файл" Icon="download" ButtonStyle="ButtonStyle.Light" Disabled="@(String.IsNullOrEmpty(data.UploadReportFileName))" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityUploadFile(data.Id))" @onclick:stopPropagation="true">
                                     </RadzenButton>
 
                                     @*                                <RadzenCheckBox @bind-Value=data.UploadSuccessFlag ReadOnly="true" TriState="true" TValue="bool" />*@

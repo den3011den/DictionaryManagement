@@ -2,16 +2,8 @@ using DictionaryManagement_Business.Repository;
 using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Server.IISIntegration;
-//using Microsoft.AspNetCore.Authentication.Negotiate;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Radzen;
-using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +18,6 @@ builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = options.DefaultPolicy;
 });
-
 
 
 // Add services to the container.
@@ -48,11 +39,7 @@ builder.Services.AddDbContext<IntDBApplicationDbContext>(options =>
 options.UseSqlServer(
     builder.Configuration.GetConnectionString("IntDBConnection")));
 
-//builder.Services.AddDbContext<IntDBAuthDbContext>(options =>
-//options.UseSqlServer(
-//    builder.Configuration.GetConnectionString("IntDBConnection")));
 
-//services.AddDbContext<MyContext>(ServiceLifetime.Transient);
 builder.Services.AddScoped<ISapEquipmentRepository, SapEquipmentRepository>();
 builder.Services.AddScoped<ISapMaterialRepository, SapMaterialRepository>();
 builder.Services.AddScoped<IMesMaterialRepository, MesMaterialRepository>();

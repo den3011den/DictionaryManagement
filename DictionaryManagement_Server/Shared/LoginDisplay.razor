@@ -6,14 +6,14 @@
     Пользователь: @UserLogin&nbsp&nbsp;&nbsp;
 
     @* <div>Входит в группу BDSHOME-PC\HomeUsers:&nbsp;</div>
-    
+
     @if (@context.User.IsInRole("BDSHOME-PC\\HomeUsers"))
-    {       
-        <div>Да</div>        
+    {
+    <div>Да</div>
     }
     else
     {
-        <div>Нет</div>
+    <div>Нет</div>
     }
 
     <br />
@@ -21,13 +21,13 @@
     <br />
     @if (@context.User.IsInRole("SIBUR\\G601GO-S601AS-MES-CLC_Developers"))
     {
-        <div>Да</div>
+    <div>Да</div>
     }
     else
     {
-        <div>Нет</div>
+    <div>Нет</div>
     }
-  *@  
+    *@
 </AuthorizeView>
 
 @code
@@ -36,7 +36,7 @@
     //[CascadingParameter]
     //private Task<AuthenticationState>? authenticationState { get; set; }
     public string UserLogin { get; set; }
-    
+
     protected override async Task OnInitializedAsync()
     {
         UserLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginAndName);

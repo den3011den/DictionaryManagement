@@ -26,7 +26,7 @@
     }
     else
     {
-           @*  <EditForm Model="ActiveReportEntityDTO" OnSubmit="ReportEntityDetailesClose"> *@
+        @*  <EditForm Model="ActiveReportEntityDTO" OnSubmit="ReportEntityDetailesClose"> *@
         <RadzenRow Gap="1rem">
             <RadzenColumn Size="12">
                 <RadzenStack>
@@ -80,7 +80,7 @@
                                  </div>
 
                                  <div class="rz-text-align-left">
-                                     <RadzenButton title="Скачать файл" Icon="download" ButtonStyle="ButtonStyle.Light " Style="margin-top: 10px;" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityUploadFile(@ActiveReportEntityDTO.Id))" @onclick:stopPropagation="true">
+                                     <RadzenButton title="Скачать файл" Icon="download" Disabled="@(String.IsNullOrEmpty(fileDownloadFullPath))" ButtonStyle="ButtonStyle.Light " Style="margin-top: 10px;" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityDownloadFile(@ActiveReportEntityDTO.Id))" @onclick:stopPropagation="true">
                                      </RadzenButton>
                                      <RadzenFormField Text="Скачаный файл на сервере" Variant="@variant" Style="width: 100%; max-width: 900px;">
                                          <RadzenTextBox @bind-Value="@fileDownloadFullPath"
@@ -107,22 +107,32 @@
                                      <RadzenDatePicker ShowTime="true" ShowSeconds="true" DateFormat="dd.MM.yyyy hh:mm:ss" @bind-Value="@ActiveReportEntityDTO.UploadTime" ReadOnly="true" />
                                  </RadzenFormField>
 
-                                 <RadzenFormField Text="Кто загружал файл" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                     <RadzenTextBox @bind-Value="@ActiveReportEntityDTO.UploadUserDTOFK.UserName"
-                                                          ReadOnly />
-                                 </RadzenFormField>
+                                 @if (ActiveReportEntityDTO.UploadUserDTOFK != null)
+                                {
+                                    <RadzenFormField Text="Кто загружал файл" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                        <RadzenTextBox @bind-Value="@ActiveReportEntityDTO.UploadUserDTOFK.UserName"
+                                                              ReadOnly />
+                                     </RadzenFormField>
+                                }
+                                else
+                                {
+                                    <RadzenFormField Text="Кто загружал файл" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                        <RadzenTextBox ReadOnly />
+                                     </RadzenFormField>
 
-                                 <div class="rz-text-align-left">
-                                     <RadzenCheckBox Disabled="true" @bind-Value=@ActiveReportEntityDTO.UploadSuccessFlag Name="CheckBox41" />
-                                     <RadzenLabel Text="Успех загрузки файла пользователем" Component="CheckBox4" Style="margin-left: 1px;" />
-                                 </div>
+                                }
 
-                                 <div class="rz-text-align-left">
-                                     <RadzenButton title="Скачать файл" Icon="download" ButtonStyle="ButtonStyle.Light" Style="margin-top: 10px;" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityUploadFile(@ActiveReportEntityDTO.Id))" @onclick:stopPropagation="true">
-                                     </RadzenButton>
+                                <div class="rz-text-align-left">
+                                    <RadzenCheckBox Disabled="true" @bind-Value=@ActiveReportEntityDTO.UploadSuccessFlag Name="CheckBox41" />
+                                    <RadzenLabel Text="Успех загрузки файла пользователем" Component="CheckBox4" Style="margin-left: 1px;" />
+                                </div>
 
-                                     <RadzenFormField Text="Загруженный файл на сервере" Variant="@variant" Style="width: 100%; max-width: 900px;">
-                                         <RadzenTextBox @bind-Value="@fileUploadFullPath"
+                                <div class="rz-text-align-left">
+                                    <RadzenButton title="Скачать файл" Icon="download" Disabled="@(String.IsNullOrEmpty(fileUploadFullPath))" ButtonStyle="ButtonStyle.Light" Style="margin-top: 10px;" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityUploadFile(@ActiveReportEntityDTO.Id))" @onclick:stopPropagation="true">
+                                    </RadzenButton>
+
+                                    <RadzenFormField Text="Загруженный файл на сервере" Variant="@variant" Style="width: 100%; max-width: 900px;">
+                                        <RadzenTextBox @bind-Value="@fileUploadFullPath"
                                                                   ReadOnly />
                                      </RadzenFormField>
                                  </div>
@@ -211,7 +221,7 @@
         <NavLink @onclick="(() => ReportEntityDetailesClose())" class="btn btn-primary">OK</NavLink>
     </div>*@
 
-           @*  </EditForm> *@
+        @*  </EditForm> *@
     }
 }
 
@@ -251,10 +261,20 @@
 
             ActiveReportEntityDTO = await _reportEntityRepository.GetById(ReportEntityId);
             reportEntityLogDTOs = await _reportReportEntityLogRepository.GetByReportEntityId(ReportEntityId);
+            if (reportEntityLogDTOs == null)
+            {
+                reportEntityLogDTOs = new List<ReportEntityLogDTO>();
+            }
             reportUploadPath = (await _settingsRepository.GetByName("ReportUploadPath")).Value;
-            fileUploadFullPath = reportUploadPath + ActiveReportEntityDTO.UploadReportFileName;
+            if (String.IsNullOrEmpty(ActiveReportEntityDTO.UploadReportFileName))
+                fileUploadFullPath = "";
+            else
+                fileUploadFullPath = reportUploadPath + ActiveReportEntityDTO.UploadReportFileName;
             reportDownloadPath = (await _settingsRepository.GetByName("ReportDownloadPath")).Value;
-            fileDownloadFullPath = reportDownloadPath + ActiveReportEntityDTO.DownloadReportFileName;
+            if (String.IsNullOrEmpty(ActiveReportEntityDTO.DownloadReportFileName))
+                fileDownloadFullPath = "";
+            else
+                fileDownloadFullPath = reportDownloadPath + ActiveReportEntityDTO.DownloadReportFileName;
 
             IsLoading = false;
             IsAdmin = true;

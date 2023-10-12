@@ -207,27 +207,27 @@
         {
             // if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
             // {
-                IsAdmin = true;
+            IsAdmin = true;
 
-                IsLoading = true;
-                StateHasChanged();
+            IsLoading = true;
+            StateHasChanged();
 
-                if (ReportTemplateId == null || ReportTemplateId == Guid.Empty)
-                {
-                    ActiveReportTemplateDTO = new ReportTemplateDTO();
-                }
-                else
-                {
-                    ActiveReportTemplateDTO = await _reportTemplateRepository.GetById(ReportTemplateId);
-                    Title = "Изменить шаблон отчёта";
-                }
+            if (ReportTemplateId == null || ReportTemplateId == Guid.Empty)
+            {
+                ActiveReportTemplateDTO = new ReportTemplateDTO();
+            }
+            else
+            {
+                ActiveReportTemplateDTO = await _reportTemplateRepository.GetById(ReportTemplateId);
+                Title = "Изменить шаблон отчёта";
+            }
 
-                MesDepartmentDTOList = await _mesDepartmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
-                ReportTemplateTypeDTOList = await _reportTemplateTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
-                DataTypeDTOList = await _dataTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
+            MesDepartmentDTOList = await _mesDepartmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
+            ReportTemplateTypeDTOList = await _reportTemplateTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
+            DataTypeDTOList = await _dataTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
 
-                IsLoading = false;
-                StateHasChanged();
+            IsLoading = false;
+            StateHasChanged();
             // }
             // else
             //     _navigationManager.NavigateTo("/reports/ReportTemplate");
@@ -244,89 +244,89 @@
         IsSubmited = true;
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-        ReportTemplatePath = (await _settingsRepository.GetByName("ReportTemplatePath")).Value;
+            ReportTemplatePath = (await _settingsRepository.GetByName("ReportTemplatePath")).Value;
 
-        if (String.IsNullOrEmpty(ReportTemplatePath))
-        {
-            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Не найдена настройка с наименованием \"ReportTemplatePath\" либо значение настройки пусто");
-            IsSubmited = false;
-            return;
-        }
-
-        if (!Directory.Exists(ReportTemplatePath))
-        {
-            await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Путь \"" + ReportTemplatePath + "\", указанный в качестве значения настройки \"ReportTemplatePath\", не существует или не доступен!");
-            IsSubmited = false;
-            return;
-        }
-
-        if (ReportTemplateId == null || ReportTemplateId == Guid.Empty)
-        { // создание
-
-            if (String.IsNullOrEmpty(uploadFileWarning))
+            if (String.IsNullOrEmpty(ReportTemplatePath))
             {
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Выбор файла шаблона отчёта является обязательным!");
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Не найдена настройка с наименованием \"ReportTemplatePath\" либо значение настройки пусто");
                 IsSubmited = false;
                 return;
             }
 
-            var foundByMult = await _reportTemplateRepository.GetByReportTemplateTypeIdAndDestDataTypeIdAndDepartmentId(ActiveReportTemplateDTO.ReportTemplateTypeId,
-                ActiveReportTemplateDTO.DestDataTypeId, ActiveReportTemplateDTO.DepartmentId);
-            if (foundByMult != null)
+            if (!Directory.Exists(ReportTemplatePath))
             {
-                await _jsRuntime.ToastrError("Уже есть шаблон отчёта с типом: '" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "' Типом вых данных: '"
-                    + ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "' для производства: '" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "'");
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Путь \"" + ReportTemplatePath + "\", указанный в качестве значения настройки \"ReportTemplatePath\", не существует или не доступен!");
                 IsSubmited = false;
                 return;
             }
 
-            ActiveReportTemplateDTO.Description = "Шаблон типа: \"" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "\" c вых данными: \"" +
-                ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "\" для производства: \"" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "\"";
+            if (ReportTemplateId == null || ReportTemplateId == Guid.Empty)
+            { // создание
 
-            ReportTemplateDTO createdTemplateDTO = await _reportTemplateRepository.Create(ActiveReportTemplateDTO);
+                if (String.IsNullOrEmpty(uploadFileWarning))
+                {
+                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Выбор файла шаблона отчёта является обязательным!");
+                    IsSubmited = false;
+                    return;
+                }
 
-            createdTemplateDTO.TemplateFileName = createdTemplateDTO.Id + ".xlsx";
+                var foundByMult = await _reportTemplateRepository.GetByReportTemplateTypeIdAndDestDataTypeIdAndDepartmentId(ActiveReportTemplateDTO.ReportTemplateTypeId,
+                    ActiveReportTemplateDTO.DestDataTypeId, ActiveReportTemplateDTO.DepartmentId);
+                if (foundByMult != null)
+                {
+                    await _jsRuntime.ToastrError("Уже есть шаблон отчёта с типом: '" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "' Типом вых данных: '"
+                        + ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "' для производства: '" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "'");
+                    IsSubmited = false;
+                    return;
+                }
 
-            await _reportTemplateRepository.Update(createdTemplateDTO);
+                ActiveReportTemplateDTO.Description = "Шаблон типа: \"" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "\" c вых данными: \"" +
+                    ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "\" для производства: \"" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "\"";
 
-            upload.Url = @"UploadFileController/UploadReportTemplateFile/" + createdTemplateDTO.Id;
-            await upload.Upload();
+                ReportTemplateDTO createdTemplateDTO = await _reportTemplateRepository.Create(ActiveReportTemplateDTO);
 
-            await _jsRuntime.ToastrSuccess("Шаблон \"" + ActiveReportTemplateDTO.Description + "\" создан");
-            _dialogService.Close(ActiveReportTemplateDTO);            
-        }
-        else
-        { // изменение
+                createdTemplateDTO.TemplateFileName = createdTemplateDTO.Id + ".xlsx";
 
-            var foundByMult = await _reportTemplateRepository.GetByReportTemplateTypeIdAndDestDataTypeIdAndDepartmentId(ActiveReportTemplateDTO.ReportTemplateTypeId,
-                ActiveReportTemplateDTO.DestDataTypeId, ActiveReportTemplateDTO.DepartmentId);
+                await _reportTemplateRepository.Update(createdTemplateDTO);
 
-            if ((foundByMult != null) && (foundByMult.Id != ActiveReportTemplateDTO.Id))
-            {
-                await _jsRuntime.ToastrError("Уже есть шаблон отчёта с типом: '" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "' Типом вых данных: '"
-                    + ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "' для производства: '" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "'");
-                IsSubmited = false;
-                return;
-            }
-
-            ActiveReportTemplateDTO.Description = "Шаблон типа: \"" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "\" c вых данными: \"" +
-                ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "\" для производства: \"" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "\"";
-
-            ActiveReportTemplateDTO.TemplateFileName = ActiveReportTemplateDTO.Id + ".xlsx";
-
-            if (!String.IsNullOrEmpty(uploadFileWarning))
-            {
-                upload.Url = @"UploadFileController/UploadReportTemplateFile/" + ActiveReportTemplateDTO.Id;
-
+                upload.Url = @"UploadFileController/UploadReportTemplateFile/" + createdTemplateDTO.Id;
                 await upload.Upload();
+
+                await _jsRuntime.ToastrSuccess("Шаблон \"" + ActiveReportTemplateDTO.Description + "\" создан");
+                _dialogService.Close(ActiveReportTemplateDTO);
             }
+            else
+            { // изменение
 
-            await _reportTemplateRepository.Update(ActiveReportTemplateDTO);
+                var foundByMult = await _reportTemplateRepository.GetByReportTemplateTypeIdAndDestDataTypeIdAndDepartmentId(ActiveReportTemplateDTO.ReportTemplateTypeId,
+                    ActiveReportTemplateDTO.DestDataTypeId, ActiveReportTemplateDTO.DepartmentId);
 
-            await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + ActiveReportTemplateDTO.Id.ToString() + "\" изменён");
+                if ((foundByMult != null) && (foundByMult.Id != ActiveReportTemplateDTO.Id))
+                {
+                    await _jsRuntime.ToastrError("Уже есть шаблон отчёта с типом: '" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "' Типом вых данных: '"
+                        + ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "' для производства: '" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "'");
+                    IsSubmited = false;
+                    return;
+                }
 
-            _dialogService.Close(ActiveReportTemplateDTO);
-        }        
+                ActiveReportTemplateDTO.Description = "Шаблон типа: \"" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "\" c вых данными: \"" +
+                    ActiveReportTemplateDTO.DestDataTypeDTOFK.Name + "\" для производства: \"" + ActiveReportTemplateDTO.MesDepartmentDTOFK.Name + "\"";
+
+                ActiveReportTemplateDTO.TemplateFileName = ActiveReportTemplateDTO.Id + ".xlsx";
+
+                if (!String.IsNullOrEmpty(uploadFileWarning))
+                {
+                    upload.Url = @"UploadFileController/UploadReportTemplateFile/" + ActiveReportTemplateDTO.Id;
+
+                    await upload.Upload();
+                }
+
+                await _reportTemplateRepository.Update(ActiveReportTemplateDTO);
+
+                await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + ActiveReportTemplateDTO.Id.ToString() + "\" изменён");
+
+                _dialogService.Close(ActiveReportTemplateDTO);
+            }
         }
 
         IsSubmited = false;
@@ -378,8 +378,8 @@
     private async Task OnClickSave()
     {
         IsSubmited = true;
-         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
-         {
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
             UserDTO? currentUserDTO = await _authorizationRepository.GetCurrentUserDTO(SD.MessageBoxMode.Off);
             ActiveReportTemplateDTO.AddTime = DateTime.Now;
             if (currentUserDTO != null)
@@ -390,16 +390,16 @@
                 // ActiveReportTemplateDTO.AddUserDTOFK = SD.CurrentUserDTO;
             }
             ActiveReportTemplateDTO.TemplateFileName = "sddsds";
-         }
+        }
         IsSubmited = false;
     }
 
     // private async Task AddEditReportTemplateProcedure2()
     // {
 
-        
+
     //     var ggg = 2;
-        
+
     // }
 
     void OnProgress(UploadProgressArgs args)

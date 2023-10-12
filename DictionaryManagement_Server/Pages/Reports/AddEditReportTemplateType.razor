@@ -12,7 +12,7 @@
 
 @if (IsAdmin == true)
 {
-    <div class="row my-2">        
+    <div class="row my-2">
 
         <div class="col-md-10">
             @if (IsLoading)
@@ -45,7 +45,7 @@
                             </RadzenStack>
                         </RadzenColumn>
                     </RadzenRow>
-                    
+
                     <div class="form-group py-2">
                         <button class="btn btn-primary">@Title</button>
                         <NavLink @onclick="(() => OnClickCancel())" class="btn btn-secondary">Отмена</NavLink>
@@ -71,7 +71,7 @@
     public bool IsAdmin { get; set; }
 
     public ReportTemplateTypeDTO ActiveReportTemplateTypeDTO { get; set; }
-        
+
     private string Title { get; set; } = "Создать тип шаблона отчёта";
 
     protected override async Task OnInitializedAsync()
@@ -135,13 +135,13 @@
                 if (foundByName != null)
                 {
                     await _jsRuntime.ToastrError("Уже есть тип шаблона отчёта с наименованием " + foundByName.Name + " (ИД: " + foundByName.Id.ToString() + ")");
-                    return;                    
+                    return;
                 }
 
                 await _reportTemplateTypeRepository.Create(ActiveReportTemplateTypeDTO);
 
                 await _jsRuntime.ToastrSuccess("Тип шаблона отчёта \"" + ActiveReportTemplateTypeDTO.Name + "\" создана");
-         
+
                 _dialogService.Close(ActiveReportTemplateTypeDTO);
 
             }
@@ -158,7 +158,7 @@
                 await _reportTemplateTypeRepository.Update(ActiveReportTemplateTypeDTO);
 
                 await _jsRuntime.ToastrSuccess("Тип шаблона отчёта \"" + ActiveReportTemplateTypeDTO.Name + " \" изменен");
-                
+
                 _dialogService.Close(ActiveReportTemplateTypeDTO);
             }
         }

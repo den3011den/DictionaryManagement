@@ -51,7 +51,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public string? DownloadReportFileName { get; set; }
 
         [Display(Name = "Успешно скачан")]
-        public bool DownloadSuccessFlag { get; set; } = false;
+        public bool DownloadSuccessFlag { get; set; } = true;
 
         [Display(Name = "Когда загружен")]
         public DateTime? UploadTime { get; set; }
@@ -60,7 +60,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public Guid? UploadUserId { get; set; }
 
         [Display(Name = "Кто загрузил")]
-        public UserDTO? UploadUserDTOFK { get; set; }
+        public UserDTO? UploadUserDTOFK { get; set; } 
 
         [Display(Name = "Имя загруженного файла")]
         public string? UploadReportFileName { get; set; }
