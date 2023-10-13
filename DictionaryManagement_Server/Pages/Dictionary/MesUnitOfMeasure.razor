@@ -21,21 +21,24 @@
     {
 
         <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую единицу измерения SAP" Click="@InsertRow" Disabled=@(mesUnitOfMeasureDTOToInsert != null || mesUnitOfMeasureDTOToUpdate != null) />
-        <RadzenDataGrid @ref="mesUnitOfMeasureDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="8" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                        Data="@mesUnitOfMeasureDTOs" TItem="MesUnitOfMeasureDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+        <RadzenDataGrid @ref="mesUnitOfMeasureDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                        Data="@mesUnitOfMeasureDTOs" TItem="MesUnitOfMeasureDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                        EmptyText="Нет записей для отображения"
-                        FilterMode="FilterMode.Simple">
+                        EmptyText="Нет записей для отображения"            
+                        AllowColumnResize="false"
+                        FilterMode="FilterMode.Simple"
+                        GridLines="DataGridGridLines.Both"
+                        Style="height:720px">            
             <Columns>
                 <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Id" Title="Ид записи" Width="120px" />
-                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Name" Title="Наименование">
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Name" Title="Наименование" Width="270px">
                     <EditTemplate Context="mesUnitOfMeasureDTO">
                         <RadzenTextBox @bind-Value="mesUnitOfMeasureDTO.Name" Style="width:100%; display: block" Name="Name" />
                         <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                         <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="ShortName" Title="Сокр. наименование">
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="ShortName" Title="Сокр. наименование" Width="270px">
                     <EditTemplate Context="mesUnitOfMeasureDTO">
                         <RadzenTextBox @bind-Value="mesUnitOfMeasureDTO.ShortName" Style="width:100%; display: block" Name="ShortName" />
                         <RadzenRequiredValidator Text="Сокр. наименование обязателено к заполнению" Component="ShortName" Popup="true" />
@@ -43,7 +46,7 @@
                     </EditTemplate>
                 </RadzenDataGridColumn>
 
-                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
+                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px">
                     <Template Context="data">
                         <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                     </Template>
