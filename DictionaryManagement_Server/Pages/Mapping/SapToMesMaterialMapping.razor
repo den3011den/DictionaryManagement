@@ -25,13 +25,23 @@
         @if (IsLoading != true)
         {
             <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую связку материалов" Click="@InsertRow" Disabled=@(sapToMesMaterialMappingDTOToInsert != null || sapToMesMaterialMappingDTOToUpdate != null) />
-            <RadzenDataGrid @ref="sapToMesMaterialMappingDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="8" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@sapToMesMaterialMappingDTOs" TItem="SapToMesMaterialMappingDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+            <RadzenDataGrid @ref="sapToMesMaterialMappingDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            Data="@sapToMesMaterialMappingDTOs" TItem="SapToMesMaterialMappingDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Simple">
+                            FilterMode="FilterMode.Simple"
+                            AllowColumnResize="false"
+                            AllowVirtualization="true"
+                            GridLines="DataGridGridLines.Both"
+                            Style="height:720px">
                 <Columns>
                     <RadzenDataGridColumn TItem="SapToMesMaterialMappingDTO" Property="SapMaterialDTO" FilterProperty="SapMaterialDTO.ToStringValue" Title="Материал SAP" Width="280px" Filterable="true">
+                        <Template Context="sapToMesMaterialMappingDTO">
+                            <div style="white-space:pre-wrap">
+                                @sapToMesMaterialMappingDTO.SapMaterialDTO.ShortName
+                            </div>
+                        </Template>
+
                         <EditTemplate Context="sapToMesMaterialMappingDTO">
                             <RadzenDropDown Data="@sapMaterialDTOs" @bind-Value="sapToMesMaterialMappingDTO.SapMaterialDTO" Style="width:100%; display: block;" Name="SapMat" AllowFiltering="true"
                                             FilterOperator="StringFilterOperator.Contains" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" />
@@ -40,6 +50,11 @@
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="SapToMesMaterialMappingDTO" Property="MesMaterialDTO" Title="Материал MES" Width="280px" FilterProperty="MesMaterialDTO.ToStringValue" Filterable="true">
+                        <Template Context="sapToMesMaterialMappingDTO">
+                            <div style="white-space:pre-wrap">
+                                @sapToMesMaterialMappingDTO.MesMaterialDTO.ShortName
+                            </div>
+                        </Template>
                         <EditTemplate Context="sapToMesMaterialMappingDTO">
                             <RadzenDropDown Data="@mesMaterialDTOs" @bind-Value="sapToMesMaterialMappingDTO.MesMaterialDTO" Style="width:100%; display: block;" Name="MesMat" AllowFiltering="true"
                                             FilterOperator="StringFilterOperator.Contains" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" />
