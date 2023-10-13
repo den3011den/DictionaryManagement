@@ -34,79 +34,67 @@
 
             @*<div style="word-wrap: normal">*@
             <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тэг СИР" Click="@(args => EditRow(null))" />
-            <RadzenDataGrid @bind-Settings="@MesParamGridSettings" @ref="mesParamDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" PageSize="6" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGrid @bind-Settings="@MesParamGridSettings" @ref="mesParamDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@mesParamDTOs" TItem="MesParamDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             FilterMode="FilterMode.Simple"
-                            AllowColumnResize="true"
                             Density=Density.Compact
                             ShowPagingSummary="true"
                             EmptyText="Нет записей для отображения"
-                            AllowVirtualization="true">
+                            AllowColumnResize="false"
+                            AllowVirtualization="true"
+                            GridLines="DataGridGridLines.Both"
+                            Style="height:720px">
                 <Columns>
                     <RadzenDataGridColumn TItem="MesParamDTO" Property="Id" Title="Ид записи" Width="35px">
-                        @*                    <EditTemplate Context="data1">
-                <div class="rz-text-wrap">@data1.Id</div>
-                </EditTemplate>*@
                     </RadzenDataGridColumn>
 
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Code" Title="Код тэга СИР" Width="70px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Code" Title="Код тэга СИР" Width="100px">
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="MesParamDTO" Property="Name" Title="Наименование" Width="100px">
                         <Template Context="data1">
-                            <RadzenCard Style="white-space:pre-wrap">
-                                <RadzenText TextStyle="TextStyle.Body2">
-                                    <strong>
-                                        @data1.Name
-                                    </strong>
-                                </RadzenText>
-                            </RadzenCard>
+                            <div style="white-space:pre-wrap">
+                                <strong>
+                                    @data1.Name
+                                </strong>
+                            </div>
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceTypeDTOFK" Title="Источник" Width="80px" FilterProperty="MesParamSourceTypeDTOFK.ToStringValue" SortProperty="MesParamSourceTypeDTOFK.ToStringValue">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceTypeDTOFK" Title="Источник" Width="60px" FilterProperty="MesParamSourceTypeDTOFK.ToStringValue" SortProperty="MesParamSourceTypeDTOFK.ToStringValue">
                         <Template Context="data1">
-                            <RadzenCard Style="white-space:pre-wrap">
-                                <RadzenText TextStyle="TextStyle.Body2">
-                                    <strong>
-                                        @data1.MesParamSourceTypeDTOFK
-                                    </strong>
-                                </RadzenText>
-                            </RadzenCard>
+                            <div style="white-space:pre-wrap">
+                                <strong>
+                                    @data1.MesParamSourceTypeDTOFK
+                                </strong>
+                            </div>
                         </Template>
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceLink" Title="Тэг источника" Width="100px">
-                        @*                    <Template Context="data1">
-                <RadzenCard Style="white-space:pre-wrap">
-                <RadzenText TextStyle="TextStyle.Body2">
-                <strong>
-                @data1.MesParamSourceLink
-                </strong>
-                </RadzenText>
-                </RadzenCard>
-                </Template>*@
+                        <Template Context="data1">
+                            <div style="white-space:pre-wrap">
+                                @data1.MesParamSourceLink
+                            </div>
+                        </Template>
+
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="MesParamDTO" Property="SapEquipmentSourceDTOFK" Title="SAP источник" Width="100px" FilterProperty="SapEquipmentSourceDTOFK.ToStringValue" SortProperty="SapEquipmentSourceDTOFK.ToStringValue">
                         <Template Context="data1">
-                            <RadzenCard Style="white-space:pre-wrap">
-                                <RadzenText TextStyle="TextStyle.Body2">
-                                    @data1.SapEquipmentSourceDTOFK
-                                </RadzenText>
-                            </RadzenCard>
+                            <div style="white-space:pre-wrap">
+                                @data1.SapEquipmentSourceDTOFK
+                            </div>
                         </Template>
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="MesParamDTO" Property="SapEquipmentDestDTOFK" Title="SAP приемник" Width="100px" FilterProperty="SapEquipmentDestDTOFK.ToStringValue" SortProperty="SapEquipmentDestDTOFK.ToStringValue">
                         <Template Context="data1">
-                            <RadzenCard Style="white-space:pre-wrap">
-                                <RadzenText TextStyle="TextStyle.Body2">
-                                    @data1.SapEquipmentDestDTOFK
-                                </RadzenText>
-                            </RadzenCard>
+                            <div style="white-space:pre-wrap">
+                                @data1.SapEquipmentDestDTOFK
+                            </div>
                         </Template>
                     </RadzenDataGridColumn>
 
@@ -115,21 +103,17 @@
                     {
                         <RadzenDataGridColumn TItem="MesParamDTO" Property="MesMaterialDTOFK" Title="Материал MES" Width="70px" FilterProperty="MesMaterialDTOFK.ToStringValue" SortProperty="MesMaterialDTOFK.ToStringValue">
                             <Template Context="data1">
-                                <RadzenCard Style="white-space:pre-wrap">
-                                    <RadzenText TextStyle="TextStyle.Body2">
-                                        @data1.MesMaterialDTOFK
-                                    </RadzenText>
-                                </RadzenCard>
+                                <div style="white-space:pre-wrap">
+                                    @data1.MesMaterialDTOFK
+                                </div>
                             </Template>
                         </RadzenDataGridColumn>
 
                         <RadzenDataGridColumn TItem="MesParamDTO" Property="MesUnitOfMeasureDTOFK" Title="Ед.изм MES" Width="65px" FilterProperty="MesUnitOfMeasureDTOFK.ToStringValue" SortProperty="MesUnitOfMeasureDTOFK.ToStringValue">
                             <Template Context="data1">
-                                <RadzenCard Style="white-space:pre-wrap">
-                                    <RadzenText TextStyle="TextStyle.Body2">
-                                        @data1.MesUnitOfMeasureDTOFK
-                                    </RadzenText>
-                                </RadzenCard>
+                                <div style="white-space:pre-wrap">
+                                    @data1.MesUnitOfMeasureDTOFK
+                                </div>
                             </Template>
                         </RadzenDataGridColumn>
                     }
@@ -139,34 +123,30 @@
 
                         <RadzenDataGridColumn TItem="MesParamDTO" Property="SapMaterialDTOFK" Title="Материал SAP" Width="70px" FilterProperty="SapMaterialDTOFK.ToStringValue" SortProperty="SapMaterialDTOFK.ToStringValue">
                             <Template Context="data1">
-                                <RadzenCard Style="white-space:pre-wrap">
-                                    <RadzenText TextStyle="TextStyle.Body2">
-                                        @data1.SapMaterialDTOFK
-                                    </RadzenText>
-                                </RadzenCard>
+                                <div style="white-space:pre-wrap">
+                                    @data1.SapMaterialDTOFK
+                                </div>
                             </Template>
                         </RadzenDataGridColumn>
 
                         <RadzenDataGridColumn TItem="MesParamDTO" Property="SapUnitOfMeasureDTOFK" Title="Ед.изм SAP" Width="65px" FilterProperty="SapUnitOfMeasureDTOFK.ToStringValue" SortProperty="SapUnitOfMeasureDTOFK.ToStringValue">
                             <Template Context="data1">
-                                <RadzenCard Style="white-space:pre-wrap">
-                                    <RadzenText TextStyle="TextStyle.Body2">
-                                        @data1.SapUnitOfMeasureDTOFK
-                                    </RadzenText>
-                                </RadzenCard>
+                                <div style="white-space:pre-wrap">
+                                    @data1.SapUnitOfMeasureDTOFK
+                                </div>
                             </Template>
                         </RadzenDataGridColumn>
 
 
                     }
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="20px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="40px">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Context="mesParamDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="47px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Context="mesParamDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="87px">
                         <Template Context="mesParamDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

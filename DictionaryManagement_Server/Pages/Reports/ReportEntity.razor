@@ -23,22 +23,11 @@
         @if (IsLoading != true)
         {
 
-            @*<div style="word-wrap: normal">*@
-            @*        <RadzenDatePicker @bind-Value=@startDate />
-    <RadzenDatePicker @bind-Value=@endDate />*@
-
-
             <RadzenRow Gap="1rem" Class="rz-p-0 rz-p-lg-4">
                 <RadzenColumn Size="12" SizeMD="12">
                     <RadzenStack>
-                        @*<RadzenFieldset Text="Начало интревала">*@
                         <RadzenStack Gap="1rem">
                             <RadzenRow AlignItems="AlignItems.Center">
-                                @*                                <RadzenColumn Size="12" SizeMD="4">
-                        <RadzenLabel Text="Credit Card" />
-                        </RadzenColumn>
-                        *@                               @* <RadzenColumn Size="12" SizeMD="8">*@
-
                                 <RadzenRadioButtonList @bind-Value=@applyRadioGroupValue TValue="int" Change="@(args => ChangeEndDate())">
                                     <Items>
                                         <RadzenRadioButtonListItem Text="По дате скачивания из СИР" Value="1" />
@@ -46,23 +35,13 @@
                                     </Items>
                                 </RadzenRadioButtonList>
                                 <RadzenDatePicker @bind-Value=@startDate Change="@(args => ChangeStartDate())" ShowTime="true" ShowSeconds="true" DateFormat="dd.MM.yyyy HH:mm:ss" />
-                                @*   </RadzenColumn>*@
-                                @* <RadzenColumn Size="12" SizeMD="8">     *@
                                 <RadzenDatePicker @bind-Value=@endDate Change="@(args => ChangeEndDate())" Min=minEndDate Max=@maxEndDate ShowTime="true" ShowSeconds="true" DateFormat="dd.MM.yyyy HH:mm:ss" />
-                                @* </RadzenColumn>*@
-                                @* <RadzenColumn Size="12" SizeMD="8">*@
                                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="done" Disabled="@ApplyButtonDisabled" Text="Применить" Click="@(args => GetRows())" />
-                                @*</RadzenColumn>*@
                             </RadzenRow>
                         </RadzenStack>
-                        @*</RadzenFieldset>*@
                     </RadzenStack>
                 </RadzenColumn>
             </RadzenRow>
-
-
-
-
 
 
             <RadzenDataGrid @bind-Settings="@ReportEntityGridSettings" @ref="reportEntityDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
@@ -73,7 +52,7 @@
                             ShowPagingSummary="true"
                             EmptyText="Нет записей для отображения"
                             AllowVirtualization="true"
-                            Style="height:700px">
+                            Style="height:720px">
                 <Columns>
                     <RadzenDataGridColumn TItem="ReportEntityDTO" Property="ToStringId" Title="Ид экземпляра отчёта" Width="19%" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
@@ -81,24 +60,13 @@
 
                     <RadzenDataGridColumn TItem="ReportEntityDTO" Property="ReportTemplateDTOFK.Description" Title="Шаблон отчёта" Width="21%" FilterProperty="ReportTemplateDTOFK.Description" SortProperty="ReportTemplateDTOFK.Description" TextAlign="TextAlign.Center">
                         <Template Context="data1">
-                            <RadzenCard Style="white-space:pre-wrap">
-                                <RadzenText TextStyle="TextStyle.Body2">
-                                    <strong>
-                                        @data1.ReportTemplateDTOFK.Description
-                                    </strong>
-                                </RadzenText>
-                            </RadzenCard>
+                            <div style="white-space:pre-wrap">
+                                <strong>
+                                    @data1.ReportTemplateDTOFK.Description
+                                </strong>
+                            </div>
                         </Template>
                     </RadzenDataGridColumn>
-
-                    @*                <RadzenDataGridColumn TItem="ReportEntityDTO" Title="Интревал дат отчёта" Sortable="false" Filterable="false" TextAlign="TextAlign.Center">
-            <Columns>
-            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="ReportTimeStart" Title="Начало" Width="6%" Sortable="true" Filterable="true" TextAlign="TextAlign.Center">
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="ReportTimeEnd" Title="Конец" Width="6%" Sortable="true" Filterable="true" TextAlign="TextAlign.Center">
-            </RadzenDataGridColumn>
-            </Columns>
-            </RadzenDataGridColumn>*@
 
                     <RadzenDataGridColumn TItem="ReportEntityDTO" Title="Скачан из СИР" Sortable="false" Filterable="true" TextAlign="TextAlign.Center">
                         <Columns>
@@ -106,25 +74,20 @@
                             </RadzenDataGridColumn>
 
                             <RadzenDataGridColumn TItem="ReportEntityDTO" Property="DownloadUserDTOFK.UserName" Title="Кто" Width="100px" TextAlign="TextAlign.Center" Filterable="true">
+                                <Template Context="data1">
+                                    <div style="white-space:pre-wrap">
+                                        @data1.DownloadUserDTOFK.UserName
+                                    </div>
+                                </Template>
                             </RadzenDataGridColumn>
 
                             <RadzenDataGridColumn TItem="ReportEntityDTO" Property="DownloadSuccessFlag" Title="Файл" Width="100px" TextAlign="TextAlign.Center" Filterable="true">
-                                <Template Context="data">
-                                    @*<RadzenCheckBox @bind-Value=data.DownloadSuccessFlag ReadOnly="true" TriState="false" TValue="bool" />*@
+                                <Template Context="data">                                    
                                     <RadzenButton title="Скачать файл" Icon="download" ButtonStyle="ButtonStyle.Light" Disabled="@(String.IsNullOrEmpty(data.DownloadReportFileName))" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityDownloadFile(data.Id))" @onclick:stopPropagation="true">
                                     </RadzenButton>
-
                                 </Template>
                             </RadzenDataGridColumn>
-                            @*                        <RadzenDataGridColumn TItem="ReportEntityDTO" Property="DownloadSuccessFlag" Title="Успех" Width="4%" TextAlign="TextAlign.Center" Filterable="true">
-                    <Template Context="data">
-                    <RadzenButton title="Скачать файл" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityDownloadFile(data.Id))" @onclick:stopPropagation="true">
-                    </RadzenButton>
-                    </Template>
-                    </RadzenDataGridColumn>
-                    *@
                         </Columns>
-
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="ReportEntityDTO" Title="Загружен в СИР" Sortable="false" Filterable="true" TextAlign="TextAlign.Center">
@@ -132,30 +95,33 @@
                             <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadTime" Title="Время" Width="100px" TextAlign="TextAlign.Center">
                             </RadzenDataGridColumn>
 
-                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadUserDTOFK.UserName" Title="Кем" Width="100px" TextAlign="TextAlign.Center" Filterable="true">
+                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadUserDTOFK.UserName" Title="Кто" Width="100px" TextAlign="TextAlign.Center" Filterable="true">
+                                <Template Context="data1">
+                                    @if (data1.UploadUserDTOFK != null)
+                                    {
+                                        <div style="white-space:pre-wrap">
+                                            @data1.UploadUserDTOFK.UserName
+                                        </div>
+                                    }
+                                </Template>
                             </RadzenDataGridColumn>
 
                             <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadSuccessFlag" Title="Файл" Filterable="true" Width="100px" TextAlign="TextAlign.Center">
                                 <Template Context="data">
                                     <RadzenButton title="Скачать файл" Icon="download" ButtonStyle="ButtonStyle.Light" Disabled="@(String.IsNullOrEmpty(data.UploadReportFileName))" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityUploadFile(data.Id))" @onclick:stopPropagation="true">
                                     </RadzenButton>
-
-                                    @*                                <RadzenCheckBox @bind-Value=data.UploadSuccessFlag ReadOnly="true" TriState="true" TValue="bool" />*@
                                 </Template>
                             </RadzenDataGridColumn>
                         </Columns>
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="ReportEntityDTO" Context="reportEntityDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
                         <Template Context="reportEntityDTO">
-                            @*<a href="/DownloadFileController/DownloadReportTemplateFile/@reportTemplateDTO.Id">                         </a>*@
                             <RadzenButton title="Детали" ButtonStyle="ButtonStyle.Info" Icon="info" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => ShowReportEntityDetails(reportEntityDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
-            @*   </div>*@
-
         }
         else
         {
