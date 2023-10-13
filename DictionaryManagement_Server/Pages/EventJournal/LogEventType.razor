@@ -25,14 +25,23 @@
         {
 
             <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тип событий" Click="@InsertRow" Disabled=@(logEventTypeDTOToInsert != null || logEventTypeDTOToUpdate != null) />
-            <RadzenDataGrid @ref="logEventTypeDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="8" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@logEventTypeDTOs" TItem="LogEventTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+            <RadzenDataGrid @ref="logEventTypeDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            Data="@logEventTypeDTOs" TItem="LogEventTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Simple">
+                            FilterMode="FilterMode.Simple"
+                            AllowColumnResize="false"
+                            AllowVirtualization="true"
+                            GridLines="DataGridGridLines.Both"
+                            Style="height:720px">
                 <Columns>
                     <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
                     <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="Name" Title="Наименование">
+                        <Template Context="logEventTypeDTO">
+                            <div style="white-space:pre-wrap">
+                                @logEventTypeDTO.Name
+                            </div>
+                        </Template>
                         <EditTemplate Context="logEventTypeDTO">
                             <RadzenTextBox @bind-Value="logEventTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
@@ -40,7 +49,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="70px">
+                    <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>

@@ -16,10 +16,10 @@ namespace DictionaryManagement_Models.IntDBModels
         [Required(ErrorMessage = "ИД обязателен")]        
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Код обязателен для заполнения")]
-        [Range(1, int.MaxValue, ErrorMessage = "Код может быть от {1} до {2}")]
+        //[Required(ErrorMessage = "Код обязателен для заполнения")]
+        //[Range(1, int.MaxValue, ErrorMessage = "Код может быть от {1} до {2}")]
         [Display(Name = "Код")]
-        public int MesCode { get; set; }
+        public int? MesCode { get; set; }
 
         [Required(ErrorMessage = "Наименование обязателено для заполнения")]
         [Display(Name = "Наименование")]

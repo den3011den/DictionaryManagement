@@ -27,22 +27,25 @@
         {
 
             <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую смену" Click="@(args => EditRow(null))" />
-            <RadzenDataGrid @bind-Settings="@SmenaGridSettings" @ref="smenaDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" PageSize="8" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGrid @bind-Settings="@SmenaGridSettings" @ref="smenaDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@smenaDTOs" TItem="SmenaDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             FilterMode="FilterMode.Simple"
                             Density=Density.Compact
                             ShowPagingSummary="true"
                             EmptyText="Нет записей для отображения"
-                            AllowVirtualization="true">
+                            AllowVirtualization="true"
+                            AllowColumnResize="false"
+                            GridLines="DataGridGridLines.Both"
+                            Style="height:720px">                
                 <Columns>
-                    <RadzenDataGridColumn TItem="SmenaDTO" Property="Id" Title="Ид записи" Width="90px">
+                    <RadzenDataGridColumn TItem="SmenaDTO" Property="Id" Title="Ид записи" Width="70px">
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="SmenaDTO" Property="Name" Title="Наименование" Width="100px">
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SmenaDTO" Property="DepartmentDTOFK.ShortName" Title="Производство" Width="100px" FilterProperty="DepartmentDTOFK.ShortName" SortProperty="DepartmentDTOFK.ShortName">
+@*                     <RadzenDataGridColumn TItem="SmenaDTO" Property="DepartmentDTOFK.ShortName" Title="Производство" Width="100px" FilterProperty="DepartmentDTOFK.ShortName" SortProperty="DepartmentDTOFK.ShortName">
                         <Template Context="data1">
                             <RadzenCard Style="white-space:pre-wrap">
                                 <RadzenText TextStyle="TextStyle.Body2">
@@ -52,8 +55,17 @@
                                 </RadzenText>
                             </RadzenCard>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumn> *@
 
+                    <RadzenDataGridColumn TItem="SmenaDTO" Property="DepartmentDTOFK.ShortName" Title="Производство" Width="100px" FilterProperty="DepartmentDTOFK.ShortName" SortProperty="DepartmentDTOFK.ShortName">
+                        <Template Context="data1">
+                            <div style="white-space:pre-wrap">
+                                <strong>
+                                    @data1.DepartmentDTOFK.ShortName
+                                </strong>
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="SmenaDTO" Property="StartTime" Title="Время начала" Width="60px">
                     </RadzenDataGridColumn>

@@ -155,8 +155,8 @@ namespace DictionaryManagement_Business.Repository
             return 0;
 
         }
-
-        public async Task<MesDepartmentDTO> GetByCode(int mesCode = 0)
+        
+        public async Task<MesDepartmentDTO> GetByCode(int? mesCode = 0)
         {
             var objToGet = _db.MesDepartment.FirstOrDefaultWithNoLock(u => u.MesCode == mesCode);
             if (objToGet != null)

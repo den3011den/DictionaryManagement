@@ -36,26 +36,35 @@
         {
 
             <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@(args => EditRow(null))" />
-            <RadzenDataGrid @bind-Settings="@MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" AllowColumnResize="true" ExpandMode="DataGridExpandMode.Single"
+            <RadzenDataGrid @bind-Settings="@MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" ExpandMode="DataGridExpandMode.Single"
                             Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
                             FilterMode="FilterMode.Simple"
                             Density="Density.Compact"
-                            Style="height:780px">
+                            AllowColumnResize="false"
+                            GridLines="DataGridGridLines.Both"                           
+                            Style="height:720px">
                 <Columns>
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Title="Наименование" Frozen="true" Width="340px">
+                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Title="Наименование" Frozen="true" Width="200px">
                         <Template Context="data">
-
-                            <strong>@data.Name</strong>
+                            <div style="white-space:pre-wrap">
+                                <strong>@data.Name</strong>
+                            </div>
                         </Template>
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Id" Title="ИД" Width="60px" FilterOperator="FilterOperator.Contains" />
                     <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="MesCode" Title="Код" Width="100px" FilterOperator="FilterOperator.Contains" />
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ShortName" Title="Сокр. наименование" Width="340px" FilterOperator="FilterOperator.Contains" />
+                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ShortName" Title="Сокр. наименование" FilterOperator="FilterOperator.Contains" Width="200px">
+                        <Template Context="data">
+                            <div style="white-space:pre-wrap">
+                                @data.ShortName
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="40px">
+                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="30px">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value="data.IsArchive" ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>

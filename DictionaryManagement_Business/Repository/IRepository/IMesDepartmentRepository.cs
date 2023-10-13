@@ -21,7 +21,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<MesDepartmentDTO> Update(MesDepartmentDTO objDTO);
         public Task<MesDepartmentDTO> Create(MesDepartmentDTO objectToAddDTO);
         public Task<int> Delete(int mesDepartmentId, UpdateMode updateMode = UpdateMode.Update);
-        public Task<MesDepartmentDTO> GetByCode(int mesCode = 0);
+        public Task<MesDepartmentDTO> GetByCode(int? mesCode = 0);
         public Task<MesDepartmentDTO> GetByName(string name = "");
         public Task<MesDepartmentDTO> GetByShortName(string shortName = "");
     }

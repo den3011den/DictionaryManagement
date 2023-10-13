@@ -23,29 +23,43 @@
         @if (IsLoading != true)
         {
             <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую настройку" Click="@InsertRow" Disabled=@(settingsDTOToInsert != null || settingsDTOToUpdate != null) />
-            <RadzenDataGrid @ref="settingsDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="8" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@settingsDTOs" TItem="SettingsDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+            <RadzenDataGrid @ref="settingsDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            Data="@settingsDTOs" TItem="SettingsDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Simple">
+                            FilterMode="FilterMode.Simple"
+                            AllowColumnResize="false"
+                            AllowVirtualization="true"
+                            GridLines="DataGridGridLines.Both"
+                            Style="height:720px">                
                 <Columns>
-                    <RadzenDataGridColumn TItem="SettingsDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="SettingsDTO" Property="Name" Title="Наименование">
+                    <RadzenDataGridColumn TItem="SettingsDTO" Property="Id" Title="Ид записи" Width="90px" />
+                    <RadzenDataGridColumn TItem="SettingsDTO" Property="Name" Title="Наименование" Width="280px">
                         <EditTemplate Context="settingsDTO">
-                            <RadzenTextBox @bind-Value="settingsDTO.Name" Style="width:100%; display: block" Name="Name" />
+                            <RadzenTextBox @bind-Value="settingsDTO.Name" Style="width:100%; display: block" Name="Name"/>
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=100 Text="Наименование не может быть больше 100 символов" Component="Name" Popup="true" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="SettingsDTO" Property="Description" Title="Описание">
+                        <Template Context="settingsDTO">
+                            <div style="white-space:pre-wrap">
+                                @settingsDTO.Description
+                            </div>
+                        </Template>
                         <EditTemplate Context="settingsDTO">
                             <RadzenTextBox @bind-Value="settingsDTO.Description" Style="width:100%; display: block" Name="Description" />
                             <RadzenLengthValidator Max=300 Text="Описание не может быть больше 300 символов" Component="Description" Popup="true" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SettingsDTO" Property="Value" Title="Значение настройки">
+                    <RadzenDataGridColumn TItem="SettingsDTO" Property="Value" Title="Значение настройки" Width="280px">
+                        <Template Context="settingsDTO">
+                            <div style="white-space:pre-wrap">
+                                @settingsDTO.Value
+                            </div>
+                        </Template>
                         <EditTemplate Context="settingsDTO">
                             <RadzenTextBox @bind-Value="settingsDTO.Value" Style="width:100%; display: block" Name="Value" />
                         </EditTemplate>

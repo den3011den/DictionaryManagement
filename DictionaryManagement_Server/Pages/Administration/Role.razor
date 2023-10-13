@@ -57,14 +57,11 @@
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="RoleVMDTO" Property="Name" Title="Наименование" Width="33px" FilterProperty="Name" SortProperty="Name" FilterOperator="FilterOperator.Contains">
-                        <Template Context="data2">
-                            @* <RadzenCard Style="white-space:pre-wrap"> *@
+                        <Template Context="data2">                            
                             <div style="white-space:pre-wrap; font-size: 12px">
-                                @*                                 <RadzenText TextStyle="TextStyle.Body2"> *@
                                 <strong>
                                     @data2.Name
                                 </strong>
-                                @*                                 </RadzenText> *@
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
@@ -72,11 +69,7 @@
                     <RadzenDataGridColumn TItem="RoleVMDTO" Property="Description" Title="Описание" Width="33px" FilterProperty="Description" SortProperty="Description" FilterOperator="FilterOperator.Contains">
                         <Template Context="data3">
                             <div style="white-space:pre-wrap; font-size: 10px">
-                                @*                             <RadzenCard Style="white-space:pre-wrap">
-                        <RadzenText TextStyle="TextStyle.Body2"> *@
                                 @data3.Description
-                                @*                                 </RadzenText>
-                        </RadzenCard> *@
                             </div>
                         </Template>
                     </RadzenDataGridColumn>

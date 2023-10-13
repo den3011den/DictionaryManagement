@@ -17,7 +17,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [Required]
         public int Id { get; set; }
 
-        public int MesCode { get; set; }
+        public int? MesCode { get; set; }
 
         public string Name { get; set; }
 
