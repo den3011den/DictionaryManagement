@@ -29,6 +29,9 @@ namespace DictionaryManagement_Models.IntDBModels
         [MaxLength(100, ErrorMessage = "Наименование ресурса/склада SAP не может быть больше 250 символов")]
         public string Name { get; set; } = string.Empty;
 
+        [Display(Name = "Является складом")]
+        public bool IsWarehouse { get; set; } = false;
+
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 

@@ -26,6 +26,8 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [MaxLength(250)]
         [MinLength(1)]
         public string Name { get; set; } = string.Empty;
+
+        public bool? IsWarehouse { get; set; }
         public bool IsArchive { get; set; }
     }
 }

@@ -22,11 +22,14 @@
         {
 
             <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый ресурс" Click="@InsertRow" Disabled=@(sapEquipmentDTOToInsert != null || sapEquipmentDTOToUpdate != null) />
-            <RadzenDataGrid @ref="sapEquipmentDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="8" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@sapEquipmentDTOs" TItem="SapEquipmentDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+            <RadzenDataGrid @ref="sapEquipmentDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            Data="@sapEquipmentDTOs" TItem="SapEquipmentDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Simple">
+                            FilterMode="FilterMode.Simple"
+                            GridLines="DataGridGridLines.Both"
+                            Style="height:720px">
+
                 <Columns>
                     <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Id" Title="Ид записи" Width="80px" />
                     <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpPlantId" Title="Код завода SAP" Width="130px">
@@ -36,26 +39,39 @@
                             <RadzenLengthValidator Max=100 Text="Код завода не может быть больше 100 символов" Component="ErpPlantId" Popup="true" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpId" Title="Код ресурса/склада SAP" Width="120px">
+                    <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpId" Title="Код ресурса/склада SAP" Width="130px">
                         <EditTemplate Context="sapEquipmentDTO">
                             <RadzenTextBox @bind-Value="sapEquipmentDTO.ErpId" Style="width:100%; display: block" Name="ErpId" />
                             <RadzenRequiredValidator Text="Код ресурса/склада обязателен к заполнению" Component="ErpId" Popup="true" />
                             <RadzenLengthValidator Max=100 Text="Код ресурса/склада не может быть больше 100 символов" Component="ErpId" Popup="true" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Name" Title="Наименование" Width="540px">
+                    <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Name" Title="Наименование" Width="440px">
                         <EditTemplate Context="sapEquipmentDTO">
                             <RadzenTextBox @bind-Value="sapEquipmentDTO.Name" Style="width:100%; display: block" Name="Name" />
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="IsArchive" Title="Архив" Filterable="false" Width="50px">
+
+                    <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="IsWarehouse" Title="Cклад" Width="50px">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.IsWarehouse ReadOnly="true" TriState="false" TValue="bool" />
+                        </Template>
+                        <EditTemplate Context="data">
+                            <strong>|
+                                <RadzenCheckBox @bind-Value=data.IsWarehouse TriState="false" TValue="bool"/>
+                            |</strong>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="50px">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SapEquipmentDTO" Context="sapEquipmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+
+                    <RadzenDataGridColumn TItem="SapEquipmentDTO" Context="sapEquipmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="86px">
                         <Template Context="sapEquipmentDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapEquipmentDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -175,6 +191,7 @@
                     sapEquipmentDTO.Name = objectForRestore.Name;
                     sapEquipmentDTO.ErpPlantId = objectForRestore.ErpPlantId;
                     sapEquipmentDTO.ErpId = objectForRestore.ErpId;
+                    sapEquipmentDTO.IsWarehouse = objectForRestore.IsWarehouse;
                     await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
                     await sapEquipmentDTOGrid.Reload();
                     await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с кодом завода " + objectForCheckResource.ErpPlantId + " и кодом ресурса/склада " + objectForCheckResource.ErpId + " (ИД записи: " + objectForCheckResource.Id.ToString() + ")");
@@ -192,6 +209,7 @@
                     sapEquipmentDTO.Name = objectForRestore.Name;
                     sapEquipmentDTO.ErpPlantId = objectForRestore.ErpPlantId;
                     sapEquipmentDTO.ErpId = objectForRestore.ErpId;
+                    sapEquipmentDTO.IsWarehouse = objectForRestore.IsWarehouse;
                     await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
                     await sapEquipmentDTOGrid.Reload();
                     await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименование ресурса " + objectForCheckName.Name + " (ИД записи: " + objectForCheckName.Id.ToString() + ")");
@@ -228,6 +246,7 @@
             sapEquipmentDTO.Name = objectForRestore.Name;
             sapEquipmentDTO.ErpPlantId = objectForRestore.ErpPlantId;
             sapEquipmentDTO.ErpId = objectForRestore.ErpId;
+            sapEquipmentDTO.IsWarehouse = objectForRestore.IsWarehouse;
             sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
         }
         sapEquipmentDTOGrid.Reload();

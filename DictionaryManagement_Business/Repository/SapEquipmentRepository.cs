@@ -93,6 +93,8 @@ namespace DictionaryManagement_Business.Repository
                         objectToUpdate.ErpId = objectToUpdateDTO.ErpId;                    
                     if (objectToUpdate.Name != objectToUpdateDTO.Name)
                         objectToUpdate.Name = objectToUpdateDTO.Name;
+                    if (objectToUpdate.IsWarehouse != objectToUpdateDTO.IsWarehouse)
+                        objectToUpdate.IsWarehouse = objectToUpdateDTO.IsWarehouse;
                 }
                 if (updateMode == SD.UpdateMode.MoveToArchive)
                 {
