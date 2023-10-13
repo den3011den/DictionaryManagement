@@ -20,7 +20,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public string Name { get; set; } = string.Empty;
 
         [Display(Name = "В архиве")]
-        public bool IsArchive { get; set; }
+        public bool IsArchive { get; set; } = false;
 
         [NotMapped]
         public string ToStringValue { get; set; } = string.Empty;

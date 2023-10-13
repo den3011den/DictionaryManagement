@@ -15,38 +15,30 @@
 
     <div class="row">
 
-        <div class="col-6">
-            <h4 class="card-title text-primary"><a href="/Tags">Тэги</a> - <a href="/tags/MesParamSourceType">Типы тэгов</a></h4>
-
-            <div class="col-6">
-                <RadzenCheckBox @bind-Value=@checkBoxValue TriState="true" TValue="bool?" Change=@OnArchiveCheckBoxChange Name="ArchiveCheckBox" />
-                <RadzenLabel Text=@checkBoxText Component="ArchiveCheckBox" Style="margin-left: 8px; vertical-align: middle;" />
-            </div>
-
-        </div>
-
-
-
         @if (IsLoading != true)
         {
 
             <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тип тэгов" Click="@InsertRow" Disabled=@(mesParamSourceTypeDTOToInsert != null || mesParamSourceTypeDTOToUpdate != null) />
-            <RadzenDataGrid @ref="mesParamSourceTypeDTOGrid" AllowAlternatingRows="false" AllowFiltering="true" AllowPaging="true" PageSize="8" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@mesParamSourceTypeDTOs" TItem="MesParamSourceTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
+            <RadzenDataGrid @ref="mesParamSourceTypeDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            Data="@mesParamSourceTypeDTOs" TItem="MesParamSourceTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Simple">
+                            FilterMode="FilterMode.Simple"
+                            AllowColumnResize="false"
+                            AllowVirtualization="true"
+                            GridLines="DataGridGridLines.Both"
+                            Style="height:720px">                
                 <Columns>
-                    <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="Name" Title="Наименование">
+                    <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="Id" Title="Ид записи" Width="100px" />
+                    <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="Name" Title="Наименование" Width="300px">
                         <EditTemplate Context="mesParamSourceTypeDTO">
-                            <RadzenTextBox @bind-Value="mesParamSourceTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
+                            <RadzenTextBox @bind-Value="mesParamSourceTypeDTO.Name" Style="width:100%; display: block" Name="Name"/>
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="IsAtchive" Title="Архив" Filterable="false" Width="70px">
+                    <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
@@ -96,8 +88,6 @@
 
     _Dialogs? _dialogs { get; set; }
 
-    public bool? checkBoxValue = null;
-    public string checkBoxText = "Все записи";
     public string DeleteMessage { get; set; } = "";
 
     RadzenDataGrid<MesParamSourceTypeDTO> mesParamSourceTypeDTOGrid;
@@ -111,47 +101,6 @@
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
 
-    void OnArchiveCheckBoxChange()
-    {
-        if (checkBoxValue == false)
-        {
-            checkBoxValue = null;
-            checkBoxText = "Только архивные";
-
-            IsLoading = true;
-            StateHasChanged();
-            mesParamSourceTypeDTOs = _mesParamSourceTypeRepository.GetAll(SD.SelectDictionaryScope.ArchiveOnly).Result;
-            IsLoading = false;
-            StateHasChanged();
-            return;
-        }
-        if (checkBoxValue == null)
-        {
-            checkBoxValue = true;
-            checkBoxText = "Только активные";
-
-            IsLoading = true;
-            StateHasChanged();
-            mesParamSourceTypeDTOs = _mesParamSourceTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
-            IsLoading = false;
-            StateHasChanged();
-            return;
-
-        }
-
-        if (checkBoxValue == true)
-        {
-            checkBoxValue = false;
-            checkBoxText = "Все записи";
-
-            IsLoading = true;
-            StateHasChanged();
-            mesParamSourceTypeDTOs = _mesParamSourceTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
-            IsLoading = false;
-            StateHasChanged();
-            return;
-        }
-    }
 
     void Reset()
     {
@@ -172,9 +121,6 @@
             IsAdmin = true;
             if (firstRender)
             {
-                checkBoxValue = false;
-                checkBoxText = "Все записи";
-
                 IsLoading = true;
                 StateHasChanged();
                 mesParamSourceTypeDTOs = _mesParamSourceTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
