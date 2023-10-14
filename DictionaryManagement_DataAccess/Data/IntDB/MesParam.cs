@@ -35,12 +35,10 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [ForeignKey("DepartmentId")]
         public MesDepartment? MesDepartmentFK { get; set; }
 
-
         public int? SapEquipmentIdSource { get; set; }
 
         [ForeignKey("SapEquipmentIdSource")]
         public SapEquipment? SapEquipmentSourceFK { get; set; }
-
 
         public int? SapEquipmentIdDest { get; set; }
         [ForeignKey("SapEquipmentIdDest")]
@@ -54,7 +52,6 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [ForeignKey("SapMaterialId")]
         public SapMaterial? SapMaterialFK { get; set; }
 
-
         public int? MesUnitOfMeasureId { get; set; }
         [ForeignKey("MesUnitOfMeasureId")]
         public MesUnitOfMeasure? MesUnitOfMeasureFK { get; set; }
@@ -64,6 +61,13 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public SapUnitOfMeasure? SapUnitOfMeasureFK { get; set; }
 
         public int? DaysRequestInPast { get; set; }
+
+        public string? TI { get; set; }
+        public string? NameTI { get; set; }
+        public string? TM { get; set; }
+        public string? NameTM { get; set; }
+
+        public decimal? MesToSirUnitOfMeasureKoef { get; set; } = decimal.One;
 
         public bool? NeedWriteToSap { get; set; }
         public bool? NeedReadFromSap { get; set; }

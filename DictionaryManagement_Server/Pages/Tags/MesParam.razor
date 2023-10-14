@@ -274,12 +274,12 @@
             if (mesParamDTO == null)
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 } }, new DialogOptions() { Width = $"{1000}px" });
+                dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 } }, new DialogOptions() { Width = $"{1000}px", Left = $"{100}px" });
             }
             else
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Изменить тэг СИР", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id } }, new DialogOptions() { Width = $"{1000}px" });
+                dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Изменить тэг СИР", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id } }, new DialogOptions() { Width = $"{1000}px", Left = $"{100}px" });
             }
 
 

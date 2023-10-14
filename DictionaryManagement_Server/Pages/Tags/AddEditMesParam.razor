@@ -46,12 +46,6 @@
                     <RadzenStack>
                         <RadzenFieldset Text="Карточка тэга СИР">
                             <RadzenStack Gap="1rem">
-                                @*                        @if (MesParamId > 0)
-                        {
-                        <RadzenFormField Text="ИД записи" Variant="@variant" Style="width: 100%; max-width: 900px;">
-                        <RadzenNumeric @bind-Value="@ActiveMesParamDTO.Id" ReadOnly="true" />
-                        </RadzenFormField>
-                        }*@
 
                                 <RadzenFormField Text="Код тэга СИР" Variant="@variant" Style="width: 100%; max-width: 900px;">
                                     <RadzenTextBox @bind-Value="@ActiveMesParamDTO.Code" />
@@ -207,16 +201,6 @@
 
     [Parameter]
     public int MesParamId { get; set; }
-
-
-    //IEnumerable<MesDepartmentDTO>? mesDepartmentDTOs;
-    //IEnumerable<MesParamSourceTypeDTO>? mesParamSourceTypeDTOs;
-    //IEnumerable<SapEquipmentDTO>? sapEquipmentDTOs;
-    //IEnumerable<MesMaterialDTO>? mesMaterialDTOs;
-    //IEnumerable<SapMaterialDTO>? sapMaterialDTOs;
-    //IEnumerable<SapUnitOfMeasureDTO>? sapUnitOfMeasureDTOs;
-    //IEnumerable<MesUnitOfMeasureDTO>? mesUnitOfMeasureDTOs;
-
 
     Variant variant = Variant.Outlined;
 

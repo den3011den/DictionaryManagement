@@ -85,6 +85,25 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Глубина опроса (в днях)")]
         public int? DaysRequestInPast { get; set; } = 45;
 
+        [Display(Name = "Точка измерения")]
+        [StringLength(maximumLength: 100, ErrorMessage = "Точка измерения не может быть длиннее 100 символов")]
+        public string? TI { get; set; }
+
+        [Display(Name = "Наименование точки измерения")]
+        [StringLength(maximumLength: 250, ErrorMessage = "Наименование точки измерения не может быть длиннее 250 символов")]
+        public string? NameTI { get; set; }
+
+        [Display(Name = "Технологическое место")]
+        [StringLength(maximumLength: 100, ErrorMessage = "Технологическое место не может быть длиннее 100 символов")]
+        public string? TM { get; set; }
+
+        [Display(Name = "Наименование технологического места")]
+        [StringLength(maximumLength: 250, ErrorMessage = "Наименование технологического места не может быть длиннее 250 символов")]
+        public string? NameTM { get; set; }
+
+        [Display(Name = "Коэффициент пересчёта данных по тэгу из ед. изм. MES в ед. изм. СИР")]
+        public decimal? MesToSirUnitOfMeasureKoef { get; set; } = decimal.One;
+
         [Display(Name = "Передавать в SAP")]
         public bool? NeedWriteToSap { get; set; }
 

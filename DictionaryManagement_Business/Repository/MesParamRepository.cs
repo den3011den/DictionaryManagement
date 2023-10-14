@@ -45,6 +45,13 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.MesUnitOfMeasureId = objectToAddDTO.MesUnitOfMeasureId;
             objectToAdd.SapUnitOfMeasureId = objectToAddDTO.SapUnitOfMeasureId;
             objectToAdd.DaysRequestInPast = objectToAddDTO.DaysRequestInPast;
+
+            objectToAdd.TI = objectToAddDTO.TI;
+            objectToAdd.NameTI = objectToAddDTO.NameTI;
+            objectToAdd.TM = objectToAddDTO.TM;
+            objectToAdd.NameTM = objectToAddDTO.NameTM;
+            objectToAdd.MesToSirUnitOfMeasureKoef = objectToAddDTO.MesToSirUnitOfMeasureKoef;
+
             objectToAdd.NeedWriteToSap = objectToAddDTO.NeedWriteToSap;
             objectToAdd.NeedReadFromSap = objectToAddDTO.NeedReadFromSap;
             objectToAdd.NeedReadFromMes = objectToAddDTO.NeedReadFromMes;
@@ -137,55 +144,6 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<MesParamDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
         {
-            //if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
-            //{
-            //    var hhh2 = _db.MesParam
-            //                .Include("MesParamSourceTypeFK")
-            //                .Include("MesDepartmentFK")
-            //                .Include("SapEquipmentSourceFK")
-            //                .Include("SapEquipmentDestFK")
-            //                .Include("MesMaterialFK")
-            //                .Include("SapMaterialFK")
-            //                .Include("MesUnitOfMeasureFK")
-            //                .Include("SapUnitOfMeasureFK")
-            //                .Where(u => u.IsArchive == true).AsNoTracking();
-            //    var retVar2 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh2);
-            //    //_db.Dispose();
-            //    GC.Collect();
-            //    return retVar2;
-            //}
-            //if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
-            //{                
-            //    var hhh3 = _db.MesParam
-            //                .Include("MesParamSourceTypeFK").AsNoTracking()
-            //                .Include("MesDepartmentFK").AsNoTracking()
-            //                .Include("SapEquipmentSourceFK").AsNoTracking()
-            //                .Include("SapEquipmentDestFK").AsNoTracking()
-            //                .Include("MesMaterialFK").AsNoTracking()
-            //                .Include("SapMaterialFK").AsNoTracking()
-            //                .Include("MesUnitOfMeasureFK").AsNoTracking()
-            //                .Include("SapUnitOfMeasureFK").AsNoTracking()
-            //                .Where(u => u.IsArchive != true).AsNoTracking();
-            //    var retVar3 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh3);
-            //    //_db.Dispose();
-            //    GC.Collect();
-            //    return retVar3;
-
-            //}
-            //var hhh1 = _db.MesParam
-            //            .Include("MesParamSourceTypeFK").AsNoTracking()
-            //            .Include("MesDepartmentFK").AsNoTracking()
-            //            .Include("SapEquipmentSourceFK").AsNoTracking()
-            //            .Include("SapEquipmentDestFK").AsNoTracking()
-            //            .Include("MesMaterialFK").AsNoTracking()
-            //            .Include("SapMaterialFK").AsNoTracking()
-            //            .Include("MesUnitOfMeasureFK").AsNoTracking()
-            //            .Include("SapUnitOfMeasureFK").AsNoTracking();
-            //var retVar1 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh1);
-            ////_db.Dispose();
-            //GC.Collect();
-            //return retVar1;
-
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
             {
                 var hhh2 = _db.MesParam
@@ -395,6 +353,18 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.MesParamSourceLink = objectToUpdateDTO.MesParamSourceLink;
                 if (objectToUpdateDTO.DaysRequestInPast != objectToUpdate.DaysRequestInPast)
                     objectToUpdate.DaysRequestInPast = objectToUpdateDTO.DaysRequestInPast;
+
+                if (objectToUpdateDTO.TI != objectToUpdate.TI)
+                    objectToUpdate.TI = objectToUpdateDTO.TI;
+                if (objectToUpdateDTO.NameTI != objectToUpdate.NameTI)
+                    objectToUpdate.NameTI = objectToUpdateDTO.NameTI;
+                if (objectToUpdateDTO.TM != objectToUpdate.TM)
+                    objectToUpdate.TM = objectToUpdateDTO.TM;
+                if (objectToUpdateDTO.NameTM != objectToUpdate.NameTM)
+                    objectToUpdate.NameTM = objectToUpdateDTO.NameTM;
+                if (objectToUpdateDTO.MesToSirUnitOfMeasureKoef != objectToUpdate.MesToSirUnitOfMeasureKoef)
+                    objectToUpdate.MesToSirUnitOfMeasureKoef = objectToUpdateDTO.MesToSirUnitOfMeasureKoef;
+
                 if (objectToUpdateDTO.NeedWriteToSap != objectToUpdate.NeedWriteToSap)
                     objectToUpdate.NeedWriteToSap = objectToUpdateDTO.NeedWriteToSap;
                 if (objectToUpdateDTO.NeedReadFromSap != objectToUpdate.NeedReadFromSap)
