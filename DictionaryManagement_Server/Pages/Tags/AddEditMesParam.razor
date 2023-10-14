@@ -42,7 +42,7 @@
     <RadzenStack>*@
 
             <RadzenRow Gap="1rem">
-                <RadzenColumn Size="12" SizeMD="8">
+                <RadzenColumn Size="12" SizeMD="5">
                     <RadzenStack>
                         <RadzenFieldset Text="Карточка тэга СИР">
                             <RadzenStack Gap="1rem">
@@ -119,11 +119,45 @@
                                                         Data=@SapUnitOfMeasureDTOList TextProperty="ShortName" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveMesParamDTO.SapUnitOfMeasureId" Style="width: 100%; max-width: 900px;" />
                                     </RadzenFormField>
                                     <ValidationMessage For="()=>ActiveMesParamDTO.SapUnitOfMeasureId"></ValidationMessage>
-
-                                    <RadzenFormField Text="Глубина опроса (в днях)" Variant="@variant" Style="width: 100%; max-width: 900px;">
-                                        <RadzenNumeric @bind-Value="@ActiveMesParamDTO.DaysRequestInPast" />
-                                    </RadzenFormField>
                                 }
+                            </RadzenStack>
+                        </RadzenFieldset>
+                    </RadzenStack>
+                </RadzenColumn>
+
+                <RadzenColumn Size="12" SizeMD="5">
+                    <RadzenStack>
+                        <RadzenFieldset Text="Карточка тэга СИР - дополнительные параметры">
+
+                            <RadzenStack Gap="1rem">
+                                <RadzenFormField Text="Глубина опроса (в днях)" Variant="@variant" Style="width: 100%; max-width: 900px;">
+                                    <RadzenNumeric @bind-Value="@ActiveMesParamDTO.DaysRequestInPast" />
+                                </RadzenFormField>
+
+                                <RadzenFormField Text="Точка измерения" Variant="@variant" Style="width: 100%; max-width: 900px;">
+                                    <RadzenTextBox @bind-Value="@ActiveMesParamDTO.TI" />
+                                </RadzenFormField>
+                                <ValidationMessage For="()=>ActiveMesParamDTO.TI"></ValidationMessage>
+
+                                <RadzenFormField Text="Наименование точки измерения" Variant="@variant" Style="width: 100%; max-width: 900px;">
+                                    <RadzenTextBox @bind-Value="@ActiveMesParamDTO.NameTI" />
+                                </RadzenFormField>
+                                <ValidationMessage For="()=>ActiveMesParamDTO.NameTI"></ValidationMessage>
+
+                                <RadzenFormField Text="Технологическое место" Variant="@variant" Style="width: 100%; max-width: 900px;">
+                                    <RadzenTextBox @bind-Value="@ActiveMesParamDTO.TM" />
+                                </RadzenFormField>
+                                <ValidationMessage For="()=>ActiveMesParamDTO.TI"></ValidationMessage>
+
+                                <RadzenFormField Text="Наименование технологического места" Variant="@variant" Style="width: 100%; max-width: 900px;">
+                                    <RadzenTextBox @bind-Value="@ActiveMesParamDTO.NameTM" />
+                                </RadzenFormField>
+                                <ValidationMessage For="()=>ActiveMesParamDTO.NameTM"></ValidationMessage>
+
+                                <RadzenFormField Text="Коэффициент пересчёта данных по тэгу из ед. изм. MES в ед. изм. СИР" Variant="@variant" Style="width: 100%; max-width: 900px;">
+                                    <RadzenNumeric @bind-Value="@ActiveMesParamDTO.MesToSirUnitOfMeasureKoef" />
+                                </RadzenFormField>
+
                             </RadzenStack>
                         </RadzenFieldset>
                     </RadzenStack>
@@ -131,12 +165,14 @@
 
 
 
-                <RadzenColumn Size="12" SizeMD="4">
+
+                <RadzenColumn Size="12" SizeMD="2">
                     <RadzenStack>
                         <RadzenFieldset Text="Cмежные системы">
                             <RadzenStack Gap="1rem">
                                 <RadzenLabel Text="Передавать в SAP:" Component="CheckBox1" Style="margin-left: 8px; margin-top: 8px;" />
-                                <RadzenSelectBar @bind-Value="@ActiveMesParamDTO.NeedWriteToSap" TValue="bool?" class="mb-4" Name="CheckBox1">
+                                <RadzenSelectBar @bind-Value="@ActiveMesParamDTO.NeedWriteToSap" TValue="bool?" class="mb-4" Name="CheckBox1"
+                                                 Disabled="@NeedWriteToSapDisabled" Change=@(() => OnChangeNeedWriteToSap())>
                                     <Items>
                                         <RadzenSelectBarItem Text="Да" Value="true" />
                                         <RadzenSelectBarItem Text="Нет" Value="false" />
@@ -144,7 +180,8 @@
                                 </RadzenSelectBar>
 
                                 <RadzenLabel Text="Читать из SAP:" Component="CheckBox2" Style="margin-left: 8px; margin-top: 8px;" />
-                                <RadzenSelectBar @bind-Value="@ActiveMesParamDTO.NeedReadFromSap" TValue="bool?" class="mb-4" Name="CheckBox2">
+                                <RadzenSelectBar @bind-Value="@ActiveMesParamDTO.NeedReadFromSap" TValue="bool?" class="mb-4" Name="CheckBox2"
+                                                 Disabled="@NeedReadFromSapDisabled" Change=@(() => OnChangeNeedReadFromSap())>
                                     <Items>
                                         <RadzenSelectBarItem Text="Да" Value="true" />
                                         <RadzenSelectBarItem Text="Нет" Value="false" />
@@ -153,7 +190,8 @@
 
 
                                 <RadzenLabel Text="Читать из MES:" Component="CheckBox3" Style="margin-left: 8px; margin-top: 8px;" />
-                                <RadzenSelectBar @bind-Value="@ActiveMesParamDTO.NeedReadFromMes" TValue="bool?" class="mb-4" Name="CheckBox3">
+                                <RadzenSelectBar @bind-Value="@ActiveMesParamDTO.NeedReadFromMes" TValue="bool?" class="mb-4" Name="CheckBox3"
+                                                 Disabled="@NeedReadFromMesDisabled" Change=@(() => OnChangeNeedReadFromMes())>
                                     <Items>
                                         <RadzenSelectBarItem Text="Да" Value="true" />
                                         <RadzenSelectBarItem Text="Нет" Value="false" />
@@ -162,7 +200,8 @@
 
 
                                 <RadzenLabel Text="Передавать в MES:" Component="CheckBox4" Style="margin-left: 8px; margin-top: 8px;" />
-                                <RadzenSelectBar @bind-Value="@ActiveMesParamDTO.NeedWriteToMes" TValue="bool?" class="mb-4" Name="CheckBox4">
+                                <RadzenSelectBar @bind-Value="@ActiveMesParamDTO.NeedWriteToMes" TValue="bool?" class="mb-4" Name="CheckBox4"
+                                                 Disabled="@NeedWriteToMesDisabled" Change=@(() => OnChangeNeedWriteToMes())>
                                     <Items>
                                         <RadzenSelectBarItem Text="Да" Value="true" />
                                         <RadzenSelectBarItem Text="Нет" Value="false" />
@@ -171,7 +210,8 @@
 
 
                                 <RadzenLabel Text="Параметр НДО:" Component="CheckBox5" Style="margin-left: 8px; margin-top: 8px;" />
-                                <RadzenSelectBar @bind-Value="@ActiveMesParamDTO.IsNdo" TValue="bool?" class="mb-4" Name="CheckBox5">
+                                <RadzenSelectBar @bind-Value="@ActiveMesParamDTO.IsNdo" TValue="bool?" class="mb-4" Name="CheckBox5"
+                                                 Disabled="@IsNdoDiasabled" Change=@(() => OnChangeIsNdo())>
                                     <Items>
                                         <RadzenSelectBarItem Text="Да" Value="true" />
                                         <RadzenSelectBarItem Text="Нет" Value="false" />
@@ -207,6 +247,11 @@
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
 
+    public bool IsNdoDiasabled { get; set; } = false;
+    public bool NeedReadFromSapDisabled { get; set; } = false;
+    public bool NeedWriteToSapDisabled { get; set; } = false;
+    public bool NeedReadFromMesDisabled { get; set; } = false;
+    public bool NeedWriteToMesDisabled { get; set; } = false;
 
     IEnumerable<MesDepartmentDTO>? MesDepartmentDTOList { get; set; } = new List<MesDepartmentDTO>();
     IEnumerable<MesParamSourceTypeDTO>? MesParamSourceTypeDTOList { get; set; } = new List<MesParamSourceTypeDTO>();
@@ -285,6 +330,15 @@
                     SapUnitOfMeasureDTOList = await _sapUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
                 }
 
+                if (ActiveMesParamDTO.IsNdo == true)
+                {
+                    IsNdoDiasabled = false;
+                    NeedReadFromSapDisabled = true;
+                    NeedWriteToSapDisabled = false;
+                    NeedReadFromMesDisabled = false;
+                    NeedWriteToMesDisabled = true;
+                }
+
                 IsLoading = false;
                 StateHasChanged();
             }
@@ -308,12 +362,6 @@
                     await _jsRuntime.ToastrError("Уже есть тэг СИР с кодом " + foundByCode.Code.ToString() + " (наименование: " + foundByCode.Name + " ИД: " + foundByCode.Id.ToString() + ")");
                     return;
                 }
-                // var foundByName = await _mesParamRepository.GetByName(ActiveMesParamDTO.Name);
-                // if (foundByName != null)
-                // {
-                //     await _jsRuntime.ToastrError("Уже есть тэг СИР с наименованием " + foundByName.Name + " (Код: " + foundByName.Code.ToString() + " ИД: " + foundByName.Id.ToString() + ")");
-                //     return;
-                // }
 
                 if (ActiveMesParamDTO.MesParamSourceLink != null)
                 {
@@ -344,13 +392,6 @@
                     await _jsRuntime.ToastrError("Уже есть тэг СИР с кодом " + foundByCode.Code.ToString() + " (наименование: " + foundByCode.Name + " ИД: " + foundByCode.Id.ToString() + ")");
                     return;
                 }
-                // var foundByName = await _mesParamRepository.GetByName(ActiveMesParamDTO.Name);
-                // if ((foundByName != null) && (foundByName.Id != ActiveMesParamDTO.Id))
-                // {
-                //     await _jsRuntime.ToastrError("Уже есть тэг СИР с наименованием " + foundByName.Name + " (Код: " + foundByName.Code.ToString() + " ИД: " + foundByName.Id.ToString() + ")");
-                //     return;
-                // }
-
 
                 if (ActiveMesParamDTO.MesParamSourceLink != null)
                 {
@@ -373,6 +414,46 @@
 
                 await _jsRuntime.ToastrSuccess("Тэг СИР \"" + ActiveMesParamDTO.Name + "\" изменён");
 
+                if (ActiveMesParamDTO.MesParamSourceType != null)
+                    ActiveMesParamDTO.MesParamSourceTypeDTOFK = await _mesParamSourceTypeRepository.Get((int)ActiveMesParamDTO.MesParamSourceType);
+                else
+                    ActiveMesParamDTO.MesParamSourceTypeDTOFK = null;
+
+                if (ActiveMesParamDTO.DepartmentId != null)
+                    ActiveMesParamDTO.MesDepartmentDTOFK = await _mesDepartmentRepository.GetById((int)ActiveMesParamDTO.DepartmentId);
+                else
+                    ActiveMesParamDTO.MesDepartmentDTOFK = null;
+
+                if (ActiveMesParamDTO.SapEquipmentIdSource != null)
+                    ActiveMesParamDTO.SapEquipmentSourceDTOFK = await _sapEquipmentRepository.Get((int)ActiveMesParamDTO.SapEquipmentIdSource);
+                else
+                    ActiveMesParamDTO.SapEquipmentSourceDTOFK = null;
+
+                if (ActiveMesParamDTO.SapEquipmentIdDest != null)
+                    ActiveMesParamDTO.SapEquipmentDestDTOFK = await _sapEquipmentRepository.Get((int)ActiveMesParamDTO.SapEquipmentIdDest);
+                else
+                    ActiveMesParamDTO.SapEquipmentDestDTOFK = null;
+
+                if (ActiveMesParamDTO.MesMaterialId != null)
+                    ActiveMesParamDTO.MesMaterialDTOFK = await _mesMaterialRepository.Get((int)ActiveMesParamDTO.MesMaterialId);
+                else
+                    ActiveMesParamDTO.MesMaterialDTOFK = null;
+
+                if (ActiveMesParamDTO.SapMaterialId != null)
+                    ActiveMesParamDTO.SapMaterialDTOFK = await _sapMaterialRepository.Get((int)ActiveMesParamDTO.SapMaterialId);
+                else
+                    ActiveMesParamDTO.SapMaterialDTOFK = null;
+
+                if (ActiveMesParamDTO.MesUnitOfMeasureId != null)
+                    ActiveMesParamDTO.MesUnitOfMeasureDTOFK = await _mesUnitOfMeasureRepository.Get((int)ActiveMesParamDTO.MesUnitOfMeasureId);
+                else
+                    ActiveMesParamDTO.MesUnitOfMeasureDTOFK = null;
+
+                if (ActiveMesParamDTO.SapUnitOfMeasureId != null)
+                    ActiveMesParamDTO.SapUnitOfMeasureDTOFK = await _sapUnitOfMeasureRepository.Get((int)ActiveMesParamDTO.SapUnitOfMeasureId);
+                else
+                    ActiveMesParamDTO.SapUnitOfMeasureDTOFK = null;
+
                 _dialogService.Close(ActiveMesParamDTO);
             }
         }
@@ -385,5 +466,63 @@
         _dialogService.Close(null);
     }
 
+    private async Task OnChangeIsNdo()
+    {
+        if (ActiveMesParamDTO.IsNdo == true)
+        {
+            IsNdoDiasabled = false;
+            NeedReadFromSapDisabled = true;
+            NeedWriteToSapDisabled = false;
+            NeedReadFromMesDisabled = false;
+            NeedWriteToMesDisabled = true;
+            ActiveMesParamDTO.NeedReadFromSap = false;
+            ActiveMesParamDTO.NeedWriteToMes = false;
+            ActiveMesParamDTO.NeedWriteToSap = true;
+            ActiveMesParamDTO.NeedReadFromMes = true;
+        }
+        else
+        {
+            IsNdoDiasabled = false;
+            NeedReadFromSapDisabled = false;
+            NeedWriteToSapDisabled = false;
+            NeedReadFromMesDisabled = false;
+            NeedWriteToMesDisabled = false;
+        }
+    }
 
+    private async Task OnChangeNeedWriteToSap()
+    {
+        if (ActiveMesParamDTO.NeedWriteToSap == true)
+        {
+            ActiveMesParamDTO.NeedReadFromSap = false;
+            ActiveMesParamDTO.NeedWriteToMes = false;            
+        }
+    }
+
+    private async Task OnChangeNeedReadFromSap()
+    {
+        if (ActiveMesParamDTO.NeedReadFromSap == true)
+        {                        
+            ActiveMesParamDTO.NeedWriteToSap = false;
+            ActiveMesParamDTO.NeedReadFromMes = false;
+        }
+    }
+
+    private async Task OnChangeNeedWriteToMes()
+    {
+        if (ActiveMesParamDTO.NeedWriteToMes == true)
+        {            
+            ActiveMesParamDTO.NeedWriteToSap = false;
+            ActiveMesParamDTO.NeedReadFromMes = false;
+        }
+    }
+
+    private async Task OnChangeNeedReadFromMes()
+    {
+        if (ActiveMesParamDTO.NeedReadFromMes == true)
+        {
+            ActiveMesParamDTO.NeedReadFromSap = false;
+            ActiveMesParamDTO.NeedWriteToMes = false;
+        }
+    }
 }

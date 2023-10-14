@@ -46,16 +46,22 @@
                             GridLines="DataGridGridLines.Both"
                             Style="height:720px">
                 <Columns>
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Id" Title="Ид записи" Width="35px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Id" Title="Ид записи" Width="40px">
                     </RadzenDataGridColumn>
 
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Code" Title="Код тэга СИР" Width="100px">
-                    </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Name" Title="Наименование" Width="100px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Code" Title="Код тэга СИР" Width="130px">
                         <Template Context="data1">
-                            <div style="white-space:pre-wrap">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                @data1.Code
+                            </div>
+                        </Template>
+
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Name" Title="Наименование" Width="130px">
+                        <Template Context="data1">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
                                     @data1.Name
                                 </strong>
@@ -63,7 +69,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceTypeDTOFK" Title="Источник" Width="60px" FilterProperty="MesParamSourceTypeDTOFK.ToStringValue" SortProperty="MesParamSourceTypeDTOFK.ToStringValue">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceTypeDTOFK" Title="Источник" Width="50px" FilterProperty="MesParamSourceTypeDTOFK.ToStringValue" SortProperty="MesParamSourceTypeDTOFK.ToStringValue">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 <strong>
@@ -73,26 +79,26 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceLink" Title="Тэг источника" Width="100px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceLink" Title="Тэг источника" Width="130px">
                         <Template Context="data1">
-                            <div style="white-space:pre-wrap">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.MesParamSourceLink
                             </div>
                         </Template>
 
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapEquipmentSourceDTOFK" Title="SAP источник" Width="100px" FilterProperty="SapEquipmentSourceDTOFK.ToStringValue" SortProperty="SapEquipmentSourceDTOFK.ToStringValue">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapEquipmentSourceDTOFK" Title="SAP источник" Width="90px" FilterProperty="SapEquipmentSourceDTOFK.ToStringValue" SortProperty="SapEquipmentSourceDTOFK.ToStringValue">
                         <Template Context="data1">
-                            <div style="white-space:pre-wrap">
+                            <div style="white-space:pre-wrap; font-size: 12px">
                                 @data1.SapEquipmentSourceDTOFK
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapEquipmentDestDTOFK" Title="SAP приемник" Width="100px" FilterProperty="SapEquipmentDestDTOFK.ToStringValue" SortProperty="SapEquipmentDestDTOFK.ToStringValue">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapEquipmentDestDTOFK" Title="SAP приемник" Width="90px" FilterProperty="SapEquipmentDestDTOFK.ToStringValue" SortProperty="SapEquipmentDestDTOFK.ToStringValue">
                         <Template Context="data1">
-                            <div style="white-space:pre-wrap">
+                            <div style="white-space:pre-wrap; font-size: 12px">
                                 @data1.SapEquipmentDestDTOFK
                             </div>
                         </Template>
@@ -103,15 +109,15 @@
                     {
                         <RadzenDataGridColumn TItem="MesParamDTO" Property="MesMaterialDTOFK" Title="Материал MES" Width="70px" FilterProperty="MesMaterialDTOFK.ToStringValue" SortProperty="MesMaterialDTOFK.ToStringValue">
                             <Template Context="data1">
-                                <div style="white-space:pre-wrap">
+                                <div style="white-space:pre-wrap; font-size: 12px">
                                     @data1.MesMaterialDTOFK
                                 </div>
                             </Template>
                         </RadzenDataGridColumn>
 
-                        <RadzenDataGridColumn TItem="MesParamDTO" Property="MesUnitOfMeasureDTOFK" Title="Ед.изм MES" Width="65px" FilterProperty="MesUnitOfMeasureDTOFK.ToStringValue" SortProperty="MesUnitOfMeasureDTOFK.ToStringValue">
+                        <RadzenDataGridColumn TItem="MesParamDTO" Property="MesUnitOfMeasureDTOFK" Title="Ед.изм MES" Width="60px" FilterProperty="MesUnitOfMeasureDTOFK.ToStringValue" SortProperty="MesUnitOfMeasureDTOFK.ToStringValue">
                             <Template Context="data1">
-                                <div style="white-space:pre-wrap">
+                                <div style="white-space:pre-wrap; font-size: 12px">
                                     @data1.MesUnitOfMeasureDTOFK
                                 </div>
                             </Template>
@@ -123,15 +129,15 @@
 
                         <RadzenDataGridColumn TItem="MesParamDTO" Property="SapMaterialDTOFK" Title="Материал SAP" Width="70px" FilterProperty="SapMaterialDTOFK.ToStringValue" SortProperty="SapMaterialDTOFK.ToStringValue">
                             <Template Context="data1">
-                                <div style="white-space:pre-wrap">
+                                <div style="white-space:pre-wrap; font-size: 12px">
                                     @data1.SapMaterialDTOFK
                                 </div>
                             </Template>
                         </RadzenDataGridColumn>
 
-                        <RadzenDataGridColumn TItem="MesParamDTO" Property="SapUnitOfMeasureDTOFK" Title="Ед.изм SAP" Width="65px" FilterProperty="SapUnitOfMeasureDTOFK.ToStringValue" SortProperty="SapUnitOfMeasureDTOFK.ToStringValue">
+                        <RadzenDataGridColumn TItem="MesParamDTO" Property="SapUnitOfMeasureDTOFK" Title="Ед.изм SAP" Width="60px" FilterProperty="SapUnitOfMeasureDTOFK.ToStringValue" SortProperty="SapUnitOfMeasureDTOFK.ToStringValue">
                             <Template Context="data1">
-                                <div style="white-space:pre-wrap">
+                                <div style="white-space:pre-wrap; font-size: 12px">
                                     @data1.SapUnitOfMeasureDTOFK
                                 </div>
                             </Template>
@@ -140,7 +146,7 @@
 
                     }
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="40px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="35px">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
@@ -274,25 +280,62 @@
             if (mesParamDTO == null)
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 } }, new DialogOptions() { Width = $"{1000}px", Left = $"{100}px" });
+                dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
             }
             else
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Изменить тэг СИР", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id } }, new DialogOptions() { Width = $"{1000}px", Left = $"{100}px" });
+                dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Изменить тэг СИР", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
             }
 
 
             if (dialogResult != null)
             {
-                IsLoading = true;
-                await LoadStateAsync();
-                StateHasChanged();
-                mesParamDTOs = await _mesParamRepository.GetAll(SD.SelectDictionaryScope.All);
-                IsLoading = false;
-                StateHasChanged();
-            }
+                if (mesParamDTO == null)
+                {
+                    IsLoading = true;
+                    await LoadStateAsync();
+                    StateHasChanged();
+                    mesParamDTOs = await _mesParamRepository.GetAll(SD.SelectDictionaryScope.All);
+                    IsLoading = false;
+                    StateHasChanged();
+                    IsLoading = false;
+                }
+                else
+                {
+                    mesParamDTO.Code = dialogResult.Code;
+                    mesParamDTO.Name = dialogResult.Name;
+                    mesParamDTO.Description = dialogResult.Description;
+                    mesParamDTO.MesParamSourceType = dialogResult.MesParamSourceType;
+                    mesParamDTO.MesParamSourceTypeDTOFK = dialogResult.MesParamSourceTypeDTOFK;
+                    mesParamDTO.MesParamSourceLink = dialogResult.MesParamSourceLink;
+                    mesParamDTO.DepartmentId = dialogResult.DepartmentId;
+                    mesParamDTO.MesDepartmentDTOFK = dialogResult.MesDepartmentDTOFK;
+                    mesParamDTO.SapEquipmentIdSource = dialogResult.SapEquipmentIdSource;
+                    mesParamDTO.SapEquipmentSourceDTOFK = dialogResult.SapEquipmentSourceDTOFK;
+                    mesParamDTO.SapEquipmentIdDest = dialogResult.SapEquipmentIdDest;
+                    mesParamDTO.SapEquipmentDestDTOFK = dialogResult.SapEquipmentDestDTOFK;
+                    mesParamDTO.MesMaterialId = dialogResult.MesMaterialId;
+                    mesParamDTO.MesMaterialDTOFK = dialogResult.MesMaterialDTOFK;
+                    mesParamDTO.SapMaterialId = dialogResult.SapMaterialId;
+                    mesParamDTO.SapMaterialDTOFK = dialogResult.SapMaterialDTOFK;
+                    mesParamDTO.MesUnitOfMeasureId = dialogResult.MesUnitOfMeasureId;
+                    mesParamDTO.MesUnitOfMeasureDTOFK = dialogResult.MesUnitOfMeasureDTOFK;
+                    mesParamDTO.SapUnitOfMeasureId = dialogResult.SapUnitOfMeasureId;
+                    mesParamDTO.SapUnitOfMeasureDTOFK = dialogResult.SapUnitOfMeasureDTOFK;
+                    mesParamDTO.DaysRequestInPast = dialogResult.DaysRequestInPast;
+                    mesParamDTO.TI = dialogResult.TI;
+                    mesParamDTO.NameTI = dialogResult.NameTI;
+                    mesParamDTO.MesToSirUnitOfMeasureKoef = dialogResult.MesToSirUnitOfMeasureKoef;
+                    mesParamDTO.NeedWriteToSap = dialogResult.NeedWriteToSap;
+                    mesParamDTO.NeedReadFromSap = dialogResult.NeedReadFromSap;
+                    mesParamDTO.NeedReadFromMes = dialogResult.NeedReadFromMes;
+                    mesParamDTO.NeedWriteToMes = dialogResult.NeedWriteToMes;
+                    mesParamDTO.IsNdo = dialogResult.IsNdo;
 
+                    await mesParamDTOGrid.UpdateRow(mesParamDTO);
+                }
+            }
             IsLoading = false;
         }
 
@@ -326,10 +369,6 @@
                 }
             }
 
-
-
-            //if (mesDepartmentDTOs.Contains(mesDepartmentDTO))
-            //{
             if (mesParamDTO.IsArchive)
             {
                 await _mesParamRepository.Delete(mesParamDTO.Id, SD.UpdateMode.RestoreFromArchive);
