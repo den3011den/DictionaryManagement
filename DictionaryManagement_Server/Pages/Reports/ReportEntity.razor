@@ -3,6 +3,7 @@
 @using System.Text.Json;
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels;
+@using DictionaryManagement_Server.Extensions;
 
 @inject IJSRuntime _jsRuntime
 @inject IReportEntityRepository _reportEntityRepository
@@ -44,23 +45,40 @@
             </RadzenRow>
 
 
-            <RadzenDataGrid @bind-Settings="@ReportEntityGridSettings" @ref="reportEntityDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @bind-Settings="@ReportEntityGridSettings" @ref="reportEntityDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@reportEntityDTOs" TItem="ReportEntityDTO"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            FilterMode="FilterMode.Simple"
-                            Density=Density.Compact
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"                            
+                            FilterMode="FilterMode.Advanced"
+                            Density=Density.Compact                            
                             ShowPagingSummary="true"
                             EmptyText="Нет записей для отображения"
                             AllowVirtualization="true"
                             Style="height:720px">
                 <Columns>
-                    <RadzenDataGridColumn TItem="ReportEntityDTO" Property="ToStringId" Title="Ид экземпляра отчёта" Width="19%" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumn TItem="ReportEntityDTO" Property="ToStringId" Title="Ид экземпляра отчёта" Width="9%" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
+                        <Template Context="data1">
+                            <div style="white-space:pre-wrap; font-size: 12px">
+                                <strong>
+                                    @data1.ToStringId
+                                </strong>
+                            </div>
+                        </Template>
+
                     </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ReportEntityDTO" Property="ReportDepartmentDTOFK" Title="Производство" Width="10%" FilterProperty="ReportDepartmentDTOFK.ToStringValue" SortProperty="ReportDepartmentDTOFK.ToStringValue">
+                        <Template Context="data1">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                @data1.ReportDepartmentDTOFK
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
+
 
                     <RadzenDataGridColumn TItem="ReportEntityDTO" Property="ReportTemplateDTOFK.Description" Title="Шаблон отчёта" Width="21%" FilterProperty="ReportTemplateDTOFK.Description" SortProperty="ReportTemplateDTOFK.Description" TextAlign="TextAlign.Center">
                         <Template Context="data1">
-                            <div style="white-space:pre-wrap">
+                            <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
                                     @data1.ReportTemplateDTOFK.Description
                                 </strong>
@@ -68,21 +86,22 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="ReportEntityDTO" Title="Скачан из СИР" Sortable="false" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="ReportEntityDTO" Title="Скачан из СИР" TextAlign="TextAlign.Center" Filterable="false" Sortable="false">
                         <Columns>
-                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="DownloadTime" Title="Время" Width="100px" TextAlign="TextAlign.Center">
+                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="DownloadTime" Title="Время" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                             </RadzenDataGridColumn>
 
-                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="DownloadUserDTOFK.UserName" Title="Кто" Width="100px" TextAlign="TextAlign.Center" Filterable="true">
+                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="DownloadUserDTOFK.UserName" Title="Кто" Width="100px"
+                                                  TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                                 <Template Context="data1">
-                                    <div style="white-space:pre-wrap">
+                                    <div style="white-space:pre-wrap; font-size: 12px">
                                         @data1.DownloadUserDTOFK.UserName
                                     </div>
                                 </Template>
                             </RadzenDataGridColumn>
 
-                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="DownloadSuccessFlag" Title="Файл" Width="100px" TextAlign="TextAlign.Center" Filterable="true">
-                                <Template Context="data">                                    
+                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="DownloadSuccessFlag" Title="Файл" Width="100px" TextAlign="TextAlign.Center" Filterable="false" Sortable="false">
+                                <Template Context="data">
                                     <RadzenButton title="Скачать файл" Icon="download" ButtonStyle="ButtonStyle.Light" Disabled="@(String.IsNullOrEmpty(data.DownloadReportFileName))" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityDownloadFile(data.Id))" @onclick:stopPropagation="true">
                                     </RadzenButton>
                                 </Template>
@@ -90,23 +109,23 @@
                         </Columns>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="ReportEntityDTO" Title="Загружен в СИР" Sortable="false" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="ReportEntityDTO" Title="Загружен в СИР" TextAlign="TextAlign.Center" Filterable="false" Sortable="false">
                         <Columns>
-                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadTime" Title="Время" Width="100px" TextAlign="TextAlign.Center">
+                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadTime" Title="Время" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                             </RadzenDataGridColumn>
 
-                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadUserDTOFK.UserName" Title="Кто" Width="100px" TextAlign="TextAlign.Center" Filterable="true">
+                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadUserDTOFK.UserName" Title="Кто" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                                 <Template Context="data1">
                                     @if (data1.UploadUserDTOFK != null)
                                     {
-                                        <div style="white-space:pre-wrap">
+                                        <div style="white-space:pre-wrap; font-size: 12px">
                                             @data1.UploadUserDTOFK.UserName
                                         </div>
                                     }
                                 </Template>
                             </RadzenDataGridColumn>
 
-                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadSuccessFlag" Title="Файл" Filterable="true" Width="100px" TextAlign="TextAlign.Center">
+                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadSuccessFlag" Title="Файл" Filterable="false" Sortable="false" Width="100px" TextAlign="TextAlign.Center">
                                 <Template Context="data">
                                     <RadzenButton title="Скачать файл" Icon="download" ButtonStyle="ButtonStyle.Light" Disabled="@(String.IsNullOrEmpty(data.UploadReportFileName))" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityUploadFile(data.Id))" @onclick:stopPropagation="true">
                                     </RadzenButton>
@@ -121,7 +140,7 @@
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>
-            </RadzenDataGrid>
+            </RadzenDataGridApp>
         }
         else
         {
