@@ -33,7 +33,7 @@
         {
 
             @*<div style="word-wrap: normal">*@
-            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тэг СИР" Click="@(args => EditRow(null))" />
+            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тэг СИР" Click="@(args => EditRow(null, "CREATE"))" />
             <RadzenDataGrid @bind-Settings="@MesParamGridSettings" @ref="mesParamDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@mesParamDTOs" TItem="MesParamDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -50,7 +50,7 @@
                     </RadzenDataGridColumn>
 
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Code" Title="Код тэга СИР" Width="130px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Code" Title="Код тэга СИР" Width="80px">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Code
@@ -59,7 +59,7 @@
 
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Name" Title="Наименование" Width="130px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Name" Title="Наименование" Width="80px">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -79,14 +79,22 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceLink" Title="Тэг источника" Width="130px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceLink" Title="Тэг источника" Width="60px">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.MesParamSourceLink
                             </div>
                         </Template>
-
                     </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesDepartmentDTOFK" Title="Производство" Width="80px" FilterProperty="MesDepartmentDTOFK.ToStringValue" SortProperty="MesDepartmentDTOFK.ToStringValue">
+                        <Template Context="data1">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                @data1.MesDepartmentDTOFK
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
+
 
                     <RadzenDataGridColumn TItem="MesParamDTO" Property="SapEquipmentSourceDTOFK" Title="SAP источник" Width="90px" FilterProperty="SapEquipmentSourceDTOFK.ToStringValue" SortProperty="SapEquipmentSourceDTOFK.ToStringValue">
                         <Template Context="data1">
@@ -146,24 +154,33 @@
 
                     }
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="35px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsNdo" Title="НДО" Filterable="true" Width="35px">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.IsNdo ReadOnly="true" TriState="false" TValue="bool?" />
+                        </Template>
+                    </RadzenDataGridColumn>
+
+
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="30px">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Context="mesParamDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="87px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Context="mesParamDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="70px">
                         <Template Context="mesParamDTO">
-                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO))" @onclick:stopPropagation="true">
+                            <RadzenButton title="Создать на основании" Icon="add_box" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO, "CREATE_BASED_ON_ROW"))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO, "EDIT"))" @onclick:stopPropagation="true">
                             </RadzenButton>
                             @if (!mesParamDTO.IsArchive)
                             {
-                                <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesParamDTO))" @onclick:stopPropagation="true">
+                                <RadzenButton title="Удалить в архив" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesParamDTO))" @onclick:stopPropagation="true">
                                 </RadzenButton>
                             }
                             else
                             {
-                                <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesParamDTO))" @onclick:stopPropagation="true">
+                                <RadzenButton title="Восстановить из архива" ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesParamDTO))" @onclick:stopPropagation="true">
                                 </RadzenButton>
                             }
                         </Template>
@@ -265,9 +282,7 @@
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesParamGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesParamGridSettings)}')");
     }
 
-
-
-    async Task EditRow(MesParamDTO mesParamDTO)
+    async Task EditRow(MesParamDTO mesParamDTO, string modePar)
     {
         //mesMaterialDTOToUpdate = mesMaterialDTO;
         //await mesMaterialDTOGrid.EditRow(mesMaterialDTO);
@@ -277,21 +292,31 @@
 
             MesParamDTO dialogResult;
 
-            if (mesParamDTO == null)
+            switch (modePar.Trim().ToUpper())
             {
-                IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
-            }
-            else
-            {
-                IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Изменить тэг СИР", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
+                case "CREATE":
+                    IsLoading = false;
+                    dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 }, { "Mode", modePar.Trim().ToUpper() } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
+                    break;
+                case "EDIT":
+                    IsLoading = false;
+                    dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Изменить тэг СИР", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id }, { "Mode", modePar.Trim().ToUpper() } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
+                    break;
+                case "CREATE_BASED_ON_ROW":
+                    IsLoading = false;
+                    dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР на основании", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id }, { "Mode", modePar.Trim().ToUpper() } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
+                    break;
+                default:
+                    IsLoading = false;
+                    dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 }, { "Mode", "CREATE" } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
+                    break;
             }
 
 
             if (dialogResult != null)
             {
-                if (mesParamDTO == null)
+
+                if ((modePar.Trim().ToUpper() == "CREATE" || modePar.Trim().ToUpper() == "CREATE_BASED_ON_ROW") && (modePar.Trim().ToUpper() != "EDIT"))
                 {
                     IsLoading = true;
                     await LoadStateAsync();

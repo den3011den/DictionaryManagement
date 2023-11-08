@@ -1,4 +1,4 @@
-﻿@page "/tags/MesParam/AddEditMesParam/{MesParamId}"
+﻿@page "/tags/MesParam/AddEditMesParam/{MesParamId}/{Mode}"
 @attribute [Authorize]
 
 @using DictionaryManagement_Business.Repository.IRepository;
@@ -241,6 +241,8 @@
 
     [Parameter]
     public int MesParamId { get; set; }
+    [Parameter]
+    public string Mode { get; set; }
 
     Variant variant = Variant.Outlined;
 
@@ -282,15 +284,26 @@
         IsLoading = true;
         StateHasChanged();
 
-        if (MesParamId <= 0)
+
+        switch(Mode.Trim().ToUpper())
         {
-            ActiveMesParamDTO = new MesParamDTO();
+            case "CREATE":
+                ActiveMesParamDTO = new MesParamDTO();
+                break;
+            case "EDIT":
+                ActiveMesParamDTO = await _mesParamRepository.GetById(MesParamId);
+                Title = "Изменить тэг СИР";
+                break;
+            case "CREATE_BASED_ON_ROW":
+                ActiveMesParamDTO = await _mesParamRepository.GetById(MesParamId);
+                ActiveMesParamDTO.Id = 0;
+                Title = "Создать тэг СИР на основании";
+                break;
+            default:
+                ActiveMesParamDTO = new MesParamDTO();                
+                break;
         }
-        else
-        {
-            ActiveMesParamDTO = await _mesParamRepository.GetById(MesParamId);
-            Title = "Изменить тэг СИР";
-        }
+
 
         IsLoading = false;
         StateHasChanged();
@@ -306,14 +319,23 @@
                 IsLoading = true;
                 StateHasChanged();
 
-                if (MesParamId <= 0)
+                switch (Mode.Trim().ToUpper())
                 {
-                    ActiveMesParamDTO = new MesParamDTO();
-                }
-                else
-                {
-                    ActiveMesParamDTO = await _mesParamRepository.GetById(MesParamId);
-                    Title = "Изменить тэг СИР";
+                    case "CREATE":
+                        ActiveMesParamDTO = new MesParamDTO();
+                        break;
+                    case "EDIT":
+                        ActiveMesParamDTO = await _mesParamRepository.GetById(MesParamId);
+                        Title = "Изменить тэг СИР";
+                        break;
+                    case "CREATE_BASED_ON_ROW":
+                        ActiveMesParamDTO = await _mesParamRepository.GetById(MesParamId);
+                        ActiveMesParamDTO.Id = 0;
+                        Title = "Создать тэг СИР на основании";
+                        break;
+                    default:
+                        ActiveMesParamDTO = new MesParamDTO();
+                        break;
                 }
 
                 MesDepartmentDTOList = await _mesDepartmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
@@ -354,7 +376,7 @@
     {
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            if (MesParamId <= 0)
+            if ((Mode.Trim().ToUpper() == "CREATE") || (Mode.Trim().ToUpper() == "CREATE_BASED_ON_ROW"))            
             { // создание
                 var foundByCode = await _mesParamRepository.GetByCode(ActiveMesParamDTO.Code);
                 if (foundByCode != null)
@@ -384,7 +406,7 @@
 
             }
             else
-            { // изменение производства
+            { // изменение
 
                 var foundByCode = await _mesParamRepository.GetByCode(ActiveMesParamDTO.Code);
                 if ((foundByCode != null) && (foundByCode.Id != ActiveMesParamDTO.Id))
@@ -452,10 +474,9 @@
                 if (ActiveMesParamDTO.SapUnitOfMeasureId != null)
                     ActiveMesParamDTO.SapUnitOfMeasureDTOFK = await _sapUnitOfMeasureRepository.Get((int)ActiveMesParamDTO.SapUnitOfMeasureId);
                 else
-                    ActiveMesParamDTO.SapUnitOfMeasureDTOFK = null;
-
+                    ActiveMesParamDTO.SapUnitOfMeasureDTOFK = null;                
                 _dialogService.Close(ActiveMesParamDTO);
-            }
+            }            
         }
 
     }
