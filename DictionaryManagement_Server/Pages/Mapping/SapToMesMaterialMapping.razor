@@ -22,9 +22,16 @@
             <h4 class="card-title text-primary"><a href="/mapping">Маппинг</a> - <a href="/mapping/SapToMesMaterialMapping">Материалы</a></h4>
         </div>
 
+        <font color="red">
+            <hr />
+            <h3>НЕ ИСПОЛЬЗУЕТСЯ</h3>
+            <hr />
+        </font>
+
         @if (IsLoading != true)
         {
-            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую связку материалов" Click="@InsertRow" Disabled=@(sapToMesMaterialMappingDTOToInsert != null || sapToMesMaterialMappingDTOToUpdate != null) />
+@*             <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую связку материалов" Click="@InsertRow" Disabled=@(sapToMesMaterialMappingDTOToInsert != null || sapToMesMaterialMappingDTOToUpdate != null) /> *@
+            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую связку материалов" Click="@InsertRow" Disabled=true />
             <RadzenDataGrid @ref="sapToMesMaterialMappingDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@sapToMesMaterialMappingDTOs" TItem="SapToMesMaterialMappingDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -64,17 +71,22 @@
 
                     <RadzenDataGridColumn TItem="SapToMesMaterialMappingDTO" Context="SapToMesMaterialMappingDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="SapToMesMaterialMappingDTO">
-                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(SapToMesMaterialMappingDTO))" @onclick:stopPropagation="true">
+                            @* <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(SapToMesMaterialMappingDTO))" @onclick:stopPropagation="true"> *@
+                            <RadzenButton Icon="edit" Disabled=true ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(SapToMesMaterialMappingDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
-                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SapToMesMaterialMappingDTO))" @onclick:stopPropagation="true">
+@*                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SapToMesMaterialMappingDTO))" @onclick:stopPropagation="true"> *@
+                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Disabled=true Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SapToMesMaterialMappingDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                         </Template>
                         <EditTemplate Context="SapToMesMaterialMappingDTO">
-                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(SapToMesMaterialMappingDTO))">
+@*                             <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(SapToMesMaterialMappingDTO))"> *@
+                            <RadzenButton Disabled=true Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@((args) => SaveRow(SapToMesMaterialMappingDTO))">
                             </RadzenButton>
-                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(SapToMesMaterialMappingDTO))">
+                            @* <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(SapToMesMaterialMappingDTO))"> *@
+                            <RadzenButton Disabled=true Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@((args) => CancelEdit(SapToMesMaterialMappingDTO))">
                             </RadzenButton>
-                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SapToMesMaterialMappingDTO))">
+                            @* <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SapToMesMaterialMappingDTO))"> *@
+                            <RadzenButton Disabled=true ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SapToMesMaterialMappingDTO))">
                             </RadzenButton>
                         </EditTemplate>
                     </RadzenDataGridColumn>
