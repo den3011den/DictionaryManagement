@@ -112,7 +112,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-
+@* 
                     @if (SD.AppFactoryMode == SD.FactoryMode.NKNH)
                     {
                         <RadzenDataGridColumn TItem="MesParamDTO" Property="MesMaterialDTOFK" Title="Материал MES" Width="70px" FilterProperty="MesMaterialDTOFK.ToStringValue" SortProperty="MesMaterialDTOFK.ToStringValue">
@@ -133,7 +133,7 @@
                     }
 
                     @if (SD.AppFactoryMode == SD.FactoryMode.KOS)
-                    {
+                    { *@
 
                         <RadzenDataGridColumn TItem="MesParamDTO" Property="SapMaterialDTOFK" Title="Материал SAP" Width="70px" FilterProperty="SapMaterialDTOFK.ToStringValue" SortProperty="SapMaterialDTOFK.ToStringValue">
                             <Template Context="data1">
@@ -152,7 +152,7 @@
                         </RadzenDataGridColumn>
 
 
-                    }
+@*                     } *@
 
                     <RadzenDataGridColumn TItem="MesParamDTO" Property="IsNdo" Title="НДО" Filterable="true" Width="35px">
                         <Template Context="data">

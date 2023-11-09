@@ -31,9 +31,11 @@ builder.WebHost.UseUrls("http://+:5555");
 //builder.Services.AddHttpsRedirection(options => options.HttpsPort = 7777);
 
 
-SD.AppFactoryMode = SD.FactoryMode.KOS;
-if (builder.Configuration.GetValue<string>("FactoryMode") == "NKNH")
-    SD.AppFactoryMode = SD.FactoryMode.NKNH;
+//SD.AppFactoryMode = SD.FactoryMode.KOS;
+//if (builder.Configuration.GetValue<string>("FactoryMode") == "NKNH")
+//    SD.AppFactoryMode = SD.FactoryMode.NKNH;
+
+SD.AppFactoryMode = builder.Configuration.GetValue<string>("FactoryMode");
 
 builder.Services.AddDbContext<IntDBApplicationDbContext>(options =>
 options.UseSqlServer(

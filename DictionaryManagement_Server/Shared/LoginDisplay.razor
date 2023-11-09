@@ -2,8 +2,16 @@
 @using System.Security.Claims;
 <AuthorizeView>
     @* Пользователь: @context.User.Identity?.Name&nbsp&nbsp;&nbsp; *@
-
-    Пользователь: @UserLogin&nbsp&nbsp;&nbsp;
+    <div class="container">  
+        <div class="row">
+            <div class="col-6 justify-content-start text-primary">
+                Интеграционное решение - Dictionary Management - @SD.AppVersion - @(SD.AppFactoryMode)
+            </div>
+            <div class="col-6 justify-content-end">
+                Пользователь: @UserLogin
+            </div>
+        </div>
+    </div>
 
     @* <div>Входит в группу BDSHOME-PC\HomeUsers:&nbsp;</div>
 
