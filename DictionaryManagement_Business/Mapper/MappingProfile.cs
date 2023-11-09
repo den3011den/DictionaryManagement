@@ -22,7 +22,12 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.IsAutoCalcDestDataType, opt => opt.MapFrom(src => src.IsAutoCalcDestDataType == null ? false : src.IsAutoCalcDestDataType));
 
             CreateMap<DataSource, DataSourceDTO>().ReverseMap();
-            CreateMap<ReportTemplateType, ReportTemplateTypeDTO>().ReverseMap();
+            
+            CreateMap<ReportTemplateType, ReportTemplateTypeDTO>()
+                .ForMember(dest => dest.NeedAutoCalc, opt => opt.MapFrom(src => src.NeedAutoCalc == null ? false : src.NeedAutoCalc));
+            CreateMap<ReportTemplateTypeDTO, ReportTemplateType>()
+                .ForMember(dest => dest.NeedAutoCalc, opt => opt.MapFrom(src => src.NeedAutoCalc == null ? false : src.NeedAutoCalc));
+
             CreateMap<LogEventType, LogEventTypeDTO>().ReverseMap();
             CreateMap<Settings, SettingsDTO>().ReverseMap();
             CreateMap<User, UserDTO>().ReverseMap();

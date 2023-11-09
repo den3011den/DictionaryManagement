@@ -33,7 +33,7 @@
                             Style="height:720px">                
                 <Columns>
                     <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="Name" Title="Наименование">
+                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="Name" Title="Наименование" Width="250px">
                         <EditTemplate Context="reportTemplateTypeDTO">
                             <RadzenTextBox @bind-Value="reportTemplateTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
@@ -41,7 +41,22 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px">
+
+                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="NeedAutoCalc" Title="Требуется авторасчёт" Width="150px" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.NeedAutoCalc ReadOnly="true" TriState="false" TValue="bool?" />
+                        </Template>
+                        <EditTemplate Context="data">
+                            <strong>
+                                |
+                                <RadzenCheckBox @bind-Value=data.NeedAutoCalc TriState="false" TValue="bool?" />
+                                |
+                            </strong>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+
+
+                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
@@ -161,6 +176,7 @@
                 {
                     var objectForRestore = await _reportTemplateTypeRepository.Get(reportTemplateTypeDTO.Id);
                     reportTemplateTypeDTO.Name = objectForRestore.Name;
+                    reportTemplateTypeDTO.NeedAutoCalc = objectForRestore.NeedAutoCalc;
                     await reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTO);
                     await reportTemplateTypeDTOGrid.Reload();
                     await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись типа шаблона отчётов с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
@@ -193,6 +209,7 @@
         if (objectForRestore != null)
         {
             reportTemplateTypeDTO.Name = objectForRestore.Name;
+            reportTemplateTypeDTO.NeedAutoCalc = objectForRestore.NeedAutoCalc;
             reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTO);
         }
         reportTemplateTypeDTOGrid.Reload();
@@ -267,6 +284,7 @@
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
             reportTemplateTypeDTOToInsert = new ReportTemplateTypeDTO();
+            reportTemplateTypeDTOToInsert.NeedAutoCalc = false;
             await reportTemplateTypeDTOGrid.InsertRow(reportTemplateTypeDTOToInsert);
         }
     }

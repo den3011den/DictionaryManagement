@@ -22,6 +22,9 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 
+        [Display(Name = "Требуется авторасчёт")]
+        public bool? NeedAutoCalc { get; set; }
+
         [NotMapped]
         [Display(Name = "Чтение")]
         public bool CanDownload { get; set; }

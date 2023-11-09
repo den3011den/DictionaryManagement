@@ -50,19 +50,19 @@
                             @* <RadzenNumericRangeValidator Min=1 Max=@(int.MaxValue) Text="Приоритет передачи в SAP не может быть меньше 1" Component="Priority" Popup="true" /> *@
                         </EditTemplate>
                     </RadzenDataGridColumn>
-                    
-                        <RadzenDataGridColumn TItem="DataTypeDTO" Property="IsAutoCalcDestDataType" Title="Результирующий тип авторасчёта" Width="150px" TextAlign="TextAlign.Center">
-                            <Template Context="data">
-                                <RadzenCheckBox @bind-Value=data.IsAutoCalcDestDataType ReadOnly="true" TriState="false" TValue="bool?" />
-                            </Template>
-                            <EditTemplate Context="data">                                
-                                    <strong>
-                                        |
-                                        <RadzenCheckBox @bind-Value=data.IsAutoCalcDestDataType TriState="false" TValue="bool?" />
-                                        |
-                                    </strong>                                
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="IsAutoCalcDestDataType" Title="Результирующий тип авторасчёта" Width="150px" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.IsAutoCalcDestDataType ReadOnly="true" TriState="false" TValue="bool?" />
+                        </Template>
+                        <EditTemplate Context="data">
+                            <strong>
+                                |
+                                <RadzenCheckBox @bind-Value=data.IsAutoCalcDestDataType TriState="false" TValue="bool?" />
+                                |
+                            </strong>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
 
 
 
@@ -216,7 +216,7 @@
             if (dataTypeDTO.IsAutoCalcDestDataType == true)
             {
                 var tmpList = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
-                foreach(var item in tmpList)
+                foreach (var item in tmpList)
                 {
                     if (dataTypeDTO.Id != item.Id)
                         if (item.IsAutoCalcDestDataType == true)
@@ -237,7 +237,7 @@
     async Task SaveRow(DataTypeDTO dataTypeDTO)
     {
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
-        {            
+        {
             await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
         }
     }

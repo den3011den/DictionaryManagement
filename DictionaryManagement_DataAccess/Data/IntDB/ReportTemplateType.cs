@@ -20,6 +20,8 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [MinLength(1)]
         public string Name { get; set; } = string.Empty;
 
+        public bool? NeedAutoCalc { get; set; }
+
         public bool IsArchive { get; set; }
 
     }
