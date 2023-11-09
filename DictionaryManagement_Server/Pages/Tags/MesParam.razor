@@ -33,7 +33,7 @@
         {
 
             @*<div style="word-wrap: normal">*@
-            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тэг СИР" Click="@(args => EditRow(null, "CREATE"))" />
+            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тэг СИР" Click="@(args => EditRow(null, SD.EditMode.Create))" />
             <RadzenDataGrid @bind-Settings="@MesParamGridSettings" @ref="mesParamDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@mesParamDTOs" TItem="MesParamDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -169,9 +169,9 @@
 
                     <RadzenDataGridColumn TItem="MesParamDTO" Context="mesParamDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="70px">
                         <Template Context="mesParamDTO">
-                            <RadzenButton title="Создать на основании" Icon="add_box" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO, "CREATE_BASED_ON_ROW"))" @onclick:stopPropagation="true">
+                            <RadzenButton title="Создать на основании" Icon="add_box" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO, SD.EditMode.CreateBasedOnRow))" @onclick:stopPropagation="true">
                             </RadzenButton>
-                            <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO, "EDIT"))" @onclick:stopPropagation="true">
+                            <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO, SD.EditMode.Edit))" @onclick:stopPropagation="true">
                             </RadzenButton>
                             @if (!mesParamDTO.IsArchive)
                             {
@@ -282,7 +282,7 @@
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesParamGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesParamGridSettings)}')");
     }
 
-    async Task EditRow(MesParamDTO mesParamDTO, string modePar)
+    async Task EditRow(MesParamDTO mesParamDTO, SD.EditMode modePar)
     {
         //mesMaterialDTOToUpdate = mesMaterialDTO;
         //await mesMaterialDTOGrid.EditRow(mesMaterialDTO);
@@ -292,23 +292,23 @@
 
             MesParamDTO dialogResult;
 
-            switch (modePar.Trim().ToUpper())
+            switch (modePar)
             {
-                case "CREATE":
+                case SD.EditMode.Create:
                     IsLoading = false;
-                    dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 }, { "Mode", modePar.Trim().ToUpper() } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
+                    dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 }, { "Mode", modePar } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
                     break;
-                case "EDIT":
+                case SD.EditMode.Edit:
                     IsLoading = false;
-                    dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Изменить тэг СИР", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id }, { "Mode", modePar.Trim().ToUpper() } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
+                    dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Изменить тэг СИР", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id }, { "Mode", modePar } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
                     break;
-                case "CREATE_BASED_ON_ROW":
+                case SD.EditMode.CreateBasedOnRow:
                     IsLoading = false;
-                    dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР на основании", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id }, { "Mode", modePar.Trim().ToUpper() } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
+                    dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР на основании", new Dictionary<string, object>() { { "MesParamId", mesParamDTO.Id }, { "Mode", modePar } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
                     break;
                 default:
                     IsLoading = false;
-                    dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 }, { "Mode", "CREATE" } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
+                    dialogResult = await _dialogService.OpenAsync<AddEditMesParam>("Создать тэг СИР", new Dictionary<string, object>() { { "MesParamId", 0 }, { "Mode", SD.EditMode.Create } }, new DialogOptions() { Width = $"{1400}px", Left = $"{100}px" });
                     break;
             }
 
@@ -316,7 +316,7 @@
             if (dialogResult != null)
             {
 
-                if ((modePar.Trim().ToUpper() == "CREATE" || modePar.Trim().ToUpper() == "CREATE_BASED_ON_ROW") && (modePar.Trim().ToUpper() != "EDIT"))
+                if ((modePar == SD.EditMode.Create || modePar == SD.EditMode.CreateBasedOnRow) && (modePar != SD.EditMode.Edit))
                 {
                     IsLoading = true;
                     await LoadStateAsync();

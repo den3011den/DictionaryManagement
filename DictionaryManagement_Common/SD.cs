@@ -47,6 +47,13 @@ namespace DictionaryManagement_Common
         public static string AdminRoleName = "Администратор";
         public static string SyncUserADGroupsIntervalInMinutesSettingName = "SyncUserADGroupsIntervalInMinutes";
 
+        public enum EditMode
+        {
+            CreateBasedOnRow = 1,
+            Create = 2,
+            Edit = 3
+        }
+
         //public static UserDTO CurrentUserDTO = new UserDTO
         //{
         //    Id = new Guid("A8281E55-524B-4E5E-911A-A8949B011372"),

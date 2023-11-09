@@ -60,7 +60,7 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.IsArchive = objectToAddDTO.IsArchive;
 
             var addedMesParam = _db.MesParam.Add(objectToAdd);
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
             return _mapper.Map<MesParam, MesParamDTO>(addedMesParam.Entity);
         }
 

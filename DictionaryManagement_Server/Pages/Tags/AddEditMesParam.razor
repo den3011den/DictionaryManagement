@@ -242,7 +242,7 @@
     [Parameter]
     public int MesParamId { get; set; }
     [Parameter]
-    public string Mode { get; set; }
+    public SD.EditMode Mode { get; set; }
 
     Variant variant = Variant.Outlined;
 
@@ -285,16 +285,16 @@
         StateHasChanged();
 
 
-        switch(Mode.Trim().ToUpper())
+        switch(Mode)
         {
-            case "CREATE":
+            case SD.EditMode.Create:
                 ActiveMesParamDTO = new MesParamDTO();
                 break;
-            case "EDIT":
+            case SD.EditMode.Edit:
                 ActiveMesParamDTO = await _mesParamRepository.GetById(MesParamId);
                 Title = "Изменить тэг СИР";
                 break;
-            case "CREATE_BASED_ON_ROW":
+            case SD.EditMode.CreateBasedOnRow:
                 ActiveMesParamDTO = await _mesParamRepository.GetById(MesParamId);
                 ActiveMesParamDTO.Id = 0;
                 Title = "Создать тэг СИР на основании";
@@ -319,16 +319,16 @@
                 IsLoading = true;
                 StateHasChanged();
 
-                switch (Mode.Trim().ToUpper())
+                switch (Mode)
                 {
-                    case "CREATE":
+                    case SD.EditMode.Create:
                         ActiveMesParamDTO = new MesParamDTO();
                         break;
-                    case "EDIT":
+                    case SD.EditMode.Edit:
                         ActiveMesParamDTO = await _mesParamRepository.GetById(MesParamId);
                         Title = "Изменить тэг СИР";
                         break;
-                    case "CREATE_BASED_ON_ROW":
+                    case SD.EditMode.CreateBasedOnRow:
                         ActiveMesParamDTO = await _mesParamRepository.GetById(MesParamId);
                         ActiveMesParamDTO.Id = 0;
                         Title = "Создать тэг СИР на основании";
@@ -376,7 +376,7 @@
     {
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            if ((Mode.Trim().ToUpper() == "CREATE") || (Mode.Trim().ToUpper() == "CREATE_BASED_ON_ROW"))            
+            if ((Mode == SD.EditMode.Create) || (Mode == SD.EditMode.CreateBasedOnRow))
             { // создание
                 var foundByCode = await _mesParamRepository.GetByCode(ActiveMesParamDTO.Code);
                 if (foundByCode != null)
