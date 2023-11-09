@@ -48,7 +48,7 @@
 
                                             <RadzenDataGridColumn TItem="ADGroupDTO" Property="ToStringId" Filterable="true" FilterProperty="ToStringId" Title="Ид" Width="75px">
                                             </RadzenDataGridColumn>
-                                            <RadzenDataGridColumn TItem="ADGroupDTO" Property="Name" Title="Логин" Width="130px">
+                                            <RadzenDataGridColumn TItem="ADGroupDTO" Property="Name" Title="Наименование" Width="130px">
                                             </RadzenDataGridColumn>
                                             <RadzenDataGridColumn TItem="ADGroupDTO" Property="Description" Title="Описание" Width="150px">
                                             </RadzenDataGridColumn>
@@ -116,7 +116,7 @@
                 StateHasChanged();
 
                 ActiveRoleVMDTO = await _roleVMRepository.Get(RoleId);
-                Title = "Добавить пользователей к роли";
+                Title = "Добавить группы AD к роли";
 
                 ADGroupList = await _roleVMRepository.GetAllNotArchiveADGroupsExceptAlreadyInRole(ActiveRoleVMDTO.Id);
 
@@ -140,7 +140,7 @@
                 return;
             }
 
-            bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Добавление пользователей к роли", "Количество отмеченных пользователей: " + checkedADGroupDTOList.Count().ToString()
+            bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Добавление групп AD к роли", "Количество отмеченных групп AD: " + checkedADGroupDTOList.Count().ToString()
                 + ". Добавить ? ", "Добавить", "Отмена");
             if (selectionResult == false)
             {
