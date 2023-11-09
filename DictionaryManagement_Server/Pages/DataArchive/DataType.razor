@@ -33,29 +33,45 @@
                             AllowColumnResize="false"
                             AllowVirtualization="true"
                             GridLines="DataGridGridLines.Both"
-                            Style="height:720px">                
+                            Style="height:720px">
                 <Columns>
                     <RadzenDataGridColumn TItem="DataTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Name" Title="Наименование">
+                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Name" Title="Наименование" Width="200px">
                         <EditTemplate Context="dataTypeDTO">
-                            <RadzenTextBox @bind-Value="dataTypeDTO.Name" Style="width:100%; display: block" Name="Name"/>
+                            <RadzenTextBox @bind-Value="dataTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Priority" Title="Приоритет передачи в SAP (чем больше число - тем выше приоритет)" Width="250px">
+                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Priority" Title="Приоритет передачи в SAP (чем больше число - тем выше приоритет)" Width="150px" TextAlign="TextAlign.Center">
                         <EditTemplate Context="dataTypeDTO">
                             <RadzenNumeric @bind-Value="dataTypeDTO.Priority" Style="width:100%; display: block" Name="Priority" />
                             @* <RadzenNumericRangeValidator Min=1 Max=@(int.MaxValue) Text="Приоритет передачи в SAP не может быть меньше 1" Component="Priority" Popup="true" /> *@
                         </EditTemplate>
                     </RadzenDataGridColumn>
+                    
+                        <RadzenDataGridColumn TItem="DataTypeDTO" Property="IsAutoCalcDestDataType" Title="Результирующий тип авторасчёта" Width="150px" TextAlign="TextAlign.Center">
+                            <Template Context="data">
+                                <RadzenCheckBox @bind-Value=data.IsAutoCalcDestDataType ReadOnly="true" TriState="false" TValue="bool?" />
+                            </Template>
+                            <EditTemplate Context="data">                                
+                                    <strong>
+                                        |
+                                        <RadzenCheckBox @bind-Value=data.IsAutoCalcDestDataType TriState="false" TValue="bool?" />
+                                        |
+                                    </strong>                                
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="90px">
+
+
+                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="90px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
+
                     <RadzenDataGridColumn TItem="DataTypeDTO" Context="dataTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="dataTypeDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(dataTypeDTO))" @onclick:stopPropagation="true">
@@ -171,6 +187,7 @@
                     var objectForRestore = await _dataTypeRepository.Get(dataTypeDTO.Id);
                     dataTypeDTO.Name = objectForRestore.Name;
                     dataTypeDTO.Priority = objectForRestore.Priority;
+                    dataTypeDTO.IsAutoCalcDestDataType = objectForRestore.IsAutoCalcDestDataType;
                     await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
                     await dataTypeDTOGrid.Reload();
                     await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись вида данных с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
@@ -186,6 +203,7 @@
                     var objectForRestore = await _dataTypeRepository.Get(dataTypeDTO.Id);
                     dataTypeDTO.Name = objectForRestore.Name;
                     dataTypeDTO.Priority = objectForRestore.Priority;
+                    dataTypeDTO.IsAutoCalcDestDataType = objectForRestore.IsAutoCalcDestDataType;
                     await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
                     await dataTypeDTOGrid.Reload();
                     await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с приоритетеом передачи в SAP равным " + objectForCheckPriority.Priority.ToString() +
@@ -195,13 +213,31 @@
             }
 
             await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.Update);
+            if (dataTypeDTO.IsAutoCalcDestDataType == true)
+            {
+                var tmpList = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
+                foreach(var item in tmpList)
+                {
+                    if (dataTypeDTO.Id != item.Id)
+                        if (item.IsAutoCalcDestDataType == true)
+                        {
+                            item.IsAutoCalcDestDataType = false;
+                            await _dataTypeRepository.Update(item, SD.UpdateMode.Update);
+                        }
+                }
+                IsLoading = true;
+                StateHasChanged();
+                dataTypeDTOs = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+                IsLoading = false;
+                StateHasChanged();
+            }
         }
     }
 
     async Task SaveRow(DataTypeDTO dataTypeDTO)
     {
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
-        {
+        {            
             await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
         }
     }
@@ -216,9 +252,12 @@
         dataTypeDTOToUpdate = null;
 
         var objectForRestore = _dataTypeRepository.Get(dataTypeDTO.Id).GetAwaiter().GetResult();
-        dataTypeDTO.Name = objectForRestore.Name;
-        dataTypeDTOGrid.UpdateRow(dataTypeDTO);
-        dataTypeDTOGrid.Reload();
+        if (objectForRestore != null)
+        {
+            dataTypeDTO.Name = objectForRestore.Name;
+            dataTypeDTOGrid.UpdateRow(dataTypeDTO);
+            dataTypeDTOGrid.Reload();
+        }
 
         dataTypeDTOGrid.CancelEditRow(dataTypeDTO);
 
@@ -290,6 +329,7 @@
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
             dataTypeDTOToInsert = new DataTypeDTO();
+            dataTypeDTOToInsert.IsAutoCalcDestDataType = false;
             await dataTypeDTOGrid.InsertRow(dataTypeDTOToInsert);
         }
     }
@@ -313,7 +353,7 @@
             if (objectForCheckPriority != null)
             {
                 if (objectForCheckPriority.Id != dataTypeDTO.Id)
-                {                    
+                {
                     await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с приоритетеом передачи в SAP равным " + objectForCheckPriority.Priority.ToString() +
                         " Наименование: \"" + objectForCheckPriority.Name + "\" ИД записи = " + objectForCheckPriority.Id.ToString());
                     dataTypeDTOGrid.CancelEditRow(dataTypeDTO);
@@ -323,6 +363,25 @@
             }
 
             var newDTO = await _dataTypeRepository.Create(dataTypeDTO);
+
+            if (newDTO.IsAutoCalcDestDataType == true)
+            {
+                var tmpList = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
+                foreach (var item in tmpList)
+                {
+                    if (newDTO.Id != item.Id)
+                        if (item.IsAutoCalcDestDataType == true)
+                        {
+                            item.IsAutoCalcDestDataType = false;
+                            await _dataTypeRepository.Update(item, SD.UpdateMode.Update);
+                        }
+                }
+                IsLoading = true;
+                StateHasChanged();
+                dataTypeDTOs = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
+                IsLoading = false;
+                StateHasChanged();
+            }
 
             //dataTypeDTOToInsert.Id = newDTO.Id;
             //await dataTypeDTOGrid.UpdateRow(dataTypeDTOToInsert);

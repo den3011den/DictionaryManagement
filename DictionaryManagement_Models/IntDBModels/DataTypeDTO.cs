@@ -23,8 +23,11 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 
-        [Display(Name = "Приоритет выгрузки данных в SAP")]        
+        [Display(Name = "Приоритет выгрузки данных в SAP")]
         public int? Priority { get; set; }
+
+        [Display(Name = "Результирующий тип авторасчёта")]
+        public bool? IsAutoCalcDestDataType { get; set; }
 
         [NotMapped]
         public string ToStringValue { get; set; } = string.Empty;

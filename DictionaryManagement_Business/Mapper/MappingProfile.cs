@@ -16,7 +16,11 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<CorrectionReason, CorrectionReasonDTO>().ReverseMap();
 
             CreateMap<MesParamSourceType, MesParamSourceTypeDTO>().ReverseMap();
-            CreateMap<DataType, DataTypeDTO>().ReverseMap();
+            CreateMap<DataType, DataTypeDTO>()
+                .ForMember(dest => dest.IsAutoCalcDestDataType, opt => opt.MapFrom(src => src.IsAutoCalcDestDataType == null ? false : src.IsAutoCalcDestDataType));
+            CreateMap<DataTypeDTO, DataType>()
+                .ForMember(dest => dest.IsAutoCalcDestDataType, opt => opt.MapFrom(src => src.IsAutoCalcDestDataType == null ? false : src.IsAutoCalcDestDataType));
+
             CreateMap<DataSource, DataSourceDTO>().ReverseMap();
             CreateMap<ReportTemplateType, ReportTemplateTypeDTO>().ReverseMap();
             CreateMap<LogEventType, LogEventTypeDTO>().ReverseMap();

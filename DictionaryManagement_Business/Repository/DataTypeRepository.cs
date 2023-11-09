@@ -67,6 +67,8 @@ namespace DictionaryManagement_Business.Repository
                         objectToUpdate.Name = objectToUpdateDTO.Name;
                     if (objectToUpdate.Priority != objectToUpdateDTO.Priority)
                         objectToUpdate.Priority = objectToUpdateDTO.Priority;
+                    if (objectToUpdate.IsAutoCalcDestDataType != objectToUpdateDTO.IsAutoCalcDestDataType)
+                        objectToUpdate.IsAutoCalcDestDataType = objectToUpdateDTO.IsAutoCalcDestDataType;
 
                 }
                 if (updateMode == SD.UpdateMode.MoveToArchive)
