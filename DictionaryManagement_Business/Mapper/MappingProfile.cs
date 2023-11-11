@@ -162,7 +162,7 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.DepartmentParentDTO, opt => opt.MapFrom(src => src.DepartmentParentVMDTO));
 
             CreateMap<VersionDTO, DictionaryManagement_DataAccess.Data.IntDB.Version>().ReverseMap();
-
+            CreateMap<Scheduler, SchedulerDTO>().ReverseMap();
         }
     }
 }
