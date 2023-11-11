@@ -7,6 +7,7 @@
 
 @inject IJSRuntime _jsRuntime
 @inject IReportEntityRepository _reportEntityRepository
+@inject ISimpleExcelExportRepository _simpleExcelExportRepository
 
 @inject DialogService _dialogService
 
@@ -38,6 +39,7 @@
                                 <RadzenDatePicker @bind-Value=@startDate Change="@(args => ChangeStartDate())" ShowTime="true" ShowSeconds="true" DateFormat="dd.MM.yyyy HH:mm:ss" />
                                 <RadzenDatePicker @bind-Value=@endDate Change="@(args => ChangeEndDate())" Min=minEndDate Max=@maxEndDate ShowTime="true" ShowSeconds="true" DateFormat="dd.MM.yyyy HH:mm:ss" />
                                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="done" Disabled="@ApplyButtonDisabled" Text="Применить" Click="@(args => GetRows())" />
+                                <RadzenButton Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy =@excelExportFlag BusyText="Выполняется экспорт в Excel"/>
                             </RadzenRow>
                         </RadzenStack>
                     </RadzenStack>
@@ -169,6 +171,8 @@
     DateTime endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
     DateTime maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
     DateTime minEndDate = DateTime.Today.AddDays(-8);
+
+    bool excelExportFlag = false;
 
     int applyRadioGroupValue = 1;
 
@@ -323,5 +327,20 @@
             IsLoading = false;
         }
     }
+    async Task ExcelExport()
+    {        
+        excelExportFlag = true;
+        await InvokeAsync(StateHasChanged);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {            
+            string filename = "ReportEntity_Export_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
+            
+            //await _simpleExcelExportRepository.GenerateExcelReportEntity(filename, reportEntityDTOs);
+            await _simpleExcelExportRepository.GenerateExcelReportEntity(filename, (IEnumerable<ReportEntityDTO>)reportEntityDTOGrid.View);
 
+            await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
+        }
+        excelExportFlag = false;
+        await InvokeAsync(StateHasChanged);
+    }
 }

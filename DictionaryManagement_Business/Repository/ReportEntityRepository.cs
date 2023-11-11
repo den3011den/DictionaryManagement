@@ -93,7 +93,7 @@ namespace DictionaryManagement_Business.Repository
                 startDownloadTime = DateTime.MaxValue;
 
             var hhh1 = _db.ReportEntity
-                            .Include("ReportTemplateFK")
+                            .Include("ReportTemplateFK").Include("ReportTemplateFK.ReportTemplateTypeFK").Include("ReportTemplateFK.MesDepartmentFK")
                             .Include("ReportDepartmentFK")
                             .Include("DownloadUserFK")
                             .Include("UploadUserFK")
