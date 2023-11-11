@@ -76,6 +76,7 @@ builder.Services.AddScoped<IRoleToADGroupRepository, RoleToADGroupRepository>();
 builder.Services.AddScoped<IAuthorizationRepository, AuthorizationRepository>();
 builder.Services.AddScoped<IAuthorizationControllersRepository, AuthorizationControllersRepository>();
 builder.Services.AddScoped<ISimpleExcelExportRepository, SimpleExcelExportRepository>();
+builder.Services.AddScoped<IVersionRepository, VersionRepository>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

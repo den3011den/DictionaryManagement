@@ -161,6 +161,7 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<MesDepartmentVMDTO, MesDepartmentDTO>()                
                 .ForMember(dest => dest.DepartmentParentDTO, opt => opt.MapFrom(src => src.DepartmentParentVMDTO));
 
+            CreateMap<VersionDTO, DictionaryManagement_DataAccess.Data.IntDB.Version>().ReverseMap();
 
         }
     }

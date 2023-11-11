@@ -46,6 +46,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<ReportEntity> ReportEntity { get; set; }
         public DbSet<ReportEntityLog> ReportEntityLog { get; set; }
         public DbSet<Smena> Smena { get; set; }
+        public DbSet<Version> Version { get; set; }
 
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
