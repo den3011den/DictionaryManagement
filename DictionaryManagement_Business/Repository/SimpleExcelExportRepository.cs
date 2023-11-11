@@ -286,5 +286,119 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
+
+        public async Task<string> GenerateExcelSapEquipmentDTO(string filename, IEnumerable<SapEquipmentDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("SapEquipment");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код завода SAP (ErpPlantId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код ресурса/склада SAP (ErpId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Является складом (IsWarehouse)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                excelRowNum = 2;
+                foreach (SapEquipmentDTO sapEquipmentDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = sapEquipmentDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapEquipmentDTO.ErpPlantId;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapEquipmentDTO.ErpId;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapEquipmentDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapEquipmentDTO.IsWarehouse == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapEquipmentDTO.IsArchive == true ? "Да" : "";
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
+        public async Task<string> GenerateExcelSapMaterialDTO(string filename, IEnumerable<SapMaterialDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("SapMaterial");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код АСВ НСИ (Code)";                
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Сокр. наименование (ShortName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                excelRowNum = 2;
+                foreach (SapMaterialDTO sapMaterialDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMaterialDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMaterialDTO.Code;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMaterialDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMaterialDTO.ShortName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMaterialDTO.IsArchive == true ? "Да" : "";
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
+
     }
 }

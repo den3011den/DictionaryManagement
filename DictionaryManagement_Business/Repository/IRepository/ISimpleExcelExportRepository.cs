@@ -13,6 +13,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
     {
         public Task<string> GenerateExcelReportEntity(string filename, IEnumerable<ReportEntityDTO> data);
         public Task<string> GenerateExcelMesParam(string filename, IEnumerable<MesParamDTO> data);
-        
+        public Task<string> GenerateExcelSapEquipmentDTO(string filename, IEnumerable<SapEquipmentDTO> data);
+        public Task<string> GenerateExcelSapMaterialDTO(string filename, IEnumerable<SapMaterialDTO> data);
     }
 }
