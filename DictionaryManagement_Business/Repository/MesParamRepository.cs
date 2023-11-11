@@ -4,6 +4,7 @@ using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
+using DocumentFormat.OpenXml.EMMA;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -404,6 +405,32 @@ namespace DictionaryManagement_Business.Repository
             }
             return 0;
 
+        }
+
+        public async Task<MesParamDTO> GetBySapMapping(int? sapEquipmentIdSource, int? sapEquipmentIdDest, int? sapMaterialId, int idForExclude)
+        {
+            if (sapEquipmentIdSource != null && sapEquipmentIdDest != null && sapMaterialId != null)
+                if (sapEquipmentIdSource > 0 && sapEquipmentIdDest > 0 && sapMaterialId > 0)
+                {
+                    var objToGet = _db.MesParam
+                                    .Include("MesParamSourceTypeFK")
+                                    .Include("MesDepartmentFK")
+                                    .Include("SapEquipmentSourceFK")
+                                    .Include("SapEquipmentDestFK")
+                                    .Include("MesMaterialFK")
+                                    .Include("SapMaterialFK")
+                                    .Include("MesUnitOfMeasureFK")
+                                    .Include("SapUnitOfMeasureFK")
+                                    .FirstOrDefaultWithNoLock(u => u.SapEquipmentIdSource == sapEquipmentIdSource
+                                        && u.SapEquipmentIdDest == sapEquipmentIdDest && u.SapMaterialId == sapMaterialId
+                                        && u.Id != idForExclude);
+                    if (objToGet != null)
+                    {
+                        return _mapper.Map<MesParam, MesParamDTO>(objToGet);
+                    }
+                    
+                }
+            return null;
         }
     }
 }

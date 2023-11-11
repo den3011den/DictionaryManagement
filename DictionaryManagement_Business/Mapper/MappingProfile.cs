@@ -70,6 +70,7 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.SapMaterialFK, opt => opt.MapFrom(src => src.SapMaterialDTOFK))
                 .ForMember(dest => dest.MesUnitOfMeasureFK, opt => opt.MapFrom(src => src.MesUnitOfMeasureDTOFK))
                 .ForMember(dest => dest.SapUnitOfMeasureFK, opt => opt.MapFrom(src => src.SapUnitOfMeasureDTOFK));
+                //.ForMember(dest => dest.MesParamSourceLink, opt => opt.MapFrom(src => src.MesParamSourceLink == "" ? null : src.MesParamSourceLink));
 
             CreateMap<MesParam, MesParamDTO>()
                 .ForMember(dest => dest.MesParamSourceTypeDTOFK, opt => opt.MapFrom(src => src.MesParamSourceTypeFK))
@@ -80,6 +81,7 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.SapMaterialDTOFK, opt => opt.MapFrom(src => src.SapMaterialFK))
                 .ForMember(dest => dest.MesUnitOfMeasureDTOFK, opt => opt.MapFrom(src => src.MesUnitOfMeasureFK))
                 .ForMember(dest => dest.SapUnitOfMeasureDTOFK, opt => opt.MapFrom(src => src.SapUnitOfMeasureFK));
+                //.ForMember(dest => dest.MesParamSourceLink, opt => opt.MapFrom(src => (src.MesParamSourceLink == null || src.MesParamSourceLink.ToUpper() == "NULL") ? "" : src.MesParamSourceLink));
 
             CreateMap<ReportTemplate, ReportTemplateDTO>()
                 .ForMember(dest => dest.AddUserDTOFK, opt => opt.MapFrom(src => src.AddUserFK))

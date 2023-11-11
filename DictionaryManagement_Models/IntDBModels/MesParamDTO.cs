@@ -37,8 +37,8 @@ namespace DictionaryManagement_Models.IntDBModels
         public MesParamSourceTypeDTO? MesParamSourceTypeDTOFK { get; set; }
 
         [Display(Name = "Тэг источника")]
-        [StringLength(300, MinimumLength = 1, ErrorMessage = "Тэг источника может быть от 3 до 300 символов")]
-        public string? MesParamSourceLink { get; set; }
+        [StringLength(300, ErrorMessage = "Тэг источника может быть до 300 символов")]
+        public string? MesParamSourceLink { get; set; } = "";
 
         [Display(Name = "Ид производства")]
         public int? DepartmentId { get; set; }

@@ -12,7 +12,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
 {
     public interface IMesParamRepository
     {
-        public Task<MesParamDTO> GetById(int mesParamId);                
+        public Task<MesParamDTO> GetById(int mesParamId);
         public Task<IEnumerable<MesParamDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All);        
         public Task<MesParamDTO> Update(MesParamDTO objDTO);
         public Task<MesParamDTO> Create(MesParamDTO objectToAddDTO);
@@ -20,5 +20,6 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<MesParamDTO> GetByCode(string code = "");
         public Task<MesParamDTO> GetByName(string name = "");
         public Task<MesParamDTO> GetByMesParamSourceLink(string mesParamSourceLink = "");
+        public Task<MesParamDTO> GetBySapMapping(int? sapEquipmentIdSource, int? sapEquipmentIdDest, int? sapMaterialId, int idForExclude);
     }
 }
