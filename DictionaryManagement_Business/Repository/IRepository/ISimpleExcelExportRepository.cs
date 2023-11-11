@@ -12,6 +12,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
     public interface ISimpleExcelExportRepository
     {
         public Task<string> GenerateExcelReportEntity(string filename, IEnumerable<ReportEntityDTO> data);
-
+        public Task<string> GenerateExcelMesParam(string filename, IEnumerable<MesParamDTO> data);
+        
     }
 }

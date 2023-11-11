@@ -67,6 +67,9 @@ namespace DictionaryManagement_Business.Repository
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Кто загрузил (Upload)";
 
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
                 excelRowNum = 2;
                 foreach (ReportEntityDTO reportEntity in data)
                 {
@@ -97,6 +100,180 @@ namespace DictionaryManagement_Business.Repository
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.UploadTime.ToString();
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.UploadUserDTOFK == null ? "" : reportEntity.UploadUserDTOFK.UserName.ToString();
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
+
+        public async Task<string> GenerateExcelMesParam(string filename, IEnumerable<MesParamDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("MesParam");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД тэга СИР (Id)";                
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код тэга (Code)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование тэга (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Точка измерения (TI)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование точки измерения (NameTI)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Технологическое место (TM)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование технологического места (NameTM)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Описание (Description)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Источник (MesParamSourceType.Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Тэг источника (MesParamSourceLink)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код производства (DepartmentId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование производства (MesDepartment.ShortName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД источника Sap (SapEquipmentIdSource)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование источника Sap (SapEquipment.ErpPlantId + ErpId + Name)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД приёмника Sap (SapEquipmentIdDest)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование приёмника Sap (SapEquipment.ErpPlantId + ErpId + Name)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД материала Sap (SapMaterialId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код АСВ НСИ материала Sap (SapMaterial.Code)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование материала Sap (SapMaterial.Name)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД ед.изм. Sap (SapUnitOfMeasureId)";                
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование ед.изм. Sap (SapUnitOfMeasure.ShortName)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время запроса данных в прошлое в днях (DaysRequestInPast)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Читать из SAP (NeedReadFromSap)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Передавать в SAP (NeedWriteToSap)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Читать из MES (NeedReadFromMes)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Передавать в MES (NeedWriteToMes)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Является тэгом НДО (IsNdo)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Коэф. пересчёта данных по тэгу из ед.изм. MES в ед.изм СИР (MesToSirUnitOfMeasureKoef)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                excelRowNum = 2;
+                foreach (MesParamDTO mesParamDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.Code;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.Name == null ? "" : mesParamDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.TI == null ? "" : mesParamDTO.TI;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.NameTI == null ? "" : mesParamDTO.NameTI;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.TM == null ? "" : mesParamDTO.TM;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.NameTM == null ? "" : mesParamDTO.NameTM;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.Description == null ? "" : mesParamDTO.Description;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.MesParamSourceTypeDTOFK == null ? "" : mesParamDTO.MesParamSourceTypeDTOFK.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.MesParamSourceLink == null ? "" : mesParamDTO.MesParamSourceLink;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.DepartmentId == null ? "" : mesParamDTO.DepartmentId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.MesDepartmentDTOFK == null ? "" : mesParamDTO.MesDepartmentDTOFK.ShortName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentIdSource == null ? "" : mesParamDTO.SapEquipmentIdSource.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentSourceDTOFK == null ? "" : mesParamDTO.SapEquipmentSourceDTOFK.ErpPlantId + "|" + mesParamDTO.SapEquipmentSourceDTOFK.ErpId + " " + mesParamDTO.SapEquipmentSourceDTOFK.Name;
+
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentIdDest == null ? "" : mesParamDTO.SapEquipmentIdDest.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentDestDTOFK == null ? "" : mesParamDTO.SapEquipmentDestDTOFK.ErpPlantId + "|" + mesParamDTO.SapEquipmentDestDTOFK.ErpId + " " + mesParamDTO.SapEquipmentDestDTOFK.Name;
+
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapMaterialId == null ? "" : mesParamDTO.SapMaterialId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapMaterialDTOFK == null ? "" : mesParamDTO.SapMaterialDTOFK.Code;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapMaterialDTOFK == null ? "" : mesParamDTO.SapMaterialDTOFK.Name;
+
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapUnitOfMeasureId == null ? "" : mesParamDTO.SapUnitOfMeasureId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapUnitOfMeasureDTOFK == null ? "" : mesParamDTO.SapUnitOfMeasureDTOFK.ShortName;
+
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.DaysRequestInPast == null ? "" : mesParamDTO.DaysRequestInPast.ToString();
+
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.NeedReadFromSap == true ? "Да" : "";
+
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.NeedWriteToSap == true ? "Да" : "";
+
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.NeedReadFromMes == true ? "Да" : "";
+
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.NeedWriteToMes == true ? "Да" : "";
+
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.IsNdo == true ? "Да" : "";
+
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.MesToSirUnitOfMeasureKoef == null ? "" : mesParamDTO.MesToSirUnitOfMeasureKoef.ToString();
+
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.IsArchive == true ? "Да" : "";
 
                     excelRowNum++;
                 }

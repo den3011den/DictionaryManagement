@@ -39,7 +39,7 @@
                                 <RadzenDatePicker @bind-Value=@startDate Change="@(args => ChangeStartDate())" ShowTime="true" ShowSeconds="true" DateFormat="dd.MM.yyyy HH:mm:ss" />
                                 <RadzenDatePicker @bind-Value=@endDate Change="@(args => ChangeEndDate())" Min=minEndDate Max=@maxEndDate ShowTime="true" ShowSeconds="true" DateFormat="dd.MM.yyyy HH:mm:ss" />
                                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="done" Disabled="@ApplyButtonDisabled" Text="Применить" Click="@(args => GetRows())" />
-                                <RadzenButton Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy =@excelExportFlag BusyText="Выполняется экспорт в Excel"/>
+                                <RadzenButton title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
                             </RadzenRow>
                         </RadzenStack>
                     </RadzenStack>
@@ -330,6 +330,7 @@
     async Task ExcelExport()
     {        
         excelExportFlag = true;
+        await Task.Delay(200);
         await InvokeAsync(StateHasChanged);
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {            
@@ -341,6 +342,7 @@
             await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
         }
         excelExportFlag = false;
+        await Task.Delay(200);
         await InvokeAsync(StateHasChanged);
     }
 }

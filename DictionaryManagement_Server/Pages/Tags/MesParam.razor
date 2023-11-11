@@ -7,6 +7,7 @@
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 @using System.Text.Json;
+@inject ISimpleExcelExportRepository _simpleExcelExportRepository
 
 
 @inject IJSRuntime _jsRuntime
@@ -33,7 +34,10 @@
         {
 
             @*<div style="word-wrap: normal">*@
-            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тэг СИР" Click="@(args => EditRow(null, SD.EditMode.Create))" />
+            <RadzenRow AlignItems="AlignItems.Start">
+                <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тэг СИР" Click="@(args => EditRow(null, SD.EditMode.Create))" />
+                <RadzenButton @ref="xlxButton" class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
+            </RadzenRow>
             <RadzenDataGrid @bind-Settings="@MesParamGridSettings" @ref="mesParamDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@mesParamDTOs" TItem="MesParamDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -112,47 +116,47 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-@* 
-                    @if (SD.AppFactoryMode == SD.FactoryMode.NKNH)
-                    {
-                        <RadzenDataGridColumn TItem="MesParamDTO" Property="MesMaterialDTOFK" Title="Материал MES" Width="70px" FilterProperty="MesMaterialDTOFK.ToStringValue" SortProperty="MesMaterialDTOFK.ToStringValue">
-                            <Template Context="data1">
-                                <div style="white-space:pre-wrap; font-size: 12px">
-                                    @data1.MesMaterialDTOFK
-                                </div>
-                            </Template>
-                        </RadzenDataGridColumn>
+                    @*
+            @if (SD.AppFactoryMode == SD.FactoryMode.NKNH)
+            {
+            <RadzenDataGridColumn TItem="MesParamDTO" Property="MesMaterialDTOFK" Title="Материал MES" Width="70px" FilterProperty="MesMaterialDTOFK.ToStringValue" SortProperty="MesMaterialDTOFK.ToStringValue">
+            <Template Context="data1">
+            <div style="white-space:pre-wrap; font-size: 12px">
+            @data1.MesMaterialDTOFK
+            </div>
+            </Template>
+            </RadzenDataGridColumn>
 
-                        <RadzenDataGridColumn TItem="MesParamDTO" Property="MesUnitOfMeasureDTOFK" Title="Ед.изм MES" Width="60px" FilterProperty="MesUnitOfMeasureDTOFK.ToStringValue" SortProperty="MesUnitOfMeasureDTOFK.ToStringValue">
-                            <Template Context="data1">
-                                <div style="white-space:pre-wrap; font-size: 12px">
-                                    @data1.MesUnitOfMeasureDTOFK
-                                </div>
-                            </Template>
-                        </RadzenDataGridColumn>
-                    }
+            <RadzenDataGridColumn TItem="MesParamDTO" Property="MesUnitOfMeasureDTOFK" Title="Ед.изм MES" Width="60px" FilterProperty="MesUnitOfMeasureDTOFK.ToStringValue" SortProperty="MesUnitOfMeasureDTOFK.ToStringValue">
+            <Template Context="data1">
+            <div style="white-space:pre-wrap; font-size: 12px">
+            @data1.MesUnitOfMeasureDTOFK
+            </div>
+            </Template>
+            </RadzenDataGridColumn>
+            }
 
-                    @if (SD.AppFactoryMode == SD.FactoryMode.KOS)
-                    { *@
+            @if (SD.AppFactoryMode == SD.FactoryMode.KOS)
+            { *@
 
-                        <RadzenDataGridColumn TItem="MesParamDTO" Property="SapMaterialDTOFK" Title="Материал SAP" Width="70px" FilterProperty="SapMaterialDTOFK.ToStringValue" SortProperty="SapMaterialDTOFK.ToStringValue">
-                            <Template Context="data1">
-                                <div style="white-space:pre-wrap; font-size: 12px">
-                                    @data1.SapMaterialDTOFK
-                                </div>
-                            </Template>
-                        </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapMaterialDTOFK" Title="Материал SAP" Width="70px" FilterProperty="SapMaterialDTOFK.ToStringValue" SortProperty="SapMaterialDTOFK.ToStringValue">
+                        <Template Context="data1">
+                            <div style="white-space:pre-wrap; font-size: 12px">
+                                @data1.SapMaterialDTOFK
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
 
-                        <RadzenDataGridColumn TItem="MesParamDTO" Property="SapUnitOfMeasureDTOFK" Title="Ед.изм SAP" Width="60px" FilterProperty="SapUnitOfMeasureDTOFK.ToStringValue" SortProperty="SapUnitOfMeasureDTOFK.ToStringValue">
-                            <Template Context="data1">
-                                <div style="white-space:pre-wrap; font-size: 12px">
-                                    @data1.SapUnitOfMeasureDTOFK
-                                </div>
-                            </Template>
-                        </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapUnitOfMeasureDTOFK" Title="Ед.изм SAP" Width="60px" FilterProperty="SapUnitOfMeasureDTOFK.ToStringValue" SortProperty="SapUnitOfMeasureDTOFK.ToStringValue">
+                        <Template Context="data1">
+                            <div style="white-space:pre-wrap; font-size: 12px">
+                                @data1.SapUnitOfMeasureDTOFK
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
 
 
-@*                     } *@
+                    @*                     } *@
 
                     <RadzenDataGridColumn TItem="MesParamDTO" Property="IsNdo" Title="НДО" Filterable="true" Width="35px">
                         <Template Context="data">
@@ -213,9 +217,11 @@
     // IEnumerable<MesParamSourceTypeDTO>? mesParamSourceTypeDTOs;
 
     RadzenDataGrid<MesParamDTO> mesParamDTOGrid;
+    RadzenButton xlxButton;
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
+    public bool excelExportFlag { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -409,5 +415,22 @@
             await mesParamDTOGrid.UpdateRow(mesParamDTO);
         }
     }
+
+    async Task ExcelExport()
+    {
+        excelExportFlag = true;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            string filename = "Tags_MesParam_Export_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
+            await _simpleExcelExportRepository.GenerateExcelMesParam(filename, (IEnumerable<MesParamDTO>)mesParamDTOGrid.View);
+            await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
+        }
+        excelExportFlag = false;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+    }
+
 
 }
