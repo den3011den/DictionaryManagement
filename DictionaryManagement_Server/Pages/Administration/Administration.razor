@@ -58,7 +58,7 @@
             VersionDTO dialogResult;
 
             IsLoading = false;
-            dialogResult = await _dialogService.OpenAsync<AddEditVersion>("Редактирование версии БД СИР", new Dictionary<string, object>() { { "version", "" } }, new DialogOptions() { Width = $"{500}px" });
+            dialogResult = await _dialogService.OpenAsync<AddEditVersion>("Редактирование версии БД СИР", new Dictionary<string, object>() { { "version", "" } }, new DialogOptions() { Width = $"{500}px", Left = $"{300}px" });
             DBVersionLinkText = "Версия БД СИР"; // + dialogResult.version;
             _navigationManager.NavigateTo("/administration");
         }
