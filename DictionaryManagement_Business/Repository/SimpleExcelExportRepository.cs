@@ -461,5 +461,57 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
+
+        
+        public async Task<string> GenerateExcelADGroup(string filename, IEnumerable<ADGroupDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("ADGroups");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Описание (Description)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                excelRowNum = 2;
+                foreach (ADGroupDTO adGroupDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = adGroupDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = adGroupDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = adGroupDTO.Description == null ? "" : adGroupDTO.Description;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = adGroupDTO.IsArchive == true ? "Да" : "";
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
     }
 }

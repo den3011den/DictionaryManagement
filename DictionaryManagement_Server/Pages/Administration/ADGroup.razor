@@ -10,6 +10,7 @@
 
 @inject IJSRuntime _jsRuntime
 @inject IADGroupRepository _adGroupRepository
+@inject ISimpleExcelExportRepository _simpleExcelExportRepository
 
 @inject DialogService _dialogService
 
@@ -27,8 +28,10 @@
 
         @if (IsLoading != true)
         {
-
-            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить группу AD" Click="@(args => EditRow(null))" />
+            <RadzenRow AlignItems="AlignItems.Start">
+                <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить группу AD" Click="@(args => EditRow(null))" />
+                <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
+            </RadzenRow>
             <RadzenDataGrid @bind-Settings="@ADGroupGridSettings" @ref="adGroupDTOGrid" AllowAlternatingRows="true"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
                             Data="@adGroupDTOs" TItem="ADGroupDTO"
@@ -120,6 +123,7 @@
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
+    public bool excelExportFlag { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -271,5 +275,22 @@
             }
             await adGroupDTOGrid.UpdateRow(adGroupDTO);
         }
+    }
+
+    async Task ExcelExport()
+    {
+        excelExportFlag = true;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
+            string filename = "ADGroups_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
+            await _simpleExcelExportRepository.GenerateExcelADGroup(filename, (IEnumerable<ADGroupDTO>)adGroupDTOGrid.View);
+            await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
+        }
+        excelExportFlag = false;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
     }
 }

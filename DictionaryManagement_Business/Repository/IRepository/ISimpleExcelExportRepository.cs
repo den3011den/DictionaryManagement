@@ -16,6 +16,6 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<string> GenerateExcelSapEquipment(string filename, IEnumerable<SapEquipmentDTO> data);
         public Task<string> GenerateExcelSapMaterial(string filename, IEnumerable<SapMaterialDTO> data);
         public Task<string> GenerateExcelUsers(string filename, IEnumerable<UserDTO> data);
-        
+        public Task<string> GenerateExcelADGroup(string filename, IEnumerable<ADGroupDTO> data);        
     }
 }
