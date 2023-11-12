@@ -129,7 +129,7 @@ namespace DictionaryManagement_Business.Repository
                 int excelColNum = 1;
 
 
-                ws.Cell(excelRowNum, excelColNum).Value = "ИД тэга СИР (Id)";                
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД тэга СИР (Id)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Код тэга (Code)";
                 excelColNum++;
@@ -170,7 +170,7 @@ namespace DictionaryManagement_Business.Repository
                 ws.Cell(excelRowNum, excelColNum).Value = "Наименование материала Sap (SapMaterial.Name)";
 
                 excelColNum++;
-                ws.Cell(excelRowNum, excelColNum).Value = "ИД ед.изм. Sap (SapUnitOfMeasureId)";                
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД ед.изм. Sap (SapUnitOfMeasureId)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Наименование ед.изм. Sap (SapUnitOfMeasure.ShortName)";
 
@@ -361,7 +361,7 @@ namespace DictionaryManagement_Business.Repository
 
                 ws.Cell(excelRowNum, excelColNum).Value = "ИД (Id)";
                 excelColNum++;
-                ws.Cell(excelRowNum, excelColNum).Value = "Код АСВ НСИ (Code)";                
+                ws.Cell(excelRowNum, excelColNum).Value = "Код АСВ НСИ (Code)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
                 excelColNum++;
@@ -398,7 +398,7 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
-    
+
 
         public async Task<string> GenerateExcelUsers(string filename, IEnumerable<UserDTO> data)
         {
@@ -422,7 +422,7 @@ namespace DictionaryManagement_Business.Repository
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Описание (Description)";
                 excelColNum++;
-                ws.Cell(excelRowNum, excelColNum).Value = "Синхронизируется с AD (IsSyncWithAD)";                
+                ws.Cell(excelRowNum, excelColNum).Value = "Синхронизируется с AD (IsSyncWithAD)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
                 excelColNum++;
@@ -462,7 +462,7 @@ namespace DictionaryManagement_Business.Repository
             return fullfilepath;
         }
 
-        
+
         public async Task<string> GenerateExcelADGroup(string filename, IEnumerable<ADGroupDTO> data)
         {
 
@@ -513,5 +513,332 @@ namespace DictionaryManagement_Business.Repository
             return fullfilepath;
         }
 
+        public async Task<string> GenerateExcelRole(string filename, IEnumerable<RoleVMDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var wsRole = wbook.AddWorksheet("Roles");
+                var wsUserToRole = wbook.AddWorksheet("UserToRole");
+                var wsReportTemplateTypeTоRole = wbook.AddWorksheet("ReportTemplateTypeTоRole");
+                var wsRoleToADGroup = wbook.AddWorksheet("RoleToADGroup");
+                var wsRoleToDepartment = wbook.AddWorksheet("RoleToDepartment");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                wsRole.Cell(excelRowNum, excelColNum).Value = "ИД (Id)";
+                excelColNum++;
+                wsRole.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                wsRole.Cell(excelRowNum, excelColNum).Value = "Описание (Description)";
+                excelColNum++;
+                wsRole.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+
+                wsRole.Row(excelRowNum).Style.Font.SetBold(true);
+                wsRole.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                excelRowNum = 1;
+                excelColNum = 1;
+
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "ИД связки UserToRole (UserToRole.Id)";
+                excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "ИД роли СИР (Role.Id)";
+                excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Наименование роли СИР (Role.Name)";
+                excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Описание роли СИР (Role.Description)";
+                excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "В архиве (Role.IsArchive)";
+
+                excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "ИД пользователя (User.Id)";
+                excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Логин пользователя (User.Login)";
+                excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Наименование пользователя (User.UserName)";
+                excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Описание пользователя (User.Description)";
+                excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Синхронизируется с AD (User.IsSyncWithAD)";
+                excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Время последней синхронизации с AD (User.SyncWithADGroupsLastTime)";
+                excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "В архиве (User.IsArchive)";
+
+                wsUserToRole.Row(excelRowNum).Style.Font.SetBold(true);
+                wsUserToRole.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 1;
+                excelColNum = 1;
+
+                wsReportTemplateTypeTоRole.Cell(excelRowNum, excelColNum).Value = "ИД связки ReportTemplateTypeTоRole (ReportTemplateTypeTоRole.Id)";
+                excelColNum++;
+                wsReportTemplateTypeTоRole.Cell(excelRowNum, excelColNum).Value = "ИД роли СИР (Role.Id)";
+                excelColNum++;
+                wsReportTemplateTypeTоRole.Cell(excelRowNum, excelColNum).Value = "Наименование роли СИР (Role.Name)";
+                excelColNum++;
+                wsReportTemplateTypeTоRole.Cell(excelRowNum, excelColNum).Value = "Описание роли СИР (Role.Description)";
+                excelColNum++;
+                wsReportTemplateTypeTоRole.Cell(excelRowNum, excelColNum).Value = "В архиве (Role.IsArchive)";
+
+                excelColNum++;
+                wsReportTemplateTypeTоRole.Cell(excelRowNum, excelColNum).Value = "ИД типа шаблона отчёта (ReportTemplateType.Id)";
+                excelColNum++;
+                wsReportTemplateTypeTоRole.Cell(excelRowNum, excelColNum).Value = "Наименование типа шаблона отчёта (ReportTemplateType.Name)";
+                excelColNum++;
+                wsReportTemplateTypeTоRole.Cell(excelRowNum, excelColNum).Value = "Расчёт автоматически (ReportTemplateType.NeedAutoCalc)";
+                excelColNum++;
+                wsReportTemplateTypeTоRole.Cell(excelRowNum, excelColNum).Value = "Право на чтение (ReportTemplateTypeTоRole.CanDownload)";
+                excelColNum++;
+                wsReportTemplateTypeTоRole.Cell(excelRowNum, excelColNum).Value = "Право на запись (ReportTemplateTypeTоRole.CanUpload)";
+                excelColNum++;
+                wsReportTemplateTypeTоRole.Cell(excelRowNum, excelColNum).Value = "В архиве (ReportTemplateType.IsArchive)";
+
+                wsReportTemplateTypeTоRole.Row(excelRowNum).Style.Font.SetBold(true);
+                wsReportTemplateTypeTоRole.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                excelRowNum = 1;
+                excelColNum = 1;
+
+                wsRoleToADGroup.Cell(excelRowNum, excelColNum).Value = "ИД связки RoleToADGroup (RoleToADGroup.Id)";
+                excelColNum++;
+                wsRoleToADGroup.Cell(excelRowNum, excelColNum).Value = "ИД роли СИР (Role.Id)";
+                excelColNum++;
+                wsRoleToADGroup.Cell(excelRowNum, excelColNum).Value = "Наименование роли СИР (Role.Name)";
+                excelColNum++;
+                wsRoleToADGroup.Cell(excelRowNum, excelColNum).Value = "Описание роли СИР (Role.Description)";
+                excelColNum++;
+                wsRoleToADGroup.Cell(excelRowNum, excelColNum).Value = "В архиве (Role.IsArchive)";
+
+                excelColNum++;
+                wsRoleToADGroup.Cell(excelRowNum, excelColNum).Value = "ИД группы AD (ADGroup.Id)";
+                excelColNum++;
+                wsRoleToADGroup.Cell(excelRowNum, excelColNum).Value = "Наименование AD группы (ADGroup.Name)";
+                excelColNum++;
+                wsRoleToADGroup.Cell(excelRowNum, excelColNum).Value = "Описание AD группы (ADGroup.Description)";
+                excelColNum++;
+                wsRoleToADGroup.Cell(excelRowNum, excelColNum).Value = "В архиве (ADGroup.IsArchive)";
+
+                wsRoleToADGroup.Row(excelRowNum).Style.Font.SetBold(true);
+                wsRoleToADGroup.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 1;
+                excelColNum = 1;
+
+                wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "ИД связки RoleToDepartment (RoleToDepartment.Id)";
+                excelColNum++;
+                wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "ИД роли СИР (Role.Id)";
+                excelColNum++;
+                wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "Наименование роли СИР (Role.Name)";
+                excelColNum++;
+                wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "Описание роли СИР (Role.Description)";
+                excelColNum++;
+                wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "В архиве (Role.IsArchive)";
+
+                excelColNum++;
+                wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "ИД производства (MesDepartment.Id)";
+                excelColNum++;
+                wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "Код производства (MesDepartment.MesCode)";
+                excelColNum++;
+                wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "Наименование производства (MesDepartment.Name)";
+                excelColNum++;
+                wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "Сокр. наименование производства (MesDepartment.ShortName)";
+                excelColNum++;
+                wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "В архиве (MesDepartment.IsArchive)";
+
+                wsRoleToDepartment.Row(excelRowNum).Style.Font.SetBold(true);
+                wsRoleToDepartment.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                excelRowNum = 2;
+
+                int wsRoleRowNum = 2;
+                int wsRoleColNum = 1;
+
+                int wsUserToRoleRowNum = 2;
+                int wsUserToRoleColNum = 1;
+
+                int wsReportTemplateTypeTоRoleRowNum = 2;
+                int wsReportTemplateTypeTоRoleColNum = 1;
+
+                int wsRoleToADGroupRowNum = 2;
+                int wsRoleToADGroupColNum = 1;
+
+                int wsRoleToDepartmentRowNum = 2;
+                int wsRoleToDepartmentColNum = 1;
+
+                foreach (RoleVMDTO roleVMDTO in data)
+                {
+                    wsRoleColNum = 1;
+
+                    wsRole.Cell(wsRoleRowNum, wsRoleColNum).Value = roleVMDTO.Id.ToString();
+                    wsRoleColNum++;
+                    wsRole.Cell(wsRoleRowNum, wsRoleColNum).Value = roleVMDTO.Name;
+                    wsRoleColNum++;
+                    wsRole.Cell(wsRoleRowNum, wsRoleColNum).Value = roleVMDTO.Description == null ? "" : roleVMDTO.Description;
+                    wsRoleColNum++;
+                    wsRole.Cell(wsRoleRowNum, wsRoleColNum).Value = roleVMDTO.IsArchive == true ? "Да" : "";
+
+                    if (roleVMDTO.UserToRoleDTOs != null)
+                    {
+                        foreach (UserToRoleDTO userToRoleDTO in roleVMDTO.UserToRoleDTOs)
+                        {
+                            wsUserToRoleColNum = 1;
+
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.Id.ToString();
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.RoleDTOFK.Id.ToString();
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.RoleDTOFK.Name;
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.RoleDTOFK.Description == null ? "" : userToRoleDTO.RoleDTOFK.Description;
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.RoleDTOFK.IsArchive == true ? "Да" : "";
+
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.Id.ToString();
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.Login;
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.UserName;
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.Description == null ? "" : userToRoleDTO.UserDTOFK.Description;
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.IsSyncWithAD == true ? "Да" : "";
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.SyncWithADGroupsLastTime.ToString();
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.IsArchive == true ? "Да" : "";
+
+                            wsUserToRoleRowNum++;
+                        }
+                    }
+
+                    if (roleVMDTO.ReportTemplateTypeTоRoleDTOs != null)
+                    {
+                        foreach (ReportTemplateTypeTоRoleDTO reportTemplateTypeTоRoleDTO in roleVMDTO.ReportTemplateTypeTоRoleDTOs)
+                        {
+                            wsReportTemplateTypeTоRoleColNum = 1;
+
+                            wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Value = reportTemplateTypeTоRoleDTO.Id;
+                            wsReportTemplateTypeTоRoleColNum++;
+                            wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Value = reportTemplateTypeTоRoleDTO.RoleDTOFK.Id.ToString();
+                            wsReportTemplateTypeTоRoleColNum++;
+                            wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Value = reportTemplateTypeTоRoleDTO.RoleDTOFK.Name;
+                            wsReportTemplateTypeTоRoleColNum++;
+                            wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Value = reportTemplateTypeTоRoleDTO.RoleDTOFK.Description == null ? "" : reportTemplateTypeTоRoleDTO.RoleDTOFK.Description;
+                            wsReportTemplateTypeTоRoleColNum++;
+                            wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Value = reportTemplateTypeTоRoleDTO.RoleDTOFK.IsArchive == true ? "Да" : "";
+
+                            wsReportTemplateTypeTоRoleColNum++;
+                            wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Value = reportTemplateTypeTоRoleDTO.ReportTemplateTypeDTOFK.Id.ToString();
+                            wsReportTemplateTypeTоRoleColNum++;
+                            wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Value = reportTemplateTypeTоRoleDTO.ReportTemplateTypeDTOFK.Name;
+                            wsReportTemplateTypeTоRoleColNum++;
+                            wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Value = reportTemplateTypeTоRoleDTO.ReportTemplateTypeDTOFK.NeedAutoCalc == true ? "Да" : "";
+                            wsReportTemplateTypeTоRoleColNum++;
+                            wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Value = reportTemplateTypeTоRoleDTO.CanDownload == true ? "Да" : "";
+                            wsReportTemplateTypeTоRoleColNum++;
+                            wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Value = reportTemplateTypeTоRoleDTO.CanUpload == true ? "Да" : "";
+                            wsReportTemplateTypeTоRoleColNum++;
+                            wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Value = reportTemplateTypeTоRoleDTO.ReportTemplateTypeDTOFK.IsArchive == true ? "Да" : "";
+
+                            wsReportTemplateTypeTоRoleRowNum++;
+                        }
+                    }
+
+                    if (roleVMDTO.RoleToADGroupDTOs != null)
+                    {
+                        foreach (RoleToADGroupDTO roleToADGroupDTO in roleVMDTO.RoleToADGroupDTOs)
+                        {
+                            wsRoleToADGroupColNum = 1;
+
+                            wsRoleToADGroup.Cell(wsRoleToADGroupRowNum, wsRoleToADGroupColNum).Value = roleToADGroupDTO.Id.ToString();
+                            wsRoleToADGroupColNum++;
+                            wsRoleToADGroup.Cell(wsRoleToADGroupRowNum, wsRoleToADGroupColNum).Value = roleToADGroupDTO.RoleDTOFK.Id.ToString();
+                            wsRoleToADGroupColNum++;
+                            wsRoleToADGroup.Cell(wsRoleToADGroupRowNum, wsRoleToADGroupColNum).Value = roleToADGroupDTO.RoleDTOFK.Name;
+                            wsRoleToADGroupColNum++;
+                            wsRoleToADGroup.Cell(wsRoleToADGroupRowNum, wsRoleToADGroupColNum).Value = roleToADGroupDTO.RoleDTOFK.Description == null ? "" : roleToADGroupDTO.RoleDTOFK.Description;
+                            wsRoleToADGroupColNum++;
+                            wsRoleToADGroup.Cell(wsRoleToADGroupRowNum, wsRoleToADGroupColNum).Value = roleToADGroupDTO.RoleDTOFK.IsArchive == true ? "Да" : "";
+
+                            wsRoleToADGroupColNum++;
+                            wsRoleToADGroup.Cell(wsRoleToADGroupRowNum, wsRoleToADGroupColNum).Value = roleToADGroupDTO.ADGroupDTOFK.Id.ToString();
+                            wsRoleToADGroupColNum++;
+                            wsRoleToADGroup.Cell(wsRoleToADGroupRowNum, wsRoleToADGroupColNum).Value = roleToADGroupDTO.ADGroupDTOFK.Name;
+                            wsRoleToADGroupColNum++;
+                            wsRoleToADGroup.Cell(wsRoleToADGroupRowNum, wsRoleToADGroupColNum).Value = roleToADGroupDTO.ADGroupDTOFK.Description == null ? "" : roleToADGroupDTO.ADGroupDTOFK.Description;
+                            wsRoleToADGroupColNum++;
+                            wsRoleToADGroup.Cell(wsRoleToADGroupRowNum, wsRoleToADGroupColNum).Value = roleToADGroupDTO.ADGroupDTOFK.IsArchive == true ? "Да" : "";
+
+                            wsRoleToADGroupRowNum++;
+                        }
+                    }
+
+
+                    if (roleVMDTO.RoleToDepartmentDTOs != null)
+                    {
+                        foreach (RoleToDepartmentDTO roleToDepartmentDTO in roleVMDTO.RoleToDepartmentDTOs)
+                        {
+
+                            wsRoleToDepartmentColNum = 1;
+
+                            wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.Id.ToString();
+                            wsRoleToDepartmentColNum++;
+                            wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.RoleDTOFK.Id.ToString();
+                            wsRoleToDepartmentColNum++;
+                            wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.RoleDTOFK.Name;
+                            wsRoleToDepartmentColNum++;
+                            wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.RoleDTOFK.Description == null ? "" : roleToDepartmentDTO.RoleDTOFK.Description;
+                            wsRoleToDepartmentColNum++;
+                            wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.RoleDTOFK.IsArchive == true ? "Да" : "";
+
+                            wsRoleToDepartmentColNum++;
+                            wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.Id.ToString();
+                            wsRoleToDepartmentColNum++;
+                            wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.MesCode == null ? "" : roleToDepartmentDTO.DepartmentDTOFK.MesCode;
+                            wsRoleToDepartmentColNum++;
+                            wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.Name;
+                            wsRoleToDepartmentColNum++;
+                            wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.ShortName;
+                            wsRoleToDepartmentColNum++;
+                            wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.IsArchive == true ? "Да" : "";
+
+                            wsRoleToDepartmentRowNum++;
+                        }
+                    }
+
+                    wsRoleRowNum++;
+                }
+
+                for (var j = 1; j <= wsRoleColNum; j++)
+                    wsRole.Column(j).AdjustToContents();
+
+                for (var j = 1; j <= wsRoleToDepartmentColNum; j++)
+                    wsUserToRole.Column(j).AdjustToContents();
+
+                for (var j = 1; j <= wsReportTemplateTypeTоRoleColNum; j++)
+                    wsReportTemplateTypeTоRole.Column(j).AdjustToContents();
+
+                for (var j = 1; j <= wsRoleToADGroupColNum; j++)
+                    wsRoleToADGroup.Column(j).AdjustToContents();
+
+                for (var j = 1; j <= wsRoleToADGroupColNum; j++)
+                    wsRoleToDepartment.Column(j).AdjustToContents();
+
+
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
     }
 }

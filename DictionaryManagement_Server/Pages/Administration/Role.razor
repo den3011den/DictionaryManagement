@@ -15,6 +15,7 @@
 @inject IReportTemplateTypeToRoleRepository _reportTemplateTypeToRoleRepository
 @inject IRoleToADGroupRepository _roleToADGroupRepository
 @inject IRoleToDepartmentRepository _roleToToDepartmentRepository
+@inject ISimpleExcelExportRepository _simpleExcelExportRepository
 @* @inject IRoleRepository _roleRepository *@
 
 @inject DialogService _dialogService
@@ -33,8 +34,11 @@
 
         @if (IsLoading != true)
         {
+            <RadzenRow AlignItems="AlignItems.Start">
+                <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую роль" Click="@(args => EditRow(null))" />
+                <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
+            </RadzenRow>
 
-            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую роль" Click="@(args => EditRow(null))" />
             <RadzenDataGrid @bind-Settings="@RoleGridSettings" @ref="roleVMDTOGrid" AllowAlternatingRows="true"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
                             Data="@roleVMDTOs" TItem="RoleVMDTO"
@@ -57,7 +61,7 @@
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="RoleVMDTO" Property="Name" Title="Наименование" Width="33px" FilterProperty="Name" SortProperty="Name" FilterOperator="FilterOperator.Contains">
-                        <Template Context="data2">                            
+                        <Template Context="data2">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
                                     @data2.Name
@@ -232,8 +236,8 @@
 
                 </Columns>
             </RadzenDataGrid>
-@*             <button title=@($"Тест производства") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>LinkDepartmentToRole(testGuid)"> + Тест производства + </button> *@
-            
+            @*             <button title=@($"Тест производства") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>LinkDepartmentToRole(testGuid)"> + Тест производства + </button> *@
+
         }
         else
         {
@@ -264,6 +268,7 @@
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
+    public bool excelExportFlag { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -446,7 +451,7 @@
     }
 
 
-    async Task LinkDepartmentToRole(RoleVMDTO roleVMDTO)    
+    async Task LinkDepartmentToRole(RoleVMDTO roleVMDTO)
     {
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
@@ -643,7 +648,7 @@
                 bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление производства", "Удалить производство \"" + mesDepartmentDTO.ShortName +
                         "\" из роли \"" + roleVMDTO.Name + "\" ?", "Удалить из роли", "Отмена");
                 if (selectionResult == false)
-                {                    
+                {
                     return;
                 }
             }
@@ -812,14 +817,21 @@
         }
     }
 
-    async Task AddDepartment(RoleVMDTO roleVMDTO)
+    async Task ExcelExport()
     {
-        await _jsRuntime.ToastrSuccess("Метод AddDepartment");
-    }
-
-    async Task DeleteDepartment(RoleVMDTO roleVMDTO)
-    {
-        await _jsRuntime.ToastrSuccess("Метод DeleteDepartment");
+        excelExportFlag = true;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
+            string filename = "Roles_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
+            await _simpleExcelExportRepository.GenerateExcelRole(filename, (IEnumerable<RoleVMDTO>)roleVMDTOGrid.View);
+            await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
+        }
+        excelExportFlag = false;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
     }
 
 }
