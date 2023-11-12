@@ -423,7 +423,8 @@
         await InvokeAsync(StateHasChanged);
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            string filename = "Tags_MesParam_Export_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
+            string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
+            string filename = "Tags_MesParam_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
             await _simpleExcelExportRepository.GenerateExcelMesParam(filename, (IEnumerable<MesParamDTO>)mesParamDTOGrid.View);
             await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
         }

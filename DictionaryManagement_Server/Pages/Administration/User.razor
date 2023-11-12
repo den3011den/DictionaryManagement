@@ -10,6 +10,7 @@
 
 @inject IJSRuntime _jsRuntime
 @inject IUserRepository _userRepository
+@inject ISimpleExcelExportRepository _simpleExcelExportRepository
 
 @inject DialogService _dialogService
 
@@ -28,7 +29,10 @@
         @if (IsLoading != true)
         {
 
-            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить нового пользователя" Click="@(args => EditRow(null))" />
+            <RadzenRow AlignItems="AlignItems.Start">
+                <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить нового пользователя" Click="@(args => EditRow(null))" />
+                <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
+            </RadzenRow>
             <RadzenDataGrid @bind-Settings="@UserGridSettings" @ref="userDTOGrid" AllowAlternatingRows="true"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
                             EqualsText="Равно"
@@ -36,7 +40,7 @@
                             GreaterThanOrEqualsText="Больше или равно"
                             GreaterThanText="Больше"
                             LessThanOrEqualsText="Меньше или равно"
-                            LessThanText="Меньше"                            
+                            LessThanText="Меньше"
                             IsNullText="Пусто"
                             IsNotNullText="Не пусто"
                             ClearFilterText="Очистить"
@@ -48,7 +52,7 @@
                             Density=Density.Compact
                             ShowPagingSummary="true"
                             EmptyText="Нет записей для отображения"
-                            AllowVirtualization="true"                            
+                            AllowVirtualization="true"
                             Style="height:720px">
                 <Columns>
                     <RadzenDataGridColumn TItem="UserDTO" Property="ToStringId" Title="Ид роли" Width="30px"
@@ -61,11 +65,11 @@
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="UserDTO" Property="Login" Title="Логин" Width="45px" FilterProperty="Login" SortProperty="Login" FilterOperator="FilterOperator.Contains">
-                        <Template Context="data2">                            
-                            <div style="white-space:pre-wrap; font-size: 12px">                                
+                        <Template Context="data2">
+                            <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
                                     @data2.Login
-                                </strong>                                
+                                </strong>
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
@@ -95,7 +99,7 @@
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="UserDTO" Property="SyncWithADGroupsLastTime" Title="Время посл. синх. AD" Width="40px" TextAlign="TextAlign.Center">
-                   </RadzenDataGridColumn>
+                    </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="UserDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="8px">
                         <Template Context="data">
@@ -149,6 +153,7 @@
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
+    public bool excelExportFlag { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -252,7 +257,7 @@
                     userDTO.UserName = dialogResult.UserName;
                     userDTO.Description = dialogResult.Description;
                     userDTO.IsSyncWithAD = dialogResult.IsSyncWithAD;
-                    userDTO.SyncWithADGroupsLastTime = dialogResult.SyncWithADGroupsLastTime;                    
+                    userDTO.SyncWithADGroupsLastTime = dialogResult.SyncWithADGroupsLastTime;
 
                     await userDTOGrid.UpdateRow(userDTO);
                 }
@@ -274,7 +279,7 @@
                     bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление пользователя", "Удалить пользователя \"" + userDTO.UserName
                         + " (" + userDTO.Login + ")\" в архив ?", "Удалить", "Отмена");
                     if (selectionResult == false)
-                    {                        
+                    {
                         return;
                     }
                 }
@@ -283,7 +288,7 @@
                     bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Восстановление пользователя", "Восстановить пользователя \"" + userDTO.UserName
                         + " (" + userDTO.Login + ")\" из архива ?", "Восстановить", "Отмена");
                     if (selectionResult == false)
-                    {                        
+                    {
                         return;
                     }
                 }
@@ -304,4 +309,22 @@
             await userDTOGrid.UpdateRow(userDTO);
         }
     }
+
+    async Task ExcelExport()
+    {
+        excelExportFlag = true;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
+            string filename = "Users_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
+            await _simpleExcelExportRepository.GenerateExcelUsers(filename, (IEnumerable<UserDTO>)userDTOGrid.View);
+            await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
+        }
+        excelExportFlag = false;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+    }
+
 }

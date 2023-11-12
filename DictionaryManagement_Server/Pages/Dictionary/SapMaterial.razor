@@ -396,8 +396,9 @@
         await InvokeAsync(StateHasChanged);
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
-            string filename = "SapMaterial_Export_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
-            await _simpleExcelExportRepository.GenerateExcelSapMaterialDTO(filename, (IEnumerable<SapMaterialDTO>)sapMaterialDTOGrid.View);
+            string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
+            string filename = "SapMaterial_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";            
+            await _simpleExcelExportRepository.GenerateExcelSapMaterial(filename, (IEnumerable<SapMaterialDTO>)sapMaterialDTOGrid.View);
             await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
         }
         excelExportFlag = false;

@@ -287,7 +287,7 @@ namespace DictionaryManagement_Business.Repository
             return fullfilepath;
         }
 
-        public async Task<string> GenerateExcelSapEquipmentDTO(string filename, IEnumerable<SapEquipmentDTO> data)
+        public async Task<string> GenerateExcelSapEquipment(string filename, IEnumerable<SapEquipmentDTO> data)
         {
 
             string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
@@ -345,7 +345,7 @@ namespace DictionaryManagement_Business.Repository
             return fullfilepath;
         }
 
-        public async Task<string> GenerateExcelSapMaterialDTO(string filename, IEnumerable<SapMaterialDTO> data)
+        public async Task<string> GenerateExcelSapMaterial(string filename, IEnumerable<SapMaterialDTO> data)
         {
 
             string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
@@ -398,7 +398,68 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
+    
 
+        public async Task<string> GenerateExcelUsers(string filename, IEnumerable<UserDTO> data)
+        {
 
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("Users");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Логин (Login)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (UserName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Описание (Description)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Синхронизируется с AD (IsSyncWithAD)";                
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время последней синхронизации с AD (SyncWithADGroupsLastTime)";
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                excelRowNum = 2;
+                foreach (UserDTO userDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = userDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = userDTO.Login;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = userDTO.UserName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = userDTO.Description == null ? "" : userDTO.Description;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = userDTO.IsSyncWithAD == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = userDTO.IsArchive == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = userDTO.SyncWithADGroupsLastTime.ToString();
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
     }
 }

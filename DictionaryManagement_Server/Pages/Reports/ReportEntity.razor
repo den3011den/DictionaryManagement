@@ -334,9 +334,8 @@
         await InvokeAsync(StateHasChanged);
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {            
-            string filename = "ReportEntity_Export_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
-            
-            //await _simpleExcelExportRepository.GenerateExcelReportEntity(filename, reportEntityDTOs);
+            string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
+            string filename = "ReportEntity_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";            
             await _simpleExcelExportRepository.GenerateExcelReportEntity(filename, (IEnumerable<ReportEntityDTO>)reportEntityDTOGrid.View);
 
             await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
