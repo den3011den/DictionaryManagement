@@ -470,7 +470,6 @@ namespace DictionaryManagement_Business.Repository
                 foreach (var topLevelItem in topLevelList)
                 {
                     
-
                     MesDepartmentVMDTO mesDepartmentVMDTO = new MesDepartmentVMDTO();
                     mesDepartmentVMDTO.Id = topLevelItem.Id;
                     mesDepartmentVMDTO.MesCode = topLevelItem.MesCode;
