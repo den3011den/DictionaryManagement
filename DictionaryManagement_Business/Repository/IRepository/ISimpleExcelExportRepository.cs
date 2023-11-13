@@ -18,6 +18,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<string> GenerateExcelUsers(string filename, IEnumerable<UserDTO> data);
         public Task<string> GenerateExcelADGroup(string filename, IEnumerable<ADGroupDTO> data);
         public Task<string> GenerateExcelRole(string filename, IEnumerable<RoleVMDTO> data);
+        public Task<string> GenerateExcelMesDepartments(string filename, IEnumerable<MesDepartmentVMDTO> mesDepartmentVMDTOList, int maxLevel);
 
     }
 }

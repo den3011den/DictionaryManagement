@@ -52,6 +52,10 @@ namespace DictionaryManagement_Models.IntDBModels
         [NotMapped]
         [Display(Name = " ")]
         public bool Checked { get; set; } = false;
+
+        [NotMapped]
+        [Display(Name = "Уровень")]
+        public int DepLevel { get; set; }
     }
 }
 

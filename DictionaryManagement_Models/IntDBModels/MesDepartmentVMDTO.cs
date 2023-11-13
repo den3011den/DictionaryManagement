@@ -19,14 +19,14 @@ namespace DictionaryManagement_Models.IntDBModels
         [Required(ErrorMessage = "Код обязателен для заполнения")]
         [Range(1, int.MaxValue, ErrorMessage = "Код может быть от {1} до {2}")]
         [Display(Name = "Код")]
-        public int MesCode { get; set; }
+        public int? MesCode { get; set; }
 
-        [Required(ErrorMessage = "Наименование обязателено для заполнения")]
+        [Required(ErrorMessage = "Наименование обязательно для заполнения")]
         [Display(Name = "Наименование")]
         [MaxLength(500, ErrorMessage = "Длина наименования не может быть больше 500 символов")]
         public string Name { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Сокр. Наименование обязателено для заполнения")]
+        [Required(ErrorMessage = "Сокр. Наименование обязательно для заполнения")]
         [Display(Name = "Сокр. наименование")]
         [MaxLength(500, ErrorMessage = "Длина сокр. наименование не может быть больше 500 символов")]
         public string ShortName { get; set; } = string.Empty;
@@ -56,6 +56,11 @@ namespace DictionaryManagement_Models.IntDBModels
         [NotMapped]
         [Display(Name = " ")]
         public bool Checked { get; set; } = false;
+
+        [NotMapped]
+        [Display(Name = "Уровень")]
+        public int DepLevel { get; set; }
+
     }
 }
 

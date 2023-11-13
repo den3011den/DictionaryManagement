@@ -840,5 +840,100 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
+
+
+        public async Task<Tuple<IXLWorksheet, int>> AddAllMesDepartmentToExcel(IEnumerable<MesDepartmentVMDTO>? topLevelList, IXLWorksheet? ws, int excelRowNum, int maxLevel)
+        {
+
+            if (topLevelList != null)
+            {
+                foreach (var topLevelItem in topLevelList)
+                {
+                    MesDepartmentVMDTO? parentDepartmentVMDTO = topLevelItem;
+                   
+                    int breakCount = 0;
+                    while (parentDepartmentVMDTO != null && breakCount <= 100)
+                    {
+                        //if ((parentDepartmentVMDTO.DepLevel <= 0 || parentDepartmentVMDTO.DepLevel >= 16384))
+                        //{ 
+                        //int a = 3;
+                        //}
+                        //else
+                            ws.Cell(excelRowNum, parentDepartmentVMDTO.DepLevel).Value = parentDepartmentVMDTO.ShortName;
+                        parentDepartmentVMDTO = parentDepartmentVMDTO.DepartmentParentVMDTO;
+                        breakCount++;
+                    }
+
+
+                    int j = maxLevel + 1;
+
+                    ws.Cell(excelRowNum, j).Value = topLevelItem.Id.ToString();
+                    j++;
+                    ws.Cell(excelRowNum, j).Value = topLevelItem.MesCode == null ? "" : topLevelItem.MesCode;
+                    j++;
+                    ws.Cell(excelRowNum, j).Value = topLevelItem.Name == null ? "" : topLevelItem.Name;
+                    j++;
+                    ws.Cell(excelRowNum, j).Value = topLevelItem.ShortName == null ? "" : topLevelItem.ShortName;
+                    j++;
+                    ws.Cell(excelRowNum, j).Value = topLevelItem.IsArchive == true ? "Да" : "";
+
+                    excelRowNum++;
+
+                    Tuple<IXLWorksheet, int> tmp = await AddAllMesDepartmentToExcel(topLevelItem.ChildrenDTO, ws, excelRowNum, maxLevel);
+                    ws = tmp.Item1;
+                    excelRowNum = tmp.Item2;
+                }
+            }
+            return new Tuple<IXLWorksheet, int>(ws, excelRowNum);
+
+        }
+
+        public async Task<string> GenerateExcelMesDepartments(string filename, IEnumerable<MesDepartmentVMDTO>? mesDepartmentVMDTOList, int maxLevel)
+        {
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("MesDepartment");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+                
+                for (int j = 1; j <= maxLevel; j++)
+                {
+                    ws.Cell(excelRowNum, j).Value = "Производство - Уровень " + j.ToString();
+                }
+
+                excelColNum = maxLevel + 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код пр-ва (Code)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Сокр. наименование (ShortName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                excelRowNum++;
+
+                Tuple<IXLWorksheet, int> tmp = await AddAllMesDepartmentToExcel(mesDepartmentVMDTOList, ws, excelRowNum, maxLevel);
+                ws = tmp.Item1;
+
+                for (var jjj = 1; jjj <= excelColNum; jjj++)
+                    ws.Column(jjj).AdjustToContents();
+
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
     }
 }

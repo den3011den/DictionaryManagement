@@ -157,9 +157,11 @@ namespace DictionaryManagement_Business.Mapper
 
             CreateMap<MesDepartmentDTO, MesDepartmentVMDTO>()
                 .ForMember(dest => dest.ChildrenDTO, opt => opt.AllowNull())
-                .ForMember(dest => dest.DepartmentParentVMDTO, opt => opt.MapFrom(src => src.DepartmentParentDTO));
+                .ForMember(dest => dest.DepartmentParentVMDTO, opt => opt.MapFrom(src => src.DepartmentParentDTO))
+                .ForMember(dest => dest.DepLevel, opt => opt.MapFrom(src => src.DepLevel));
             CreateMap<MesDepartmentVMDTO, MesDepartmentDTO>()                
-                .ForMember(dest => dest.DepartmentParentDTO, opt => opt.MapFrom(src => src.DepartmentParentVMDTO));
+                .ForMember(dest => dest.DepartmentParentDTO, opt => opt.MapFrom(src => src.DepartmentParentVMDTO))
+                .ForMember(dest => dest.DepLevel, opt => opt.MapFrom(src => src.DepLevel));
 
             CreateMap<VersionDTO, DictionaryManagement_DataAccess.Data.IntDB.Version>().ReverseMap();
             CreateMap<Scheduler, SchedulerDTO>().ReverseMap();

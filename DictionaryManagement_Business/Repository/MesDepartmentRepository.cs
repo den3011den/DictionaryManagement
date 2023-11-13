@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using AutoMapper.Execution;
+using ClosedXML.Excel;
 using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
@@ -184,6 +186,46 @@ namespace DictionaryManagement_Business.Repository
                 return _mapper.Map<MesDepartment, MesDepartmentDTO>(objToGet);
             }
             return null;
+        }
+
+
+        public async Task<Tuple<IEnumerable<MesDepartmentVMDTO>, int>> GetAllDepartmentWithChildren(int? mesDepartmentRootId, int depLevel, int maxLevel, MesDepartmentVMDTO? departmentParentVMDTO)
+        {
+
+            List<MesDepartmentVMDTO>? resutlList = new List<MesDepartmentVMDTO>();
+
+            IEnumerable<MesDepartmentVMDTO> topLevelList = _mapper.Map<IEnumerable<MesDepartmentDTO>, IEnumerable<MesDepartmentVMDTO>>(await GetChildList(mesDepartmentRootId));
+            
+            if (topLevelList != null)
+            {
+                foreach (var topLevelItem in topLevelList)
+                {
+
+                    if (depLevel > maxLevel)
+                        maxLevel = depLevel;
+                    MesDepartmentVMDTO mesDepartmentVMDTO = new MesDepartmentVMDTO();
+                    mesDepartmentVMDTO.Id = topLevelItem.Id;
+                    mesDepartmentVMDTO.MesCode = topLevelItem.MesCode;
+                    mesDepartmentVMDTO.Name = topLevelItem.Name;
+                    mesDepartmentVMDTO.ShortName = topLevelItem.ShortName;
+                    mesDepartmentVMDTO.ParentDepartmentId = departmentParentVMDTO == null ? 0 : departmentParentVMDTO.Id;
+                    mesDepartmentVMDTO.DepartmentParentVMDTO = departmentParentVMDTO;
+                    mesDepartmentVMDTO.IsArchive = topLevelItem.IsArchive;
+                    mesDepartmentVMDTO.ToStringValue = topLevelItem.ToStringValue;
+                    mesDepartmentVMDTO.DepLevel = depLevel;
+
+                    Tuple<IEnumerable<MesDepartmentVMDTO>, int> tmp = await GetAllDepartmentWithChildren(topLevelItem.Id, depLevel + 1, maxLevel, mesDepartmentVMDTO);
+                    mesDepartmentVMDTO.ChildrenDTO = tmp.Item1;
+                    maxLevel = tmp.Item2;                    
+                    resutlList.Add(mesDepartmentVMDTO);
+                }
+                return new Tuple<IEnumerable<MesDepartmentVMDTO>, int>(resutlList, maxLevel);
+            }
+            else
+            {
+                return new Tuple<IEnumerable<MesDepartmentVMDTO>, int>(resutlList, maxLevel);
+            }
+
         }
     }
 }

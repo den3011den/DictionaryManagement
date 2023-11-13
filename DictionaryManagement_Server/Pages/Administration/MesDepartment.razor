@@ -10,6 +10,7 @@
 
 @inject IJSRuntime _jsRuntime
 @inject IMesDepartmentRepository _mesDepartmentRepository
+@inject ISimpleExcelExportRepository _simpleExcelExportRepository
 
 @inject DialogService _dialogService
 
@@ -34,8 +35,10 @@
 
         @if (IsLoading != true)
         {
-
-            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@(args => EditRow(null))" />
+            <RadzenRow AlignItems="AlignItems.Start">           
+                <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@(args => EditRow(null))" />
+                <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel ВСЕХ производств" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
+            </RadzenRow>
             <RadzenDataGrid @bind-Settings="@MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" ExpandMode="DataGridExpandMode.Single"
                             Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true"
@@ -119,6 +122,7 @@
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
+    public bool excelExportFlag { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -193,7 +197,6 @@
     {
         args.Data = _mesDepartmentRepository.GetChildList(args.Item.Id).GetAwaiter().GetResult();
     }
-
 
     async Task EditRow(MesDepartmentDTO mesDepartmentDTO)
     {
@@ -276,6 +279,28 @@
             //    await mesDepartmentDTOGrid.Reload();
             //}
         }
+    }
+
+    async Task ExcelExport()
+    {
+        excelExportFlag = true;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
+            string filename = "MesDepartment_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
+            int maxLevel = 1;
+            Tuple<IEnumerable<MesDepartmentVMDTO>, int> tmp = await _mesDepartmentRepository.GetAllDepartmentWithChildren(null, 1, maxLevel, null);
+            IEnumerable<MesDepartmentVMDTO> mesDepartmentVMDTOList = tmp.Item1;
+            maxLevel = tmp.Item2;            
+
+            await _simpleExcelExportRepository.GenerateExcelMesDepartments(filename, mesDepartmentVMDTOList, maxLevel);
+            await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
+        }
+        excelExportFlag = false;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
     }
 
 }

@@ -463,7 +463,7 @@ namespace DictionaryManagement_Business.Repository
             List<MesDepartmentVMDTO>? resutlList = new List<MesDepartmentVMDTO>();
 
             IEnumerable<MesDepartmentVMDTO> topLevelList = _mapper.Map<IEnumerable<MesDepartmentDTO>, IEnumerable<MesDepartmentVMDTO>>(await _mesDepartmentRepository.GetChildList(mesDepartmentRootId));
-            IEnumerable<MesDepartmentVMDTO>? childList = null;
+            //IEnumerable<MesDepartmentVMDTO>? childList = null;
 
             if (topLevelList != null)
             {
