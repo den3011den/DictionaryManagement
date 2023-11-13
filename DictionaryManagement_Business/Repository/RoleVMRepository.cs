@@ -457,7 +457,7 @@ namespace DictionaryManagement_Business.Repository
 
         }
 
-        public async Task<IEnumerable<MesDepartmentVMDTO>> GetAllDepartmentWithChildrenCheckedWithLinkRole(Guid roleId, int? mesDepartmentRootId)
+        public async Task<IEnumerable<MesDepartmentVMDTO>> GetAllDepartmentWithChildrenCheckedWithLinkRole(Guid roleId, int? mesDepartmentRootId, MesDepartmentVMDTO? parentDepartmentVMDTO)
         {
 
             List<MesDepartmentVMDTO>? resutlList = new List<MesDepartmentVMDTO>();
@@ -476,8 +476,8 @@ namespace DictionaryManagement_Business.Repository
                     mesDepartmentVMDTO.MesCode = topLevelItem.MesCode;
                     mesDepartmentVMDTO.Name = topLevelItem.Name;
                     mesDepartmentVMDTO.ShortName = topLevelItem.ShortName;
-                    mesDepartmentVMDTO.ParentDepartmentId = topLevelItem.ParentDepartmentId;
-                    mesDepartmentVMDTO.DepartmentParentVMDTO = topLevelItem.DepartmentParentVMDTO;
+                    mesDepartmentVMDTO.ParentDepartmentId = parentDepartmentVMDTO == null ? null : parentDepartmentVMDTO.ParentDepartmentId;
+                    mesDepartmentVMDTO.DepartmentParentVMDTO = parentDepartmentVMDTO;
                     mesDepartmentVMDTO.IsArchive = topLevelItem.IsArchive;
                     mesDepartmentVMDTO.ToStringValue = topLevelItem.ToStringValue;
 
@@ -490,7 +490,7 @@ namespace DictionaryManagement_Business.Repository
                     {
                         mesDepartmentVMDTO.Checked = false;
                     }              
-                    mesDepartmentVMDTO.ChildrenDTO = (await GetAllDepartmentWithChildrenCheckedWithLinkRole(roleId, topLevelItem.Id));
+                    mesDepartmentVMDTO.ChildrenDTO = (await GetAllDepartmentWithChildrenCheckedWithLinkRole(roleId, topLevelItem.Id, mesDepartmentVMDTO));
                     resutlList.Add(mesDepartmentVMDTO);
                     
                 }

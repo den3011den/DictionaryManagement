@@ -118,7 +118,7 @@
 
                 RoleToDepartmentDTO foundRoleToDepartmentDTO = null;
 
-                MesDepartmentList = await _roleVMRepository.GetAllDepartmentWithChildrenCheckedWithLinkRole(RoleId, null);
+                MesDepartmentList = await _roleVMRepository.GetAllDepartmentWithChildrenCheckedWithLinkRole(RoleId, null, null);
                 CheckedValues = await _roleVMRepository.GetAllDepartmentCheckedObjects(MesDepartmentList);
 
                 IsLoading = false;

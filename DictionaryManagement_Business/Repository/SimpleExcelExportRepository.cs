@@ -867,6 +867,8 @@ namespace DictionaryManagement_Business.Repository
 
                     int j = maxLevel + 1;
 
+                    ws.Cell(excelRowNum, j).Value = topLevelItem.DepLevel.ToString();
+                    j++;
                     ws.Cell(excelRowNum, j).Value = topLevelItem.Id.ToString();
                     j++;
                     ws.Cell(excelRowNum, j).Value = topLevelItem.MesCode == null ? "" : topLevelItem.MesCode;
@@ -908,6 +910,8 @@ namespace DictionaryManagement_Business.Repository
 
                 excelColNum = maxLevel + 1;
 
+                ws.Cell(excelRowNum, excelColNum).Value = "Уровень";
+                excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "ИД (Id)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Код пр-ва (Code)";
