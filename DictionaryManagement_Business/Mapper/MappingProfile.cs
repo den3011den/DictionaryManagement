@@ -165,6 +165,21 @@ namespace DictionaryManagement_Business.Mapper
 
             CreateMap<VersionDTO, DictionaryManagement_DataAccess.Data.IntDB.Version>().ReverseMap();
             CreateMap<Scheduler, SchedulerDTO>().ReverseMap();
+
+            CreateMap<MesNdoStocksDTO, MesNdoStocks>()
+                .ForMember(dest => dest.AddUserFK, opt => opt.MapFrom(src => src.AddUserDTOFK))
+                .ForMember(dest => dest.MesParamFK, opt => opt.MapFrom(src => src.MesParamDTOFK))
+                .ForMember(dest => dest.ReportEntityFK, opt => opt.MapFrom(src => src.ReportEntityDTOFK))
+                .ForMember(dest => dest.SapNdoOutFK, opt => opt.MapFrom(src => src.SapNdoOutDTOFK));
+
+            CreateMap<MesNdoStocks, MesNdoStocksDTO>()
+                .ForMember(dest => dest.AddUserDTOFK, opt => opt.MapFrom(src => src.AddUserFK))
+                .ForMember(dest => dest.MesParamDTOFK, opt => opt.MapFrom(src => src.MesParamFK))
+                .ForMember(dest => dest.ReportEntityDTOFK, opt => opt.MapFrom(src => src.ReportEntityFK))
+                .ForMember(dest => dest.SapNdoOutDTOFK, opt => opt.MapFrom(src => src.SapNdoOutFK));
+
+            CreateMap<SapNdoOutDTO, SapNdoOUT>().ReverseMap();
+
         }
     }
 }

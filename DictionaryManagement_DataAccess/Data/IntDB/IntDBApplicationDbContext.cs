@@ -48,6 +48,9 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<Smena> Smena { get; set; }
         public DbSet<Version> Version { get; set; }
         public DbSet<Scheduler> Scheduler { get; set; }
+        public DbSet<MesNdoStocks> MesNdoStocks { get; set; }
+        public DbSet<SapNdoOUT> SapNdoOUT { get; set; }
+
 
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
