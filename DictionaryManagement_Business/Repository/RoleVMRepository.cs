@@ -387,7 +387,6 @@ namespace DictionaryManagement_Business.Repository
                 );
             return reportTemplateTypeListDTOs;
         }
-
         public async Task<IEnumerable<ADGroupDTO>> GetAllNotArchiveADGroupsExceptAlreadyInRole(Guid roleId)
         {
             IEnumerable<ADGroupDTO> adGroupListDTOs = null;
