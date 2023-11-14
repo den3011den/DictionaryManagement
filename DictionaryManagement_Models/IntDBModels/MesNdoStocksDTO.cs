@@ -55,7 +55,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "ИД записи в зеркале SAP")]
         public Int64? SapNdoOutId { get; set; }
         
-        public SapNdoOutDTO? SapNdoOutDTOFK { get; set; }
+        public SapNdoOUTDTO? SapNdoOUTDTOFK { get; set; }
     }
 }
 

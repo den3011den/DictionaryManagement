@@ -17,7 +17,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public Int64 Id { get; set; }
 
         [Required]
-        public Guid MesParamId { get; set; }
+        public int MesParamId { get; set; }
         [ForeignKey("MesParamId")]
         public MesParam MesParamFK { get; set; }
 
@@ -37,13 +37,13 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         
         public decimal? ValueDifference { get; set; } = decimal.Zero;
 
-        public Guid ReportGuid { get; set; }
+        public Guid? ReportGuid { get; set; }
         [ForeignKey("ReportGuid")]
-        public ReportEntity ReportEntityFK { get; set; }
+        public ReportEntity? ReportEntityFK { get; set; }
 
-        public Int64 SapNdoOutId { get; set; }
+        public Int64? SapNdoOutId { get; set; }
         [ForeignKey("SapNdoOutId")]
-        public SapNdoOUT SapNdoOutFK { get; set; }
+        public SapNdoOUT? SapNdoOUTFK { get; set; }
 
     }
 }

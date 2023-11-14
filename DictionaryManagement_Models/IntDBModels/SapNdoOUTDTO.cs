@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
-    public class SapNdoOutDTO
+    public class SapNdoOUTDTO
     {
         [Display(Name = "Ид записи")]
         [Required(ErrorMessage = "ИД записи обязателен")]

@@ -78,6 +78,8 @@ builder.Services.AddScoped<IAuthorizationControllersRepository, AuthorizationCon
 builder.Services.AddScoped<ISimpleExcelExportRepository, SimpleExcelExportRepository>();
 builder.Services.AddScoped<IVersionRepository, VersionRepository>();
 builder.Services.AddScoped<ISchedulerRepository, SchedulerRepository>();
+builder.Services.AddScoped<IMesNdoStocksRepository, MesNdoStocksRepository>();
+builder.Services.AddScoped<ISapNdoOUTRepository, SapNdoOUTRepository>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

@@ -170,15 +170,15 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.AddUserFK, opt => opt.MapFrom(src => src.AddUserDTOFK))
                 .ForMember(dest => dest.MesParamFK, opt => opt.MapFrom(src => src.MesParamDTOFK))
                 .ForMember(dest => dest.ReportEntityFK, opt => opt.MapFrom(src => src.ReportEntityDTOFK))
-                .ForMember(dest => dest.SapNdoOutFK, opt => opt.MapFrom(src => src.SapNdoOutDTOFK));
+                .ForMember(dest => dest.SapNdoOUTFK, opt => opt.MapFrom(src => src.SapNdoOUTDTOFK));
 
             CreateMap<MesNdoStocks, MesNdoStocksDTO>()
                 .ForMember(dest => dest.AddUserDTOFK, opt => opt.MapFrom(src => src.AddUserFK))
                 .ForMember(dest => dest.MesParamDTOFK, opt => opt.MapFrom(src => src.MesParamFK))
                 .ForMember(dest => dest.ReportEntityDTOFK, opt => opt.MapFrom(src => src.ReportEntityFK))
-                .ForMember(dest => dest.SapNdoOutDTOFK, opt => opt.MapFrom(src => src.SapNdoOutFK));
+                .ForMember(dest => dest.SapNdoOUTDTOFK, opt => opt.MapFrom(src => src.SapNdoOUTFK));
 
-            CreateMap<SapNdoOutDTO, SapNdoOUT>().ReverseMap();
+            CreateMap<SapNdoOUTDTO, SapNdoOUT>().ReverseMap();
 
         }
     }
