@@ -1047,6 +1047,66 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
+        
 
+        public async Task<string> GenerateExcelSapNdoOUT(string filename, IEnumerable<SapNdoOUTDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("SapNdoOUT");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Имя тэга (TagName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время добавления записи (AddTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время значения (ValueTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Значение (Value)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Sap забрал значение (SapGone)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время Sap забрал значение (SapGoneTime)";
+
+                excelRowNum = 2;
+                foreach (SapNdoOUTDTO sapNdoOUTDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.TagName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.AddTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.ValueTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.Value.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.SapGone == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.SapGoneTime == null ? "" : sapNdoOUTDTO.SapGoneTime.ToString();
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
     }
 }

@@ -20,6 +20,6 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<string> GenerateExcelRole(string filename, IEnumerable<RoleVMDTO> data);
         public Task<string> GenerateExcelMesDepartments(string filename, IEnumerable<MesDepartmentVMDTO> mesDepartmentVMDTOList, int maxLevel);
         public Task<string> GenerateExcelMesNdoStocks(string filename, IEnumerable<MesNdoStocksDTO> data);
-
+        public Task<string> GenerateExcelSapNdoOUT(string filename, IEnumerable<SapNdoOUTDTO> data);
     }
 }
