@@ -48,7 +48,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px">
+                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>

@@ -73,7 +73,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapMaterialDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="50px">
+                    <RadzenDataGridColumn TItem="SapMaterialDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="50px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>

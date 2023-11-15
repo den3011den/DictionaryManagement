@@ -92,7 +92,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="UserDTO" Property="IsSyncWithAD" Title="Автомат" Filterable="true" Width="13px">
+                    <RadzenDataGridColumn TItem="UserDTO" Property="IsSyncWithAD" Title="Автомат" Filterable="true" Width="13px" TextAlign="TextAlign.Center">
                         <Template Context="data4">
                             <RadzenCheckBox @bind-Value=data4.IsSyncWithAD ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
@@ -101,7 +101,7 @@
                     <RadzenDataGridColumn TItem="UserDTO" Property="SyncWithADGroupsLastTime" Title="Время посл. синх. AD" Width="40px" TextAlign="TextAlign.Center">
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="UserDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="8px">
+                    <RadzenDataGridColumn TItem="UserDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="8px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>

@@ -158,14 +158,14 @@
 
                     @*                     } *@
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsNdo" Title="НДО" Filterable="true" Width="35px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsNdo" Title="НДО" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsNdo ReadOnly="true" TriState="false" TValue="bool?" />
                         </Template>
                     </RadzenDataGridColumn>
 
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="30px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="30px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>

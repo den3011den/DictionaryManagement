@@ -38,6 +38,33 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Признак передачи в SAP")]        
         public DateTime? SapGoneTime { get; set; }
 
+        [NotMapped]
+        [Display(Name = "Ид записи")]
+        public string ToStringId
+        {
+            get
+            {
+                return Id.ToString();
+            }
+            set
+            {
+                ToStringId = value;
+            }
+        }
+
+        [NotMapped]
+        [Display(Name = "Значение")]
+        public string ToStringValue
+        {
+            get
+            {
+                return Value.ToString();
+            }
+            set
+            {
+                ToStringValue = value;
+            }
+        }
     }
 }
 

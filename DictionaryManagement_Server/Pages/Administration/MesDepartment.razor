@@ -67,7 +67,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="30px">
+                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="30px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value="data.IsArchive" ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>

@@ -993,6 +993,9 @@ namespace DictionaryManagement_Business.Repository
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Время Sap забрал значение (SapNdoOUT.SapGoneTime)";
 
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
                 excelRowNum = 2;
                 foreach (MesNdoStocksDTO mesNdoStocksDTO in data)
                 {
@@ -1077,6 +1080,9 @@ namespace DictionaryManagement_Business.Repository
                 ws.Cell(excelRowNum, excelColNum).Value = "Sap забрал значение (SapGone)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Время Sap забрал значение (SapGoneTime)";
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
                 excelRowNum = 2;
                 foreach (SapNdoOUTDTO sapNdoOUTDTO in data)

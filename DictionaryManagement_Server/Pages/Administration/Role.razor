@@ -78,7 +78,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="8px">
+                    <RadzenDataGridColumn TItem="RoleVMDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="8px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>

@@ -59,19 +59,19 @@
                                AllowVirtualization="true"
                                Style="height:710px">
                 <Columns>
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="Id" Title="Ид записи" Width="50px" TextAlign="TextAlign.Center"
-                                          FilterProperty="Id" FilterOperator="FilterOperator.Contains" SortProperty="Id">
+                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="ToStringId" Title="Ид записи" Width="50px" TextAlign="TextAlign.Center"
+                                          FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
-                                    @data1.Id
+                                    @data1.ToStringId
                                 </strong>
                             </div>
                         </Template>
 
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="TagName" Title="Имя тэга" Width="75px" FilterProperty="TagName" SortProperty="TagName">
+                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="TagName" Title="Имя тэга" Width="75px" FilterProperty="TagName" SortProperty="TagName" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.TagName
@@ -97,17 +97,18 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="Value" Title="Значение" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="ToStringValue" Title="Значение" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains"
+                                          FilterProperty="ToStringValue" SortProperty="Value">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
-                                    @data1.Value
+                                    @data1.ToStringValue
                                 </strong>
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="IsArchive" Title="Забрал SAP" Filterable="true" Width="30px">
+                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="SapGone" Title="Забрал SAP" Filterable="true" Width="30px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.SapGone ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>

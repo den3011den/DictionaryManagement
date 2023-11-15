@@ -56,6 +56,50 @@ namespace DictionaryManagement_Models.IntDBModels
         public Int64? SapNdoOutId { get; set; }
         
         public SapNdoOUTDTO? SapNdoOUTDTOFK { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Ид записи")]
+        public string ToStringId
+        {
+            get
+            {
+                return Id.ToString();
+            }
+            set
+            {
+                ToStringId = value;
+            }
+        }
+
+        [NotMapped]
+        [Display(Name = "Значение")]
+        public string ToStringValue
+        {
+            get
+            {
+                return Value.ToString();
+            }
+            set
+            {
+                ToStringValue = value;
+            }
+        }
+
+        [NotMapped]
+        [Display(Name = "Разность")]
+        public string? ToStringValueDifference
+        {
+            get
+            {
+                return ValueDifference.ToString();
+            }
+            set
+            {
+                ToStringValueDifference = value;
+            }
+        }
+
+
     }
 }
 

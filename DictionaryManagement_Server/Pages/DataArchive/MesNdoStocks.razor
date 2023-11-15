@@ -52,26 +52,26 @@
             <RadzenDataGridApp @bind-Settings="@MesNdoStocksGridSettings" @ref="mesNdoStocksDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@mesNdoStocksDTOs" TItem="MesNdoStocksDTO"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                               FilterMode="FilterMode.Advanced"
+                               FilterMode="FilterMode.Simple"
                                Density=Density.Compact
                                ShowPagingSummary="true"
                                EmptyText="Нет записей для отображения"
                                AllowVirtualization="true"
                                Style="height:710px">
                 <Columns>
-                    <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="Id" Title="Ид записи" Width="50px" TextAlign="TextAlign.Center"
-                                          FilterProperty="Id" FilterOperator="FilterOperator.Contains" SortProperty="Id">
+                    <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="ToStringId" Title="Ид записи" Width="50px" TextAlign="TextAlign.Center"
+                                          FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
-                                    @data1.Id
+                                    @data1.ToStringId
                                 </strong>
                             </div>
                         </Template>
 
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="MesParamDTOFK" Title="Код тэга СИР" Width="75px" FilterProperty="MesParamDTOFK.Code" SortProperty="MesParamDTOFK.Code">
+                    <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="MesParamDTOFK" Title="Код тэга СИР" Width="75px" FilterProperty="MesParamDTOFK.Code" SortProperty="MesParamDTOFK.Code" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.MesParamDTOFK.Code
@@ -89,7 +89,7 @@
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="AddUserDTOFK.UserName" Title="Кто добавил" Width="60px"
-                                          TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                                          TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 @data1.AddUserDTOFK.UserName
@@ -107,26 +107,28 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="Value" Title="Значение" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="ToStringValue" Title="Значение" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
+                                          FilterProperty="ToStringValue" SortProperty="Value" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
-                                @data1.Value
+                                    @data1.ToStringValue
                                 </strong>
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="ValueDifference" Title="Разность" Width="60px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="ToStringValueDifference" Title="Разность" Width="60px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
+                                          FilterProperty="ToStringValueDifference" SortProperty="ValueDifference" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
-                                @data1.ValueDifference
+                                @data1.ToStringValueDifference
                             </div>
                         </Template>
 
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="ReportEntityDTOFK.ToStringId" Title="ИД экземпляра отчёта" Width="50px" FilterProperty="ReportEntityDTOFK.ToStringId" SortProperty="ReportEntityDTOFK.ToStringId" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="ReportEntityDTOFK.ToStringId" Title="ИД экземпляра отчёта" Width="50px" FilterProperty="ReportEntityDTOFK.ToStringId" SortProperty="ReportEntityDTOFK.ToStringId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.ReportEntityDTOFK != null)
                             {

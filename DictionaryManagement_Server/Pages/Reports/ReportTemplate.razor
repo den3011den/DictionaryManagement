@@ -95,7 +95,7 @@
                     </RadzenDataGridColumn>
 
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="25px">
+                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="25px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>

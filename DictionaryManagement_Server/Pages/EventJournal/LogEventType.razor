@@ -49,7 +49,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px">
+                    <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
