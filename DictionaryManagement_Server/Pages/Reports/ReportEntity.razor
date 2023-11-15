@@ -167,10 +167,10 @@
 
     RadzenDataGrid<ReportEntityDTO> reportEntityDTOGrid;
 
-    DateTime startDate = DateTime.Today.AddDays(-7);
+    DateTime startDate = DateTime.Today.AddDays(-31);
     DateTime endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
     DateTime maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
-    DateTime minEndDate = DateTime.Today.AddDays(-8);
+    DateTime minEndDate = DateTime.Today.AddDays(-32);
 
     bool excelExportFlag = false;
 
@@ -198,10 +198,10 @@
 
                 await GetRows();
 
-                startDate = DateTime.Today.AddDays(-7);
+                startDate = DateTime.Today.AddDays(-31);
                 endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
                 maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
-                minEndDate = DateTime.Today.AddDays(-8);
+                minEndDate = DateTime.Today.AddDays(-32);
 
                 IsLoading = true;
                 await LoadStateAsync();
@@ -273,7 +273,7 @@
     private async Task ChangeStartDate()
     {
         ApplyButtonDisabled = false;
-        maxEndDate = startDate.AddDays(7).AddSeconds(-1);
+        maxEndDate = startDate.AddDays(31).AddSeconds(-1);
         minEndDate = startDate.AddDays(-1);
         if (endDate > maxEndDate)
             endDate = maxEndDate;

@@ -22,6 +22,11 @@
         </RadzenStack>
     </RadzenStack>
     , new DialogOptions() { Left = $"{400}px" });
-        return result;
+
+        if (result != null)
+            return result;
+        else
+            return false;
+
     }
 }
