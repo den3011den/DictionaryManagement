@@ -939,5 +939,114 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
+
+        public async Task<string> GenerateExcelMesNdoStocks(string filename, IEnumerable<MesNdoStocksDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("MesNdoStocks");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Ид тэга СИР (MesParamId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код тэга СИР (MesParam.Code)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование тэга СИР (MesParam.Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время добавления записи (AddTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Ид пользователя (AddUserId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Логин пользователя (User.Login)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ФИО пользователя (User.UserName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время значения (ValueTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Значение (Value)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Разность (ValueDifference)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД экземпляра отчёта (ReportGuid)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи в витрине SAP (SapNdoOutId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время добавления в витрину (SapNdoOUT.AddTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Имя тэга в витрине (SapNdoOUT.TagName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время значения в витрине (SapNdoOUT.ValueTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Значение в витрине (SapNdoOUT.Value)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Sap забрал значение (SapNdoOUT.SapGone)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время Sap забрал значение (SapNdoOUT.SapGoneTime)";
+
+                excelRowNum = 2;
+                foreach (MesNdoStocksDTO mesNdoStocksDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.MesParamId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.MesParamDTOFK.Code;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.MesParamDTOFK.Name == null ? "" : mesNdoStocksDTO.MesParamDTOFK.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.AddTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.AddUserId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.AddUserDTOFK.Login;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.AddUserDTOFK.UserName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.ValueTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.Value.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.ValueDifference == null ? "" : mesNdoStocksDTO.ValueDifference.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.ReportGuid == null ? "" : mesNdoStocksDTO.ReportGuid.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOutId == null ? "" : mesNdoStocksDTO.SapNdoOutId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : mesNdoStocksDTO.SapNdoOUTDTOFK.AddTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : mesNdoStocksDTO.SapNdoOUTDTOFK.TagName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : mesNdoStocksDTO.SapNdoOUTDTOFK.ValueTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : mesNdoStocksDTO.SapNdoOUTDTOFK.Value.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : (mesNdoStocksDTO.SapNdoOUTDTOFK.SapGone == true ? "Да" : "");
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : (mesNdoStocksDTO.SapNdoOUTDTOFK.SapGoneTime == null ? "" : mesNdoStocksDTO.SapNdoOUTDTOFK.SapGoneTime.ToString());
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
     }
 }

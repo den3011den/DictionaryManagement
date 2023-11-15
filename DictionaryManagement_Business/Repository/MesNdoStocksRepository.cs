@@ -57,7 +57,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("MesParamFK")
                             .Include("AddUserFK")
                             .Include("ReportEntityFK")
-                            .Include("SapNdoOutFK")
+                            .Include("SapNdoOUTFK")
                             .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
@@ -82,7 +82,7 @@ namespace DictionaryManagement_Business.Repository
                         .Include("MesParamFK")
                         .Include("AddUserFK")
                         .Include("ReportEntityFK")
-                        .Include("SapNdoOutFK")
+                        .Include("SapNdoOUTFK")
                         .Where(u => u.AddTime >= startTime && u.AddTime <= endTime).ToListWithNoLock();
                     return _mapper.Map<IEnumerable<MesNdoStocks>, IEnumerable<MesNdoStocksDTO>>(hhh1);
 
@@ -91,7 +91,7 @@ namespace DictionaryManagement_Business.Repository
                         .Include("MesParamFK")
                         .Include("AddUserFK")
                         .Include("ReportEntityFK")
-                        .Include("SapNdoOutFK")
+                        .Include("SapNdoOUTFK")
                         .Where(u => u.ValueTime >= startTime && u.ValueTime <= endTime).ToListWithNoLock();
                     return _mapper.Map<IEnumerable<MesNdoStocks>, IEnumerable<MesNdoStocksDTO>>(hhh2);
                 default:
@@ -107,7 +107,7 @@ namespace DictionaryManagement_Business.Repository
                         .Include("MesParamFK")
                         .Include("AddUserFK")
                         .Include("ReportEntityFK")
-                        .Include("SapNdoOutFK")
+                        .Include("SapNdoOUTFK")
                .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)
