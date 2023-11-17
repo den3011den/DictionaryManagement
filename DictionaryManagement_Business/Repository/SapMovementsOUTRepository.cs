@@ -70,7 +70,7 @@ namespace DictionaryManagement_Business.Repository
             var objToGet = _db.SapMovementsOUT
                             .Include("MesMovementsFK")
                             .Include("PreviousRecordFK")
-                            .Include("MesParamFK")                            
+                            .Include("MesParamFK")                       
                             .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
@@ -132,8 +132,16 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.MesParamId != objectToUpdateDTO.MesParamId)
                     {
                         objectToUpdate.MesParamId = objectToUpdateDTO.MesParamId;
-                        var objectMesParamToUpdate = _db.MesParam.
-                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.MesParamId);
+                        var objectMesParamToUpdate = _db.MesParam
+                            .Include("MesParamSourceTypeFK")
+                            .Include("MesDepartmentFK")
+                            .Include("SapEquipmentSourceFK")
+                            .Include("SapEquipmentDestFK")
+                            .Include("MesMaterialFK")
+                            .Include("SapMaterialFK")
+                            .Include("MesUnitOfMeasureFK")
+                            .Include("SapUnitOfMeasureFK")
+                            .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.MesParamId);
                         objectToUpdate.MesParamFK = objectMesParamToUpdate;
                     }
                 }
@@ -148,8 +156,11 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.PreviousRecordId != objectToUpdateDTO.PreviousRecordId)
                     {
                         objectToUpdate.PreviousRecordId = objectToUpdateDTO.PreviousRecordId;
-                        var objectSapMovementsOUTToUpdate = _db.SapMovementsOUT.
-                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.PreviousRecordId);
+                        var objectSapMovementsOUTToUpdate = _db.SapMovementsOUT
+                            .Include("MesMovementsFK")
+                            .Include("PreviousRecordFK")
+                            .Include("MesParamFK")
+                            .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.PreviousRecordId);
                         objectToUpdate.PreviousRecordFK = objectSapMovementsOUTToUpdate;
                     }
                 }
@@ -164,8 +175,10 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.MesMovementId != objectToUpdateDTO.MesMovementId)
                     {
                         objectToUpdate.MesMovementId = objectToUpdateDTO.MesMovementId;
-                        var objectMesMovementsToUpdate = _db.MesMovements.
-                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.MesMovementId);
+                        var objectMesMovementsToUpdate = _db.MesMovements
+                            .Include("MesMovementFK")
+                            .Include("PreviousRecordFK")
+                            .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.MesMovementId);
                         objectToUpdate.MesMovementsFK = objectMesMovementsToUpdate;
                     }
                 }

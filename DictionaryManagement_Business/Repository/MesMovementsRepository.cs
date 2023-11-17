@@ -142,8 +142,16 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.MesParamId != objectToUpdateDTO.MesParamId)
                     {
                         objectToUpdate.MesParamId = objectToUpdateDTO.MesParamId;
-                        var objectMesParamToUpdate = _db.MesParam.
-                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.MesParamId);
+                        var objectMesParamToUpdate = _db.MesParam
+                            .Include("MesParamSourceTypeFK")
+                            .Include("MesDepartmentFK")
+                            .Include("SapEquipmentSourceFK")
+                            .Include("SapEquipmentDestFK")
+                            .Include("MesMaterialFK")
+                            .Include("SapMaterialFK")
+                            .Include("MesUnitOfMeasureFK")
+                            .Include("SapUnitOfMeasureFK")
+                            .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.MesParamId);
                         objectToUpdate.MesParamFK = objectMesParamToUpdate;
                     }
                 }
@@ -174,8 +182,12 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.ReportGuid != objectToUpdateDTO.ReportGuid)
                     {
                         objectToUpdate.ReportGuid = objectToUpdateDTO.ReportGuid;
-                        var objectReportEntityToUpdate = _db.ReportEntity.
-                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.ReportGuid);
+                        var objectReportEntityToUpdate = _db.ReportEntity
+                            .Include("ReportTemplateFK")
+                            .Include("ReportDepartmentFK")
+                            .Include("DownloadUserFK")
+                            .Include("UploadUserFK")
+                            .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.ReportGuid);
                         objectToUpdate.ReportEntityFK = objectReportEntityToUpdate;
                     }
                 }
@@ -190,8 +202,11 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.SapMovementOutId != objectToUpdateDTO.SapMovementOutId)
                     {
                         objectToUpdate.SapMovementOutId = objectToUpdateDTO.SapMovementOutId;
-                        var objectSapMovementsOUTToUpdate = _db.SapMovementsOUT.
-                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.SapMovementOutId);
+                        var objectSapMovementsOUTToUpdate = _db.SapMovementsOUT
+                                .Include("MesMovementsFK")
+                                .Include("PreviousRecordFK")
+                                .Include("MesParamFK")
+                                .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.SapMovementOutId);
                         objectToUpdate.SapMovementsOUTFK = objectSapMovementsOUTToUpdate;
                     }
                 }
@@ -206,8 +221,10 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.SapMovementInId != objectToUpdateDTO.SapMovementInId)
                     {
                         objectToUpdate.SapMovementInId = objectToUpdateDTO.SapMovementInId;
-                        var objectSapMovementsINToUpdate = _db.SapMovementsIN.
-                                FirstOrDefaultWithNoLock(u => u.ErpId == objectToUpdateDTO.SapMovementInId);
+                        var objectSapMovementsINToUpdate = _db.SapMovementsIN
+                            .Include("MesMovementFK")
+                            .Include("PreviousRecordFK")
+                            .FirstOrDefaultWithNoLock(u => u.ErpId == objectToUpdateDTO.SapMovementInId);
                         objectToUpdate.SapMovementsINFK = objectSapMovementsINToUpdate;
                     }
                 }
@@ -254,8 +271,16 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.PreviousRecordId != objectToUpdateDTO.PreviousRecordId)
                     {
                         objectToUpdate.PreviousRecordId = objectToUpdateDTO.PreviousRecordId;
-                        var objectMesMovementsToUpdate = _db.MesMovements.
-                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.PreviousRecordId);
+                        var objectMesMovementsToUpdate = _db.MesMovements
+                            .Include("AddUserFK")
+                            .Include("MesParamFK")
+                            .Include("SapMovementsOUTFK")
+                            .Include("SapMovementsINFK")
+                            .Include("DataSourceFK")
+                            .Include("DataTypeFK")
+                            .Include("ReportEntityFK")
+                            .Include("MesMovementsFK")
+                            .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.PreviousRecordId);
                         objectToUpdate.MesMovementsFK = objectMesMovementsToUpdate;
                     }
                 }

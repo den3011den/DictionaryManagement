@@ -132,8 +132,16 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.MesMovementId != objectToUpdateDTO.MesMovementId)
                     {
                         objectToUpdate.MesMovementId = objectToUpdateDTO.MesMovementId;
-                        var objectMesMovementsToUpdate = _db.MesMovements.
-                                FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.MesMovementId);
+                        var objectMesMovementsToUpdate = _db.MesMovements
+                            .Include("AddUserFK")
+                            .Include("MesParamFK")
+                            .Include("SapMovementsOUTFK")
+                            .Include("SapMovementsINFK")
+                            .Include("DataSourceFK")
+                            .Include("DataTypeFK")
+                            .Include("ReportEntityFK")
+                            .Include("MesMovementsFK")
+                            .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.MesMovementId);
                         objectToUpdate.MesMovementFK = objectMesMovementsToUpdate;
                     }
                 }
@@ -148,8 +156,10 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.PreviousErpId != objectToUpdateDTO.PreviousErpId)
                     {
                         objectToUpdate.PreviousErpId = objectToUpdateDTO.PreviousErpId;
-                        var objectSapMovementsINToUpdate = _db.SapMovementsIN.
-                                FirstOrDefaultWithNoLock(u => u.ErpId.Trim().ToUpper() == objectToUpdateDTO.PreviousErpId.Trim().ToUpper());
+                        var objectSapMovementsINToUpdate = _db.SapMovementsIN
+                                .Include("MesMovementFK")
+                                .Include("PreviousRecordFK")
+                                .FirstOrDefaultWithNoLock(u => u.ErpId.Trim().ToUpper() == objectToUpdateDTO.PreviousErpId.Trim().ToUpper());
                         objectToUpdate.PreviousRecordFK = objectSapMovementsINToUpdate;
                     }
                 }
