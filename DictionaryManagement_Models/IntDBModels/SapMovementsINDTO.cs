@@ -76,7 +76,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public bool? MesGoneTime { get; set; }
 
         [Display(Name = "Ошибка")]
-        public bool? IsError { get; set; }
+        public bool? MesError { get; set; }
 
         [Display(Name = "Сообщение об ошибке")]
         public string? MesErrorMessage { get; set; }
