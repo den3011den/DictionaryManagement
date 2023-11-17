@@ -51,6 +51,10 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<MesNdoStocks> MesNdoStocks { get; set; }
         public DbSet<SapNdoOUT> SapNdoOUT { get; set; }
 
+        public DbSet<MesMovements> MesMovements { get; set; }
+        public DbSet<SapMovementsIN> SapMovementsIN { get; set; }
+        public DbSet<SapMovementsOUT> SapMovementsOUT { get; set; }
+
 
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
