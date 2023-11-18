@@ -60,7 +60,15 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
         //    base.OnModelCreating(modelBuilder);
-        //    modelBuilder.Entity<UnitOfMeasureSapToMesMapping>().HasKey(x => new { x.SapUnitId, x.MesUnitId });
+        //    //modelBuilder.Entity<SapEquipment>()
+        //    //    .HasAlternateKey(x => new { x.ErpPlantId, x.ErpId })
+        //    //    .HasName("SapEquipmentDestFK")
+        //    //    .HasName("SapEquipmentSourceFK");
+        //    modelBuilder.Entity<SapMaterial>()
+        //        .HasIndex(x => x.Code);
+        //        //.HasPrincipalKey(x => x.Code);
+        //        //.HasAlternateKey(x => new { x.Code })                
+        //        //.HasName("FK_SapMovementsOUT_SapMaterial");
         //}
 
     }

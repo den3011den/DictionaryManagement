@@ -5,8 +5,11 @@ using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,9 +47,9 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.IsWarehouseSource = objectToAddDTO.IsWarehouseSource;
             objectToAdd.ErpPlantIdDest = objectToAddDTO.ErpPlantIdDest;
             objectToAdd.ErpIdDest = objectToAddDTO.ErpIdDest;
-            objectToAdd.IsWarehouseDest = objectToAddDTO.IsWarehouseDest;            
+            objectToAdd.IsWarehouseDest = objectToAddDTO.IsWarehouseDest;
             objectToAdd.ValueTime = objectToAddDTO.ValueTime;
-            objectToAdd.Value = objectToAddDTO.Value;            
+            objectToAdd.Value = objectToAddDTO.Value;
             objectToAdd.Correction2Previous = objectToAddDTO.Correction2Previous;
             objectToAdd.MesParamId = objectToAddDTO.MesParamId;
             objectToAdd.IsReconciled = objectToAddDTO.IsReconciled;
@@ -71,8 +74,8 @@ namespace DictionaryManagement_Business.Repository
                             .Include("MesMovementsFK")
                             .Include("PreviousRecordFK")
                             .Include("MesParamFK")
-                            .Include("SapEquipmentSourceFK")
-                            .Include("SapEquipmentDestFK")
+                            //.Include("SapEquipmentSourceFK")
+                            //.Include("SapEquipmentDestFK")
                             .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
@@ -90,31 +93,135 @@ namespace DictionaryManagement_Business.Repository
             if (startTime == null)
                 endTime = DateTime.MaxValue;
 
+            IEnumerable<SapMovementsOUT> hhh2;
             switch (intervalMode.Trim().ToUpper())
             {
                 case "ADDTIME":
-                    var hhh1 = _db.SapMovementsOUT
+                    hhh2 = _db.SapMovementsOUT
                             .Include("MesMovementsFK")
                             .Include("PreviousRecordFK")
                             .Include("MesParamFK")
-                            .Include("SapEquipmentSourceFK")
-                            .Include("SapEquipmentDestFK")
+                        //.Include("MesParamFK")
+                        //.Include("MesParamFK")
                         .Where(u => u.AddTime >= startTime && u.AddTime <= endTime).ToListWithNoLock();
-                    return _mapper.Map<IEnumerable<SapMovementsOUT>, IEnumerable<SapMovementsOUTDTO> >(hhh1);
-
+                    break;
                 case "VALUETIME":
-                    var hhh2 = _db.SapMovementsOUT
-                            .Include("MesMovementsFK")
-                            .Include("PreviousRecordFK")
-                            .Include("MesParamFK")
-                            .Include("SapEquipmentSourceFK")
-                            .Include("SapEquipmentDestFK")
-                        .Where(u => u.ValueTime >= startTime && u.ValueTime <= endTime).ToListWithNoLock();
-                    return _mapper.Map<IEnumerable<SapMovementsOUT>, IEnumerable<SapMovementsOUTDTO>>(hhh2);
+                    //hhh2 = _db.SapMovementsOUT
+                    //        .Include("MesMovementsFK")
+                    //        .Include("PreviousRecordFK")
+                    //        .Include("MesParamFK")
+                    //        //.Include("MesParamFK")
+                    //        //.Include("MesParamFK")
+                    //    .Where(u => u.ValueTime >= startTime && u.ValueTime <= endTime).ToListWithNoLock();
+
+                    //hhh2 = from school in ctx.Schools
+                    //join teacher in ctx.Teachers on school.TeacherId equals teacher.Id into grouping
+                    //from t in grouping.DefaultIfEmpty()
+                    //join student in ctx.Students on school.StudentId equals student.Id into grouping2
+                    //from s in grouping2.DefaultIfEmpty()
+                    //where school.Id == someSchoolId
+                    //select school;
+
+
+                    hhh2 = (from SMOUT in _db.SapMovementsOUT
+                                    .Include("MesMovementsFK")
+                                    .Include("PreviousRecordFK")
+                                    .Include("MesParamFK").Where(u => u.ValueTime >= startTime && u.ValueTime <= endTime).ToListWithNoLock()
+                            join SM in _db.SapMaterial.DefaultIfEmpty().ToListWithNoLock() on SMOUT.SapMaterialCode equals SM.Code
+                           select
+                            (new SapMovementsOUT
+                                {
+                                    Id = SMOUT.Id,
+                                    AddTime = SMOUT.AddTime,
+                                    BatchNo = SMOUT.BatchNo,
+                                    SapMaterialCode = SMOUT.SapMaterialCode,
+                                    SapMaterialFK = SM,
+                                    ErpPlantIdSource = SMOUT.ErpPlantIdSource,
+                                    ErpIdSource = SMOUT.ErpIdSource,
+                                    IsWarehouseSource = SMOUT.IsWarehouseSource,
+                                    ErpPlantIdDest = SMOUT.ErpPlantIdDest,
+                                    ErpIdDest = SMOUT.ErpIdDest,
+                                    IsWarehouseDest = SMOUT.IsWarehouseDest,
+                                    ValueTime = SMOUT.ValueTime,
+                                    Value = SMOUT.Value,
+                                    Correction2Previous = SMOUT.Correction2Previous,
+                                    IsReconciled = SMOUT.IsReconciled,
+                                    SapUnitOfMeasure = SMOUT.SapUnitOfMeasure,
+                                    SapGone = SMOUT.SapGone,
+                                    SapGoneTime = SMOUT.SapGoneTime,
+                                    SapError = SMOUT.SapError,
+                                    SapErrorMessage = SMOUT.SapErrorMessage,
+                                    MesMovementId = SMOUT.MesMovementId,
+                                    MesMovementsFK = SMOUT.MesMovementsFK,
+                                    MesParamId = SMOUT.MesParamId,
+                                    MesParamFK = SMOUT.MesParamFK,
+                                    PreviousRecordFK = SMOUT.PreviousRecordFK})).ToList();
+
+                    //hhh2 = _db.SapMovementsOUT
+                    //    .Include("MesMovementsFK")
+                    //    .Include("PreviousRecordFK")
+                    //    .Include("MesParamFK")
+                    //    .Join(_db.SapMaterial,
+                    //        u => u.SapMaterialCode,
+                    //        c => c.Code,
+                    //    (u, c) => new SapMovementsOUT
+                    //    {
+                    //        Id = u.Id,
+                    //        AddTime = u.AddTime,
+                    //        BatchNo = u.BatchNo,
+                    //        SapMaterialCode = u.SapMaterialCode,
+                    //        SapMaterialFK = c,
+                    //        ErpPlantIdSource = u.ErpPlantIdSource,
+                    //        ErpIdSource = u.ErpIdSource,
+                    //        IsWarehouseSource = u.IsWarehouseSource,
+                    //        ErpPlantIdDest = u.ErpPlantIdDest,
+                    //        ErpIdDest = u.ErpIdDest,
+                    //        IsWarehouseDest = u.IsWarehouseDest,
+                    //        ValueTime = u.ValueTime,
+                    //        Value = u.Value,
+                    //        Correction2Previous = u.Correction2Previous,
+                    //        IsReconciled = u.IsReconciled,
+                    //        SapUnitOfMeasure = u.SapUnitOfMeasure,
+                    //        SapGone = u.SapGone,
+                    //        SapGoneTime = u.SapGoneTime,
+                    //        SapError = u.SapError,
+                    //        SapErrorMessage = u.SapErrorMessage,
+                    //        MesMovementId = u.MesMovementId,
+                    //        MesMovementsFK = u.MesMovementsFK,
+                    //        MesParamId = u.MesParamId,
+                    //        MesParamFK = u.MesParamFK,
+                    //        PreviousRecordFK = u.PreviousRecordFK
+                    //    }).Where(u => u.ValueTime >= startTime && u.ValueTime <= endTime).ToListWithNoLock();
+
+                    break;
                 default:
                     return null;
-            }
 
+            }
+            var a = 1;
+            var hhh3 = _mapper.Map<IEnumerable<SapMovementsOUT>, IEnumerable<SapMovementsOUTDTO>>(hhh2);
+            return hhh3;
+
+            //var hhh3 = _mapper.Map<IEnumerable<SapMovementsOUT>, IEnumerable<SapMovementsOUTDTO>>(hhh2);
+            //foreach (var element in hhh3)
+            //{
+            //    if (!element.ErpIdSource.IsNullOrEmpty() && !element.ErpPlantIdSource.IsNullOrEmpty())
+            //    {
+            //        var sapSource = _db.SapEquipment.FirstOrDefaultWithNoLock(u => u.ErpPlantId == element.ErpPlantIdSource && u.ErpId == element.ErpIdSource);
+            //        element.SapEquipmentSourceDTOFK = _mapper.Map<SapEquipment, SapEquipmentDTO>(sapSource);
+            //    }
+            //    if (!element.ErpIdDest.IsNullOrEmpty() && !element.ErpPlantIdDest.IsNullOrEmpty())
+            //    {
+            //        var sapDest = _db.SapEquipment.FirstOrDefaultWithNoLock(u => u.ErpPlantId == element.ErpPlantIdDest && u.ErpId == element.ErpIdDest);
+            //        element.SapEquipmentDestDTOFK = _mapper.Map<SapEquipment, SapEquipmentDTO>(sapDest);
+            //    }
+            //    if (!element.SapMaterialCode.IsNullOrEmpty())
+            //    {
+            //        var sapMaterial = _db.SapMaterial.FirstOrDefaultWithNoLock(u => u.Code == element.SapMaterialCode);
+            //        element.SapMaterialDTOFK = _mapper.Map<SapMaterial, SapMaterialDTO>(sapMaterial);
+            //    }
+            //}
+            //return hhh3;
         }
 
 
@@ -124,8 +231,6 @@ namespace DictionaryManagement_Business.Repository
                             .Include("MesMovementsFK")
                             .Include("PreviousRecordFK")
                             .Include("MesParamFK")
-                            .Include("SapEquipmentSourceFK")
-                            .Include("SapEquipmentDestFK")
                .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)
@@ -168,8 +273,6 @@ namespace DictionaryManagement_Business.Repository
                             .Include("MesMovementsFK")
                             .Include("PreviousRecordFK")
                             .Include("MesParamFK")
-                            .Include("SapEquipmentSourceFK")
-                            .Include("SapEquipmentDestFK")
                             .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.PreviousRecordId);
                         objectToUpdate.PreviousRecordFK = objectSapMovementsOUTToUpdate;
                     }

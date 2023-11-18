@@ -203,16 +203,12 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<SapMovementsOUT, SapMovementsOUTDTO>()
                 .ForMember(dest => dest.MesMovementsDTOFK, opt => opt.MapFrom(src => src.MesMovementsFK))
                 .ForMember(dest => dest.MesParamDTOFK, opt => opt.MapFrom(src => src.MesParamFK))                                                
-                .ForMember(dest => dest.PreviousRecordDTOFK, opt => opt.MapFrom(src => src.PreviousRecordFK))
-                .ForMember(dest => dest.SapEquipmentSourceDTOFK, opt => opt.MapFrom(src => src.SapEquipmentSourceFK))
-                .ForMember(dest => dest.SapEquipmentDestDTOFK, opt => opt.MapFrom(src => src.SapEquipmentDestFK));
+                .ForMember(dest => dest.PreviousRecordDTOFK, opt => opt.MapFrom(src => src.PreviousRecordFK));
 
             CreateMap<SapMovementsOUTDTO, SapMovementsOUT>()
                 .ForMember(dest => dest.MesMovementsFK, opt => opt.MapFrom(src => src.MesMovementsDTOFK))
                 .ForMember(dest => dest.MesParamFK, opt => opt.MapFrom(src => src.MesParamDTOFK))
-                .ForMember(dest => dest.PreviousRecordFK, opt => opt.MapFrom(src => src.PreviousRecordDTOFK))
-                .ForMember(dest => dest.SapEquipmentSourceFK, opt => opt.MapFrom(src => src.SapEquipmentSourceDTOFK))
-                .ForMember(dest => dest.SapEquipmentDestFK, opt => opt.MapFrom(src => src.SapEquipmentDestDTOFK));
+                .ForMember(dest => dest.PreviousRecordFK, opt => opt.MapFrom(src => src.PreviousRecordDTOFK));
             
 
             CreateMap<SapMovementsIN, SapMovementsINDTO>()
