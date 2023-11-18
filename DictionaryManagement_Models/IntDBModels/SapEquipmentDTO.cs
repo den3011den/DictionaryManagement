@@ -50,8 +50,8 @@ namespace DictionaryManagement_Models.IntDBModels
         {
             get
             {
-                ToStringErpPlantIdErpIdName = $"{ErpPlantId}|{ErpId} {Name}";
-                return ToStringErpPlantIdErpIdName;
+                
+                return $"{ErpPlantId}|{ErpId} {Name}";
             }
             set
             {

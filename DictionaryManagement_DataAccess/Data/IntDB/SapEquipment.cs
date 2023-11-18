@@ -12,9 +12,10 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
     public class SapEquipment
     {
         [Key]
-        public int Id { get; set; }
-        [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+
+        [Required]        
         public string ErpPlantId { get; set; } = string.Empty;
 
         [Required]

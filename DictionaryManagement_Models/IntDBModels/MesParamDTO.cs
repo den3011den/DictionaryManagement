@@ -128,8 +128,7 @@ namespace DictionaryManagement_Models.IntDBModels
         {
             get
             {
-                ToStringCodeName = $"{Code} {Name}";
-                return ToStringCodeName;
+                return $"{Code} {Name}";
             }
             set
             {

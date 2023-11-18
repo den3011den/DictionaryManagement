@@ -47,8 +47,8 @@ namespace DictionaryManagement_Models.IntDBModels
         {
             get
             {
-                ToStringCodeName = $"{Code} {ShortName}";
-                return ToStringCodeName;
+                string retVar = Code + " " + ShortName;
+                return retVar;
             }
             set
             {

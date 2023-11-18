@@ -14,6 +14,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static DictionaryManagement_Common.SD;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.InkML;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -93,19 +95,25 @@ namespace DictionaryManagement_Business.Repository
             if (startTime == null)
                 endTime = DateTime.MaxValue;
 
-            IEnumerable<SapMovementsOUT> hhh2;
+            IEnumerable<SapMovementsOUT>? hhh1;
+            IEnumerable<SapMovementsOUT>? hhh2;
+
             switch (intervalMode.Trim().ToUpper())
             {
                 case "ADDTIME":
-                    hhh2 = _db.SapMovementsOUT
+                    hhh1 = _db.SapMovementsOUT
                             .Include("MesMovementsFK")
                             .Include("PreviousRecordFK")
                             .Include("MesParamFK")
-                        //.Include("MesParamFK")
-                        //.Include("MesParamFK")
-                        .Where(u => u.AddTime >= startTime && u.AddTime <= endTime).ToListWithNoLock();
+                        .Where(u => u.AddTime >= startTime && u.AddTime <= endTime).AsNoTracking().ToListWithNoLock();
                     break;
                 case "VALUETIME":
+                    hhh1 = _db.SapMovementsOUT
+                        .Include("MesMovementsFK")
+                        .Include("PreviousRecordFK")
+                        .Include("MesParamFK")
+                        .Where(u => u.ValueTime >= startTime && u.ValueTime <= endTime).AsNoTracking().ToListWithNoLock();
+
                     //hhh2 = _db.SapMovementsOUT
                     //        .Include("MesMovementsFK")
                     //        .Include("PreviousRecordFK")
@@ -123,39 +131,88 @@ namespace DictionaryManagement_Business.Repository
                     //select school;
 
 
-                    hhh2 = (from SMOUT in _db.SapMovementsOUT
-                                    .Include("MesMovementsFK")
-                                    .Include("PreviousRecordFK")
-                                    .Include("MesParamFK").Where(u => u.ValueTime >= startTime && u.ValueTime <= endTime).ToListWithNoLock()
-                            join SM in _db.SapMaterial.DefaultIfEmpty().ToListWithNoLock() on SMOUT.SapMaterialCode equals SM.Code
-                           select
-                            (new SapMovementsOUT
-                                {
-                                    Id = SMOUT.Id,
-                                    AddTime = SMOUT.AddTime,
-                                    BatchNo = SMOUT.BatchNo,
-                                    SapMaterialCode = SMOUT.SapMaterialCode,
-                                    SapMaterialFK = SM,
-                                    ErpPlantIdSource = SMOUT.ErpPlantIdSource,
-                                    ErpIdSource = SMOUT.ErpIdSource,
-                                    IsWarehouseSource = SMOUT.IsWarehouseSource,
-                                    ErpPlantIdDest = SMOUT.ErpPlantIdDest,
-                                    ErpIdDest = SMOUT.ErpIdDest,
-                                    IsWarehouseDest = SMOUT.IsWarehouseDest,
-                                    ValueTime = SMOUT.ValueTime,
-                                    Value = SMOUT.Value,
-                                    Correction2Previous = SMOUT.Correction2Previous,
-                                    IsReconciled = SMOUT.IsReconciled,
-                                    SapUnitOfMeasure = SMOUT.SapUnitOfMeasure,
-                                    SapGone = SMOUT.SapGone,
-                                    SapGoneTime = SMOUT.SapGoneTime,
-                                    SapError = SMOUT.SapError,
-                                    SapErrorMessage = SMOUT.SapErrorMessage,
-                                    MesMovementId = SMOUT.MesMovementId,
-                                    MesMovementsFK = SMOUT.MesMovementsFK,
-                                    MesParamId = SMOUT.MesParamId,
-                                    MesParamFK = SMOUT.MesParamFK,
-                                    PreviousRecordFK = SMOUT.PreviousRecordFK})).ToList();
+                    //hhh1 = _db.SapMovementsOUT
+                    //            .Include("MesMovementsFK")
+                    //            .Include("PreviousRecordFK")
+                    //            .Include("MesParamFK").Where(u => u.ValueTime >= startTime && u.ValueTime <= endTime).AsNoTracking().ToListWithNoLock()
+                    //            .Join(_db.SapMaterial,
+                    //                u => u.SapMaterialCode,
+                    //                c => c.Code,
+                    //                (SMOUT, SM) => new { SMOUT, SM })
+                    //            .Select(u => new SapMovementsOUT
+                    //            {
+                    //                Id = u.SMOUT.Id,
+                    //                AddTime = u.SMOUT.AddTime,
+                    //                BatchNo = u.SMOUT.BatchNo,
+                    //                SapMaterialCode = u.SMOUT.SapMaterialCode,
+                    //                SapMaterialFK = u.SM,
+                    //                ErpPlantIdSource = u.SMOUT.ErpPlantIdSource,
+                    //                ErpIdSource = u.SMOUT.ErpIdSource,
+                    //                IsWarehouseSource = u.SMOUT.IsWarehouseSource,
+                    //                ErpPlantIdDest = u.SMOUT.ErpPlantIdDest,
+                    //                //SapEquipmentSourceFK = u.SESource,
+                    //                ErpIdDest = u.SMOUT.ErpIdDest,
+                    //                IsWarehouseDest = u.SMOUT.IsWarehouseDest,
+                    //                ValueTime = u.SMOUT.ValueTime,
+                    //                Value = u.SMOUT.Value,
+                    //                Correction2Previous = u.SMOUT.Correction2Previous,
+                    //                IsReconciled = u.SMOUT.IsReconciled,
+                    //                SapUnitOfMeasure = u.SMOUT.SapUnitOfMeasure,
+                    //                SapGone = u.SMOUT.SapGone,
+                    //                SapGoneTime = u.SMOUT.SapGoneTime,
+                    //                SapError = u.SMOUT.SapError,
+                    //                SapErrorMessage = u.SMOUT.SapErrorMessage,
+                    //                MesMovementId = u.SMOUT.MesMovementId,
+                    //                MesMovementsFK = u.SMOUT.MesMovementsFK,
+                    //                MesParamId = u.SMOUT.MesParamId,
+                    //                MesParamFK = u.SMOUT.MesParamFK,
+                    //                PreviousRecordFK = u.SMOUT.PreviousRecordFK
+                    //            }).ToList();
+
+
+
+
+
+                    //hhh2 = (from SMOUT in _db.SapMovementsOUT
+                    //                .Include("MesMovementsFK")
+                    //                .Include("PreviousRecordFK")
+                    //                .Include("MesParamFK").Where(u => u.ValueTime >= startTime && u.ValueTime <= endTime).ToListWithNoLock()
+                    //        join SM in _db.SapMaterial.DefaultIfEmpty().ToListWithNoLock() on SMOUT.SapMaterialCode equals SM.Code
+                    //        into SapOUT2                            
+                    //        join SESource in _db.SapEquipment.DefaultIfEmpty().ToListWithNoLock() on
+                    //                    new { ErpPlantIdSource = SMOUT.ErpPlantIdSource, ErpIdSource = SMOUT.ErpPlantIdSource }
+                    //                equals
+                    //                    new { ErpPlantIdSource = SESource.ErpPlantId, ErpIdSource = SESource.ErpPlantId}
+                    //         into SapOUT3
+                    //        select
+                    //        (new SapMovementsOUT
+                    //            {
+                    //                Id = SMOUT.Id,
+                    //                AddTime = SMOUT.AddTime,
+                    //                BatchNo = SMOUT.BatchNo,
+                    //                SapMaterialCode = SMOUT.SapMaterialCode,
+                    //                SapMaterialFK = SapOUT3.,
+                    //                ErpPlantIdSource = SMOUT.ErpPlantIdSource,
+                    //                ErpIdSource = SMOUT.ErpIdSource,
+                    //                IsWarehouseSource = SMOUT.IsWarehouseSource,
+                    //                ErpPlantIdDest = SMOUT.ErpPlantIdDest,
+                    //                SapEquipmentSourceFK = SESource,
+                    //                ErpIdDest = SMOUT.ErpIdDest,
+                    //                IsWarehouseDest = SMOUT.IsWarehouseDest,
+                    //                ValueTime = SMOUT.ValueTime,
+                    //                Value = SMOUT.Value,
+                    //                Correction2Previous = SMOUT.Correction2Previous,
+                    //                IsReconciled = SMOUT.IsReconciled,
+                    //                SapUnitOfMeasure = SMOUT.SapUnitOfMeasure,
+                    //                SapGone = SMOUT.SapGone,
+                    //                SapGoneTime = SMOUT.SapGoneTime,
+                    //                SapError = SMOUT.SapError,
+                    //                SapErrorMessage = SMOUT.SapErrorMessage,
+                    //                MesMovementId = SMOUT.MesMovementId,
+                    //                MesMovementsFK = SMOUT.MesMovementsFK,
+                    //                MesParamId = SMOUT.MesParamId,
+                    //                MesParamFK = SMOUT.MesParamFK,
+                    //                PreviousRecordFK = SMOUT.PreviousRecordFK})).Distinct().ToList();
 
                     //hhh2 = _db.SapMovementsOUT
                     //    .Include("MesMovementsFK")
@@ -198,7 +255,73 @@ namespace DictionaryManagement_Business.Repository
                     return null;
 
             }
-            var a = 1;
+
+
+            if (hhh1 != null)
+            {
+                hhh2 = (from fff in hhh1
+                        join SM in _db.SapMaterial.AsNoTracking().ToListWithNoLock() on
+                            fff.SapMaterialCode equals SM.Code
+                        join SESource in _db.SapEquipment.AsNoTracking().ToListWithNoLock() on new
+                        {
+                            ErpPlantIdSource = fff.ErpPlantIdSource.ToString(),
+                            ErpIdSource = fff.ErpIdSource.ToString()
+                        }
+                            equals new
+                            {
+                                ErpPlantIdSource = SESource.ErpPlantId.ToString(),
+                                ErpIdSource = SESource.ErpId.ToString()
+                            }
+                        join SEDest in _db.SapEquipment.AsNoTracking().ToListWithNoLock() on new
+                        {
+                            ErpPlantIdSource = fff.ErpPlantIdDest.ToString(),
+                            ErpIdSource = fff.ErpIdDest.ToString()
+                        }
+                        equals new
+                        {
+                            ErpPlantIdSource = SEDest.ErpPlantId.ToString(),
+                            ErpIdSource = SEDest.ErpId.ToString()
+                        }
+
+                        select
+                                    new SapMovementsOUT
+                                    {
+                                        Id = fff.Id,
+                                        AddTime = fff.AddTime,
+                                        BatchNo = fff.BatchNo,
+                                        SapMaterialCode = fff.SapMaterialCode,
+                                        SapMaterialFK = SM,
+                                        ErpPlantIdSource = fff.ErpPlantIdSource,
+                                        ErpIdSource = fff.ErpIdSource,
+                                        SapEquipmentSourceFK = SESource,
+                                        IsWarehouseSource = fff.IsWarehouseSource,
+                                        ErpPlantIdDest = fff.ErpPlantIdDest,
+                                        ErpIdDest = fff.ErpIdDest,
+                                        SapEquipmentDestFK = SEDest,
+                                        IsWarehouseDest = fff.IsWarehouseDest,
+                                        ValueTime = fff.ValueTime,
+                                        Value = fff.Value,
+                                        Correction2Previous = fff.Correction2Previous,
+                                        IsReconciled = fff.IsReconciled,
+                                        SapUnitOfMeasure = fff.SapUnitOfMeasure,
+                                        SapGone = fff.SapGone,
+                                        SapGoneTime = fff.SapGoneTime,
+                                        SapError = fff.SapError,
+                                        SapErrorMessage = fff.SapErrorMessage,
+                                        MesMovementId = fff.MesMovementId,
+                                        MesMovementsFK = fff.MesMovementsFK,
+                                        MesParamId = fff.MesParamId,
+                                        MesParamFK = fff.MesParamFK,
+                                        PreviousRecordFK = fff.PreviousRecordFK
+                                    }).ToList();
+            }
+            else
+            {
+                hhh2 = new List<SapMovementsOUT>();
+            }
+    
+
+
             var hhh3 = _mapper.Map<IEnumerable<SapMovementsOUT>, IEnumerable<SapMovementsOUTDTO>>(hhh2);
             return hhh3;
 

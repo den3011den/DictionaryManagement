@@ -26,16 +26,21 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         [NotMapped]
         public  SapMaterial? SapMaterialFK { get; set; }
+
         public string? ErpPlantIdSource { get; set; }
+
         public string? ErpIdSource { get; set; }
-        //[ForeignKey("ErpPlantIdSource, ErpIdSource")]
-        //public SapEquipment? SapEquipmentSourceFK { get; set; }
+
+        [NotMapped]
+        public SapEquipment? SapEquipmentSourceFK { get; set; }
+
         public bool? IsWarehouseSource { get; set; }
 
         public string? ErpPlantIdDest { get; set; }
         public string? ErpIdDest { get; set; }
-        //[ForeignKey("ErpPlantIdDest, ErpIdDest")]
-        //public SapEquipment? SapEquipmentDestFK { get; set; }
+
+        [NotMapped]
+        public SapEquipment? SapEquipmentDestFK { get; set; }
 
         public bool? IsWarehouseDest { get; set; }
 
