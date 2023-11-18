@@ -206,6 +206,8 @@ namespace DictionaryManagement_Business.Repository
                                 .Include("MesMovementsFK")
                                 .Include("PreviousRecordFK")
                                 .Include("MesParamFK")
+                                .Include("SapEquipmentSourceFK")
+                                .Include("SapEquipmentDestFK")
                                 .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.SapMovementOutId);
                         objectToUpdate.SapMovementsOUTFK = objectSapMovementsOUTToUpdate;
                     }

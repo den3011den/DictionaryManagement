@@ -122,7 +122,20 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 
-
+        [NotMapped]
+        [Display(Name = "Тэг СИР")]
+        public string ToStringCodeName
+        {
+            get
+            {
+                ToStringCodeName = $"{Code} {Name}";
+                return ToStringCodeName;
+            }
+            set
+            {
+                ToStringCodeName = value;
+            }
+        }
 
     }
 }

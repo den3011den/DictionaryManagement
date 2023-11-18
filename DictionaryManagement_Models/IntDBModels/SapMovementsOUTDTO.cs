@@ -27,11 +27,18 @@ namespace DictionaryManagement_Models.IntDBModels
         [Required(ErrorMessage = "Код материала SAP обязателен")]
         public string SapMaterialCode { get; set; }
 
+        [Display(Name = "Материал SAP")]
+        [Required(ErrorMessage = "Материал SAP обязателен")]
+        public SapMaterialDTO SapMaterialDTOFK { get; set; }
+
         [Display(Name = "Код завода-источника SAP")]
         public string? ErpPlantIdSource { get; set; }
 
         [Display(Name = "Код ресурса/склада-источника SAP")]
         public string? ErpIdSource { get; set; }
+
+        [Display(Name = "Источник SAP")]
+        public virtual SapEquipmentDTO SapEquipmentSourceDTOFK { get; set; }
 
         [Display(Name = "Склад-источник SAP")]
         public bool? IsWarehouseSource { get; set; }
@@ -41,6 +48,10 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "Код ресурса/склада-приемника SAP")]
         public string? ErpIdDest { get; set; }
+
+        [Display(Name = "Приёмник SAP")]
+        public virtual SapEquipmentDTO SapEquipmentDestDTOFK { get; set; }
+
 
         [Display(Name = "Склад-приемник SAP")]
         public bool? IsWarehouseDest { get; set; }

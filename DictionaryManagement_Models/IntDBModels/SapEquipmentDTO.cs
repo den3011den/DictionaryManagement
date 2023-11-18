@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -42,6 +43,20 @@ namespace DictionaryManagement_Models.IntDBModels
         {
             ToStringValue = $"{ErpPlantId}|{ErpId} {Name}";
             return ToStringValue;
+        }
+
+        [NotMapped]
+        public string ToStringErpPlantIdErpIdName
+        {
+            get
+            {
+                ToStringErpPlantIdErpIdName = $"{ErpPlantId}|{ErpId} {Name}";
+                return ToStringErpPlantIdErpIdName;
+            }
+            set
+            {
+                ToStringErpPlantIdErpIdName = value;
+            }
         }
 
     }

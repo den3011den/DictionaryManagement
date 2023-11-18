@@ -22,17 +22,20 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public string? BatchNo { get; set; }
 
         [Required]
-        public string SapMaterialCode { get; set; }
+        public string SapMaterialCode { get; set; }        
+        [ForeignKey("SapMaterialCode")]
+        public SapMaterial SapMaterialFK { get; set; }
 
         public string? ErpPlantIdSource { get; set; }
-
         public string? ErpIdSource { get; set; }
+        [ForeignKey("ErpPlantIdSource, ErpIdSource")]
+        public virtual SapEquipment SapEquipmentSourceFK { get; set; }
 
         public bool? IsWarehouseSource { get; set; }
 
         public string? ErpPlantIdDest { get; set; }
-
         public string? ErpIdDest { get; set; }
+        public virtual SapEquipment SapEquipmentDestFK { get; set; }
 
         public bool? IsWarehouseDest { get; set; }
 

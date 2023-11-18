@@ -70,7 +70,9 @@ namespace DictionaryManagement_Business.Repository
             var objToGet = _db.SapMovementsOUT
                             .Include("MesMovementsFK")
                             .Include("PreviousRecordFK")
-                            .Include("MesParamFK")                       
+                            .Include("MesParamFK")
+                            .Include("SapEquipmentSourceFK")
+                            .Include("SapEquipmentDestFK")
                             .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
@@ -95,6 +97,8 @@ namespace DictionaryManagement_Business.Repository
                             .Include("MesMovementsFK")
                             .Include("PreviousRecordFK")
                             .Include("MesParamFK")
+                            .Include("SapEquipmentSourceFK")
+                            .Include("SapEquipmentDestFK")
                         .Where(u => u.AddTime >= startTime && u.AddTime <= endTime).ToListWithNoLock();
                     return _mapper.Map<IEnumerable<SapMovementsOUT>, IEnumerable<SapMovementsOUTDTO> >(hhh1);
 
@@ -103,6 +107,8 @@ namespace DictionaryManagement_Business.Repository
                             .Include("MesMovementsFK")
                             .Include("PreviousRecordFK")
                             .Include("MesParamFK")
+                            .Include("SapEquipmentSourceFK")
+                            .Include("SapEquipmentDestFK")
                         .Where(u => u.ValueTime >= startTime && u.ValueTime <= endTime).ToListWithNoLock();
                     return _mapper.Map<IEnumerable<SapMovementsOUT>, IEnumerable<SapMovementsOUTDTO>>(hhh2);
                 default:
@@ -118,6 +124,8 @@ namespace DictionaryManagement_Business.Repository
                             .Include("MesMovementsFK")
                             .Include("PreviousRecordFK")
                             .Include("MesParamFK")
+                            .Include("SapEquipmentSourceFK")
+                            .Include("SapEquipmentDestFK")
                .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)
@@ -160,6 +168,8 @@ namespace DictionaryManagement_Business.Repository
                             .Include("MesMovementsFK")
                             .Include("PreviousRecordFK")
                             .Include("MesParamFK")
+                            .Include("SapEquipmentSourceFK")
+                            .Include("SapEquipmentDestFK")
                             .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.PreviousRecordId);
                         objectToUpdate.PreviousRecordFK = objectSapMovementsOUTToUpdate;
                     }

@@ -42,5 +42,18 @@ namespace DictionaryManagement_Models.IntDBModels
             return ToStringValue;
         }
 
+        [NotMapped]
+        public string ToStringCodeName
+        {
+            get
+            {
+                ToStringCodeName = $"{Code} {ShortName}";
+                return ToStringCodeName;
+            }
+            set
+            {
+                ToStringCodeName = value;
+            }
+        }
     }
 }
