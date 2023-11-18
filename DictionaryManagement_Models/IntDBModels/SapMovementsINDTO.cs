@@ -73,7 +73,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public bool? MesGone { get; set; }
 
         [Display(Name = "Время ухода в архив данных СИР")]
-        public bool? MesGoneTime { get; set; }
+        public DateTime? MesGoneTime { get; set; }
 
         [Display(Name = "Ошибка")]
         public bool? MesError { get; set; }

@@ -1114,5 +1114,113 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
+
+
+        public async Task<string> GenerateExcelMesMovements(string filename, IEnumerable<MesMovementsDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("MesMovements");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время добавления записи (AddTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД пользователя (AddUserId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Имя пользователя (User.UserName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД тэга СИР (MesParamId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код тэга СИР (MesParam.Code)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Имя тэга СИР (MesParam.Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Источник (DataSource.Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Тип (DataType.Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД экземпляра отчёта (ReportGuid)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи в витрине SAP (выход) (SapMovementOutId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Ушло в SAP (выход) (SapMovementsOUT.SapGoneTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Ошибка SAP (выход) (SapMovementsOUT.SapErrorMessage)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи в витрине SAP (вход) (SapMovementINId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Пришло в витрину SAP (вход) (SapMovementsIN.AddTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время значения в витрине SAP (вход) (SapMovementsIN.SapDocumentPostTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Ушло из СИР в MES (MesGoneTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД пред. записи (PreviousRecordId)";
+
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                excelRowNum = 2;
+                foreach (MesMovementsDTO mesMovementsDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.AddTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.AddUserId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.AddUserDTOFK.UserName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.MesParamId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.MesParamDTOFK.Code == null ? "" : mesMovementsDTO.MesParamDTOFK.Code;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.MesParamDTOFK.Name == null ? "" : mesMovementsDTO.MesParamDTOFK.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.DataSourceDTOFK == null ? "" : mesMovementsDTO.DataSourceDTOFK.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.DataTypeDTOFK == null ? "" : mesMovementsDTO.DataTypeDTOFK.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.ReportGuid == null ? "" : mesMovementsDTO.ReportGuid.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementOutId == null ? "" : mesMovementsDTO.SapMovementOutId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementsOUTDTOFK == null ? "" : mesMovementsDTO.SapMovementsOUTDTOFK.SapGoneTime == null ? "" : mesMovementsDTO.SapMovementsOUTDTOFK.SapGoneTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementsOUTDTOFK == null ? "" : mesMovementsDTO.SapMovementsOUTDTOFK.SapErrorMessage == null ? "" : mesMovementsDTO.SapMovementsOUTDTOFK.SapErrorMessage;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementInId == null ? "" : mesMovementsDTO.SapMovementInId.ToString(); 
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementsINDTOFK == null ? "" : mesMovementsDTO.SapMovementsINDTOFK.AddTime == null ? "" : mesMovementsDTO.SapMovementsINDTOFK.AddTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementsINDTOFK == null ? "" : mesMovementsDTO.SapMovementsINDTOFK.SapDocumentPostTime == null ? "" : mesMovementsDTO.SapMovementsINDTOFK.SapDocumentPostTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.MesGoneTime == null ? "" : mesMovementsDTO.MesGoneTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.PreviousRecordId == null ? "" : mesMovementsDTO.PreviousRecordId.ToString();
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
     }
 }

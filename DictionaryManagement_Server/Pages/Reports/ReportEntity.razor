@@ -196,7 +196,7 @@
                 applyRadioGroupValue = 1;
                 ApplyButtonDisabled = false;
 
-                await GetRows();
+                //await GetRows();
 
                 startDate = DateTime.Today.AddDays(-31);
                 endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
@@ -206,7 +206,8 @@
                 IsLoading = true;
                 await LoadStateAsync();
                 StateHasChanged();
-                reportEntityDTOs = await _reportEntityRepository.GetAllByDownloadTimeInterval(startDate, endDate);
+                await GetRows();
+                //reportEntityDTOs = await _reportEntityRepository.GetAllByDownloadTimeInterval(startDate, endDate);
 
                 IsLoading = false;
                 StateHasChanged();

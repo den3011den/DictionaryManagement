@@ -56,7 +56,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         public bool? MesGone { get; set; }
 
-        public bool? MesGoneTime { get; set; }
+        public DateTime? MesGoneTime { get; set; }
 
         public bool? MesError { get; set; }
 

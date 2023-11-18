@@ -189,7 +189,7 @@
                 applyRadioGroupValue = 1;
                 ApplyButtonDisabled = false;
 
-                await GetRows();
+                //await GetRows();
 
                 startDate = DateTime.Today.AddDays(-7);
                 endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
@@ -199,14 +199,15 @@
                 IsLoading = true;
                 await LoadStateAsync();
                 StateHasChanged();
-                sapNdoOUTDTOs = await _sapNdoOUTRepository.GetAllByTimeInterval(startDate, endDate, "VALUETIME");
+                //sapNdoOUTDTOs = await _sapNdoOUTRepository.GetAllByTimeInterval(startDate, endDate, "VALUETIME");
+                await GetRows();
 
                 IsLoading = false;
                 StateHasChanged();
             }
         }
         else
-            _navigationManager.NavigateTo("/reports");
+            _navigationManager.NavigateTo("/SAPshowcase");
     }
 
 
