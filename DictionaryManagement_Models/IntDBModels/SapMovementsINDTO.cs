@@ -12,7 +12,6 @@ namespace DictionaryManagement_Models.IntDBModels
     public class SapMovementsINDTO
     {
 
-
         [Display(Name = "Ид записи")]
         [Required(ErrorMessage = "ИД обязателен")]
         public string ErpId { get; set; }
@@ -36,6 +35,9 @@ namespace DictionaryManagement_Models.IntDBModels
         [Required(ErrorMessage = "Код материала SAP обязателен")]
         public string SapMaterialCode { get; set; }
 
+        [Display(Name = "Материал SAP")]
+        public SapMaterialDTO? SapMaterialDTOFK { get; set; }
+
         [Display(Name = "Код завода-источника SAP")]
         [Required(ErrorMessage = "Код завода-источника SAP обязателен")]
         public string ErpPlantIdSource { get; set; }
@@ -43,6 +45,9 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Код ресурса/склада-источника SAP")]
         [Required(ErrorMessage = "Код ресурса/склада-источника SAP обязателен")]
         public string ErpIdSource { get; set; }
+
+        [Display(Name = "Источник SAP")]
+        public SapEquipmentDTO? SapEquipmentSourceDTOFK { get; set; }
 
         [Display(Name = "Склад-источник SAP")]
         public bool? IsWarehouseSource { get; set; }
@@ -54,6 +59,9 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Код ресурса/склада-приёмника SAP")]
         [Required(ErrorMessage = "Код ресурса/склада-приёмника SAP обязателен")]
         public string ErpIdDest { get; set; }
+
+        [Display(Name = "Приёмник SAP")]
+        public SapEquipmentDTO? SapEquipmentDestDTOFK { get; set; }
 
         [Display(Name = "Склад-приёмник SAP")]
         public bool? IsWarehouseDest { get; set; }
@@ -96,6 +104,10 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Тип движения")]
         public string? MoveType { get; set; }
 
+        [Display(Name = "Ед.изм. SAP")]
+        public SapUnitOfMeasureDTO? SapUnitOfMeasureDTOFK { get; set; }
+
+
         [NotMapped]
         [Display(Name = "Значение")]
         public string ToStringValue
@@ -124,7 +136,6 @@ namespace DictionaryManagement_Models.IntDBModels
                 ToStringMesMovementId = value;
             }
         }
-
     }
 }
 

@@ -60,7 +60,7 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.MesErrorMessage = objectToAddDTO.MesErrorMessage;
             objectToAdd.MesMovementId = objectToAddDTO.MesMovementId;
             objectToAdd.PreviousErpId = objectToAddDTO.PreviousErpId;
-            objectToAdd.MoveType = objectToAddDTO.MoveType;            
+            objectToAdd.MoveType = objectToAddDTO.MoveType;
 
 
             var addedSapMovementsIN = _db.SapMovementsIN.Add(objectToAdd);
@@ -91,24 +91,97 @@ namespace DictionaryManagement_Business.Repository
             if (startTime == null)
                 endTime = DateTime.MaxValue;
 
+            IEnumerable<SapMovementsIN>? draftDbSapMovementsINSelection;
+            IEnumerable<SapMovementsIN>? dbSapMovementsINSelection;
+
             switch (intervalMode.Trim().ToUpper())
             {
                 case "ADDTIME":
-                    var hhh1 = _db.SapMovementsIN
-                        .Include("MesMovementFK")
-                        .Include("PreviousRecordFK")
-                        .Where(u => u.AddTime >= startTime && u.AddTime <= endTime).ToListWithNoLock();
-                    return _mapper.Map<IEnumerable<SapMovementsIN>, IEnumerable<SapMovementsINDTO>>(hhh1);
-
+                    draftDbSapMovementsINSelection = _db.SapMovementsIN
+                            .Include("PreviousRecordFK")
+                            .Include("MesMovementFK")
+                        .Where(u => u.AddTime >= startTime && u.AddTime <= endTime).AsNoTracking().ToListWithNoLock();
+                    break;
                 case "VALUETIME":
-                    var hhh2 = _db.SapMovementsIN
-                        .Include("MesMovementFK")
-                        .Include("PreviousRecordFK")
-                        .Where(u => u.SapDocumentPostTime >= startTime && u.SapDocumentPostTime <= endTime).ToListWithNoLock();
-                    return _mapper.Map<IEnumerable<SapMovementsIN>, IEnumerable<SapMovementsINDTO>>(hhh2);
+                    draftDbSapMovementsINSelection = _db.SapMovementsIN
+                            .Include("PreviousRecordFK")
+                            .Include("MesMovementFK")
+                        .Where(u => u.SapDocumentPostTime >= startTime && u.SapDocumentPostTime <= endTime).AsNoTracking().ToListWithNoLock();
+                    break;
                 default:
                     return null;
             }
+
+            if (draftDbSapMovementsINSelection != null)
+            {
+                dbSapMovementsINSelection = (from draftDbSapMovementsINSelectionAlias in draftDbSapMovementsINSelection
+                                             join SM_prom1 in _db.SapMaterial.AsNoTracking().ToListWithNoLock() on
+                                                 draftDbSapMovementsINSelectionAlias.SapMaterialCode equals SM_prom1.Code
+                                             into SM_prom2
+                                             from SM in SM_prom2.DefaultIfEmpty()
+                                             join SESource_prom1 in _db.SapEquipment.AsNoTracking().ToListWithNoLock() on new
+                                             {
+                                                 ErpPlantIdSource = draftDbSapMovementsINSelectionAlias.ErpPlantIdSource.ToString(),
+                                                 ErpIdSource = draftDbSapMovementsINSelectionAlias.ErpIdSource.ToString()
+                                             }
+                                                 equals new
+                                                 {
+                                                     ErpPlantIdSource = SESource_prom1.ErpPlantId.ToString(),
+                                                     ErpIdSource = SESource_prom1.ErpId.ToString()
+                                                 }
+                                             into SESource_prom2
+                                             from SESource in SESource_prom2.DefaultIfEmpty()
+                                             join SEDest_prom1 in _db.SapEquipment.AsNoTracking().ToListWithNoLock() on new
+                                             {
+                                                 ErpPlantIdSource = draftDbSapMovementsINSelectionAlias.ErpPlantIdDest.ToString(),
+                                                 ErpIdSource = draftDbSapMovementsINSelectionAlias.ErpIdDest.ToString()
+                                             }
+                                              equals new
+                                              {
+                                                  ErpPlantIdSource = SEDest_prom1.ErpPlantId.ToString(),
+                                                  ErpIdSource = SEDest_prom1.ErpId.ToString()
+                                              }
+                                             into SEDest_prom2
+                                             from SEDest in SEDest_prom2.DefaultIfEmpty()
+                                             join SUOM_prom1 in _db.SapUnitOfMeasure.AsNoTracking().ToListWithNoLock() on
+                                                    draftDbSapMovementsINSelectionAlias.SapUnitOfMeasure.Trim().ToUpper() equals SUOM_prom1.ShortName.Trim().ToUpper()
+                                             into SUOM_prom2
+                                             from SUOM in SUOM_prom2.DefaultIfEmpty()
+                                             select
+                                                          new SapMovementsIN
+                                                          {
+                                                              ErpId = draftDbSapMovementsINSelectionAlias.ErpId,
+                                                              AddTime = draftDbSapMovementsINSelectionAlias.AddTime,
+                                                              SapDocumentEnterTime = draftDbSapMovementsINSelectionAlias.SapDocumentEnterTime,
+                                                              SapDocumentPostTime = draftDbSapMovementsINSelectionAlias.SapDocumentPostTime,
+                                                              BatchNo = draftDbSapMovementsINSelectionAlias.BatchNo,
+                                                              SapMaterialCode = draftDbSapMovementsINSelectionAlias.SapMaterialCode,
+                                                              SapMaterialFK = SM,
+                                                              ErpPlantIdSource = draftDbSapMovementsINSelectionAlias.ErpPlantIdSource,
+                                                              ErpIdSource = draftDbSapMovementsINSelectionAlias.ErpIdSource,
+                                                              SapEquipmentSourceFK = SESource,
+                                                              IsWarehouseSource = draftDbSapMovementsINSelectionAlias.IsWarehouseSource,
+                                                              ErpPlantIdDest = draftDbSapMovementsINSelectionAlias.ErpPlantIdDest,
+                                                              ErpIdDest = draftDbSapMovementsINSelectionAlias.ErpIdDest,
+                                                              SapEquipmentDestFK = SEDest,
+                                                              IsWarehouseDest = draftDbSapMovementsINSelectionAlias.IsWarehouseDest,
+                                                              Value = draftDbSapMovementsINSelectionAlias.Value,
+                                                              SapUnitOfMeasure = draftDbSapMovementsINSelectionAlias.SapUnitOfMeasure,
+                                                              IsStorno = draftDbSapMovementsINSelectionAlias.IsStorno,
+                                                              MesError = draftDbSapMovementsINSelectionAlias.MesError,
+                                                              MesErrorMessage = draftDbSapMovementsINSelectionAlias.MesErrorMessage,
+                                                              MesMovementId = draftDbSapMovementsINSelectionAlias.MesMovementId,
+                                                              MesMovementFK = draftDbSapMovementsINSelectionAlias.MesMovementFK,
+                                                              PreviousErpId = draftDbSapMovementsINSelectionAlias.PreviousErpId,
+                                                              PreviousRecordFK = draftDbSapMovementsINSelectionAlias.PreviousRecordFK,
+                                                              MoveType = draftDbSapMovementsINSelectionAlias.MoveType,                                                              
+                                                          }).ToList();
+            }
+            else
+            {
+                dbSapMovementsINSelection = new List<SapMovementsIN>();
+            }
+            return _mapper.Map<IEnumerable<SapMovementsIN>, IEnumerable<SapMovementsINDTO>>(dbSapMovementsINSelection);
 
         }
 

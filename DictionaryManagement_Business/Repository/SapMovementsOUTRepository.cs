@@ -170,7 +170,7 @@ namespace DictionaryManagement_Business.Repository
             {
                 dbSapMovementsOUTSelection = new List<SapMovementsOUT>();
             }             
-            return _mapper.Map<IEnumerable<SapMovementsOUT>, IEnumerable<SapMovementsOUTDTO>>(dbSapMovementsOUTSelection); ;
+            return _mapper.Map<IEnumerable<SapMovementsOUT>, IEnumerable<SapMovementsOUTDTO>>(dbSapMovementsOUTSelection);
         }
 
 

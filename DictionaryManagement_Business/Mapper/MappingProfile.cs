@@ -219,12 +219,17 @@ namespace DictionaryManagement_Business.Mapper
 
             CreateMap<SapMovementsIN, SapMovementsINDTO>()
                 .ForMember(dest => dest.PreviousRecordDTOFK, opt => opt.MapFrom(src => src.PreviousRecordFK))
-                .ForMember(dest => dest.MesMovementDTOFK, opt => opt.MapFrom(src => src.MesMovementFK));
-
+                .ForMember(dest => dest.MesMovementDTOFK, opt => opt.MapFrom(src => src.MesMovementFK))
+                .ForMember(dest => dest.SapMaterialDTOFK, opt => opt.MapFrom(src => src.SapMaterialFK))
+                .ForMember(dest => dest.SapEquipmentSourceDTOFK, opt => opt.MapFrom(src => src.SapEquipmentSourceFK))
+                .ForMember(dest => dest.SapEquipmentDestDTOFK, opt => opt.MapFrom(src => src.SapEquipmentDestFK));
+                
             CreateMap<SapMovementsINDTO, SapMovementsIN>()
                 .ForMember(dest => dest.PreviousRecordFK, opt => opt.MapFrom(src => src.PreviousRecordDTOFK))
-                .ForMember(dest => dest.MesMovementFK, opt => opt.MapFrom(src => src.MesMovementDTOFK));
-
+                .ForMember(dest => dest.MesMovementFK, opt => opt.MapFrom(src => src.MesMovementDTOFK))
+                .ForMember(dest => dest.SapMaterialFK, opt => opt.MapFrom(src => src.SapMaterialDTOFK))
+                .ForMember(dest => dest.SapEquipmentSourceFK, opt => opt.MapFrom(src => src.SapEquipmentSourceDTOFK))
+                .ForMember(dest => dest.SapEquipmentDestFK, opt => opt.MapFrom(src => src.SapEquipmentDestDTOFK));
         }
     }
 }

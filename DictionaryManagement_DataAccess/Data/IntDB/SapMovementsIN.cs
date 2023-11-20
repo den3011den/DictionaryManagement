@@ -30,11 +30,17 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [Required]
         public string SapMaterialCode { get; set; }
 
+        [NotMapped]
+        public SapMaterial? SapMaterialFK { get; set; }
+
         [Required]
         public string ErpPlantIdSource { get; set; }
 
         [Required]
         public string ErpIdSource { get; set; }
+
+        [NotMapped]
+        public SapEquipment? SapEquipmentSourceFK { get; set; }
 
         public bool? IsWarehouseSource { get; set; }
 
@@ -43,6 +49,9 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         [Required]
         public string ErpIdDest { get; set; }
+
+        [NotMapped]
+        public SapEquipment? SapEquipmentDestFK { get; set; }
 
         public bool? IsWarehouseDest { get; set; }
 
@@ -72,5 +81,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         public string? MoveType { get; set; }
 
+        [NotMapped]
+        public SapUnitOfMeasure? SapUnitOfMeasureFK { get; set; }
     }
 }
