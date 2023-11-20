@@ -99,13 +99,13 @@ namespace DictionaryManagement_Business.Repository
                 case "ADDTIME":
                     draftDbSapMovementsINSelection = _db.SapMovementsIN
                             .Include("PreviousRecordFK")
-                            .Include("MesMovementFK")
+                            .Include("MesMovementFK").Include("MesMovementFK.MesParamFK")
                         .Where(u => u.AddTime >= startTime && u.AddTime <= endTime).AsNoTracking().ToListWithNoLock();
                     break;
                 case "VALUETIME":
                     draftDbSapMovementsINSelection = _db.SapMovementsIN
                             .Include("PreviousRecordFK")
-                            .Include("MesMovementFK")
+                            .Include("MesMovementFK").Include("MesMovementFK.MesParamFK")
                         .Where(u => u.SapDocumentPostTime >= startTime && u.SapDocumentPostTime <= endTime).AsNoTracking().ToListWithNoLock();
                     break;
                 default:

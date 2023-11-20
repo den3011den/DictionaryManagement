@@ -422,7 +422,7 @@
         {
             string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
             string filename = "SapMovementsIN_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
-            //await _simpleExcelExportRepository.GenerateExcelSapMovementsIN(filename, (IEnumerable<SapMovementsINDTO>)sapMovementsINDTOGrid.View);
+            await _simpleExcelExportRepository.GenerateExcelSapMovementsIN(filename, (IEnumerable<SapMovementsINDTO>)sapMovementsINDTOGrid.View);
 
             await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
         }

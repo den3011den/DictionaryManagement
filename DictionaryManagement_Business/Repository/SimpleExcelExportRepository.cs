@@ -1373,6 +1373,172 @@ namespace DictionaryManagement_Business.Repository
             return fullfilepath;
         }
 
+        
+        public async Task<string> GenerateExcelSapMovementsIN(string filename, IEnumerable<SapMovementsINDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("SapMovementsIN");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (ErpId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время добавления записи (AddTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время добавления записи (BatchNo)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время ввода док-та в SAP (SapDocumentEnterTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код материала SAP (SapMaterialCode)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД материала SAP в СИР (SapMaterial.Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наим. материала SAP в СИР (SapMaterial.Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код завода источника SAP (ErpPlantIdSource)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код ресурса источника SAP (ErpIdSource)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД источника SAP в СИР (SapEquipment.Id)";
+                excelColNum++;                
+                ws.Cell(excelRowNum, excelColNum).Value = "Наим. источника SAP в СИР (SapEquipment.Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Является складом (IsWarehouseSource)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код завода приёмника SAP (ErpPlantIdDest)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код ресурса приёмника SAP (ErpIdDest)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД приёмника SAP в СИР (SapEquipment.Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наим. приёмника SAP в СИР (SapEquipment.Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Является складом (IsWarehouseDest)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Ед.изм. SAP (SapUnitOfMeasure)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время значения (SapDocumentPostTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Значение (Value)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Сторно (IsStorno)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Ушло в СИР (MesGone)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Когда ушло в СИР (MesGoneTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Ошибка СИР (MesError)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Сообщение ошибки СИР (MesErrorMessage)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Тип движения (MoveType)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи в архиве данных (MesMovementId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД тэга СИР (MesParam.Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код тэга СИР (MesParam.Code)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наим. тэга СИР (MesParam.Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время значения в архиве данных (MesMovements.ValueTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Значение в архиве данных (MesMovements.Value)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД пред. записи (PreviousErpId)";
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                excelRowNum = 2;
+                foreach (SapMovementsINDTO sapMovementsINDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.ErpId;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.AddTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.BatchNo == null ? "" : sapMovementsINDTO.BatchNo;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapDocumentEnterTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapMaterialCode;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapMaterialDTOFK == null ? "" : sapMovementsINDTO.SapMaterialDTOFK.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapMaterialDTOFK == null ? "" : sapMovementsINDTO.SapMaterialDTOFK.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.ErpPlantIdSource;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.ErpIdSource;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapEquipmentSourceDTOFK == null ? "" : sapMovementsINDTO.SapEquipmentSourceDTOFK.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapEquipmentSourceDTOFK == null ? "" : sapMovementsINDTO.SapEquipmentSourceDTOFK.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.IsWarehouseSource == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.ErpPlantIdDest;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.ErpIdDest;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapEquipmentDestDTOFK == null ? "" : sapMovementsINDTO.SapEquipmentDestDTOFK.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapEquipmentDestDTOFK == null ? "" : sapMovementsINDTO.SapEquipmentDestDTOFK.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.IsWarehouseDest == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapUnitOfMeasure;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapDocumentPostTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.Value.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.IsStorno == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesGone == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesGoneTime == null ? "" : sapMovementsINDTO.MesGoneTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesError == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesErrorMessage == null ? "" : sapMovementsINDTO.MesErrorMessage;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MoveType == null ? "" : sapMovementsINDTO.MoveType;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesMovementId == null ? "" : sapMovementsINDTO.MesMovementId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesMovementDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.MesParamDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.MesParamDTOFK.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesMovementDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.MesParamDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.MesParamDTOFK.Code;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesMovementDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.MesParamDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.MesParamDTOFK.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesMovementDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.ValueTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesMovementDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.Value.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.PreviousErpId == null ? "" : sapMovementsINDTO.PreviousErpId;
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
 
     }
 }

@@ -23,6 +23,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<string> GenerateExcelSapNdoOUT(string filename, IEnumerable<SapNdoOUTDTO> data);
         public Task<string> GenerateExcelMesMovements(string filename, IEnumerable<MesMovementsDTO> data);
         public Task<string> GenerateExcelSapMovementsOUT(string filename, IEnumerable<SapMovementsOUTDTO> data);
-        
+        public Task<string> GenerateExcelSapMovementsIN(string filename, IEnumerable<SapMovementsINDTO> data);
+
     }
 }
