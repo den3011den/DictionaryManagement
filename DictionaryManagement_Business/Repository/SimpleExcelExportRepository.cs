@@ -1252,6 +1252,8 @@ namespace DictionaryManagement_Business.Repository
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Наим. тэга СИР (MesParam.Name)";
                 excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наим. тэга СИР (MesParam.Description)";
+                excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Код завода источника SAP (ErpPlantIdSource)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Код ресурса источника SAP (ErpIdSource)";
@@ -1316,6 +1318,8 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.MesParamDTOFK.Name;
                     excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.MesParamDTOFK.Description == null ? "" : sapMovementsOUTDTO.MesParamDTOFK.Description;
+                    excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.ErpPlantIdSource == null ? "" : sapMovementsOUTDTO.ErpPlantIdSource;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.ErpIdSource == null ? "" : sapMovementsOUTDTO.ErpIdSource;
@@ -1356,7 +1360,8 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.MesMovementsDTOFK == null ? "" : sapMovementsOUTDTO.MesMovementsDTOFK.Value.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.PreviousRecordId == null ? "" : sapMovementsOUTDTO.PreviousRecordId.ToString();                    
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.PreviousRecordId == null ? "" : sapMovementsOUTDTO.PreviousRecordId.ToString();
+                    excelRowNum++;
                 }
 
                 for (var j = 1; j <= excelColNum; j++)

@@ -59,13 +59,11 @@
                                AllowVirtualization="true"
                                Style="height:710px">
                 <Columns>
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringId" Title="Ид записи" Width="40px" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringId" Title="Ид записи" Width="35px" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
                         <Template Context="data1">
-                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                <strong>
-                                    @data1.ToStringId
-                                </strong>
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">                                
+                                @data1.ToStringId                                
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
@@ -78,7 +76,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="MesParamDTOFK.ToStringCodeName" Title="Тэг СИР" Width="50px"
+                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="MesParamDTOFK.ToStringCodeName" Title="Тэг СИР (Код + Наименование)" Width="50px"
                                           TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
@@ -188,7 +186,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringMesMovementId" Title="ИД в архиве данных" Width="40px" FilterProperty="ToStringMesMovementId" SortProperty="ToStringMesMovementId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringMesMovementId" Title="ИД в архиве данных" Width="35px" FilterProperty="ToStringMesMovementId" SortProperty="ToStringMesMovementId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.ToStringMesMovementId != null)
                             {
@@ -199,7 +197,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringPreviousRecordId" Title="ИД пред. записи" Width="40px" FilterProperty="ToStringPreviousRecordId" SortProperty="ToStringPreviousRecordId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringPreviousRecordId" Title="ИД пред. записи" Width="35px" FilterProperty="ToStringPreviousRecordId" SortProperty="ToStringPreviousRecordId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.ToStringPreviousRecordId != null)
                             {
