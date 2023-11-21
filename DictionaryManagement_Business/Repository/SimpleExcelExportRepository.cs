@@ -1540,5 +1540,94 @@ namespace DictionaryManagement_Business.Repository
             return fullfilepath;
         }
 
+        
+        public async Task<string> GenerateExcelLogEvent(string filename, IEnumerable<LogEventDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("LogEvent");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Тип (LogEventTypeId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время (EventTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Пользователь (UserId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Стар.значение (OldValue)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Нов.значение (NewValue)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Описание (Description)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Крит. (IsCritical)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Ошибка (IsError)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Предупреждение (IsWarning)";
+                excelColNum++;
+
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                bool firstIteration = true;
+
+                excelRowNum = 2;
+                foreach (LogEventDTO logEventDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Row(excelRowNum).Height = 40;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.LogEventTypeDTOFK.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.EventTime.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.UserDTOFK.UserNameAndLogin;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.OldValue == null ? "" : logEventDTO.OldValue.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.NewValue == null ? "" : logEventDTO.NewValue.ToString();
+                    excelColNum++;
+                    if (firstIteration)
+                    {
+                        ws.Column(excelColNum).Style.Alignment.WrapText = true;
+                        firstIteration = false;
+                        ws.Column(excelColNum).Width = 80;
+                    }
+                    
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.Description;                    
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.IsCritical == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.IsError == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.IsWarning == true ? "Да" : "";
+                    
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
     }
 }

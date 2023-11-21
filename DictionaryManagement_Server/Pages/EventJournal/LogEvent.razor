@@ -23,7 +23,6 @@
             <h4 class="card-title text-primary"><a href="/EventJournal">Журнал событий</a> - <a href="/EventJournal/LogEvent">Журнал событий</a></h4>
         </div>
 
-
         @if (IsLoading != true)
         {
 
@@ -154,10 +153,10 @@
 
     RadzenDataGrid<LogEventDTO> logEventDTOGrid;
 
-    DateTime startDate = DateTime.Today.AddDays(-3);
+    DateTime startDate = DateTime.Today.AddDays(-2);
     DateTime endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
     DateTime maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
-    DateTime minEndDate = DateTime.Today.AddDays(-4);
+    DateTime minEndDate = DateTime.Today.AddDays(-3);
 
     bool excelExportFlag = false;
 
@@ -183,10 +182,10 @@
                 applyRadioGroupValue = 1;
                 ApplyButtonDisabled = false;
 
-                startDate = DateTime.Today.AddDays(-3);
+                startDate = DateTime.Today.AddDays(-2);
                 endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
                 maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
-                minEndDate = DateTime.Today.AddDays(-4);
+                minEndDate = DateTime.Today.AddDays(-3);
 
                 IsLoading = true;
                 await LoadStateAsync();
@@ -241,7 +240,7 @@
     private async Task ChangeStartDate()
     {
         ApplyButtonDisabled = false;
-        maxEndDate = startDate.AddDays(3).AddSeconds(-1);
+        maxEndDate = startDate.AddDays(2).AddSeconds(-1);
         minEndDate = startDate.AddDays(-1);
         if (endDate > maxEndDate)
             endDate = maxEndDate;
@@ -275,7 +274,7 @@
         {
             string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
             string filename = "LogEvent_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
-            //            await _simpleExcelExportRepository.GenerateExcelLogEvent(filename, (IEnumerable<SapMovementsOUTDTO>)logEventDTOGrid.View);
+            await _simpleExcelExportRepository.GenerateExcelLogEvent(filename, (IEnumerable<LogEventDTO>)logEventDTOGrid.View);
 
             await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
         }

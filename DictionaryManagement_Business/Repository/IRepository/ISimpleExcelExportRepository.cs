@@ -1,11 +1,5 @@
-﻿using DictionaryManagement_Common;
+﻿
 using DictionaryManagement_Models.IntDBModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository.IRepository
 {
@@ -24,6 +18,8 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<string> GenerateExcelMesMovements(string filename, IEnumerable<MesMovementsDTO> data);
         public Task<string> GenerateExcelSapMovementsOUT(string filename, IEnumerable<SapMovementsOUTDTO> data);
         public Task<string> GenerateExcelSapMovementsIN(string filename, IEnumerable<SapMovementsINDTO> data);
+        public Task<string> GenerateExcelLogEvent(string filename, IEnumerable<LogEventDTO> data);
+        
 
     }
 }
