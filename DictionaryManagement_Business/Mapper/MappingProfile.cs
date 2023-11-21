@@ -230,6 +230,15 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.SapMaterialFK, opt => opt.MapFrom(src => src.SapMaterialDTOFK))
                 .ForMember(dest => dest.SapEquipmentSourceFK, opt => opt.MapFrom(src => src.SapEquipmentSourceDTOFK))
                 .ForMember(dest => dest.SapEquipmentDestFK, opt => opt.MapFrom(src => src.SapEquipmentDestDTOFK));
+
+            CreateMap<LogEvent, LogEventDTO>()
+                .ForMember(dest => dest.LogEventTypeDTOFK, opt => opt.MapFrom(src => src.LogEventTypeFK))
+                .ForMember(dest => dest.UserDTOFK, opt => opt.MapFrom(src => src.UserFK));
+
+            CreateMap<LogEventDTO, LogEvent>()
+                .ForMember(dest => dest.LogEventTypeFK, opt => opt.MapFrom(src => src.LogEventTypeDTOFK))
+                .ForMember(dest => dest.UserFK, opt => opt.MapFrom(src => src.UserDTOFK));
+
         }
     }
 }

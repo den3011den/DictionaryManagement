@@ -55,6 +55,9 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<SapMovementsIN> SapMovementsIN { get; set; }
         public DbSet<SapMovementsOUT> SapMovementsOUT { get; set; }
 
+        public DbSet<LogEvent> LogEvent { get; set; }
+        
+
 
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
