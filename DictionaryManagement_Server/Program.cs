@@ -83,6 +83,7 @@ builder.Services.AddScoped<ISapNdoOUTRepository, SapNdoOUTRepository>();
 builder.Services.AddScoped<IMesMovementsRepository, MesMovementsRepository>();
 builder.Services.AddScoped<ISapMovementsINRepository, SapMovementsINRepository>();
 builder.Services.AddScoped<ISapMovementsOUTRepository, SapMovementsOUTRepository>();
+builder.Services.AddScoped<ILogEventRepository, LogEventRepository>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
