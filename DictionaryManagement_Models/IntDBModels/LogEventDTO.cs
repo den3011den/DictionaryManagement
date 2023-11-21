@@ -26,9 +26,9 @@ namespace DictionaryManagement_Models.IntDBModels
         public LogEventTypeDTO LogEventTypeDTOFK { get; set; }
 
         [Required(ErrorMessage = "Старое значение")]
-        public string OldValue { get; set; }
+        public string? OldValue { get; set; }
         [Required(ErrorMessage = "Новое значение")]
-        public string NewValue { get; set; }
+        public string? NewValue { get; set; }
 
         [Required]
         public DateTime EventTime { get; set; } = DateTime.Now;

@@ -58,19 +58,19 @@ namespace DictionaryManagement_Models.IntDBModels
             }
         }
 
-        //[NotMapped]
-        //[Display(Name = "Имя и логин")]
-        //public string UserNameAndLogin
-        //{
-        //    get
-        //    {
-        //        return UserName + " " + Login;
-        //    }
-        //    set
-        //    {
-        //        UserNameAndLogin = value;
-        //    }
-        //}
+        [NotMapped]
+        [Display(Name = "Имя и логин")]
+        public string UserNameAndLogin
+        {
+            get
+            {
+                return UserName + " (" + Login + ")";
+            }
+            set
+            {
+                UserNameAndLogin = value;
+            }
+        }
 
     }
 }

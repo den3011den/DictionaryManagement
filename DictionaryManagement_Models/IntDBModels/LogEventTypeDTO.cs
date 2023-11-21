@@ -14,7 +14,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Наименование типа собылия является обязательным для заполнения полем")]
-        [Display(Name = "Наименование типа собылия")]
+        [Display(Name = "Наименование типа события")]
         [MaxLength(100, ErrorMessage = "Наименование типа собылия не может быть больше 100 символов")]
         public string Name { get; set; } = string.Empty;
 

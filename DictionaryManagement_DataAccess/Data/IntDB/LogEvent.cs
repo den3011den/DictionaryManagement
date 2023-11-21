@@ -18,8 +18,8 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [ForeignKey("LogEventTypeId")]
         public LogEventType LogEventTypeFK { get; set; }
         
-        public string OldValue { get; set; }
-        public string NewValue { get; set; }
+        public string? OldValue { get; set; }
+        public string? NewValue { get; set; }
 
         [Required]
         public DateTime EventTime { get; set; } = DateTime.Now;
