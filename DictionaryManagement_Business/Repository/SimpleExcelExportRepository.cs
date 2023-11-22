@@ -14,6 +14,7 @@ using static DictionaryManagement_Common.SD;
 using ClosedXML.Excel;
 using System.Reflection.Metadata.Ecma335;
 using System.IO;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -1191,6 +1192,12 @@ namespace DictionaryManagement_Business.Repository
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "ИД пред. записи (PreviousRecordId)";
 
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Причина корректировки (CorrectionReason.Nmae)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Комментарий корректировки (MesMovementsComment.CorrectionComment)";
+
+
 
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
@@ -1235,6 +1242,22 @@ namespace DictionaryManagement_Business.Repository
                     ws.Cell(excelRowNum, excelColNum).Value = ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.MesGoneTime == null ? "" : mesMovementsDTO.MesGoneTime.ToString();
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.PreviousRecordId == null ? "" : mesMovementsDTO.PreviousRecordId.ToString();
+
+                    string correctionNames = "";
+                    string correctionComments = "";
+                    
+                    foreach(var correctionItem in mesMovementsDTO.MesMovementsCommentListDTO)
+                    {
+                        if (correctionItem.CorrectionReasonDTOFK != null)
+                            correctionNames = correctionNames + correctionItem.CorrectionReasonDTOFK.Name + "\n";
+                        if (!correctionItem.CorrectionComment.IsNullOrEmpty())
+                            correctionComments = correctionComments + correctionItem.CorrectionComment + "\n";
+                    }
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = correctionNames;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = correctionComments;
+
                     excelRowNum++;
                 }
 

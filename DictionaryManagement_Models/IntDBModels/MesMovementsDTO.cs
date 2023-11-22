@@ -86,6 +86,8 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Время ушло из СИРа в MES")]
         public DateTime? MesGoneTime { get; set; }
 
+        [Display(Name = "Комментарии")]
+        public IEnumerable<MesMovementsCommentDTO>? MesMovementsCommentListDTO { get; set; }
 
         [NotMapped]
         [Display(Name = "Ид записи")]

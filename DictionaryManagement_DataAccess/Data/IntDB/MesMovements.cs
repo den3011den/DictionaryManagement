@@ -62,6 +62,8 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public bool? MesGone { get; set; }
 
         public DateTime? MesGoneTime { get; set; }
+        
+        public virtual ICollection<MesMovementsComment>? MesMovementsCommentList { get; set; }
 
     }
 }

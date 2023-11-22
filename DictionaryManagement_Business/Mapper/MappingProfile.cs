@@ -188,7 +188,8 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.DataSourceDTOFK, opt => opt.MapFrom(src => src.DataSourceFK))
                 .ForMember(dest => dest.DataTypeDTOFK, opt => opt.MapFrom(src => src.DataTypeFK))
                 .ForMember(dest => dest.ReportEntityDTOFK, opt => opt.MapFrom(src => src.ReportEntityFK))
-                .ForMember(dest => dest.MesMovementsDTOFK, opt => opt.MapFrom(src => src.MesMovementsFK));
+                .ForMember(dest => dest.MesMovementsDTOFK, opt => opt.MapFrom(src => src.MesMovementsFK))
+                .ForMember(dest => dest.MesMovementsCommentListDTO, opt => opt.MapFrom(src => src.MesMovementsCommentList));
 
             CreateMap<MesMovementsDTO, MesMovements>()
                 .ForMember(dest => dest.AddUserFK, opt => opt.MapFrom(src => src.AddUserDTOFK))
@@ -198,7 +199,8 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.DataSourceFK, opt => opt.MapFrom(src => src.DataSourceDTOFK))
                 .ForMember(dest => dest.DataTypeFK, opt => opt.MapFrom(src => src.DataTypeDTOFK))
                 .ForMember(dest => dest.ReportEntityFK, opt => opt.MapFrom(src => src.ReportEntityDTOFK))
-                .ForMember(dest => dest.MesMovementsFK, opt => opt.MapFrom(src => src.MesMovementsDTOFK));
+                .ForMember(dest => dest.MesMovementsFK, opt => opt.MapFrom(src => src.MesMovementsDTOFK))
+                .ForMember(dest => dest.MesMovementsCommentList, opt => opt.MapFrom(src => src.MesMovementsCommentListDTO));
 
             CreateMap<SapMovementsOUT, SapMovementsOUTDTO>()
                 .ForMember(dest => dest.MesMovementsDTOFK, opt => opt.MapFrom(src => src.MesMovementsFK))

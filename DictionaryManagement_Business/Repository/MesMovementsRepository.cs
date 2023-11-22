@@ -95,6 +95,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("DataTypeFK")
                             .Include("ReportEntityFK")
                             .Include("MesMovementsFK")
+                            .Include("MesMovementsCommentList").Include("MesMovementsCommentList.CorrectionReasonFK")
                         .Where(u => u.AddTime >= startTime && u.AddTime <= endTime).ToListWithNoLock();
                     return _mapper.Map<IEnumerable<MesMovements>, IEnumerable<MesMovementsDTO>>(hhh1);
 
@@ -108,6 +109,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("DataTypeFK")
                             .Include("ReportEntityFK")
                             .Include("MesMovementsFK")
+                            .Include("MesMovementsCommentList").Include("MesMovementsCommentList.CorrectionReasonFK")
                         .Where(u => u.ValueTime >= startTime && u.ValueTime <= endTime).ToListWithNoLock();
                     return _mapper.Map<IEnumerable<MesMovements>, IEnumerable<MesMovementsDTO>>(hhh2);
                 default:

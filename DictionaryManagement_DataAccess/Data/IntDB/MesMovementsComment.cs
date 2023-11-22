@@ -19,7 +19,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [Required]
         public Guid MesMovementsId { get; set; }
         [ForeignKey("MesMovementsId")]
-        public MesMovements MesMovementsFK { get; set; }
+        public virtual MesMovements MesMovementsFK { get; set; }
 
         public int? CorrectionReasonId { get; set; }
         [ForeignKey("CorrectionReasonId")]
