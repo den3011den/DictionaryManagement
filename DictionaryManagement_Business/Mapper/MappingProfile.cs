@@ -239,6 +239,13 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.LogEventTypeFK, opt => opt.MapFrom(src => src.LogEventTypeDTOFK))
                 .ForMember(dest => dest.UserFK, opt => opt.MapFrom(src => src.UserDTOFK));
 
+            CreateMap<MesMovementsComment, MesMovementsCommentDTO>()
+                .ForMember(dest => dest.MesMovementsDTOFK, opt => opt.MapFrom(src => src.MesMovementsFK))
+                .ForMember(dest => dest.CorrectionReasonDTOFK, opt => opt.MapFrom(src => src.CorrectionReasonFK));
+
+            CreateMap<MesMovementsCommentDTO, MesMovementsComment>()
+                .ForMember(dest => dest.MesMovementsFK, opt => opt.MapFrom(src => src.MesMovementsDTOFK))
+                .ForMember(dest => dest.CorrectionReasonFK, opt => opt.MapFrom(src => src.CorrectionReasonDTOFK));
         }
     }
 }

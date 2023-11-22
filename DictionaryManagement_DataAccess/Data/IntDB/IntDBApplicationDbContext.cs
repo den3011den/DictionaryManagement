@@ -56,6 +56,9 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<SapMovementsOUT> SapMovementsOUT { get; set; }
 
         public DbSet<LogEvent> LogEvent { get; set; }
+
+        public DbSet<MesMovementsComment> MesMovementsComment { get; set; }
+
         
 
 
