@@ -404,7 +404,7 @@
                 }
 
 
-                if (ActiveMesParamDTO.MesParamSourceLink != null &&  ActiveMesParamDTO.MesParamSourceLink.Trim().ToUpper() != "NULL")
+                if (ActiveMesParamDTO.MesParamSourceLink != null && ActiveMesParamDTO.MesParamSourceLink.Trim().ToUpper() != "")
                 {
                     var foundByMesParamSourceLink = await _mesParamRepository.GetByMesParamSourceLink(ActiveMesParamDTO.MesParamSourceLink);
                     if (foundByMesParamSourceLink != null)
@@ -417,6 +417,13 @@
                         }
                     }
                 }
+
+                if (ActiveMesParamDTO.MesParamSourceType != null && (ActiveMesParamDTO.MesParamSourceLink == null || ActiveMesParamDTO.MesParamSourceLink.Trim() == ""))
+                {
+                    await _jsRuntime.ToastrError("Выбран \"Источник\", но не введён \"Тэг/ИД источника\"");
+                    return;
+                }
+
 
                 await _mesParamRepository.Create(ActiveMesParamDTO);
 
@@ -468,6 +475,12 @@
                             }
                         }
                     }
+                }
+             
+                if (ActiveMesParamDTO.MesParamSourceType != null && (ActiveMesParamDTO.MesParamSourceLink == null || ActiveMesParamDTO.MesParamSourceLink.Trim() == ""))
+                {                    
+                    await _jsRuntime.ToastrError("Выбран \"Источник\", но не введён \"Тэг/ИД источника\"");
+                    return;
                 }
 
                 if (ActiveMesParamDTO.Name == null)

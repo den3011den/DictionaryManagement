@@ -154,11 +154,23 @@ namespace DictionaryManagement_Business.Repository
                 ws.Cell(excelRowNum, excelColNum).Value = "Наименование производства (MesDepartment.ShortName)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "ИД источника Sap (SapEquipmentIdSource)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код завода-источника Sap (SapEquipment.ErpPlantId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код склада/ресурса-источника Sap (SapEquipment.ErpId)";
+
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Наименование источника Sap (SapEquipment.ErpPlantId + ErpId + Name)";
 
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "ИД приёмника Sap (SapEquipmentIdDest)";
+
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код завода-приёмника Sap (SapEquipment.ErpPlantId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код склада/ресурса-приёмника Sap (SapEquipment.ErpId)";
+
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Наименование приёмника Sap (SapEquipment.ErpPlantId + ErpId + Name)";
 
@@ -232,11 +244,23 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentIdSource == null ? "" : mesParamDTO.SapEquipmentIdSource.ToString();
                     excelColNum++;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentSourceDTOFK == null ? "" : mesParamDTO.SapEquipmentSourceDTOFK.ErpPlantId;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentSourceDTOFK == null ? "" : mesParamDTO.SapEquipmentSourceDTOFK.ErpId;
+                    excelColNum++;
+
                     ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentSourceDTOFK == null ? "" : mesParamDTO.SapEquipmentSourceDTOFK.ErpPlantId + "|" + mesParamDTO.SapEquipmentSourceDTOFK.ErpId + " " + mesParamDTO.SapEquipmentSourceDTOFK.Name;
 
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentIdDest == null ? "" : mesParamDTO.SapEquipmentIdDest.ToString();
                     excelColNum++;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentDestDTOFK == null ? "" : mesParamDTO.SapEquipmentDestDTOFK.ErpPlantId;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentDestDTOFK == null ? "" : mesParamDTO.SapEquipmentDestDTOFK.ErpId;
+                    excelColNum++;
+
                     ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentDestDTOFK == null ? "" : mesParamDTO.SapEquipmentDestDTOFK.ErpPlantId + "|" + mesParamDTO.SapEquipmentDestDTOFK.ErpId + " " + mesParamDTO.SapEquipmentDestDTOFK.Name;
 
                     excelColNum++;

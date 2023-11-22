@@ -6,6 +6,7 @@ using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using DocumentFormat.OpenXml.EMMA;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -125,7 +126,9 @@ namespace DictionaryManagement_Business.Repository
         }
         public async Task<MesParamDTO> GetByMesParamSourceLink(string mesParamSourceLink = "")
         {
-            var objToGet = _db.MesParam
+            if (!mesParamSourceLink.IsNullOrEmpty())
+            { 
+                var objToGet = _db.MesParam
                             .Include("MesParamSourceTypeFK")
                             .Include("MesDepartmentFK")
                             .Include("SapEquipmentSourceFK")
@@ -135,9 +138,11 @@ namespace DictionaryManagement_Business.Repository
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
                             .FirstOrDefaultWithNoLock(u => u.MesParamSourceLink.Trim().ToUpper() == mesParamSourceLink.Trim().ToUpper());
-            if (objToGet != null)
-            {
-                return _mapper.Map<MesParam, MesParamDTO>(objToGet);
+                if (objToGet != null)
+                {
+                    return _mapper.Map<MesParam, MesParamDTO>(objToGet);
+                }
+
             }
             return null;
         }
