@@ -1660,7 +1660,6 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.IsWarning == true ? "Да" : "";
                     
-
                     excelRowNum++;
                 }
 

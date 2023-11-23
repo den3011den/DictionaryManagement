@@ -38,8 +38,14 @@
             <RadzenRow AlignItems="AlignItems.Start">           
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@(args => EditRow(null))" />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel ВСЕХ производств" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
+                <RadzenButton class="mt-2 mb-4" title="@(IsExpandModeOn ? "Свернуть всю иерархию производств" : "Развернуть всю иерархию производств")" Text="@(IsExpandModeOn ? "Свернуть" : "Развернуть")"
+                        Icon="@(IsExpandModeOn ? "unfold_less" : "unfold_more")" Click="@(args => ToggleRowsExpand(!IsExpandModeOn))"
+                        IsBusy=@ExpandInProgressFlag BusyText="Выполняется ..."/>
+                <div class="mt-2 mb-4 col-2" style="white-space:pre-wrap; font-size: 10px; color:powderblue">
+                    <RadzenLabel Text="* фильтр работает только по записям, которые развёрнуты в отображаемом списке" />
+                </div>
             </RadzenRow>
-            <RadzenDataGrid @bind-Settings="@MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" ExpandMode="DataGridExpandMode.Single"
+            <RadzenDataGrid @bind-Settings="@MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" ExpandMode="DataGridExpandMode.Multiple"
                             Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -50,7 +56,9 @@
                             GridLines="DataGridGridLines.Both"                           
                             Style="height:720px">
                 <Columns>
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Title="Наименование" Frozen="true" Width="200px">
+                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Name" Title="Наименование" Frozen="true" Width="200px"
+                                          FilterOperator="FilterOperator.Contains" SortProperty="Name" FilterProperty="Name"
+                                           >
                         <Template Context="data">
                             <div style="white-space:pre-wrap">
                                 <strong>@data.Name</strong>
@@ -122,7 +130,15 @@
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
+    public bool ExpandInProgressFlag { get; set; } = false;
     public bool excelExportFlag { get; set; } = false;
+
+    public bool IsExpandModeOn { get; set; } = false;
+
+
+
+    // считаем что больше уровней производств вряд ли будет
+    public int MaxExpandLevel { get; set; } = 8;
 
     protected override async Task OnInitializedAsync()
     {
@@ -142,9 +158,10 @@
                 IsLoading = true;
                 await LoadStateAsync();
                 StateHasChanged();
-                mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();
-                IsLoading = false;
-                StateHasChanged();
+                mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();                                
+                IsLoading = false;                
+                StateHasChanged();                
+                await ToggleRowsExpand(!IsExpandModeOn);
             }
         }
         else
@@ -183,8 +200,7 @@
     {
         await Task.CompletedTask;
 
-        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesDepartmentGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesDepartmentGridSettings)}')");
-        //var gggg = 2;
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesDepartmentGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesDepartmentGridSettings)}')");        
     }
 
 
@@ -279,6 +295,31 @@
             //    await mesDepartmentDTOGrid.Reload();
             //}
         }
+    }
+
+    async Task ToggleRowsExpand(bool value)
+    {
+        // ExpandInProgressFlag = true;
+        // await Task.Delay(10);
+        // await InvokeAsync(StateHasChanged);
+
+        for (int i = 0; i < MaxExpandLevel; i++)
+        {
+            if (value == true)
+            {
+                await mesDepartmentDTOGrid.ExpandRows(mesDepartmentDTOGrid.PagedView);
+            }
+            else if (value == false)
+            {
+                await mesDepartmentDTOGrid.CollapseRows(mesDepartmentDTOGrid.PagedView);
+            }
+        }
+
+        IsExpandModeOn = value;
+        // ExpandInProgressFlag = false;
+        // await Task.Delay(10);
+        // await InvokeAsync(StateHasChanged);
+
     }
 
     async Task ExcelExport()
