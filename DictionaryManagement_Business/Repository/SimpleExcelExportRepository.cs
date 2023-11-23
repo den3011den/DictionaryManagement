@@ -1633,9 +1633,6 @@ namespace DictionaryManagement_Business.Repository
                 foreach (LogEventDTO logEventDTO in data)
                 {
                     excelColNum = 1;
-
-                    ws.Row(excelRowNum).Height = 40;
-
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.Id.ToString();
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.LogEventTypeDTOFK.Name;
@@ -1664,6 +1661,62 @@ namespace DictionaryManagement_Business.Repository
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.IsWarning == true ? "Да" : "";
                     
 
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
+        public async Task<string> GenerateExcelMesMaterial(string filename, IEnumerable<MesMaterialDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("MesMaterial");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Код (Code)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Сокр. наименование (ShortName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+                excelColNum++;
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                
+                excelRowNum = 2;
+                foreach (MesMaterialDTO mesMaterialDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMaterialDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMaterialDTO.Code;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMaterialDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMaterialDTO.ShortName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMaterialDTO.IsArchive == true ? "Да" : "";
+                    
                     excelRowNum++;
                 }
 
