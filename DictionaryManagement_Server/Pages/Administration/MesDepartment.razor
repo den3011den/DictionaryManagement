@@ -57,8 +57,8 @@
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Id" Title="ИД" Width="60px" FilterOperator="FilterOperator.Contains" />
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="MesCode" Title="Код" Width="100px" FilterOperator="FilterOperator.Contains" />
+                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ToStringId" Title="ИД" Width="60px" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId" FilterProperty="ToStringId" />
+                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ToStringMesCode" Title="Код" Width="100px" FilterOperator="FilterOperator.Contains" SortProperty="ToStringMesCode" FilterProperty="ToStringMesCode" />
                     <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ShortName" Title="Сокр. наименование" FilterOperator="FilterOperator.Contains" Width="200px">
                         <Template Context="data">
                             <div style="white-space:pre-wrap">

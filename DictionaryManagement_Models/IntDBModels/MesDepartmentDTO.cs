@@ -21,12 +21,12 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Код")]
         public int? MesCode { get; set; }
 
-        [Required(ErrorMessage = "Наименование обязателено для заполнения")]
+        [Required(ErrorMessage = "Наименование обязательно для заполнения")]
         [Display(Name = "Наименование")]
         [MaxLength(500, ErrorMessage = "Длина наименования не может быть больше 500 символов")]
         public string Name { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Сокр. Наименование обязателено для заполнения")]
+        [Required(ErrorMessage = "Сокр. Наименование обязательно для заполнения")]
         [Display(Name = "Сокр. наименование")]
         [MaxLength(500, ErrorMessage = "Длина сокр. наименование не может быть больше 500 символов")]
         public string ShortName { get; set; } = string.Empty;
@@ -41,12 +41,42 @@ namespace DictionaryManagement_Models.IntDBModels
         public bool IsArchive { get; set; }
 
         [NotMapped]
-        public string ToStringValue { get; set; } = string.Empty;
-
-        public override string ToString()
+        public string ToStringShortName
         {
-            ToStringValue = $"{ShortName}";
-            return ToStringValue;
+            get
+            {
+                return ShortName;
+            }
+            set
+            {
+                ToStringShortName = value;
+            }
+        }
+
+        [NotMapped]
+        public string ToStringId
+        {
+            get
+            {
+                return Id.ToString();
+            }
+            set
+            {
+                ToStringId = value;
+            }
+        }
+
+        [NotMapped]
+        public string ToStringMesCode
+        {
+            get
+            {
+                return (MesCode == null ? "" : MesCode.ToString());
+            }
+            set
+            {
+                ToStringMesCode = value;
+            }
         }
 
         [NotMapped]

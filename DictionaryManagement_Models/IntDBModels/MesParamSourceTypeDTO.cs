@@ -23,7 +23,17 @@ namespace DictionaryManagement_Models.IntDBModels
         public bool IsArchive { get; set; } = false;
 
         [NotMapped]
-        public string ToStringValue { get; set; } = string.Empty;
+        public string ToStringValue
+        {
+            get
+            {
+                return Name;
+            }
+            set
+            {
+                ToStringValue = value;
+            }
+        }
 
         public override string ToString()
         {

@@ -69,10 +69,10 @@
 
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="ReportEntityDTO" Property="ReportDepartmentDTOFK" Title="Производство" Width="10%" FilterProperty="ReportDepartmentDTOFK.ToStringValue" SortProperty="ReportDepartmentDTOFK.ToStringValue">
+                    <RadzenDataGridColumn TItem="ReportEntityDTO" Property="ReportDepartmentDTOFK" Title="Производство" Width="10%" FilterProperty="ReportDepartmentDTOFK.ToStringShortName" SortProperty="ReportDepartmentDTOFK.ToStringShortName">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                @data1.ReportDepartmentDTOFK
+                                @(data1.ReportDepartmentDTOFK == null ? "" : data1.ReportDepartmentDTOFK.ToStringShortName)
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
@@ -94,7 +94,8 @@
                             </RadzenDataGridColumn>
 
                             <RadzenDataGridColumn TItem="ReportEntityDTO" Property="DownloadUserDTOFK.UserName" Title="Кто" Width="100px"
-                                                  TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                                                  TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
+                                                  FilterProperty="DownloadUserDTOFK.UserName" SortProperty="DownloadUserDTOFK.UserName">
                                 <Template Context="data1">
                                     <div style="white-space:pre-wrap; font-size: 12px">
                                         @data1.DownloadUserDTOFK.UserName
@@ -116,7 +117,8 @@
                             <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadTime" Title="Время" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                             </RadzenDataGridColumn>
 
-                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadUserDTOFK.UserName" Title="Кто" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadUserDTOFK.UserName" Title="Кто" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
+                                                  FilterProperty="data1.UploadUserDTOFK.UserName" SortProperty="data1.UploadUserDTOFK.UserName">
                                 <Template Context="data1">
                                     @if (data1.UploadUserDTOFK != null)
                                     {

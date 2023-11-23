@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,12 +30,11 @@ namespace DictionaryManagement_Models.IntDBModels
         public bool IsArchive { get; set; }
 
 
+
         public override string ToString()
         {
             return $"{ShortName}";
         }
-
-
 
     }
 }

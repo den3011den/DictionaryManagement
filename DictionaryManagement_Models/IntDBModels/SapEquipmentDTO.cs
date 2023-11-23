@@ -37,7 +37,17 @@ namespace DictionaryManagement_Models.IntDBModels
         public bool IsArchive { get; set; }
 
         [NotMapped]
-        public string ToStringValue { get; set; } = string.Empty;
+        public string ToStringValue
+        {
+            get
+            {
+                return $"{ErpPlantId}|{ErpId} {Name}";
+            }
+            set
+            {
+                ToStringValue = value;
+            }
+        }
 
         public override string ToString()
         {
