@@ -1729,5 +1729,56 @@ namespace DictionaryManagement_Business.Repository
             return fullfilepath;
         }
 
+        public async Task<string> GenerateExcelSettings(string filename, IEnumerable<SettingsDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("Settings");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Описание (Description)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Значение (Value)";
+                excelColNum++;
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 2;
+                foreach (SettingsDTO settingsDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = settingsDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = settingsDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = settingsDTO.Description == null ? "" : settingsDTO.Description;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = settingsDTO.Value;
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
     }
 }
