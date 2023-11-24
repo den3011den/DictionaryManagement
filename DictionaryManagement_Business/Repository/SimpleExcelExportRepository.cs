@@ -15,6 +15,7 @@ using ClosedXML.Excel;
 using System.Reflection.Metadata.Ecma335;
 using System.IO;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -1637,7 +1638,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.LogEventTypeDTOFK.Name;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.EventTime.ToString("0:dd.MM.yyyy HH:mm:ss.fff");
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.EventTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.UserDTOFK.UserNameAndLogin;
                     excelColNum++;
@@ -2138,5 +2139,261 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
+
+        public async Task<string> GenerateExcelReportTemplate(string filename, IEnumerable<ReportTemplateDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("ReportTemplate");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время добавления (AddTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД кем добавлен (AddUserId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Кем добавлен (User.UserName + User.Login)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Описание (Description)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД типа шаблона (ReportTemplateTypeId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Тип шаблона (ReportTemplateType.Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД результирующего типа данных (DestDataTypeId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Результирующий тип данных (DataType.Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД производства (DepartmentId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Производство (MesDepartment.ShortName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Имя файла (TemplateFileName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+                excelColNum++;
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 2;
+                foreach (ReportTemplateDTO reportTemplateDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.AddUserId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.AddUserDTOFK == null ? "" : reportTemplateDTO.AddUserDTOFK.UserName + " (" + reportTemplateDTO.AddUserDTOFK.Login + ")";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.Description;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.ReportTemplateTypeId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.ReportTemplateTypeDTOFK == null ? "" : reportTemplateDTO.ReportTemplateTypeDTOFK.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.DestDataTypeId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.DestDataTypeDTOFK == null ? "" : reportTemplateDTO.DestDataTypeDTOFK.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.DepartmentId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.MesDepartmentDTOFK == null ? "" : reportTemplateDTO.MesDepartmentDTOFK.ShortName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.TemplateFileName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.IsArchive == true ? "Да" : "";
+                    excelColNum++;
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+        
+        public async Task<string> GenerateExcelLogEventType(string filename, IEnumerable<LogEventTypeDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("LogEventType");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+                excelColNum++;
+
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 2;
+                foreach (LogEventTypeDTO logEventTypeDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventTypeDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventTypeDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventTypeDTO.IsArchive == true ? "Да" : "";
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
+
+        public async Task<string> GenerateExcelSmena(string filename, IEnumerable<SmenaDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("Smena");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД производства (DepartmentId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Производство (Department.ShortName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время начала (StartTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Продолжительность в часах (HoursDuration)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+                excelColNum++;
+
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 2;
+                foreach (SmenaDTO smenaDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.DepartmentId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.DepartmentDTOFK == null ? "" : smenaDTO.DepartmentDTOFK.ShortName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = (DateTime.MinValue + smenaDTO.StartTime).ToString("HH:mm:ss",CultureInfo.InvariantCulture);
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.HoursDuration.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.IsArchive == true ? "Да" : "";
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+      
+        public async Task<string> GenerateExcelScheduler(string filename, IEnumerable<SchedulerDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("Scheduler");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Модуль (ModuleName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время начала (StartTime)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Время последнего выполнения (LastExecuted)";
+                excelColNum++;
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 2;
+                foreach (SchedulerDTO schedulerDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = schedulerDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = schedulerDTO.ModuleName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = (DateTime.MinValue + schedulerDTO.StartTime).ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = schedulerDTO.LastExecuted == null ? "" : ((DateTime)schedulerDTO.LastExecuted).ToString("dd.MM.yyyy HH:mm:ss.fff");
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
     }
 }

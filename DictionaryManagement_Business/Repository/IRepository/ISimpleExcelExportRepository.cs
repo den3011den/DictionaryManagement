@@ -28,5 +28,10 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<string> GenerateExcelDataType(string filename, IEnumerable<DataTypeDTO> data);
         public Task<string> GenerateExcelDataSource(string filename, IEnumerable<DataSourceDTO> data);
         public Task<string> GenerateExcelReportTemplateType(string filename, IEnumerable<ReportTemplateTypeDTO> data);
+        public Task<string> GenerateExcelReportTemplate(string filename, IEnumerable<ReportTemplateDTO> data);
+        public Task<string> GenerateExcelLogEventType(string filename, IEnumerable<LogEventTypeDTO> data);
+        public Task<string> GenerateExcelSmena(string filename, IEnumerable<SmenaDTO> data);
+        public Task<string> GenerateExcelScheduler(string filename, IEnumerable<SchedulerDTO> data);
+
     }
 }
