@@ -48,18 +48,6 @@
                     <RadzenDataGridColumn TItem="SmenaDTO" Property="Name" Title="Наименование" Width="100px">
                     </RadzenDataGridColumn>
 
-@*                     <RadzenDataGridColumn TItem="SmenaDTO" Property="DepartmentDTOFK.ShortName" Title="Производство" Width="100px" FilterProperty="DepartmentDTOFK.ShortName" SortProperty="DepartmentDTOFK.ShortName">
-                        <Template Context="data1">
-                            <RadzenCard Style="white-space:pre-wrap">
-                                <RadzenText TextStyle="TextStyle.Body2">
-                                    <strong>
-                                        @data1.DepartmentDTOFK.ShortName
-                                    </strong>
-                                </RadzenText>
-                            </RadzenCard>
-                        </Template>
-                    </RadzenDataGridColumn> *@
-
                     <RadzenDataGridColumn TItem="SmenaDTO" Property="DepartmentDTOFK.ShortName" Title="Производство" Width="100px" FilterProperty="DepartmentDTOFK.ShortName" SortProperty="DepartmentDTOFK.ShortName">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">

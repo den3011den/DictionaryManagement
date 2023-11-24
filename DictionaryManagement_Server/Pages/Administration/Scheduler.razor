@@ -207,7 +207,7 @@
                 }
             }
 
-            await _schedulerRepository.Delete(schedulerDTO.Id);
+            await _schedulerRepository.Delete(schedulerDTO.Id); 
             schedulerDTOs = await _schedulerRepository.GetAll();
             schedulerDTOGrid.Reload();
 
