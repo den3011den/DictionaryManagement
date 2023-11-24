@@ -331,13 +331,29 @@
         excelExportFlag = true;
         await Task.Delay(200);
         await InvokeAsync(StateHasChanged);
-        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
-        {
-            string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
-            string filename = "MesNdoStocks_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
-            await _simpleExcelExportRepository.GenerateExcelMesNdoStocks(filename, (IEnumerable<MesNdoStocksDTO>)mesNdoStocksDTOGrid.View);
 
-            await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
+        int viewCount = mesNdoStocksDTOGrid.View.Count();
+
+        // запас 100 строк на заголовки например
+        if (viewCount > (SD.MaxAllowedExcelRows - 100))
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "warning", "В выборке " + viewCount.ToString()
+                + " записей, что близко или превышает максимально доступное для Excel количество записей в "
+                + SD.MaxAllowedExcelRows.ToString() + " строк." +
+                "\n\n\n Установите фильтры или уменьшите интервал дат, чтобы количество выгружаемых строк не превышало этот предел.");
+        }
+        else
+        {
+
+
+            if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+            {
+                string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
+                string filename = "MesNdoStocks_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
+                await _simpleExcelExportRepository.GenerateExcelMesNdoStocks(filename, (IEnumerable<MesNdoStocksDTO>)mesNdoStocksDTOGrid.View);
+
+                await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
+            }
         }
         excelExportFlag = false;
         await Task.Delay(200);

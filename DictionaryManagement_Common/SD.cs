@@ -46,6 +46,8 @@ namespace DictionaryManagement_Common
         public static string? AppFactoryMode = "КOC";
         public static string AdminRoleName = "Администратор";
         public static string SyncUserADGroupsIntervalInMinutesSettingName = "SyncUserADGroupsIntervalInMinutes";
+        
+        public static int MaxAllowedExcelRows = 1048576;
 
         public enum EditMode
         {
