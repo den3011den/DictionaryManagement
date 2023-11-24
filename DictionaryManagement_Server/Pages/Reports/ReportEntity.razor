@@ -48,14 +48,14 @@
 
 
             <RadzenDataGridApp @bind-Settings="@ReportEntityGridSettings" @ref="reportEntityDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@reportEntityDTOs" TItem="ReportEntityDTO"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"                            
-                            FilterMode="FilterMode.Advanced"
-                            Density=Density.Compact                            
-                            ShowPagingSummary="true"
-                            EmptyText="Нет записей для отображения"
-                            AllowVirtualization="true"
-                            Style="height:720px">
+                               Data="@reportEntityDTOs" TItem="ReportEntityDTO"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                               FilterMode="FilterMode.Advanced"
+                               Density=Density.Compact
+                               ShowPagingSummary="true"
+                               EmptyText="Нет записей для отображения"
+                               AllowVirtualization="true"
+                               Style="height:720px">
                 <Columns>
                     <RadzenDataGridColumn TItem="ReportEntityDTO" Property="ToStringId" Title="Ид экземпляра отчёта" Width="9%" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
@@ -123,7 +123,7 @@
                                     @if (data1.UploadUserDTOFK != null)
                                     {
                                         <div style="white-space:pre-wrap; font-size: 12px">
-                                            @data1.UploadUserDTOFK.UserName
+                                            @(data1.UploadUserDTOFK == null ? "" : data1.UploadUserDTOFK.UserName)
                                         </div>
                                     }
                                 </Template>
@@ -167,12 +167,11 @@
 
     IEnumerable<ReportEntityDTO>? reportEntityDTOs;
 
-    RadzenDataGrid<ReportEntityDTO> reportEntityDTOGrid;
-
-    DateTime startDate = DateTime.Today.AddDays(-31);
+    RadzenDataGrid<ReportEntityDTO> reportEntityDTOGrid;    
+    DateTime startDate = DateTime.Today.AddMonths(-1);
     DateTime endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
     DateTime maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
-    DateTime minEndDate = DateTime.Today.AddDays(-32);
+    DateTime minEndDate = DateTime.Today.AddMonths(-1).AddDays(-1);
 
     bool excelExportFlag = false;
 
@@ -200,10 +199,10 @@
 
                 //await GetRows();
 
-                startDate = DateTime.Today.AddDays(-31);
+                startDate = DateTime.Today.AddMonths(-1);
                 endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
                 maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
-                minEndDate = DateTime.Today.AddDays(-32);
+                minEndDate = DateTime.Today.AddMonths(-1).AddDays(-1);
 
                 IsLoading = true;
                 await LoadStateAsync();
@@ -276,7 +275,7 @@
     private async Task ChangeStartDate()
     {
         ApplyButtonDisabled = false;
-        maxEndDate = startDate.AddDays(31).AddSeconds(-1);
+        maxEndDate = startDate.AddMonths(1).AddSeconds(-1);
         minEndDate = startDate.AddDays(-1);
         if (endDate > maxEndDate)
             endDate = maxEndDate;
@@ -331,14 +330,14 @@
         }
     }
     async Task ExcelExport()
-    {        
+    {
         excelExportFlag = true;
         await Task.Delay(200);
         await InvokeAsync(StateHasChanged);
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
-        {            
+        {
             string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
-            string filename = "ReportEntity_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";            
+            string filename = "ReportEntity_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
             await _simpleExcelExportRepository.GenerateExcelReportEntity(filename, (IEnumerable<ReportEntityDTO>)reportEntityDTOGrid.View);
 
             await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");

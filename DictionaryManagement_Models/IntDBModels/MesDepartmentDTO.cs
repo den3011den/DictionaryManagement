@@ -40,6 +40,15 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 
+        //[NotMapped]
+        //public string ToStringValue { get; set; } = string.Empty;
+
+        //public override string ToString()
+        //{
+        //    ToStringValue = $"{ShortName}";
+        //    return ToStringValue;
+        //}
+
         [NotMapped]
         public string ToStringShortName
         {

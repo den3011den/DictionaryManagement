@@ -21,7 +21,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Логин")]
         public string Login { get; set; }
 
-        [Required(ErrorMessage = "ФИО обязателено для заполнения")]
+        [Required(ErrorMessage = "ФИО обязательно для заполнения")]
         [StringLength(250, MinimumLength = 3, ErrorMessage = "ФИО может быть от 3 до 250 символов")]
         [Display(Name = "ФИО")]
         public string? UserName { get; set; }

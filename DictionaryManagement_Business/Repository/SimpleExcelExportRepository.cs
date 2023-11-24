@@ -82,9 +82,9 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportTemplateDTOFK.ReportTemplateTypeDTOFK.Name.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportTimeStart.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportTimeStart == null ? "" : ((DateTime)reportEntity.ReportTimeStart).ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportTimeEnd.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportTimeEnd == null ? "" : ((DateTime)reportEntity.ReportTimeEnd).ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportDepartmentId.ToString();
                     excelColNum++;
@@ -94,11 +94,11 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportTemplateDTOFK.MesDepartmentDTOFK.ShortName.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.DownloadTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.DownloadTime == null ? "" : ((DateTime)reportEntity.DownloadTime).ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.DownloadUserDTOFK == null ? "" : reportEntity.DownloadUserDTOFK.UserName.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.UploadTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.UploadTime == null ? "" : ((DateTime)reportEntity.UploadTime).ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.UploadUserDTOFK == null ? "" : reportEntity.UploadUserDTOFK.UserName.ToString();
 
@@ -473,7 +473,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = userDTO.IsArchive == true ? "Да" : "";
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = userDTO.SyncWithADGroupsLastTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = userDTO.SyncWithADGroupsLastTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
 
                     excelRowNum++;
                 }
@@ -737,7 +737,7 @@ namespace DictionaryManagement_Business.Repository
                             wsUserToRoleColNum++;
                             wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.IsSyncWithAD == true ? "Да" : "";
                             wsUserToRoleColNum++;
-                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.SyncWithADGroupsLastTime.ToString();
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.SyncWithADGroupsLastTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                             wsUserToRoleColNum++;
                             wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.IsArchive == true ? "Да" : "";
 
@@ -1034,7 +1034,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.MesParamDTOFK.Name == null ? "" : mesNdoStocksDTO.MesParamDTOFK.Name;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.AddTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.AddUserId.ToString();
                     excelColNum++;
@@ -1042,7 +1042,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.AddUserDTOFK.UserName;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.ValueTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.ValueTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.Value.ToString();
                     excelColNum++;
@@ -1052,17 +1052,17 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOutId == null ? "" : mesNdoStocksDTO.SapNdoOutId.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : mesNdoStocksDTO.SapNdoOUTDTOFK.AddTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : mesNdoStocksDTO.SapNdoOUTDTOFK.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : mesNdoStocksDTO.SapNdoOUTDTOFK.TagName;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : mesNdoStocksDTO.SapNdoOUTDTOFK.ValueTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : mesNdoStocksDTO.SapNdoOUTDTOFK.ValueTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : mesNdoStocksDTO.SapNdoOUTDTOFK.Value.ToString();
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : (mesNdoStocksDTO.SapNdoOUTDTOFK.SapGone == true ? "Да" : "");
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : (mesNdoStocksDTO.SapNdoOUTDTOFK.SapGoneTime == null ? "" : mesNdoStocksDTO.SapNdoOUTDTOFK.SapGoneTime.ToString());
+                    ws.Cell(excelRowNum, excelColNum).Value = mesNdoStocksDTO.SapNdoOUTDTOFK == null ? "" : (mesNdoStocksDTO.SapNdoOUTDTOFK.SapGoneTime == null ? "" : ((DateTime)mesNdoStocksDTO.SapNdoOUTDTOFK.SapGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff"));
 
                     excelRowNum++;
                 }
@@ -1118,15 +1118,15 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.TagName;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.AddTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.ValueTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.ValueTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.Value.ToString();
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.SapGone == true ? "Да" : "";
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.SapGoneTime == null ? "" : sapNdoOUTDTO.SapGoneTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = sapNdoOUTDTO.SapGoneTime == null ? "" : ((DateTime)sapNdoOUTDTO.SapGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff");
 
                     excelRowNum++;
                 }
@@ -1209,7 +1209,7 @@ namespace DictionaryManagement_Business.Repository
 
                     ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.Id.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.AddTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.AddUserId.ToString();
                     excelColNum++;
@@ -1235,11 +1235,11 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementInId == null ? "" : mesMovementsDTO.SapMovementInId.ToString(); 
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementsINDTOFK == null ? "" : mesMovementsDTO.SapMovementsINDTOFK.AddTime == null ? "" : mesMovementsDTO.SapMovementsINDTOFK.AddTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementsINDTOFK == null ? "" : mesMovementsDTO.SapMovementsINDTOFK.AddTime == null ? "" : mesMovementsDTO.SapMovementsINDTOFK.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementsINDTOFK == null ? "" : mesMovementsDTO.SapMovementsINDTOFK.SapDocumentPostTime == null ? "" : mesMovementsDTO.SapMovementsINDTOFK.SapDocumentPostTime.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.MesGoneTime == null ? "" : mesMovementsDTO.MesGoneTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.MesGoneTime == null ? "" : ((DateTime)mesMovementsDTO.MesGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.PreviousRecordId == null ? "" : mesMovementsDTO.PreviousRecordId.ToString();
 
@@ -1355,7 +1355,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.BatchNo == null ? "" : sapMovementsOUTDTO.BatchNo;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.AddTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.SapMaterialCode;
                     excelColNum++;
@@ -1383,7 +1383,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.IsWarehouseDest == true ? "Да" : "";
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.ValueTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.ValueTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.Value.ToString();
                     excelColNum++;
@@ -1395,7 +1395,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.SapGone == true ? "Да" : "";
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.SapGoneTime == null ? "" : sapMovementsOUTDTO.SapGoneTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.SapGoneTime == null ? "" : ((DateTime)sapMovementsOUTDTO.SapGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.SapError == true ? "Да" : "";
                     excelColNum++;
@@ -1403,7 +1403,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.MesMovementId == null ? "" : sapMovementsOUTDTO.MesMovementId.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.MesMovementsDTOFK == null ? "" : sapMovementsOUTDTO.MesMovementsDTOFK.ValueTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.MesMovementsDTOFK == null ? "" : sapMovementsOUTDTO.MesMovementsDTOFK.ValueTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsOUTDTO.MesMovementsDTOFK == null ? "" : sapMovementsOUTDTO.MesMovementsDTOFK.Value.ToString();
                     excelColNum++;
@@ -1511,11 +1511,11 @@ namespace DictionaryManagement_Business.Repository
 
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.ErpId;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.AddTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.BatchNo == null ? "" : sapMovementsINDTO.BatchNo;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapDocumentEnterTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapDocumentEnterTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapMaterialCode;
                     excelColNum++;
@@ -1545,7 +1545,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapUnitOfMeasure;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapDocumentPostTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.SapDocumentPostTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.Value.ToString();
                     excelColNum++;
@@ -1553,7 +1553,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesGone == true ? "Да" : "";
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesGoneTime == null ? "" : sapMovementsINDTO.MesGoneTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesGoneTime == null ? "" : ((DateTime)sapMovementsINDTO.MesGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesError == true ? "Да" : "";
                     excelColNum++;
@@ -1569,7 +1569,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesMovementDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.MesParamDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.MesParamDTOFK.Name;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesMovementDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.ValueTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesMovementDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.ValueTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = sapMovementsINDTO.MesMovementDTOFK == null ? "" : sapMovementsINDTO.MesMovementDTOFK.Value.ToString();
                     excelColNum++;
@@ -1637,7 +1637,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.LogEventTypeDTOFK.Name;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.EventTime.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.EventTime.ToString("0:dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.UserDTOFK.UserNameAndLogin;
                     excelColNum++;
