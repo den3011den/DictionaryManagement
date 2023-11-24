@@ -189,7 +189,7 @@
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapUnitOfMeasure" Title="Ед.изм.SAP" Width="30px" TextAlign="TextAlign.Center"
-                                          FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
+                                          FilterProperty="SapUnitOfMeasure" FilterOperator="FilterOperator.Contains" SortProperty="SapUnitOfMeasure">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.SapUnitOfMeasure
@@ -233,20 +233,26 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="PreviousErpId" Title="ИД пред. записи" Width="35px" FilterProperty="ToStringPreviousRecordId" SortProperty="ToStringPreviousRecordId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="PreviousErpId" Title="ИД пред. записи" Width="35px" FilterProperty="PreviousErpId" SortProperty="PreviousErpId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
-                            <div style="white-space:pre-wrap; font-size: 12px">
-                                @data1.PreviousErpId
-                            </div>
+                            @if (data1.PreviousErpId != null)
+                            {
+                                <div style="white-space:pre-wrap; font-size: 12px">
+                                    @data1.PreviousErpId
+                                </div>
+                            }
                         </Template>
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MoveType" Title="Тип" Width="30px" TextAlign="TextAlign.Center"
-                                          FilterProperty="MoveType" FilterOperator="FilterOperator.Contains" SortProperty="Id">
+                                          FilterProperty="MoveType" FilterOperator="FilterOperator.Contains" SortProperty="MoveType">
                         <Template Context="data1">
-                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                @data1.MoveType
-                            </div>
+                            @if (data1.MoveType != null)
+                            {
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                    @data1.MoveType
+                                </div>
+                            }
                         </Template>
                     </RadzenDataGridColumn>
 

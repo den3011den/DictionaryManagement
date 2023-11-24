@@ -41,7 +41,7 @@ namespace DictionaryManagement_Models.IntDBModels
         {
             get
             {
-                return $"{ErpPlantId}|{ErpId} {Name}";
+                return ErpPlantId + "|" + ErpId + " " + Name;
             }
             set
             {
@@ -50,9 +50,8 @@ namespace DictionaryManagement_Models.IntDBModels
         }
 
         public override string ToString()
-        {
-            ToStringValue = $"{ErpPlantId}|{ErpId} {Name}";
-            return ToStringValue;
+        {            
+            return ErpPlantId + "|" + ErpId + " " + Name; ;
         }
 
         [NotMapped]
@@ -61,7 +60,7 @@ namespace DictionaryManagement_Models.IntDBModels
             get
             {
                 
-                return $"{ErpPlantId}|{ErpId} {Name}";
+                return ErpPlantId + "|" + ErpId + " " + Name;
             }
             set
             {

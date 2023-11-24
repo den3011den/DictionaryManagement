@@ -117,13 +117,12 @@
                             <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadTime" Title="Время" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                             </RadzenDataGridColumn>
 
-                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadUserDTOFK.UserName" Title="Кто" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
-                                                  FilterProperty="data1.UploadUserDTOFK.UserName" SortProperty="data1.UploadUserDTOFK.UserName">
+                            <RadzenDataGridColumn TItem="ReportEntityDTO" Property="UploadUserDTOFK.UserName" Title="Кто" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                                 <Template Context="data1">
                                     @if (data1.UploadUserDTOFK != null)
                                     {
                                         <div style="white-space:pre-wrap; font-size: 12px">
-                                            @(data1.UploadUserDTOFK == null ? "" : data1.UploadUserDTOFK.UserName)
+                                            @data1.UploadUserDTOFK.UserName
                                         </div>
                                     }
                                 </Template>
