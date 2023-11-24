@@ -8,6 +8,7 @@
 
 @inject IJSRuntime _jsRuntime
 @inject ISapUnitOfMeasureRepository _sapUnitOfMeasureRepository
+@inject ISimpleExcelExportRepository _simpleExcelExportRepository
 
 
 @if (IsAdmin == true)
@@ -24,7 +25,11 @@
         @if (IsLoading != true)
         {
 
-            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую единицу измерения SAP" Click="@InsertRow" Disabled=@(sapUnitOfMeasureDTOToInsert != null || sapUnitOfMeasureDTOToUpdate != null) />
+            <RadzenRow AlignItems="AlignItems.Start">
+                <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую единицу измерения SAP" Click="@InsertRow" Disabled=@(sapUnitOfMeasureDTOToInsert != null || sapUnitOfMeasureDTOToUpdate != null) />
+                <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
+            </RadzenRow>
+
             <RadzenDataGrid @ref="sapUnitOfMeasureDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@sapUnitOfMeasureDTOs" TItem="SapUnitOfMeasureDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -113,6 +118,8 @@
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
+
+    public bool excelExportFlag { get; set; } = false;
 
     void Reset()
     {
@@ -330,5 +337,25 @@
             await OnAfterRenderAsync(true);
         }
     }
+
+
+    async Task ExcelExport()
+    {
+        excelExportFlag = true;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
+            string filename = "SapUnitOfMeasure_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
+            await _simpleExcelExportRepository.GenerateExcelSapUnitOfMeasure(filename, (IEnumerable<SapUnitOfMeasureDTO>)sapUnitOfMeasureDTOGrid.View);
+            await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
+        }
+        excelExportFlag = false;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+    }
+
+
 }
 

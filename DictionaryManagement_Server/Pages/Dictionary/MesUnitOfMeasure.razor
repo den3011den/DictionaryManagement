@@ -8,6 +8,7 @@
 
 @inject IJSRuntime _jsRuntime
 @inject IMesUnitOfMeasureRepository _mesUnitOfMeasureRepository
+@inject ISimpleExcelExportRepository _simpleExcelExportRepository
 
 <_Dialogs @ref="_dialogs"></_Dialogs>
 
@@ -19,16 +20,19 @@
 
     @if (IsAdmin == true && IsLoading != true)
     {
+        <RadzenRow AlignItems="AlignItems.Start">
+            <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую единицу измерения SAP" Click="@InsertRow" Disabled=@(mesUnitOfMeasureDTOToInsert != null || mesUnitOfMeasureDTOToUpdate != null) />
+            <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
+        </RadzenRow>
 
-        <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую единицу измерения SAP" Click="@InsertRow" Disabled=@(mesUnitOfMeasureDTOToInsert != null || mesUnitOfMeasureDTOToUpdate != null) />
         <RadzenDataGrid @ref="mesUnitOfMeasureDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                         Data="@mesUnitOfMeasureDTOs" TItem="MesUnitOfMeasureDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                         FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                        EmptyText="Нет записей для отображения"            
+                        EmptyText="Нет записей для отображения"
                         AllowColumnResize="false"
                         FilterMode="FilterMode.Simple"
                         GridLines="DataGridGridLines.Both"
-                        Style="height:720px">            
+                        Style="height:720px">
             <Columns>
                 <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Id" Title="Ид записи" Width="120px" />
                 <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Name" Title="Наименование" Width="270px">
@@ -108,6 +112,7 @@
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
+    public bool excelExportFlag { get; set; } = false;
 
     void Reset()
     {
@@ -333,6 +338,24 @@
 
         }
 
+    }
+
+
+    async Task ExcelExport()
+    {
+        excelExportFlag = true;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
+            string filename = "MesUnitOfMeasure_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
+            await _simpleExcelExportRepository.GenerateExcelMesUnitOfMeasure(filename, (IEnumerable<MesUnitOfMeasureDTO>)mesUnitOfMeasureDTOGrid.View);
+            await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
+        }
+        excelExportFlag = false;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
     }
 }
 

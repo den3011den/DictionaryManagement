@@ -21,6 +21,10 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<string> GenerateExcelLogEvent(string filename, IEnumerable<LogEventDTO> data);
         public Task<string> GenerateExcelMesMaterial(string filename, IEnumerable<MesMaterialDTO> data);
         public Task<string> GenerateExcelSettings(string filename, IEnumerable<SettingsDTO> data);
+        public Task<string> GenerateExcelSapUnitOfMeasure(string filename, IEnumerable<SapUnitOfMeasureDTO> data);
+        public Task<string> GenerateExcelMesUnitOfMeasure(string filename, IEnumerable<MesUnitOfMeasureDTO> data);
+
+        public Task<string> GenerateExcelCorrectionReason(string filename, IEnumerable<CorrectionReasonDTO> data);
 
     }
 }

@@ -1779,5 +1779,159 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
+        
+        public async Task<string> GenerateExcelSapUnitOfMeasure(string filename, IEnumerable<SapUnitOfMeasureDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("SapUnitOfMeasureDTO");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Сокр.наименование (ShortName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+                excelColNum++;
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 2;
+                foreach (SapUnitOfMeasureDTO sapUnitOfMeasureDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = sapUnitOfMeasureDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapUnitOfMeasureDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapUnitOfMeasureDTO.ShortName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = sapUnitOfMeasureDTO.IsArchive == true ? "Да" : "";
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
+
+        public async Task<string> GenerateExcelMesUnitOfMeasure(string filename, IEnumerable<MesUnitOfMeasureDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("MesUnitOfMeasureDTO");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Сокр.наименование (ShortName)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+                excelColNum++;
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 2;
+                foreach (MesUnitOfMeasureDTO mesUnitOfMeasureDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = mesUnitOfMeasureDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesUnitOfMeasureDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesUnitOfMeasureDTO.ShortName;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesUnitOfMeasureDTO.IsArchive == true ? "Да" : "";
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
+        public async Task<string> GenerateExcelCorrectionReason(string filename, IEnumerable<CorrectionReasonDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("CorrectionReasonDTO");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+                excelColNum++;
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 2;
+                foreach (CorrectionReasonDTO correctionReasonDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = correctionReasonDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = correctionReasonDTO.Name;                    
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = correctionReasonDTO.IsArchive == true ? "Да" : "";
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
     }
 }
