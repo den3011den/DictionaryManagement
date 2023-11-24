@@ -1789,7 +1789,7 @@ namespace DictionaryManagement_Business.Repository
             using var wbook = new XLWorkbook();
             {
 
-                var ws = wbook.AddWorksheet("SapUnitOfMeasureDTO");
+                var ws = wbook.AddWorksheet("SapUnitOfMeasure");
 
                 int excelRowNum = 1;
                 int excelColNum = 1;
@@ -1842,7 +1842,7 @@ namespace DictionaryManagement_Business.Repository
             using var wbook = new XLWorkbook();
             {
 
-                var ws = wbook.AddWorksheet("MesUnitOfMeasureDTO");
+                var ws = wbook.AddWorksheet("MesUnitOfMeasure");
 
                 int excelRowNum = 1;
                 int excelColNum = 1;
@@ -1894,7 +1894,7 @@ namespace DictionaryManagement_Business.Repository
             using var wbook = new XLWorkbook();
             {
 
-                var ws = wbook.AddWorksheet("CorrectionReasonDTO");
+                var ws = wbook.AddWorksheet("CorrectionReason");
 
                 int excelRowNum = 1;
                 int excelColNum = 1;
@@ -1932,6 +1932,211 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
+        
+        public async Task<string> GenerateExcelMesParamSourceType(string filename, IEnumerable<MesParamSourceTypeDTO> data)
+        {
 
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("MesParamSourceType");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+                excelColNum++;
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 2;
+                foreach (MesParamSourceTypeDTO mesParamSourceTypeDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamSourceTypeDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamSourceTypeDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamSourceTypeDTO.IsArchive == true ? "Да" : "";
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+
+        public async Task<string> GenerateExcelDataType(string filename, IEnumerable<DataTypeDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("DataType");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Приоритет (выше значение - выше приоритет) (Priority)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Является типом результирующих данных авторасчётов (IsAutoCalcDestDataType)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+                excelColNum++;
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 2;
+                foreach (DataTypeDTO dataTypeDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = dataTypeDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = dataTypeDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = dataTypeDTO.Priority == null ? "" : dataTypeDTO.Priority.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = dataTypeDTO.IsAutoCalcDestDataType == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = dataTypeDTO.IsArchive == true ? "Да" : "";
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+        
+
+        public async Task<string> GenerateExcelDataSource(string filename, IEnumerable<DataSourceDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("DataSource");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+                excelColNum++;
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 2;
+                foreach (DataSourceDTO dataSourceDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = dataSourceDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = dataSourceDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = dataSourceDTO.IsArchive == true ? "Да" : "";
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
+        
+        public async Task<string> GenerateExcelReportTemplateType(string filename, IEnumerable<ReportTemplateTypeDTO> data)
+        {
+
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string fullfilepath = System.IO.Path.Combine(pathVar, filename);
+
+            using var wbook = new XLWorkbook();
+            {
+
+                var ws = wbook.AddWorksheet("ReportTemplateType");
+
+                int excelRowNum = 1;
+                int excelColNum = 1;
+
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД записи (Id)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Требует авторасчёта (NeedAutoCalc)";
+                excelColNum++;
+
+
+                ws.Row(excelRowNum).Style.Font.SetBold(true);
+                ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+
+                excelRowNum = 2;
+                foreach (ReportTemplateTypeDTO reportTemplateTypeDTO in data)
+                {
+                    excelColNum = 1;
+
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateTypeDTO.Id.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateTypeDTO.Name;
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateTypeDTO.IsArchive == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateTypeDTO.NeedAutoCalc == true ? "Да" : "";
+
+                    excelRowNum++;
+                }
+
+                for (var j = 1; j <= excelColNum; j++)
+                    ws.Column(j).AdjustToContents();
+                wbook.SaveAs(fullfilepath);
+                if (wbook != null)
+                    wbook.Dispose();
+            }
+            return fullfilepath;
+        }
     }
 }
