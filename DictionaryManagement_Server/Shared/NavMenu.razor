@@ -1,27 +1,39 @@
 ﻿
 
-<div class="top-row ps-3 navbar navbar-dark">
+@* <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">1 - Dictionary Management</a>
+        <span class="oi oi-monitor" style="color:white;" aria-hidden="true"></span>
+        @if (!@IconMenuActive)
+        {
+            <a class="navbar-brand" href="">1 - Dictionary Management</a>
+        }
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
-</div>
+</div> *@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-fill" aria-hidden="true"></span>&nbsp;&nbsp;Домой
+                <span title="Домой" class="bi bi-house-fill" aria-hidden="true"></span>
+                @if (!@IconMenuActive)
+                {
+                    <label>&nbsp;&nbsp;Домой</label>
+                }
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" @onclick="()=>expandSubNavDictionary = !expandSubNavDictionary" href="dictionary">
-                <span class="bi bi-card-list" aria-hidden="true"></span>&nbsp;&nbsp;СПРАВОЧНИКИ
-            </NavLink>
+                <span title="СПРАВОЧНИКИ" class="bi bi-card-list" aria-hidden="true"></span>
+                @if (!@IconMenuActive)
+                {
+                    <label>&nbsp;&nbsp;СПРАВОЧНИКИ</label>
+                }
+            </NavLink>            
         </div>
 
         @*        @if (expandSubNavDictionary)
@@ -70,7 +82,11 @@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="mapping" @onclick="()=>expandSubNavMapping = !expandSubNavMapping">
-                <span class="bi bi-arrow-left-right" aria-hidden="true"></span>&nbsp;&nbsp;МАППИНГ
+                <span title="МАППИНГ" class="bi bi-arrow-left-right" aria-hidden="true"></span>
+                @if (!@IconMenuActive)
+                {
+                    <label>&nbsp;&nbsp;МАППИНГ</label>
+                }
             </NavLink>
         </div>
 
@@ -94,7 +110,11 @@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="tags" @onclick="()=>expandSubNavTags = !expandSubNavTags">
-                <span class="bi bi-tags-fill" aria-hidden="true"></span>&nbsp;&nbsp;ТЭГИ
+                <span title="ТЭГИ" class="bi bi-tags-fill" aria-hidden="true"></span>
+                @if (!@IconMenuActive)
+                {
+                    <label>&nbsp;&nbsp;ТЭГИ</label>
+                }
             </NavLink>
         </div>
 
@@ -118,7 +138,11 @@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="dataarchive" @onclick="()=>expandSubNavDataArchive = !expandSubNavDataArchive">
-                <span class="bi bi-database-fill" aria-hidden="true"></span>&nbsp;&nbsp;АРХИВ ДАННЫХ
+                <span title="АРХИВ ДАННЫХ" class="bi bi-database-fill" aria-hidden="true"></span>
+                @if (!@IconMenuActive)
+                {
+                    <label>&nbsp;&nbsp;АРХИВ ДАННЫХ</label>
+                }
             </NavLink>
         </div>
 
@@ -145,8 +169,12 @@
         }*@
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="SAPshowcase" @onclick="()=>expandSubNavSAPShowcase = !expandSubNavSAPShowcase">
-                <span class="bi bi-arrow-up" aria-hidden="true"></span>&nbsp;&nbsp;ВИТРИНЫ SAP
+            <NavLink title="ВИТРИНЫ SAP" class="nav-link" href="SAPshowcase" @onclick="()=>expandSubNavSAPShowcase = !expandSubNavSAPShowcase">
+                <span class="bi bi-arrow-up" aria-hidden="true"></span>
+                @if (!@IconMenuActive)
+                {
+                    <label>&nbsp;&nbsp;ВИТРИНЫ SAP</label>
+                }
             </NavLink>
         </div>
 
@@ -181,8 +209,12 @@
 
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="reports" @onclick="()=>expandSubNavReport = !expandSubNavReport">
-                <span class="bi bi-building-fill-add" aria-hidden="true"></span>&nbsp;&nbsp;ОТЧЁТЫ
+            <NavLink title="ОТЧЁТЫ" class="nav-link" href="reports" @onclick="()=>expandSubNavReport = !expandSubNavReport">
+                <span class="bi bi-building-fill-add" aria-hidden="true"></span>
+                @if (!@IconMenuActive)
+                {
+                    <label>&nbsp;&nbsp;ОТЧЁТЫ</label>
+                }
             </NavLink>
         </div>
 
@@ -213,7 +245,11 @@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="EventJournal" @onclick="()=>expandSubNavEventJournal = !expandSubNavEventJournal">
-                <span class="bi bi-journal" aria-hidden="true"></span>&nbsp;&nbsp;ЖУРНАЛ СОБЫТИЙ
+                <span title="ЖУРНАЛ СОБЫТИЙ" class="bi bi-journal" aria-hidden="true"></span>
+                @if (!@IconMenuActive)
+                {
+                    <label>&nbsp;&nbsp;ЖУРНАЛ СОБЫТИЙ</label>
+                }
             </NavLink>
         </div>
 
@@ -237,7 +273,11 @@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="administration" @onclick="()=>expandSubNavAdministration = !expandSubNavAdministration">
-                <span class="bi bi-gear-fill" aria-hidden="true"></span>&nbsp;&nbsp;АДМИН
+                <span title="АДМИН" class="bi bi-gear-fill" aria-hidden="true"></span>
+                @if (!@IconMenuActive)
+                {
+                    <label>&nbsp;&nbsp;АДМИН</label>
+                }
             </NavLink>
         </div>
 
@@ -278,19 +318,32 @@
         }*@
 
 
-
     </nav>
+
 </div>
+@* <div class="bottom-row">
+    <div class="icon-menu-arrow">
+        @if (!@IconMenuActive)
+        {
+            <span class="bi bi-arrow-left" style="color: white;" @onclick="ToggleIconMenu"></span>
+        }
+        else
+        {
+            <span class="bi bi-arrow-right" style="color: white;" @onclick="ToggleIconMenu"></span>
+        }
+    </div>
+</div> *@
+
 
 @code {
+
+    private bool IconMenuActive { get; set; } = false;
+    [Parameter]
+    public EventCallback<bool> ShowIconMenu { get; set; }
+
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
 
     private bool expandSubNavDictionary;
     private bool expandSubNavMapping;
@@ -301,4 +354,14 @@
     private bool expandSubNavEventJournal;
     private bool expandSubNavAdministration;
 
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task ToggleIconMenu()
+    {
+        IconMenuActive = !IconMenuActive;
+        await ShowIconMenu.InvokeAsync(IconMenuActive);
+    }
 }

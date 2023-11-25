@@ -20,14 +20,14 @@
     <div class="row">
 
         <div class="col-6">
-            <h4 class="card-title text-primary"><a href="/SAPshowcase">Витрины SAP</a> - <a href="/SAPshowcase/SapMovementsOUT">Движения - выход</a></h4>
+            <h6 class="card-title text-primary"><a href="/SAPshowcase">Витрины SAP</a> - <a href="/SAPshowcase/SapMovementsOUT">Движения - выход</a></h6>
         </div>
 
 
         @if (IsLoading != true)
         {
 
-            <RadzenRow Gap="1rem" Class="rz-p-0 rz-p-lg-4">
+            <RadzenRow Gap="1rem" Class="rz-p-0 rz-p-lg-2">
                 <RadzenColumn Size="12" SizeMD="12">
                     <RadzenStack>
                         <RadzenStack Gap="1rem">
@@ -69,8 +69,9 @@
                                AllowVirtualization="true"
                                AllowColumnReorder="true"
                                AllowColumnResize="true"
-                               Style="height:710px"
-                               ColumnWidth="200px" >
+                               Style="height:710px; width:1600px"
+                               ColumnWidth="200px"
+                               AllowColumnPicking="true">
                 <Columns>
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
@@ -84,7 +85,9 @@
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                @data1.AddTime
+                                <strong>
+                                    @data1.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
+                                </strong>
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
@@ -102,7 +105,9 @@
                                           TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                @data1.SapMaterialDTOFK.ToStringCodeName
+                                <strong>
+                                    @data1.SapMaterialDTOFK.ToStringCodeName
+                                </strong>
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
@@ -129,7 +134,7 @@
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
-                                    @data1.ValueTime
+                                    @data1.ValueTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
                                 </strong>
                             </div>
                         </Template>
@@ -168,7 +173,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="IsReconciled" Title="Согласованные" Filterable="true"  TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="IsReconciled" Title="Согласованные" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsReconciled ReadOnly="true" TriState="false" TValue="bool?" />
                         </Template>
@@ -177,28 +182,54 @@
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapGoneTime" Title="SAP забрал" TextAlign="TextAlign.Center"
                                           FilterProperty="SapGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="SapGoneTime">
                         <Template Context="data1">
-                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                <strong>
-                                    @data1.SapGoneTime
-                                </strong>
-                            </div>
+                            @if (data1.SapGoneTime != null)
+                            {
+
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                    <strong>
+                                        @(((DateTime)data1.SapGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff"))
+                                    </strong>
+                                </div>
+                            }
                         </Template>
                     </RadzenDataGridColumn>
 
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapError" Title="SAP ошибка" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
-                            @if (data.SapError == true)
+
+                            <RadzenCheckBox @bind-Value=data.SapError ReadOnly="true" TriState="false" TValue="bool?" />
+
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapErrorMessage" Title="SAP сообщение об ошибке" TextAlign="TextAlign.Center"
+                                          FilterProperty="SapErrorMessage" FilterOperator="FilterOperator.Contains" SortProperty="SapErrorMessage">
+                        <Template Context="data1">
+                            @if (data1.SapErrorMessage != null)
                             {
-                                <RadzenCheckBox @bind-Value=data.SapError ReadOnly="true" TriState="false" TValue="bool?"
-                                                MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Position = TooltipPosition.Bottom }, data.SapErrorMessage))" />
-                            }
-                            else
-                            {
-                                <RadzenCheckBox @bind-Value=data.SapError ReadOnly="true" TriState="false" TValue="bool?" />
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                    @data1.SapErrorMessage
+                                </div>
                             }
                         </Template>
                     </RadzenDataGridColumn>
 
+                    @*                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapError" Title="SAP ошибка" Filterable="true" TextAlign="TextAlign.Center">
+            <Template Context="data">
+            @if (data.SapError == true)
+            {
+            <RadzenCheckBox @bind-Value=data.SapError ReadOnly="true" TriState="false" TValue="bool?"
+            MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Position = TooltipPosition.Bottom }, data.SapErrorMessage))" />
+
+
+            }
+            else
+            {
+            <RadzenCheckBox @bind-Value=data.SapError ReadOnly="true" TriState="false" TValue="bool?" />
+            }
+            </Template>
+            </RadzenDataGridColumn>
+            *@
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringMesMovementId" Title="ИД в архиве данных" FilterProperty="ToStringMesMovementId" SortProperty="ToStringMesMovementId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.ToStringMesMovementId != null)
@@ -336,7 +367,7 @@
     {
         await Task.CompletedTask;
 
-        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SapMovementsOUTSettings', '{JsonSerializer.Serialize<DataGridSettings>(SapMovementsOUTGridSettings)}')");
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SapMovementsOUTGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SapMovementsOUTGridSettings)}')");
     }
 
 

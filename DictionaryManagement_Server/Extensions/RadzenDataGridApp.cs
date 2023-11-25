@@ -27,6 +27,8 @@ namespace DictionaryManagement_Server.Extensions
             base.IsNullText = "Пусто (NULL)";
             base.NotEqualsText = "Не равно";
             base.FilterText = "Фильтр";
+            base.AllColumnsText = "Все";
+            base.ColumnsShowingText = "колонок отображается";
         }
     }
 }
