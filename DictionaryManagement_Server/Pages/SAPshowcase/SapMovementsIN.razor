@@ -56,14 +56,14 @@
                                Density=Density.Compact
                                ShowPagingSummary="true"
                                EmptyText="Нет записей для отображения"
-                               AllowVirtualization="true"                               
+                               AllowVirtualization="true"
                                AllowColumnReorder="true"
                                AllowColumnResize="true"
                                Style="height:710px; width:1600px"
                                ColumnWidth="200px"
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both">
-                <HeaderTemplate>                    
+                <HeaderTemplate>
                     <RadzenButton Size="ButtonSize.Small" Text="Сбросить настройки интерфейса страницы" Click=@(() => CleanPageSettings())
                                   Icon="clear" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
                     <RadzenLabel Style="font-size: 10px; color:powderblue" Text="* Можно менять порядок колонок, ширину, скрывать/отображать колонки. Данные настройки страницы сохранятся в браузере" />
@@ -81,7 +81,9 @@
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                @data1.AddTime
+                                <strong>
+                                    @data1.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
+                                </strong>
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
@@ -89,7 +91,9 @@
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapMaterialCode" Title="Код материала в SAP" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                @data1.SapMaterialCode
+                                <strong>
+                                    @data1.SapMaterialCode
+                                </strong>
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
@@ -99,7 +103,9 @@
                             @if (data1.SapMaterialDTOFK != null)
                             {
                                 <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                    @data1.SapMaterialDTOFK.ToStringCodeName
+                                    <strong>
+                                        @data1.SapMaterialDTOFK.ToStringCodeName
+                                    </strong>
                                 </div>
                             }
                             else
@@ -127,6 +133,15 @@
                         </Template>
                     </RadzenDataGridColumn>
 
+@*                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="IsWarehouseSource" Title="Источник в SAP является складом" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            @if (data.IsWarehouseSource != null)
+                            {
+                                <RadzenCheckBox @bind-Value=data.IsWarehouseSource ReadOnly="true" TriState="false" TValue="bool?" />
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+ *@
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapEquipmentSourceDTOFK.ToStringErpPlantIdErpIdName" Title="Источник в СИР" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             @if (data1.SapEquipmentSourceDTOFK != null)
@@ -140,6 +155,15 @@
                                 <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px; color: red">
                                     НЕ НАЙДЕН
                                 </div>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapEquipmentSourceDTOFK.IsWarehouse" Title="Источник в СИР является складом" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            @if (data.SapEquipmentSourceDTOFK != null)
+                            {
+                                <RadzenCheckBox @bind-Value=data.SapEquipmentSourceDTOFK.IsWarehouse ReadOnly="true" TriState="false" TValue="bool" />
                             }
                         </Template>
                     </RadzenDataGridColumn>
@@ -160,6 +184,12 @@
                         </Template>
                     </RadzenDataGridColumn>
 
+@*                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="IsWarehouseDest" Title="Приёмник в SAP является складом" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.IsWarehouseDest ReadOnly="true" TriState="false" TValue="bool?" />
+                        </Template>
+                    </RadzenDataGridColumn> *@
+
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName" Title="Приёмник в СИР" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             @if (data1.SapEquipmentDestDTOFK != null)
@@ -177,11 +207,30 @@
                         </Template>
                     </RadzenDataGridColumn>
 
+
+                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapEquipmentDestDTOFK.IsWarehouse" Title="Приёмник в СИР является складом" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            @if (data.SapEquipmentDestDTOFK != null)
+                            {
+                                <RadzenCheckBox @bind-Value=data.SapEquipmentDestDTOFK.IsWarehouse ReadOnly="true" TriState="false" TValue="bool" />
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapDocumentEnterTime" Title="Время ввода док-та в SAP" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                        <Template Context="data1">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                @data1.SapDocumentEnterTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapDocumentPostTime" Title="Время значения" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
-                                    @data1.SapDocumentPostTime
+                                    @data1.SapDocumentPostTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
                                 </strong>
                             </div>
                         </Template>
@@ -210,20 +259,21 @@
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MesGoneTime" Title="СИР забрал" TextAlign="TextAlign.Center"
                                           FilterProperty="MesGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="MesGoneTime">
                         <Template Context="data1">
-                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                <strong>
-                                    @data1.MesGoneTime
-                                </strong>
-                            </div>
+                            @if (data1.MesGoneTime != null)
+                            {
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">                                
+                                    <strong>
+                                        @(((DateTime)data1.MesGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff"))
+                                    </strong>
+                                </div>
+                            }
                         </Template>
                     </RadzenDataGridColumn>
 
 
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MesError" Title="СИР ошибка" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
-
                             <RadzenCheckBox @bind-Value=data.MesError ReadOnly="true" TriState="false" TValue="bool?" />
-
                         </Template>
                     </RadzenDataGridColumn>
 
@@ -240,19 +290,19 @@
                     </RadzenDataGridColumn>
 
 
-@*                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MesError" Title="СИР ошибка" Filterable="true" Width="25px" TextAlign="TextAlign.Center">
-                        <Template Context="data">
-                            @if (data.MesError == true)
-                            {
-                                <RadzenCheckBox @bind-Value=data.MesError ReadOnly="true" TriState="false" TValue="bool?"
-                                                MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Position = TooltipPosition.Bottom }, data.MesErrorMessage))" />
-                            }
-                            else
-                            {
-                                <RadzenCheckBox @bind-Value=data.MesError ReadOnly="true" TriState="false" TValue="bool?" />
-                            }
-                        </Template>
-                    </RadzenDataGridColumn> *@
+                    @*                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MesError" Title="СИР ошибка" Filterable="true" Width="25px" TextAlign="TextAlign.Center">
+            <Template Context="data">
+            @if (data.MesError == true)
+            {
+            <RadzenCheckBox @bind-Value=data.MesError ReadOnly="true" TriState="false" TValue="bool?"
+            MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Position = TooltipPosition.Bottom }, data.MesErrorMessage))" />
+            }
+            else
+            {
+            <RadzenCheckBox @bind-Value=data.MesError ReadOnly="true" TriState="false" TValue="bool?" />
+            }
+            </Template>
+            </RadzenDataGridColumn> *@
 
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="ToStringMesMovementId" Title="ИД в архиве данных" FilterProperty="ToStringMesMovementId" SortProperty="ToStringMesMovementId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
@@ -319,7 +369,7 @@
     _Dialogs? _dialogs { get; set; }
 
     IEnumerable<SapMovementsINDTO>? sapMovementsINDTOs;
-
+      
     RadzenDataGrid<SapMovementsINDTO> sapMovementsINDTOGrid;
 
     DateTime startDate = DateTime.Today.AddMonths(-1);
@@ -500,7 +550,7 @@
             }
 
             var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.removeItem", "SapMovementsINGridSettings");
-
+            
             _sapMovementsINGridSettings = null;
             InvokeAsync(SaveStateAsync);
         }

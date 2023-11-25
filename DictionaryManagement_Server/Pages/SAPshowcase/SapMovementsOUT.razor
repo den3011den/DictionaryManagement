@@ -128,6 +128,15 @@
                         </Template>
                     </RadzenDataGridColumn>
 
+                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="IsWarehouseSource" Title="Источник является складом" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            @if (data.IsWarehouseSource != null)
+                            {
+                                <RadzenCheckBox @bind-Value=data.IsWarehouseSource ReadOnly="true" TriState="false" TValue="bool?" />
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName" Title="Приёмник SAP"
                                           TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
@@ -136,6 +145,16 @@
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="IsWarehouseDest" Title="Приёмник является складом" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            @if (data.IsWarehouseDest != null)
+                            {
+                                <RadzenCheckBox @bind-Value=data.IsWarehouseDest ReadOnly="true" TriState="false" TValue="bool?" />
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+
 
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ValueTime" Title="Время значения" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
@@ -466,7 +485,7 @@
             bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Сбросить настройки интерфейса страницы",
                     "Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Очистить?", "Отмена");
             if (selectionResult == false)
-            {             
+            {
                 InvokeAsync(SaveStateAsync);
                 return;
             }
