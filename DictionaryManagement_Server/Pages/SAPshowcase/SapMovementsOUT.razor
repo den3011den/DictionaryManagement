@@ -72,6 +72,12 @@
                                Style="height:710px; width:1600px"
                                ColumnWidth="200px"
                                AllowColumnPicking="true">
+
+                <HeaderTemplate>
+                    @* <div style="text-align: right; width: 400px; margin-left: -12px"; font-size: 12px"> *@
+                    <RadzenButton Size="ButtonSize.Small" Text="Сбросить настройки интерфейса страницы" Click=@(() => CleanPageSettings())
+                                  Icon="clear" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
+                </HeaderTemplate>
                 <Columns>
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
@@ -448,8 +454,29 @@
     }
 
     @code {
-        void ShowTooltip(ElementReference elementReference, TooltipOptions options = null, string toolTipText = "") =>
-        tooltipService.Open(elementReference, toolTipText, options);
+        // void ShowTooltip(ElementReference elementReference, TooltipOptions options = null, string toolTipText = "") =>
+        // tooltipService.Open(elementReference, toolTipText, options);
+
+        private async Task CleanPageSettings()
+        {
+
+            await Task.CompletedTask;
+
+            bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Сбросить настройки интерфейса страницы",
+                    "Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Очистить?", "Отмена");
+            if (selectionResult == false)
+            {             
+                InvokeAsync(SaveStateAsync);
+                return;
+            }
+
+            var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.removeItem", "SapMovementsOUTGridSettings");
+
+            _sapMovementsOUTGridSettings = null;
+            InvokeAsync(SaveStateAsync);
+
+        }
+
     }
 
 }

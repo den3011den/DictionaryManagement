@@ -29,6 +29,7 @@ namespace DictionaryManagement_Server.Extensions
             base.FilterText = "Фильтр";
             base.AllColumnsText = "Все";
             base.ColumnsShowingText = "колонок отображается";
+            base.ColumnsText = "Не выбрано";
         }
     }
 }
