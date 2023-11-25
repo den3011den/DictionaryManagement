@@ -1,6 +1,7 @@
 ﻿using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
+using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
     public interface IUserToRoleRepository
     {
         public Task<UserToRoleDTO> Get(Guid userId, Guid roleId);
-        public Task<int> DeleteByRoleId(Guid roleId);
+        public Task<int> DeleteByRoleIdAndUserId(Guid roleId, Guid userId);
         public Task<UserToRoleDTO> GetById(int id);
         public Task<IEnumerable<UserToRoleDTO>> GetAll();
         public Task<UserToRoleDTO> Update(UserToRoleDTO objDTO);

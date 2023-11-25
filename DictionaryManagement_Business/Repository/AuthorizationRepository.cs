@@ -256,8 +256,10 @@ namespace DictionaryManagement_Business.Repository
                                     {
                                         syncMinutes = 0;
                                     }
-                                                                                                            
-                                    if ((DateTime.Now - (DateTime)userFromDBDTO.SyncWithADGroupsLastTime).Minutes >= syncMinutes)
+
+                                    TimeSpan diff = DateTime.Now - ((DateTime)userFromDBDTO.SyncWithADGroupsLastTime);
+
+                                    if (diff.TotalMinutes >= syncMinutes)
                                     {
                                         needCheckAddGroups = true;
                                         needCheckDeleteGroups = true;
@@ -390,7 +392,7 @@ namespace DictionaryManagement_Business.Repository
 
                         if (needDeleteUserInRoleFlag)
                         {
-                            await _userToRoleRepository.DeleteByRoleId(itemRoleDTO.Id);
+                            await _userToRoleRepository.DeleteByRoleIdAndUserId(itemRoleDTO.Id, userFromDBDTO.Id);
                         }
                     }
                     if ((needCheckAddGroups) || (needCheckAddGroups))

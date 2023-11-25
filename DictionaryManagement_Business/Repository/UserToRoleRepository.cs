@@ -111,12 +111,12 @@ namespace DictionaryManagement_Business.Repository
 
         }
 
-
-        public async Task<int> DeleteByRoleId(Guid roleId)
+        
+        public async Task<int> DeleteByRoleIdAndUserId(Guid roleId, Guid userId)
         {
-            if (roleId != Guid.Empty)
+            if (roleId != Guid.Empty && userId != Guid.Empty)
             {
-                var listToDelete = _db.UserToRole.Where(u => u.RoleId == roleId).ToListWithNoLock();
+                var listToDelete = _db.UserToRole.Where(u => u.RoleId == roleId && u.UserId == userId).ToListWithNoLock();
                 if (listToDelete != null)
                 {
                     foreach (var item in listToDelete)
