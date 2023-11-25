@@ -7,7 +7,7 @@
 @using DictionaryManagement_Server.Extensions;
 
 @inject IJSRuntime _jsRuntime
-@inject TooltipService tooltipService
+@* @inject TooltipService tooltipService *@
 @inject ISapMovementsOUTRepository _sapMovementsOUTRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
 
@@ -77,6 +77,7 @@
                     @* <div style="text-align: right; width: 400px; margin-left: -12px"; font-size: 12px"> *@
                     <RadzenButton Size="ButtonSize.Small" Text="Сбросить настройки интерфейса страницы" Click=@(() => CleanPageSettings())
                                   Icon="clear" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
+                    <RadzenLabel Style="font-size: 10px; color:powderblue" Text="* Можно менять порядок колонок, ширину, скрывать/отображать колонки. Данные настройки страницы сохранятся в браузере" />
                 </HeaderTemplate>
                 <Columns>
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
