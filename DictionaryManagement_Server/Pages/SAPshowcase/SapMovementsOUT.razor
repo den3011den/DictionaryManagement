@@ -57,7 +57,7 @@
     ShowPagingSummary="true"
     EmptyText="Нет записей для отображения"
     AllowVirtualization="true"
-    Style="height:710px"> *@
+    Style="height:745px"> *@
 
             <RadzenDataGridApp @bind-Settings="@SapMovementsOUTGridSettings" @ref="sapMovementsOUTDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@sapMovementsOUTDTOs" TItem="SapMovementsOUTDTO"
@@ -69,7 +69,7 @@
                                AllowVirtualization="true"
                                AllowColumnReorder="true"
                                AllowColumnResize="true"
-                               Style="height:710px; width:1600px"
+                               Style="height:745px; width:1600px"
                                ColumnWidth="200px"
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both">
@@ -205,7 +205,14 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapGoneTime" Title="SAP забрал" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapGoneBool" Title="Забрал SAP" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.SapGoneBool ReadOnly="true" TriState="false" TValue="bool" />
+                        </Template>
+                    </RadzenDataGridColumn>
+
+
+                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapGoneTime" Title="Время забрал SAP" TextAlign="TextAlign.Center"
                                           FilterProperty="SapGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="SapGoneTime">
                         <Template Context="data1">
                             @if (data1.SapGoneTime != null)
@@ -220,11 +227,9 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapError" Title="SAP ошибка" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapErrorBool" Title="SAP ошибка" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
-
-                            <RadzenCheckBox @bind-Value=data.SapError ReadOnly="true" TriState="false" TValue="bool?" />
-
+                            <RadzenCheckBox @bind-Value=data.SapErrorBool ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
 
@@ -312,7 +317,7 @@
 
     RadzenDataGrid<SapMovementsOUTDTO> sapMovementsOUTDTOGrid;
 
-    DateTime startDate = DateTime.Today.AddMonths(-1);
+    DateTime startDate = DateTime.Today.AddDays(-7);
     DateTime endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
     DateTime maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
     DateTime minEndDate = DateTime.Today.AddMonths(-1).AddDays(-1);
@@ -341,7 +346,7 @@
                 applyRadioGroupValue = 1;
                 ApplyButtonDisabled = false;
 
-                startDate = DateTime.Today.AddMonths(-1);
+                startDate = DateTime.Today.AddDays(-7); ;
                 endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
                 maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
                 minEndDate = DateTime.Today.AddMonths(-1).AddDays(-1);

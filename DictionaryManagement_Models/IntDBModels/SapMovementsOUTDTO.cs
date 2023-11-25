@@ -178,6 +178,34 @@ namespace DictionaryManagement_Models.IntDBModels
             }
         }
 
+        [NotMapped]
+        [Display(Name = "Sap ошибка")]
+        public bool SapErrorBool
+        {
+            get
+            {
+                return SapError == null ? false : (bool)SapError;
+            }
+            set
+            {
+                SapErrorBool = value;
+            }
+        }
+
+        [NotMapped]
+        [Display(Name = "Sap забрал")]
+        public bool SapGoneBool
+        {
+            get
+            {
+                return SapGone == null ? false : (bool)SapGone;
+            }
+            set
+            {
+                SapGoneBool = value;
+            }
+        }
+
 
     }
 }
