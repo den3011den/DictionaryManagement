@@ -57,9 +57,22 @@
                                ShowPagingSummary="true"
                                EmptyText="Нет записей для отображения"
                                AllowVirtualization="true"
-                               Style="height:710px">
+                               AllowColumnReorder="true"
+                               AllowColumnResize="true"
+                               Style="height:710px; width:1600px"
+                               ColumnWidth="200px"
+                               AllowColumnPicking="true"
+                               GridLines="DataGridGridLines.Both">
+
+                <HeaderTemplate>
+                    @* <div style="text-align: right; width: 400px; margin-left: -12px"; font-size: 12px"> *@
+                    <RadzenButton Size="ButtonSize.Small" Text="Сбросить настройки интерфейса страницы" Click=@(() => CleanPageSettings())
+                                  Icon="clear" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
+                    <RadzenLabel Style="font-size: 10px; color:powderblue" Text="* Можно менять порядок колонок, ширину, скрывать/отображать колонки. Данные настройки страницы сохранятся в браузере" />
+                </HeaderTemplate>
+
                 <Columns>
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="ToStringId" Title="Ид записи" Width="50px" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
@@ -71,7 +84,7 @@
 
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="TagName" Title="Имя тэга" Width="75px" FilterProperty="TagName" SortProperty="TagName" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="TagName" Title="Имя тэга" FilterProperty="TagName" SortProperty="TagName" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.TagName
@@ -79,25 +92,25 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="AddTime" Title="Время добавления" Width="60px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                @data1.AddTime
+                                @data1.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="ValueTime" Title="Время значения" Width="60px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="ValueTime" Title="Время значения" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
-                                    @data1.ValueTime
+                                    @data1.ValueTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
                                 </strong>
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="ToStringValue" Title="Значение" Width="100px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains"
+                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="ToStringValue" Title="Значение" TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains"
                                           FilterProperty="ToStringValue" SortProperty="Value">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
@@ -108,25 +121,28 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="SapGone" Title="Забрал SAP" Filterable="true" Width="30px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="SapGone" Title="Забрал SAP" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.SapGone ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="SapGoneTime" Title="Когда Sap забрал" Width="60px" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="SapGoneTime" Title="Когда Sap забрал" TextAlign="TextAlign.Center"
                                           FilterProperty="SapGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="SapGoneTime">
                         <Template Context="data1">
-                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                <strong>
-                                    @data1.SapGoneTime
-                                </strong>
-                            </div>
+                            @if (data1.SapGoneTime != null)
+                            {
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                    <strong>
+                                        @(((DateTime)data1.SapGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff"))
+                                    </strong>
+                                </div>
+                            }
                         </Template>
                     </RadzenDataGridColumn>
 
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Context="sapNdoOUTDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="36px">
+                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Context="sapNdoOUTDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
                         <Template Context="sapNdoOUTDTO">
                             <RadzenButton title="Редактировать запись" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapNdoOUTDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -326,3 +342,28 @@
     }
 }
 
+@code
+{
+
+    private async Task CleanPageSettings()
+    {
+
+        await Task.CompletedTask;
+
+        bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Сбросить настройки интерфейса страницы",
+                "Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Очистить?", "Отмена");
+        if (selectionResult == false)
+        {
+            InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.removeItem", "SapNdoOUTGridSettings");
+
+        _sapNdoOUTGridSettings = null;
+        InvokeAsync(SaveStateAsync);
+
+    }
+
+
+}

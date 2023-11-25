@@ -145,6 +145,54 @@ namespace DictionaryManagement_Models.IntDBModels
             }
         }
 
+        [NotMapped]
+        [Display(Name = "Причина корректировки")]
+        public string ToStringCorrectionReason
+        {
+            get
+            {
+                MesMovementsCommentDTO? commentVar = MesMovementsCommentListDTO.FirstOrDefault();
+
+                if (commentVar != null)
+                {
+                    var retVar = commentVar.CorrectionReasonDTOFK.Name;
+                    if (retVar != null)
+                        return retVar;
+                    else
+                        return "";
+                }
+                    return "";
+            }
+            set
+            {
+                ToStringValue = value;
+            }
+        }
+
+        [NotMapped]
+        [Display(Name = "Комментарий корректировки")]
+        public string ToStringCorrectionComment
+        {
+            get
+            {                
+                MesMovementsCommentDTO? commentVar = MesMovementsCommentListDTO.FirstOrDefault();
+                if (commentVar != null)
+                {
+                    var retVar = commentVar.CorrectionComment;
+                    if (retVar != null)
+                        return retVar;
+                    else
+                        return "";
+                }
+                else
+                    return "";
+            }
+            set
+            {
+                ToStringValue = value;
+            }
+        }
+
 
     }
 }

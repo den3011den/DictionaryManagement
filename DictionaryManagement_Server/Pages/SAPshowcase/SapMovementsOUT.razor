@@ -71,10 +71,10 @@
                                AllowColumnResize="true"
                                Style="height:710px; width:1600px"
                                ColumnWidth="200px"
-                               AllowColumnPicking="true">
+                               AllowColumnPicking="true"
+                               GridLines="DataGridGridLines.Both">
 
-                <HeaderTemplate>
-                    @* <div style="text-align: right; width: 400px; margin-left: -12px"; font-size: 12px"> *@
+                <HeaderTemplate>                
                     <RadzenButton Size="ButtonSize.Small" Text="Сбросить настройки интерфейса страницы" Click=@(() => CleanPageSettings())
                                   Icon="clear" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
                     <RadzenLabel Style="font-size: 10px; color:powderblue" Text="* Можно менять порядок колонок, ширину, скрывать/отображать колонки. Данные настройки страницы сохранятся в браузере" />
