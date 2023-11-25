@@ -99,7 +99,26 @@ namespace DictionaryManagement_Models.IntDBModels
             }
         }
 
-
+        [NotMapped]
+        [Display(Name = "Sap забрал")]
+        public bool SapGoneBool
+        {
+            get
+            {
+                if (SapNdoOUTDTOFK == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return SapNdoOUTDTOFK.SapGone == null ? false : SapNdoOUTDTOFK.SapGone;
+                }                
+            }
+            set
+            {
+                SapGoneBool = value;
+            }
+        }        
     }
 }
 

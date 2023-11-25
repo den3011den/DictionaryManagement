@@ -196,15 +196,9 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="SapMovementsOUTDTOFK.SapGone" Title="Sap забрал" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="SapGoneBool" Title="Sap забрал" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
-                            @if (data.SapMovementsOUTDTOFK != null)
-                            {
-                                @if (data.SapMovementsOUTDTOFK.SapGone != null)
-                                {
-                                    <RadzenCheckBox @bind-Value=data.SapMovementsOUTDTOFK.SapGone ReadOnly="true" TriState="false" TValue="bool?" />
-                                }
-                            }
+                            <RadzenCheckBox @bind-Value=data.SapGoneBool ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
 
@@ -278,10 +272,10 @@
 
     RadzenDataGrid<MesMovementsDTO> mesMovementsDTOGrid;
 
-    DateTime startDate = DateTime.Today.AddDays(-7);
+    DateTime startDate = DateTime.Today.AddMonths(-1);
     DateTime endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
     DateTime maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
-    DateTime minEndDate = DateTime.Today.AddDays(-8);
+    DateTime minEndDate = DateTime.Today.AddMonths(-1).AddDays(-1);
 
     bool excelExportFlag = false;
 
@@ -309,10 +303,10 @@
 
                 //await GetRows();
 
-                startDate = DateTime.Today.AddDays(-7);
+                startDate = DateTime.Today.AddMonths(-1);
                 endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
                 maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
-                minEndDate = DateTime.Today.AddDays(-8);
+                minEndDate = DateTime.Today.AddMonths(-1).AddDays(-1);
 
                 IsLoading = true;
                 await LoadStateAsync();
@@ -368,7 +362,7 @@
     private async Task ChangeStartDate()
     {
         ApplyButtonDisabled = false;
-        maxEndDate = startDate.AddDays(7).AddSeconds(-1);
+        maxEndDate = startDate.AddMonths(1).AddSeconds(-1);
         minEndDate = startDate.AddDays(-1);
         if (endDate > maxEndDate)
             endDate = maxEndDate;
