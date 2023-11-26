@@ -395,14 +395,15 @@ namespace DictionaryManagement_Business.Repository
                             await _userToRoleRepository.DeleteByRoleIdAndUserId(itemRoleDTO.Id, userFromDBDTO.Id);
                         }
                     }
-                    if ((needCheckAddGroups) || (needCheckAddGroups))
+                }
+
+                if ((needCheckAddGroups) || (needAddUser) || (needCheckDeleteGroups))
+                {
+                    if (userFromDBDTO != null)
                     {
-                        if (userFromDBDTO != null)
-                        {
-                            userFromDBDTO.SyncWithADGroupsLastTime = DateTime.Now;
-                            await _userRepository.Update(userFromDBDTO, UpdateMode.Update);
-                            await _jsRuntime.InvokeVoidAsync("CloseSwal");
-                        }
+                        userFromDBDTO.SyncWithADGroupsLastTime = DateTime.Now;
+                        await _userRepository.Update(userFromDBDTO, UpdateMode.Update);
+                        await _jsRuntime.InvokeVoidAsync("CloseSwal");
                     }
                 }
             }
