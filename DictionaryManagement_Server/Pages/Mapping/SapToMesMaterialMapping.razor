@@ -5,7 +5,7 @@
 @using DictionaryManagement_DataAccess.Data.IntDB;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
-@using DictionaryManagement_Server.Extensions;
+
 
 
 @inject IJSRuntime _jsRuntime
@@ -70,7 +70,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapToMesMaterialMappingDTO" Context="SapToMesMaterialMappingDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumn Title="Действия" TItem="SapToMesMaterialMappingDTO" Context="SapToMesMaterialMappingDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="SapToMesMaterialMappingDTO">
                             @* <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(SapToMesMaterialMappingDTO))" @onclick:stopPropagation="true"> *@
                             <RadzenButton Icon="edit" Disabled=true ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(SapToMesMaterialMappingDTO))" @onclick:stopPropagation="true">

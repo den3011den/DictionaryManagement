@@ -4,7 +4,7 @@
 @using System.Text.Json;
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels;
-@using DictionaryManagement_Server.Extensions;
+
 
 @inject IJSRuntime _jsRuntime
 @inject IMesMovementsRepository _mesMovementsRepository
@@ -173,12 +173,9 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesGone" Title="MES забрал" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesGoneBool" Title="MES забрал" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
-                            @if (data.MesGone != null)
-                            {
-                                <RadzenCheckBox @bind-Value=data.MesGone ReadOnly="true" TriState="false" TValue="bool?" />
-                            }
+                            <RadzenCheckBox @bind-Value=data.MesGoneBool ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
 

@@ -214,6 +214,21 @@ namespace DictionaryManagement_Models.IntDBModels
             }
         }
 
+        [NotMapped]
+        [Display(Name = "Mes забрал")]
+        public bool MesGoneBool
+        {
+            get
+            {
+
+                return MesGone == null ? false : (bool)MesGone;
+
+            }
+            set
+            {
+                MesGoneBool = value;
+            }
+        }
 
     }
 }

@@ -4,7 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
-@using DictionaryManagement_Server.Extensions;
+
 
 @inject DialogService DialogService
 
@@ -76,7 +76,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Context="dataTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumn Title = "Действия" TItem="DataTypeDTO" Context="dataTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="dataTypeDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(dataTypeDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

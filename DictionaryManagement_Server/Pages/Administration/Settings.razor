@@ -4,7 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
-@using DictionaryManagement_Server.Extensions;
+
 
 
 @inject IJSRuntime _jsRuntime
@@ -70,7 +70,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SettingsDTO" Context="SettingsDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumn Title="Действия" TItem="SettingsDTO" Context="SettingsDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="SettingsDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(SettingsDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -217,13 +217,16 @@
         settingsDTOToUpdate = null;
 
         settingsDTOGrid.CancelEditRow(settingsDTO);
-
+        
         var objectForRestore = _settingsRepository.Get(settingsDTO.Id).GetAwaiter().GetResult();
-        settingsDTO.Name = objectForRestore.Name;
-        settingsDTO.Value = objectForRestore.Value;
-        settingsDTO.Description = objectForRestore.Description;
-        settingsDTOGrid.UpdateRow(settingsDTO);
-        settingsDTOGrid.Reload();
+        if (objectForRestore != null)
+        {
+            settingsDTO.Name = objectForRestore.Name;
+            settingsDTO.Value = objectForRestore.Value;
+            settingsDTO.Description = objectForRestore.Description;
+            settingsDTOGrid.UpdateRow(settingsDTO);
+            settingsDTOGrid.Reload();
+        }
 
     }
 
@@ -274,7 +277,7 @@
             if (firtsInsertRow)
             {
                 firtsInsertRow = false;
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "warning", "Добавление новой записи в справочник настроек не приведёт к использованию этой настройки приложением без внесения изменений в код приложения!");
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "warning", "Добавление новой записи в справочник настроек не приведёт к использованию этой настройки приложениями СИР без внесения изменений в программный код приложений!");
             }
             settingsDTOToInsert = new SettingsDTO();
             await settingsDTOGrid.InsertRow(settingsDTOToInsert);

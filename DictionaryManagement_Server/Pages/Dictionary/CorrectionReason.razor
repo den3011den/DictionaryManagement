@@ -4,7 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
-@using DictionaryManagement_Server.Extensions;
+
 
 @inject DialogService DialogService
 
@@ -58,7 +58,7 @@
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Context="correctionReasonDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumn Title="Действия" TItem="CorrectionReasonDTO" Context="correctionReasonDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="correctionReasonDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(correctionReasonDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

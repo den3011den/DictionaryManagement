@@ -4,7 +4,7 @@
 @using DictionaryManagement_Business.Repository;
 @using DictionaryManagement_Models.IntDBModels;
 @using System.Text.Json;
-@using DictionaryManagement_Server.Extensions;
+
 
 
 @inject IJSRuntime _jsRuntime
@@ -65,7 +65,7 @@
                     <RadzenDataGridColumn TItem="SmenaDTO" Property="HoursDuration" Title="Продолжительность (в часах)" Width="60px">
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SmenaDTO" Context="smenaDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="55px">
+                    <RadzenDataGridColumn Title="Действия" TItem="SmenaDTO" Context="smenaDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="55px">
                         <Template Context="smenaDTO">
                             <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(smenaDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

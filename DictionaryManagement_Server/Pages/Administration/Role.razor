@@ -7,7 +7,7 @@
 @using DictionaryManagement_Server.Pages.Reports;
 @using Microsoft.EntityFrameworkCore;
 @using System.Text.Json;
-@using DictionaryManagement_Server.Extensions;
+
 
 
 
@@ -46,7 +46,7 @@
                             Data="@roleVMDTOs" TItem="RoleVMDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             FilterMode="FilterMode.Simple"
-                            AllowColumnResize="true"
+                            AllowColumnResize="false"
                             Density=Density.Compact
                             ShowPagingSummary="true"
                             EmptyText="Нет записей для отображения"
@@ -86,7 +86,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="RoleVMDTO" Context="roleVMDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="20px">
+                    <RadzenDataGridColumn Title="Действия" TItem="RoleVMDTO" Context="roleVMDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="20px">
                         <Template Context="roleVMDTO">
                             <RadzenButton title="Редактировать роль" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(roleVMDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

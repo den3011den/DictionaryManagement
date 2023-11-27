@@ -136,6 +136,20 @@ namespace DictionaryManagement_Models.IntDBModels
             }
         }
 
+        [NotMapped]
+        [Display(Name = "НДО")]
+        public bool IsNdoBool
+        {
+            get
+            {
+                return IsNdo == null ? false : (bool)IsNdo;
+            }
+            set
+            {
+                IsNdoBool = value;
+            }
+        }
+
     }
 }
 

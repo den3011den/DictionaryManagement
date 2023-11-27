@@ -3,7 +3,7 @@
 @using System.Text.Json;
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels;
-@using DictionaryManagement_Server.Extensions;
+
 
 @inject IJSRuntime _jsRuntime
 @inject IReportEntityRepository _reportEntityRepository
@@ -136,7 +136,7 @@
                             </RadzenDataGridColumn>
                         </Columns>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="ReportEntityDTO" Context="reportEntityDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
+                    <RadzenDataGridColumn Title="Действия" TItem="ReportEntityDTO" Context="reportEntityDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
                         <Template Context="reportEntityDTO">
                             <RadzenButton title="Детали" ButtonStyle="ButtonStyle.Info" Icon="info" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => ShowReportEntityDetails(reportEntityDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

@@ -6,7 +6,7 @@
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 @using System.Text.Json;
-@using DictionaryManagement_Server.Extensions;
+
 
 
 @inject IJSRuntime _jsRuntime
@@ -36,16 +36,6 @@
             </RadzenRow>
             <RadzenDataGridApp @bind-Settings="@UserGridSettings" @ref="userDTOGrid" AllowAlternatingRows="true"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
-                            EqualsText="Равно"
-                            NotEqualsText="Не равно"
-                            GreaterThanOrEqualsText="Больше или равно"
-                            GreaterThanText="Больше"
-                            LessThanOrEqualsText="Меньше или равно"
-                            LessThanText="Меньше"
-                            IsNullText="Пусто"
-                            IsNotNullText="Не пусто"
-                            ClearFilterText="Очистить"
-                            ApplyFilterText="Применить"
                             Data="@userDTOs" TItem="UserDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             FilterMode="FilterMode.Simple"
@@ -108,7 +98,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="UserDTO" Context="userDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="16px">
+                    <RadzenDataGridColumn Title="Действия" TItem="UserDTO" Context="userDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="16px">
                         <Template Context="userDTO">
                             <RadzenButton title="Редактировать пользователя" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(userDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

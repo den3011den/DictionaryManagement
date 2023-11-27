@@ -5,7 +5,7 @@
 @using DictionaryManagement_DataAccess.Data.IntDB;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
-@using DictionaryManagement_Server.Extensions;
+
 
 @inject IJSRuntime _jsRuntime
 @inject IUnitOfMeasureSapToMesMappingRepository _unitOfMeasureSapToMesMappingRepository
@@ -66,7 +66,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Context="UnitOfMeasureSapToMesMappingDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumn Title="Действия" TItem="UnitOfMeasureSapToMesMappingDTO" Context="UnitOfMeasureSapToMesMappingDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="UnitOfMeasureSapToMesMappingDTO">
                             @* <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(UnitOfMeasureSapToMesMappingDTO))" @onclick:stopPropagation="true"> *@
                             <RadzenButton Icon="edit" Disabled=true ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(UnitOfMeasureSapToMesMappingDTO))" @onclick:stopPropagation="true">

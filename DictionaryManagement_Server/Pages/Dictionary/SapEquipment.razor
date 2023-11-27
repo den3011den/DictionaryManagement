@@ -4,7 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
-@using DictionaryManagement_Server.Extensions;
+
 
 @inject IJSRuntime _jsRuntime
 @inject ISapEquipmentRepository _sapEquipmentRepository
@@ -77,7 +77,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapEquipmentDTO" Context="sapEquipmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="86px">
+                    <RadzenDataGridColumn Title = "Действия" TItem="SapEquipmentDTO" Context="sapEquipmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="86px">
                         <Template Context="sapEquipmentDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapEquipmentDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

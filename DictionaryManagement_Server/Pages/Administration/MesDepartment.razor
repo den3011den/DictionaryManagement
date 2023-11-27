@@ -6,7 +6,7 @@
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 @using System.Text.Json;
-@using DictionaryManagement_Server.Extensions;
+
 
 
 @inject IJSRuntime _jsRuntime
@@ -42,7 +42,7 @@
                 <RadzenButton class="mt-2 mb-4" title="@(IsExpandModeOn ? "Свернуть всю иерархию производств" : "Развернуть всю иерархию производств")" Text="@(IsExpandModeOn ? "Свернуть" : "Развернуть")"
                         Icon="@(IsExpandModeOn ? "unfold_less" : "unfold_more")" Click="@(args => ToggleRowsExpand(!IsExpandModeOn))"
                         IsBusy=@ExpandInProgressFlag BusyText="Выполняется ..."/>
-                <div class="mt-2 mb-4 col-2" style="white-space:pre-wrap; font-size: 10px; color:powderblue">
+                <div class="mt-2 mb-4 col-6" style="white-space:pre-wrap; font-size: 10px; color:powderblue">
                     <RadzenLabel Text="* фильтр работает только по записям, которые развёрнуты в отображаемом списке" />
                 </div>
             </RadzenRow>
@@ -81,7 +81,7 @@
                             <RadzenCheckBox @bind-Value="data.IsArchive" ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Context="mesDepartmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="70px">
+                    <RadzenDataGridColumn Title="Действия" TItem="MesDepartmentDTO" Context="mesDepartmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="70px">
                         <Template Context="mesDepartmentDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesDepartmentDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

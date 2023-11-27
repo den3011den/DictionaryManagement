@@ -5,7 +5,7 @@
 @using DictionaryManagement_Common;
 @using DictionaryManagement_Models.IntDBModels;
 @using System.Text.Json;
-@using DictionaryManagement_Server.Extensions;
+
 
 
 @inject IJSRuntime _jsRuntime
@@ -107,7 +107,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="65px">
+                    <RadzenDataGridColumn Title="Действия" TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="65px">
                         <Template Context="reportTemplateDTO">
                             <RadzenButton title="Скачать файл шаблона" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadTemplate(reportTemplateDTO.Id))" @onclick:stopPropagation="true">
                             </RadzenButton>

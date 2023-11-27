@@ -4,7 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
-@using DictionaryManagement_Server.Extensions;
+
 
 
 @inject DialogService DialogService
@@ -55,7 +55,7 @@
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="DataSourceDTO" Context="dataSourceDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumn Title = "Действия" TItem="DataSourceDTO" Context="dataSourceDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="dataSourceDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(dataSourceDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -197,15 +197,16 @@
             dataSourceDTOToInsert = null;
         }
 
-        dataSourceDTOToUpdate = null;
-
-        var objectForRestore = _dataSourceRepository.Get(dataSourceDTO.Id).GetAwaiter().GetResult();
-        dataSourceDTO.Name = objectForRestore.Name;
-        dataSourceDTOGrid.UpdateRow(dataSourceDTO);
-        dataSourceDTOGrid.Reload();
-
+        dataSourceDTOToUpdate = null;        
         dataSourceDTOGrid.CancelEditRow(dataSourceDTO);
 
+        var objectForRestore = _dataSourceRepository.Get(dataSourceDTO.Id).GetAwaiter().GetResult();
+        if (objectForRestore != null)
+        {
+            dataSourceDTO.Name = objectForRestore.Name;
+            dataSourceDTOGrid.UpdateRow(dataSourceDTO);
+            dataSourceDTOGrid.Reload();
+        }
     }
 
     async Task DeleteRow(DataSourceDTO dataSourceDTO)

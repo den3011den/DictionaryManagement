@@ -4,7 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
-@using DictionaryManagement_Server.Extensions;
+
 
 
 @inject IJSRuntime _jsRuntime
@@ -60,7 +60,7 @@
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="LogEventTypeDTO" Context="logEventTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumn Title="Действия" TItem="LogEventTypeDTO" Context="logEventTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="logEventTypeDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(logEventTypeDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -284,7 +284,7 @@
             if (firtsInsertRow)
             {
                 firtsInsertRow = false;
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "warning", "Добавление новой записи в справочник типов событий не приведёт к появлению событий этого типа в журнале событий без внесения изменений в код приложения!");
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "warning", "Добавление новой записи в справочник типов событий не приведёт к появлению событий этого типа в журнале событий без внесения изменений в программный код приложений СИР!");
             }
 
             logEventTypeDTOToInsert = new LogEventTypeDTO();

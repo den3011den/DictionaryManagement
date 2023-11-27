@@ -6,7 +6,7 @@
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 @using System.Text.Json;
-@using DictionaryManagement_Server.Extensions;
+
 
 
 @inject IJSRuntime _jsRuntime
@@ -40,8 +40,7 @@
                             FilterMode="FilterMode.Simple"
                             AllowColumnResize="true"
                             Density=Density.Compact
-                            ShowPagingSummary="true"
-                            EmptyText="Нет записей для отображения"                            
+                            ShowPagingSummary="true"                                                        
                             AllowVirtualization="true"
                             Style="height:790px">
                 <Columns>
@@ -78,7 +77,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="ADGroupDTO" Context="adGroupDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="16px">
+                    <RadzenDataGridColumn Title="Действия" TItem="ADGroupDTO" Context="adGroupDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="16px">
                         <Template Context="adGroupDTO">
                             <RadzenButton title="Редактировать группу AD" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(adGroupDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

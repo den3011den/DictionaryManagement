@@ -69,6 +69,52 @@ namespace DictionaryManagement_Models.IntDBModels
             }
         }
 
+        [NotMapped]
+        [Display(Name = "Крит.")]
+        public bool IsCriticalBool
+        {
+            get
+            {
+
+                return IsCritical == null ? false : (bool)IsCritical;
+
+            }
+            set
+            {
+                IsCriticalBool = value;
+            }
+        }
+
+        [NotMapped]
+        [Display(Name = "Ошибка")]
+        public bool IsErrorBool
+        {
+            get
+            {
+
+                return IsError == null ? false : (bool)IsError;
+
+            }
+            set
+            {
+                IsErrorBool = value;
+            }
+        }
+
+        [NotMapped]
+        [Display(Name = "Ошибка")]
+        public bool IsWarningBool
+        {
+            get
+            {
+                return IsWarning == null ? false : (bool)IsWarning;
+            }
+            set
+            {
+                IsWarningBool = value;
+            }
+        }
+
     }
 }
 

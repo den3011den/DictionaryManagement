@@ -4,7 +4,7 @@
 @using System.Text.Json;
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels;
-@using DictionaryManagement_Server.Extensions;
+
 
 @inject IJSRuntime _jsRuntime
 @inject TooltipService tooltipService
@@ -99,32 +99,38 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="IsCritical" Title="Крит." Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="LogEventDTO" Property="IsCriticalBool" Title="Крит." Filterable="true" Width="35px" TextAlign="TextAlign.Center">
                         <Template Context="data">
-                            @if (data.IsCritical == true)
+                            @if (data.IsCriticalBool)
                             {
-                                    <RadzenCheckBox @bind-Value=data.IsCritical ReadOnly="true" TriState="false" TValue="bool?"
-                                            Style="background-color: red;border: 1px solid red;" />
+                            <RadzenCheckBox @bind-Value=data.IsCriticalBool ReadOnly="true" TriState="false" TValue="bool"
+                                Style="background-color: red;border: 1px solid red;" />
+                            }
+                            else
+                            {
+                                <RadzenCheckBox @bind-Value=data.IsCriticalBool ReadOnly="true" TriState="false" TValue="bool"/>
                             }
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="IsError" Title="Ошибка" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="LogEventDTO" Property="IsErrorBool" Title="Ошибка" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
                         <Template Context="data">
-                            @if (data.IsError == true)
-                            { 
-                                    <RadzenCheckBox @bind-Value=data.IsError ReadOnly="true" TriState="false" TValue="bool?" 
-                                        Style="background-color: red;border: 1px solid red;" />
+                            @if (data.IsErrorBool)
+                            {
+
+                                <RadzenCheckBox @bind-Value=data.IsErrorBool ReadOnly="true" TriState="false" TValue="bool"
+                                    Style="background-color: red;border: 1px solid red;" />
+                            }
+                            else
+                            {
+                                <RadzenCheckBox @bind-Value=data.IsErrorBool ReadOnly="true" TriState="false" TValue="bool"/>
                             }
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="IsWarning" Title="Предупреждение" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="LogEventDTO" Property="IsWarningBool" Title="Предупреждение" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
                         <Template Context="data">
-                            @if (data.IsWarning == true)
-                            {
-                                <RadzenCheckBox @bind-Value=data.IsWarning ReadOnly="true" TriState="false" TValue="bool?" />
-                            }
+                            <RadzenCheckBox @bind-Value=data.IsWarningBool ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>

@@ -389,10 +389,10 @@
                 {
                     if ((ActiveMesParamDTO.SapEquipmentIdSource != null) && (ActiveMesParamDTO.SapEquipmentIdDest != null) && (ActiveMesParamDTO.SapMaterialId != null))
                     {
-                        var foundBySapMapping = await _mesParamRepository.GetBySapMapping(ActiveMesParamDTO.SapEquipmentIdSource, ActiveMesParamDTO.SapEquipmentIdDest, ActiveMesParamDTO.SapMaterialId, 0);
+                        var foundBySapMapping = await _mesParamRepository.GetBySapMappingNotInArchive(ActiveMesParamDTO.SapEquipmentIdSource, ActiveMesParamDTO.SapEquipmentIdDest, ActiveMesParamDTO.SapMaterialId, 0);
                         if (foundBySapMapping != null)
                         {
-                            await _jsRuntime.ToastrError("Уже есть тэг СИР с таким же маппингом \"Источник SAP + Приёмник SAP + Материал SAP\" ( КОД: " + foundBySapMapping.Code.ToString() + " НАИМЕНОВАНИЕ: " + foundBySapMapping.Name + " ИД: " + foundBySapMapping.Id.ToString() + ")");
+                            await _jsRuntime.ToastrError("Уже есть не архивный тэг СИР с таким же маппингом \"Источник SAP + Приёмник SAP + Материал SAP\" ( КОД: " + foundBySapMapping.Code.ToString() + " НАИМЕНОВАНИЕ: " + foundBySapMapping.Name + " ИД: " + foundBySapMapping.Id.ToString() + ")");
                             return;
                         }
                     }
@@ -448,10 +448,10 @@
                     {
                         if ((ActiveMesParamDTO.SapEquipmentIdSource != null) && (ActiveMesParamDTO.SapEquipmentIdDest != null) && (ActiveMesParamDTO.SapMaterialId != null))
                         {
-                            var foundBySapMapping = await _mesParamRepository.GetBySapMapping(ActiveMesParamDTO.SapEquipmentIdSource, ActiveMesParamDTO.SapEquipmentIdDest, ActiveMesParamDTO.SapMaterialId, ActiveMesParamDTO.Id);
+                            var foundBySapMapping = await _mesParamRepository.GetBySapMappingNotInArchive(ActiveMesParamDTO.SapEquipmentIdSource, ActiveMesParamDTO.SapEquipmentIdDest, ActiveMesParamDTO.SapMaterialId, ActiveMesParamDTO.Id);
                             if (foundBySapMapping != null)
                             {
-                                await _jsRuntime.ToastrError("Уже есть тэг СИР с таким же маппингом \"Источник SAP + Приёмник SAP + Материал SAP\" ( КОД: " + foundBySapMapping.Code.ToString() + " НАИМЕНОВАНИЕ: " + foundBySapMapping.Name + " ИД: " + foundBySapMapping.Id.ToString() + ")");
+                                await _jsRuntime.ToastrError("Уже есть не архивный тэг СИР с таким же маппингом \"Источник SAP + Приёмник SAP + Материал SAP\" ( КОД: " + foundBySapMapping.Code.ToString() + " НАИМЕНОВАНИЕ: " + foundBySapMapping.Name + " ИД: " + foundBySapMapping.Id.ToString() + ")");
                                 return;
                             }
                         }

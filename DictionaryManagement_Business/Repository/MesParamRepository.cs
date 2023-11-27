@@ -412,7 +412,7 @@ namespace DictionaryManagement_Business.Repository
 
         }
 
-        public async Task<MesParamDTO> GetBySapMapping(int? sapEquipmentIdSource, int? sapEquipmentIdDest, int? sapMaterialId, int idForExclude)
+        public async Task<MesParamDTO> GetBySapMappingNotInArchive(int? sapEquipmentIdSource, int? sapEquipmentIdDest, int? sapMaterialId, int idForExclude)
         {
             if (sapEquipmentIdSource != null && sapEquipmentIdDest != null && sapMaterialId != null)
                 if (sapEquipmentIdSource > 0 && sapEquipmentIdDest > 0 && sapMaterialId > 0)
@@ -428,7 +428,7 @@ namespace DictionaryManagement_Business.Repository
                                     .Include("SapUnitOfMeasureFK")
                                     .FirstOrDefaultWithNoLock(u => u.SapEquipmentIdSource == sapEquipmentIdSource
                                         && u.SapEquipmentIdDest == sapEquipmentIdDest && u.SapMaterialId == sapMaterialId
-                                        && u.Id != idForExclude);
+                                        && u.Id != idForExclude && u.IsArchive != true);
                     if (objToGet != null)
                     {
                         return _mapper.Map<MesParam, MesParamDTO>(objToGet);
