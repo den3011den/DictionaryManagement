@@ -6,6 +6,7 @@
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 @using System.Text.Json;
+@using DictionaryManagement_Server.Extensions;
 
 
 @inject IJSRuntime _jsRuntime
@@ -32,7 +33,7 @@
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить группу AD" Click="@(args => EditRow(null))" />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
-            <RadzenDataGrid @bind-Settings="@ADGroupGridSettings" @ref="adGroupDTOGrid" AllowAlternatingRows="true"
+            <RadzenDataGridApp @bind-Settings="@ADGroupGridSettings" @ref="adGroupDTOGrid" AllowAlternatingRows="true"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
                             Data="@adGroupDTOs" TItem="ADGroupDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -42,7 +43,7 @@
                             ShowPagingSummary="true"
                             EmptyText="Нет записей для отображения"                            
                             AllowVirtualization="true"
-                            Style="height:745px">
+                            Style="height:790px">
                 <Columns>
                     <RadzenDataGridColumn TItem="ADGroupDTO" Property="ToStringId" Title="Ид роли" Width="35px"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
@@ -95,7 +96,7 @@
                     </RadzenDataGridColumn>
 
                 </Columns>
-            </RadzenDataGrid>
+            </RadzenDataGridApp>
 
         }
         else

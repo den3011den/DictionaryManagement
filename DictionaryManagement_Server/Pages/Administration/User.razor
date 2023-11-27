@@ -6,6 +6,7 @@
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 @using System.Text.Json;
+@using DictionaryManagement_Server.Extensions;
 
 
 @inject IJSRuntime _jsRuntime
@@ -33,7 +34,7 @@
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить нового пользователя" Click="@(args => EditRow(null))" />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
-            <RadzenDataGrid @bind-Settings="@UserGridSettings" @ref="userDTOGrid" AllowAlternatingRows="true"
+            <RadzenDataGridApp @bind-Settings="@UserGridSettings" @ref="userDTOGrid" AllowAlternatingRows="true"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
                             EqualsText="Равно"
                             NotEqualsText="Не равно"
@@ -53,7 +54,7 @@
                             ShowPagingSummary="true"
                             EmptyText="Нет записей для отображения"
                             AllowVirtualization="true"
-                            Style="height:745px">
+                            Style="height:790px">
                 <Columns>
                     <RadzenDataGridColumn TItem="UserDTO" Property="ToStringId" Title="Ид роли" Width="30px"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
@@ -125,7 +126,7 @@
                     </RadzenDataGridColumn>
 
                 </Columns>
-            </RadzenDataGrid>
+            </RadzenDataGridApp>
 
         }
         else

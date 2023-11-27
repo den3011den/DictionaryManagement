@@ -5,6 +5,7 @@
 @using DictionaryManagement_Common;
 @using DictionaryManagement_Models.IntDBModels;
 @using System.Text.Json;
+@using DictionaryManagement_Server.Extensions;
 
 
 @inject IJSRuntime _jsRuntime
@@ -37,7 +38,7 @@
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
 
-            <RadzenDataGrid @bind-Settings="@ReportTemplateGridSettings" @ref="reportTemplateDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @bind-Settings="@ReportTemplateGridSettings" @ref="reportTemplateDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@reportTemplateDTOs" TItem="ReportTemplateDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             FilterMode="FilterMode.Simple"
@@ -47,7 +48,7 @@
                             AllowColumnResize="false"
                             AllowVirtualization="true"
                             GridLines="DataGridGridLines.Both"
-                            Style="height:745px">
+                            Style="height:790px">
                 <Columns>
 
                     <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="ToStringId" Title="Ид шаблона отчёта" Width="110px"
@@ -125,7 +126,7 @@
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>
-            </RadzenDataGrid>
+            </RadzenDataGridApp>
             @*   </div>*@
 
         }

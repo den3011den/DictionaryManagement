@@ -59,7 +59,7 @@
                                AllowVirtualization="true"
                                AllowColumnReorder="true"
                                AllowColumnResize="true"
-                               Style="height:745px; width:1600px"
+                               Style="height:790px; width:1600px"
                                ColumnWidth="200px"
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both">
@@ -142,7 +142,7 @@
                     </RadzenDataGridColumn>
 
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Context="sapNdoOUTDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+                    <RadzenDataGridColumn Title="Действия" TItem="SapNdoOUTDTO" Context="sapNdoOUTDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
                         <Template Context="sapNdoOUTDTO">
                             <RadzenButton title="Редактировать запись" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapNdoOUTDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

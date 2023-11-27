@@ -4,6 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using DictionaryManagement_Server.Extensions;
 
 @inject IJSRuntime _jsRuntime
 @inject ISapEquipmentRepository _sapEquipmentRepository
@@ -26,14 +27,14 @@
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
 
-            <RadzenDataGrid @ref="sapEquipmentDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @ref="sapEquipmentDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@sapEquipmentDTOs" TItem="SapEquipmentDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
                             AllowColumnResize="false"
                             FilterMode="FilterMode.Simple"
                             GridLines="DataGridGridLines.Both"
-                            Style="height:745px">
+                            Style="height:790px">
 
                 <Columns>
                     <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Id" Title="Ид записи" Width="80px" />
@@ -102,7 +103,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
                 </Columns>
-            </RadzenDataGrid>
+            </RadzenDataGridApp>
         }
         else
         {

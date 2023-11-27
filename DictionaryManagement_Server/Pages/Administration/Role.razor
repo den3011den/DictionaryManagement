@@ -7,6 +7,8 @@
 @using DictionaryManagement_Server.Pages.Reports;
 @using Microsoft.EntityFrameworkCore;
 @using System.Text.Json;
+@using DictionaryManagement_Server.Extensions;
+
 
 
 @inject IJSRuntime _jsRuntime
@@ -39,7 +41,7 @@
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
 
-            <RadzenDataGrid @bind-Settings="@RoleGridSettings" @ref="roleVMDTOGrid" AllowAlternatingRows="true"
+            <RadzenDataGridApp @bind-Settings="@RoleGridSettings" @ref="roleVMDTOGrid" AllowAlternatingRows="true"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
                             Data="@roleVMDTOs" TItem="RoleVMDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -49,7 +51,7 @@
                             ShowPagingSummary="true"
                             EmptyText="Нет записей для отображения"
                             AllowVirtualization="true"
-                            Style="height:745px">
+                            Style="height:790px">
                 <Columns>
                     <RadzenDataGridColumn TItem="RoleVMDTO" Property="ToStringId" Title="Ид роли" Width="10px"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
@@ -235,7 +237,7 @@
 
 
                 </Columns>
-            </RadzenDataGrid>
+            </RadzenDataGridApp>
             @*             <button title=@($"Тест производства") class="btn btn-link" style="width: 100%; padding: 0; overflow: hidden; font-size:10px;align-items: center; justify-content: center;" @onclick="()=>LinkDepartmentToRole(testGuid)"> + Тест производства + </button> *@
 
         }

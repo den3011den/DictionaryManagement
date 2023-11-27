@@ -3,6 +3,7 @@
 
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
+@using DictionaryManagement_Server.Extensions;
 
 @inject IJSRuntime _jsRuntime
 
@@ -30,7 +31,7 @@
                         <RadzenColumn Size="12">
                             <RadzenStack>
                                 <RadzenStack Gap="1rem">
-                                    <RadzenDataGrid AllowAlternatingRows="true" AllowFiltering="true" PageSize="15" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                                    <RadzenDataGridApp AllowAlternatingRows="true" AllowFiltering="true" PageSize="15" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                                     Data="UserDTOList" TItem="UserDTO"
                                                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                                     FilterMode="FilterMode.Simple"
@@ -53,7 +54,7 @@
                                             <RadzenDataGridColumn TItem="UserDTO" Property="UserName" Title="Наименование" Width="140px">
                                             </RadzenDataGridColumn>
                                         </Columns>
-                                    </RadzenDataGrid>
+                                    </RadzenDataGridApp>
                                 </RadzenStack>
                             </RadzenStack>
                         </RadzenColumn>

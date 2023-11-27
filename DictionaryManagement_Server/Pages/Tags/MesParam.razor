@@ -8,6 +8,8 @@
 @using Microsoft.EntityFrameworkCore;
 @using System.Text.Json;
 @using System.Linq.Dynamic.Core
+@using DictionaryManagement_Server.Extensions;
+
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
 
 
@@ -39,7 +41,7 @@
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тэг СИР" Click="@(args => EditRow(null, SD.EditMode.Create))" />
                 <RadzenButton @ref="xlxButton" class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
-            <RadzenDataGrid @bind-Settings="@MesParamGridSettings" @ref="mesParamDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @bind-Settings="@MesParamGridSettings" @ref="mesParamDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@mesParamDTOs" TItem="MesParamDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             FilterMode="FilterMode.Simple"
@@ -48,7 +50,7 @@
                             AllowColumnResize="false"
                             AllowVirtualization="true"                            
                             GridLines="DataGridGridLines.Both"
-                            Style="height:745px">
+                            Style="height:790px">
 
 
                 <Columns>
@@ -192,7 +194,7 @@
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>
-            </RadzenDataGrid>
+            </RadzenDataGridApp>
             @*   </div>*@
 
         }

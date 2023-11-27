@@ -30,6 +30,7 @@ namespace DictionaryManagement_Server.Extensions
             base.AllColumnsText = "Все";
             base.ColumnsShowingText = "колонок отображается";
             base.ColumnsText = "Не выбрано";
+            base.PagingSummaryFormat = $"Страница {{0}} из {{1}} (всего записей {{2}} )";
         }
     }
 }

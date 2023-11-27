@@ -6,6 +6,7 @@
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 @using System.Text.Json;
+@using DictionaryManagement_Server.Extensions;
 
 
 @inject IJSRuntime _jsRuntime
@@ -45,7 +46,7 @@
                     <RadzenLabel Text="* фильтр работает только по записям, которые развёрнуты в отображаемом списке" />
                 </div>
             </RadzenRow>
-            <RadzenDataGrid @bind-Settings="@MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" ExpandMode="DataGridExpandMode.Multiple"
+            <RadzenDataGridApp @bind-Settings="@MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" ExpandMode="DataGridExpandMode.Multiple"
                             Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
@@ -54,7 +55,7 @@
                             Density="Density.Compact"
                             AllowColumnResize="false"
                             GridLines="DataGridGridLines.Both"                           
-                            Style="height:745px">
+                            Style="height:790px">
                 <Columns>
                     <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Name" Title="Наименование" Frozen="true" Width="200px"
                                           FilterOperator="FilterOperator.Contains" SortProperty="Name" FilterProperty="Name"
@@ -98,7 +99,7 @@
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>
-            </RadzenDataGrid>
+            </RadzenDataGridApp>
 
         }
         else

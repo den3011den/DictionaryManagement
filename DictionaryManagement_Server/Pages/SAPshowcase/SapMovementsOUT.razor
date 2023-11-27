@@ -57,7 +57,7 @@
     ShowPagingSummary="true"
     EmptyText="Нет записей для отображения"
     AllowVirtualization="true"
-    Style="height:745px"> *@
+    Style="height:790px"> *@
 
             <RadzenDataGridApp @bind-Settings="@SapMovementsOUTGridSettings" @ref="sapMovementsOUTDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@sapMovementsOUTDTOs" TItem="SapMovementsOUTDTO"
@@ -69,7 +69,7 @@
                                AllowVirtualization="true"
                                AllowColumnReorder="true"
                                AllowColumnResize="true"
-                               Style="height:745px; width:1600px"
+                               Style="height:790px; width:1600px"
                                ColumnWidth="200px"
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both">
@@ -283,7 +283,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Context="sapMovementsOUTDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+                    <RadzenDataGridColumn Title="Действия" TItem="SapMovementsOUTDTO" Context="sapMovementsOUTDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
                         <Template Context="sapMovementsOUTDTO">
                             <RadzenButton title="Редактировать запись" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapMovementsOUTDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

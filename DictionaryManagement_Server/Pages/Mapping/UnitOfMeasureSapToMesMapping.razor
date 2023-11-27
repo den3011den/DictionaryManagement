@@ -5,7 +5,7 @@
 @using DictionaryManagement_DataAccess.Data.IntDB;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
-
+@using DictionaryManagement_Server.Extensions;
 
 @inject IJSRuntime _jsRuntime
 @inject IUnitOfMeasureSapToMesMappingRepository _unitOfMeasureSapToMesMappingRepository
@@ -32,7 +32,7 @@
         {
             @* <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую связку ед. изм." Click="@InsertRow" Disabled=@(unitOfMeasureSapToMesMappingDTOToInsert != null || unitOfMeasureSapToMesMappingDTOToUpdate != null) /> *@
             <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую связку ед. изм." Click="@InsertRow" Disabled=true />
-            <RadzenDataGrid @ref="unitOfMeasureSapToMesMappingDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @ref="unitOfMeasureSapToMesMappingDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@unitOfMeasureSapToMesMappingDTOs" TItem="UnitOfMeasureSapToMesMappingDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
@@ -40,7 +40,7 @@
                             AllowColumnResize="false"
                             AllowVirtualization="true"
                             GridLines="DataGridGridLines.Both"
-                            Style="height:745px">
+                            Style="height:790px">
                 <Columns>
                     <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapUnitOfMeasureDTO" FilterProperty="SapUnitOfMeasureDTO.ShortName" Title="Ед. изм. SAP" Width="280px" Filterable="true">
                         <EditTemplate Context="unitOfMeasureSapToMesMappingDTO">
@@ -89,7 +89,7 @@
                     </RadzenDataGridColumn>
 
                 </Columns>
-            </RadzenDataGrid>
+            </RadzenDataGridApp>
         }
         else
         {

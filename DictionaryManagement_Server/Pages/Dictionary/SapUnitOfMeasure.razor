@@ -4,6 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using DictionaryManagement_Server.Extensions;
 
 
 @inject IJSRuntime _jsRuntime
@@ -30,14 +31,14 @@
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
 
-            <RadzenDataGrid @ref="sapUnitOfMeasureDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @ref="sapUnitOfMeasureDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@sapUnitOfMeasureDTOs" TItem="SapUnitOfMeasureDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
                             FilterMode="FilterMode.Simple"
                             AllowColumnResize="false"                            
                             GridLines="DataGridGridLines.Both"
-                            Style="height:745px">                
+                            Style="height:790px">                
                 <Columns>
                     <RadzenDataGridColumn TItem="SapUnitOfMeasureDTO" Property="Id" Title="Ид записи" Width="120px" />
                     <RadzenDataGridColumn TItem="SapUnitOfMeasureDTO" Property="Name" Title="Наименование">
@@ -86,7 +87,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
                 </Columns>
-            </RadzenDataGrid>
+            </RadzenDataGridApp>
         }
         else
         {
