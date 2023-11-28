@@ -55,12 +55,15 @@ main {
         height: 100vh;
         position: sticky;
         top: 0;
+        left: 0;
+        z-index: 998;
     }
 
     .top-row {
         position: sticky;
         top: 0;
-        z-index: 1;
+        left: 0;
+        z-index: 999;
     }
 
     .top-row, article {

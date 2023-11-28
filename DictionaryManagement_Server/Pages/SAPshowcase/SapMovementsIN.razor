@@ -59,7 +59,7 @@
                                AllowVirtualization="true"
                                AllowColumnReorder="true"
                                AllowColumnResize="true"
-                               Style="height:calc(100vh - 170px); width:1600px"
+                               Style=@(iconMenuActive ? "height:calc(100vh - 170px); width:1760px" : "height:calc(100vh - 170px); width:1600px")
                                ColumnWidth="200px"
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both">
@@ -398,6 +398,8 @@
 }
 
 @code {
+    [CascadingParameter]
+    bool iconMenuActive { get; set; }
 
     _Dialogs? _dialogs { get; set; }
 

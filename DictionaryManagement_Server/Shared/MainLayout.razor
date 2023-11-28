@@ -9,7 +9,7 @@
 
             @* <NavMenu /> *@
             <NavMenu ShowIconMenu="ToggleIconMenu" />
-       </div>
+        </div>
 
         <main>
             <RadzenDialog />
@@ -21,8 +21,10 @@
                 <LoginDisplay />
             </div>
             <article class="content px-4">
-                @Body
-        </article>
+                <CascadingValue Value=_iconMenuActive>
+                    @Body
+            </CascadingValue>
+             </article>
         <article class="content px-4">
             @* <LoginDisplay />*@
         </article>
