@@ -321,7 +321,7 @@
     </nav>
 
 </div>
-@* <div class="bottom-row">
+<div class="bottom-row">
     <div class="icon-menu-arrow">
         @if (!@IconMenuActive)
         {
@@ -332,7 +332,7 @@
             <span class="bi bi-arrow-right" style="color: white;" @onclick="ToggleIconMenu"></span>
         }
     </div>
-</div> *@
+</div>
 
 
 @code {
@@ -344,7 +344,7 @@
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
+    
     private bool expandSubNavDictionary;
     private bool expandSubNavMapping;
     private bool expandSubNavTags;

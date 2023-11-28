@@ -90,7 +90,7 @@
                     <RadzenDataGridColumn TItem="MesMovementsDTO" Property="AddUserDTOFK.UserName" Title="Кто добавил"
                                           TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
-                            <div style="white-space:pre-wrap; font-size: 12px">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.AddUserDTOFK.UserName
                             </div>
                         </Template>
@@ -101,7 +101,7 @@
                         <Template Context="data1">
                             @if (data1.DataSourceDTOFK != null)
                             {
-                                <div style="white-space:pre-wrap; font-size: 12px">
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                     @data1.DataSourceDTOFK.Name
                                 </div>
                             }
@@ -114,21 +114,31 @@
                             @if (data1.DataTypeDTOFK != null)
                             {
 
-                                <div style="white-space:pre-wrap; font-size: 12px">
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                     @data1.DataTypeDTOFK.Name
                                 </div>
                             }
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesParamDTOFK.Code" Title="Тэг (code + name)"
+                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesParamDTOFK.Code" Title="Тэг (code)"
                                           TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                @(data1.MesParamDTOFK.Code == null ? "" : data1.MesParamDTOFK.Code + " " + data1.MesParamDTOFK.Name == null ? "" : data1.MesParamDTOFK.Name)
+                                @(data1.MesParamDTOFK.Code == null ? "" : data1.MesParamDTOFK.Code)
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesParamDTOFK.Name" Title="Тэг (name)"
+                                          TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
+                        <Template Context="data1">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                @(data1.MesParamDTOFK.Name == null ? "" : data1.MesParamDTOFK.Name)
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
+
 
                     <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ValueTime" Title="Время значения" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
@@ -155,7 +165,7 @@
                         <Template Context="data1">
                             @if (data1.ReportEntityDTOFK != null)
                             {
-                                <div style="white-space:pre-wrap; font-size: 12px">
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                     @data1.ReportEntityDTOFK.ToStringId
                                 </div>
                             }
@@ -166,7 +176,7 @@
                         <Template Context="data1">
                             @if (data1.ToStringPreviousRecordId != null)
                             {
-                                <div style="white-space:pre-wrap; font-size: 12px">
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                     @data1.ToStringPreviousRecordId
                                 </div>
                             }

@@ -3,23 +3,25 @@
 
 <PageTitle>1 - Dictionary Management - @SD.AppVersion</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
-        @* <NavMenu /> *@
+    <div class="page">
+
+        <div class="sidebar" style=@(_iconMenuActive ? "width: 80px":"width: 240px")>
+
+            @* <NavMenu /> *@
             <NavMenu ShowIconMenu="ToggleIconMenu" />
-    </div>
+       </div>
 
-    <main>
-        <RadzenDialog />
-        <RadzenNotification />
-        <RadzenContextMenu />
-        <RadzenTooltip />
+        <main>
+            <RadzenDialog />
+            <RadzenNotification />
+            <RadzenContextMenu />
+            <RadzenTooltip />
 
-         <div class="top-row px-4 auth">
-            <LoginDisplay />
-         </div>  
-        <article class="content px-4">
-            @Body
+            <div class="top-row px-4 auth">
+                <LoginDisplay />
+            </div>
+            <article class="content px-4">
+                @Body
         </article>
         <article class="content px-4">
             @* <LoginDisplay />*@

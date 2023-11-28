@@ -180,7 +180,7 @@
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringCorrection2Previous" Title="Корректировка" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
                                           FilterProperty="ToStringCorrection2Previous" SortProperty="Correction2Previous" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
-                            <div style="white-space:pre-wrap; font-size: 12px">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
                                     @data1.ToStringCorrection2Previous
                                 </strong>
@@ -265,7 +265,7 @@
                         <Template Context="data1">
                             @if (data1.ToStringMesMovementId != null)
                             {
-                                <div style="white-space:pre-wrap; font-size: 12px">
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                     @data1.ToStringMesMovementId
                                 </div>
                             }
@@ -276,7 +276,7 @@
                         <Template Context="data1">
                             @if (data1.ToStringPreviousRecordId != null)
                             {
-                                <div style="white-space:pre-wrap; font-size: 12px">
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                     @data1.ToStringPreviousRecordId
                                 </div>
                             }

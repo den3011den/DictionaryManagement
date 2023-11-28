@@ -304,22 +304,55 @@
             </Template>
             </RadzenDataGridColumn> *@
 
+                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MesMovementDTOFK.MesParamDTOFK.Code" Title="Код тэга СИР" FilterProperty="MesMovementDTOFK.MesParamDTOFK.Code" SortProperty="MesMovementDTOFK.MesParamDTOFK.Code" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
+                        <Template Context="data1">
+                            @if (data1.MesMovementDTOFK != null)
+                            {
+                                @if (data1.MesMovementDTOFK.MesParamDTOFK != null)
+
+                                {
+                                    <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                        @(data1.MesMovementDTOFK.MesParamDTOFK.Code == null ? "" : data1.MesMovementDTOFK.MesParamDTOFK.Code)
+                                    </div>
+                                }
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MesMovementDTOFK.MesParamDTOFK.Name" Title="Наим. тэга СИР" FilterProperty="MesMovementDTOFK.MesParamDTOFK.Name" SortProperty="MesMovementDTOFK.MesParamDTOFK.Name" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
+                        <Template Context="data1">
+                            @if (data1.MesMovementDTOFK != null)
+                            {
+                                @if (data1.MesMovementDTOFK.MesParamDTOFK != null)
+
+                                {
+                                    <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                        @(data1.MesMovementDTOFK.MesParamDTOFK.Name == null ? "" : data1.MesMovementDTOFK.MesParamDTOFK.Name)
+                                    </div>
+                                }
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+
+
+
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="ToStringMesMovementId" Title="ИД в архиве данных" FilterProperty="ToStringMesMovementId" SortProperty="ToStringMesMovementId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.ToStringMesMovementId != null)
                             {
-                                <div style="white-space:pre-wrap; font-size: 12px">
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                     @data1.ToStringMesMovementId
                                 </div>
                             }
                         </Template>
                     </RadzenDataGridColumn>
 
+
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="PreviousErpId" Title="ИД пред. записи" FilterProperty="PreviousErpId" SortProperty="PreviousErpId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.PreviousErpId != null)
                             {
-                                <div style="white-space:pre-wrap; font-size: 12px">
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                     @data1.PreviousErpId
                                 </div>
                             }
