@@ -49,7 +49,7 @@
                                ShowPagingSummary="true"
                                EmptyText="Нет записей для отображения"
                                AllowVirtualization="true"
-                               Style="height:790px">
+                               Style="height:calc(100vh - 170px)">
                 <Columns>
                     <RadzenDataGridColumn TItem="LogEventDTO" Property="ToStringId" Title="Ид записи" Width="35px" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">

@@ -174,7 +174,7 @@ namespace DictionaryManagement_Business.Repository
                                                               MesMovementFK = draftDbSapMovementsINSelectionAlias.MesMovementFK,
                                                               PreviousErpId = draftDbSapMovementsINSelectionAlias.PreviousErpId,
                                                               PreviousRecordFK = draftDbSapMovementsINSelectionAlias.PreviousRecordFK,
-                                                              MoveType = draftDbSapMovementsINSelectionAlias.MoveType,                                                              
+                                                              MoveType = draftDbSapMovementsINSelectionAlias.MoveType,
                                                           }).ToList();
             }
             else
