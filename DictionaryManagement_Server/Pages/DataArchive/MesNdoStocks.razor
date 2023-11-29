@@ -52,7 +52,7 @@
             <RadzenDataGridApp @bind-Settings="@MesNdoStocksGridSettings" @ref="mesNdoStocksDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@mesNdoStocksDTOs" TItem="MesNdoStocksDTO"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                               FilterMode="FilterMode.Simple"
+                               FilterMode="FilterMode.Advanced"
                                Density=Density.Compact
                                ShowPagingSummary="true"
                                EmptyText="Нет записей для отображения"
@@ -79,10 +79,10 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="MesParamDTOFK.Id" Title="ИД тэга СИР" FilterProperty="MesParamDTOFK.Id" SortProperty="MesParamDTOFK.Id" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="MesParamDTOFK.ToStringId" Title="ИД тэга СИР" FilterProperty="MesParamDTOFK.ToStringId" SortProperty="MesParamDTOFK.ToStringId" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                @data1.MesParamDTOFK.Id
+                                @data1.MesParamDTOFK.ToStringId
                             </div>
                         </Template>
                     </RadzenDataGridColumn>

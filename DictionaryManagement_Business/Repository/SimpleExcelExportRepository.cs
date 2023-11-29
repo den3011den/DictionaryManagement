@@ -16,6 +16,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.IO;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -72,6 +73,8 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
+
                 excelRowNum = 2;
                 foreach (ReportEntityDTO reportEntity in data)
                 {
@@ -108,6 +111,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -215,6 +222,8 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
+
                 excelRowNum = 2;
                 foreach (MesParamDTO mesParamDTO in data)
                 {
@@ -306,6 +315,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -342,6 +355,8 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
+
                 excelRowNum = 2;
                 foreach (SapEquipmentDTO sapEquipmentDTO in data)
                 {
@@ -364,6 +379,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -398,6 +417,8 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
+
                 excelRowNum = 2;
                 foreach (SapMaterialDTO sapMaterialDTO in data)
                 {
@@ -418,6 +439,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -456,6 +481,8 @@ namespace DictionaryManagement_Business.Repository
 
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+                                
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (UserDTO userDTO in data)
@@ -481,6 +508,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();                
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -514,6 +545,8 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
+
                 excelRowNum = 2;
                 foreach (ADGroupDTO adGroupDTO in data)
                 {
@@ -532,6 +565,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -553,10 +590,10 @@ namespace DictionaryManagement_Business.Repository
                 var wsReportTemplateTypeTоRole = wbook.AddWorksheet("ReportTemplateTypeTоRole");
                 var wsRoleToADGroup = wbook.AddWorksheet("RoleToADGroup");
                 var wsRoleToDepartment = wbook.AddWorksheet("RoleToDepartment");
-
+                
                 int excelRowNum = 1;
                 int excelColNum = 1;
-
+                
                 wsRole.Cell(excelRowNum, excelColNum).Value = "ИД (Id)";
                 excelColNum++;
                 wsRole.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
@@ -567,6 +604,8 @@ namespace DictionaryManagement_Business.Repository
 
                 wsRole.Row(excelRowNum).Style.Font.SetBold(true);
                 wsRole.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                wsRole.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 1;
                 excelColNum = 1;
@@ -599,6 +638,7 @@ namespace DictionaryManagement_Business.Repository
                 wsUserToRole.Row(excelRowNum).Style.Font.SetBold(true);
                 wsUserToRole.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                wsUserToRole.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 1;
                 excelColNum = 1;
@@ -629,6 +669,8 @@ namespace DictionaryManagement_Business.Repository
                 wsReportTemplateTypeTоRole.Row(excelRowNum).Style.Font.SetBold(true);
                 wsReportTemplateTypeTоRole.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                wsReportTemplateTypeTоRole.SheetView.FreezeRows(excelRowNum);
+
                 excelRowNum = 1;
                 excelColNum = 1;
 
@@ -654,6 +696,7 @@ namespace DictionaryManagement_Business.Repository
                 wsRoleToADGroup.Row(excelRowNum).Style.Font.SetBold(true);
                 wsRoleToADGroup.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                wsRoleToADGroup.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 1;
                 excelColNum = 1;
@@ -681,6 +724,8 @@ namespace DictionaryManagement_Business.Repository
 
                 wsRoleToDepartment.Row(excelRowNum).Style.Font.SetBold(true);
                 wsRoleToDepartment.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                wsRoleToDepartment.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
 
@@ -847,7 +892,7 @@ namespace DictionaryManagement_Business.Repository
                 for (var j = 1; j <= wsRoleColNum; j++)
                     wsRole.Column(j).AdjustToContents();
 
-                for (var j = 1; j <= wsRoleToDepartmentColNum; j++)
+                for (var j = 1; j <= wsUserToRoleColNum; j++)
                     wsUserToRole.Column(j).AdjustToContents();
 
                 for (var j = 1; j <= wsReportTemplateTypeTоRoleColNum; j++)
@@ -858,6 +903,24 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= wsRoleToADGroupColNum; j++)
                     wsRoleToDepartment.Column(j).AdjustToContents();
+
+                var rangeRole = wsRole.Range(wsRole.Cell(1, 1).Address, wsRole.Cell(wsRoleRowNum, wsRoleColNum).Address);
+                rangeRole.SetAutoFilter();
+
+                var rangeUserToRole = wsUserToRole.Range(wsUserToRole.Cell(1, 1).Address, wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Address);
+                rangeUserToRole.SetAutoFilter();
+                
+                var rangeReportTemplateTypeTоRole = wsReportTemplateTypeTоRole.Range(wsReportTemplateTypeTоRole.Cell(1, 1).Address,
+                    wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Address);
+                rangeReportTemplateTypeTоRole.SetAutoFilter();
+
+                var rangeRoleToADGroup = wsRoleToADGroup.Range(wsRoleToADGroup.Cell(1, 1).Address,
+                    wsRoleToADGroup.Cell(wsRoleToADGroupRowNum, wsRoleToADGroupColNum).Address);
+                rangeRoleToADGroup.SetAutoFilter();
+
+                var rangeRoleToDepartment = wsRoleToDepartment.Range(wsRoleToDepartment.Cell(1, 1).Address,
+                    wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Address);
+                rangeRoleToDepartment.SetAutoFilter();
 
 
                 wbook.SaveAs(fullfilepath);
@@ -1022,6 +1085,8 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
+
                 excelRowNum = 2;
                 foreach (MesNdoStocksDTO mesNdoStocksDTO in data)
                 {
@@ -1070,6 +1135,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -1110,6 +1179,8 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
+
                 excelRowNum = 2;
                 foreach (SapNdoOUTDTO sapNdoOUTDTO in data)
                 {
@@ -1134,6 +1205,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -1198,10 +1273,10 @@ namespace DictionaryManagement_Business.Repository
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Комментарий корректировки (MesMovementsComment.CorrectionComment)";
 
-
-
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
+
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (MesMovementsDTO mesMovementsDTO in data)
@@ -1264,6 +1339,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -1347,6 +1426,8 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
+
                 excelRowNum = 2;
                 foreach (SapMovementsOUTDTO sapMovementsOUTDTO in data)
                 {
@@ -1414,6 +1495,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -1505,6 +1590,8 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
+
                 excelRowNum = 2;
                 foreach (SapMovementsINDTO sapMovementsINDTO in data)
                 {
@@ -1581,6 +1668,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -1628,6 +1719,8 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
+
                 bool firstIteration = true;
 
                 excelRowNum = 2;
@@ -1666,6 +1759,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -1701,7 +1798,8 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
-                
+                ws.SheetView.FreezeRows(excelRowNum);
+
                 excelRowNum = 2;
                 foreach (MesMaterialDTO mesMaterialDTO in data)
                 {
@@ -1722,6 +1820,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -1755,6 +1857,7 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (SettingsDTO settingsDTO in data)
@@ -1774,6 +1877,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -1807,6 +1914,7 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (SapUnitOfMeasureDTO sapUnitOfMeasureDTO in data)
@@ -1826,6 +1934,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -1860,6 +1972,7 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (MesUnitOfMeasureDTO mesUnitOfMeasureDTO in data)
@@ -1879,6 +1992,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -1910,6 +2027,7 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (CorrectionReasonDTO correctionReasonDTO in data)
@@ -1927,6 +2045,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -1958,6 +2080,7 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (MesParamSourceTypeDTO mesParamSourceTypeDTO in data)
@@ -1975,6 +2098,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -2010,6 +2137,7 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (DataTypeDTO dataTypeDTO in data)
@@ -2031,6 +2159,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -2063,6 +2195,7 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (DataSourceDTO dataSourceDTO in data)
@@ -2080,6 +2213,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -2114,6 +2251,7 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (ReportTemplateTypeDTO reportTemplateTypeDTO in data)
@@ -2133,6 +2271,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -2184,6 +2326,7 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (ReportTemplateDTO reportTemplateDTO in data)
@@ -2221,6 +2364,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -2249,10 +2396,10 @@ namespace DictionaryManagement_Business.Repository
                 ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
                 excelColNum++;
 
-
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (LogEventTypeDTO logEventTypeDTO in data)
@@ -2270,6 +2417,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -2307,10 +2458,10 @@ namespace DictionaryManagement_Business.Repository
                 ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
                 excelColNum++;
 
-
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (SmenaDTO smenaDTO in data)
@@ -2336,6 +2487,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();
@@ -2369,6 +2524,7 @@ namespace DictionaryManagement_Business.Repository
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
 
+                ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
                 foreach (SchedulerDTO schedulerDTO in data)
@@ -2388,6 +2544,10 @@ namespace DictionaryManagement_Business.Repository
 
                 for (var j = 1; j <= excelColNum; j++)
                     ws.Column(j).AdjustToContents();
+
+                var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
+                range.SetAutoFilter();
+
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
                     wbook.Dispose();

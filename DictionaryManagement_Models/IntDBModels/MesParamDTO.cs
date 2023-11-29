@@ -22,7 +22,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public string Code { get; set; }
 
         //[Required(ErrorMessage = "Наименование тэга СИР обязательно для заполнения")]
-        [StringLength(250, MinimumLength = 3, ErrorMessage = "Наименование может быть от 3 до 250 символов")]
+        //[StringLength(250, MinimumLength = 3, ErrorMessage = "Наименование может быть от 3 до 250 символов")]
         [Display(Name = "Наименование")]
         public string? Name { get; set; }
         
@@ -149,6 +149,21 @@ namespace DictionaryManagement_Models.IntDBModels
                 IsNdoBool = value;
             }
         }
+
+        [NotMapped]
+        [Display(Name = "ИД")]
+        public string ToStringId
+        {
+            get
+            {
+                return Id.ToString();
+            }
+            set
+            {
+                ToStringId = value;
+            }
+        }
+
 
     }
 }

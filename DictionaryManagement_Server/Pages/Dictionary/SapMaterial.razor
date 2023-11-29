@@ -31,16 +31,16 @@
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
             <RadzenDataGridApp @ref="sapMaterialDTOGrid" AllowFiltering="true" AllowPaging="false" AllowAlternatingRows="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@sapMaterialDTOs" TItem="SapMaterialDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
-                            EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Simple"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            AllowColumnResize="false"
-                            AllowVirtualization="true"                            
-                            GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)">
+                               Data="@sapMaterialDTOs" TItem="SapMaterialDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
+                               EmptyText="Нет записей для отображения"
+                               FilterMode="FilterMode.Advanced"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                               AllowColumnResize="false"
+                               AllowVirtualization="true"
+                               GridLines="DataGridGridLines.Both"
+                               Style="height:calc(100vh - 170px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Id" Title="Ид записи" Width="60px" />
+                    <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Id" Title="Ид записи" Width="80px" />
                     <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Code" Title="Код материала" Width="100px">
                         <EditTemplate Context="sapMaterialDTO">
                             <RadzenTextBox @bind-Value="sapMaterialDTO.Code" Style="width:50%; display: block" Name="Code" />
@@ -75,12 +75,12 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="SapMaterialDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="50px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="SapMaterialDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn Title = "Действия" TItem="SapMaterialDTO" Context="sapMaterialDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumn Title="Действия" TItem="SapMaterialDTO" Context="sapMaterialDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="86px">
                         <Template Context="sapMaterialDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapMaterialDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -399,7 +399,7 @@
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
             string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
-            string filename = "SapMaterial_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";            
+            string filename = "SapMaterial_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
             await _simpleExcelExportRepository.GenerateExcelSapMaterial(filename, (IEnumerable<SapMaterialDTO>)sapMaterialDTOGrid.View);
             await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
         }

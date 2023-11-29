@@ -42,15 +42,15 @@
                 <RadzenButton @ref="xlxButton" class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
             <RadzenDataGridApp @bind-Settings="@MesParamGridSettings" @ref="mesParamDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@mesParamDTOs" TItem="MesParamDTO"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            FilterMode="FilterMode.Simple"
-                            Density=Density.Compact                            
-                            EmptyText="Нет записей для отображения"
-                            AllowColumnResize="false"
-                            AllowVirtualization="true"                            
-                            GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)">
+                               Data="@mesParamDTOs" TItem="MesParamDTO"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                               FilterMode="FilterMode.Advanced"
+                               Density=Density.Compact
+                               EmptyText="Нет записей для отображения"
+                               AllowColumnResize="false"
+                               AllowVirtualization="true"
+                               GridLines="DataGridGridLines.Both"
+                               Style="height:calc(100vh - 170px)">
 
 
                 <Columns>
@@ -146,7 +146,7 @@
                     <RadzenDataGridColumn TItem="MesParamDTO" Property="SapMaterialDTOFK" Title="Материал SAP" Width="70px" FilterProperty="SapMaterialDTOFK.ToStringCodeName" SortProperty="SapMaterialDTOFK.ToStringCodeName">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
-                            @(data1.SapMaterialDTOFK == null ? "" : data1.SapMaterialDTOFK.ToStringCodeName)
+                                @(data1.SapMaterialDTOFK == null ? "" : data1.SapMaterialDTOFK.ToStringCodeName)
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
@@ -159,7 +159,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                  
+
 
                     <RadzenDataGridColumn TItem="MesParamDTO" Property="IsNdoBool" Title="НДО" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
                         <Template Context="data">
@@ -245,7 +245,7 @@
                 //StateHasChanged();
                 await LoadStateAsync();
                 StateHasChanged();
-                mesParamDTOs = await _mesParamRepository.GetAll(SD.SelectDictionaryScope.All);                
+                mesParamDTOs = await _mesParamRepository.GetAll(SD.SelectDictionaryScope.All);
                 IsLoading = false;
                 StateHasChanged();
             }

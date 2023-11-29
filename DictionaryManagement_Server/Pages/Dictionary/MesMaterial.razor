@@ -36,11 +36,11 @@
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
                             AllowColumnResize="false"
-                            FilterMode="FilterMode.Simple"
+                            FilterMode="FilterMode.Advanced"
                             GridLines="DataGridGridLines.Both"
                             Style="height:calc(100vh - 170px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Id" Title="Ид записи" Width="50px" />
+                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Id" Title="Ид записи" Width="80px" />
                     <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Code" Title="Код материала" Width="100px">
                         <EditTemplate Context="mesMaterialDTO">
                             <RadzenTextBox @bind-Value="mesMaterialDTO.Code" Style="width:50%; display: block" Name="Code" />
@@ -76,13 +76,13 @@
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="50px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn Title ="Действия" TItem="MesMaterialDTO" Context="mesMaterialDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumn Title="Действия" TItem="MesMaterialDTO" Context="mesMaterialDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="86px">
                         <Template Context="mesMaterialDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesMaterialDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>

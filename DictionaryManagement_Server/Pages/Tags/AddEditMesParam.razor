@@ -47,6 +47,12 @@
                         <RadzenFieldset Text="Карточка тэга СИР">
                             <RadzenStack Gap="1rem">
 
+                                @if (@ActiveMesParamDTO.Id != null && @ActiveMesParamDTO.Id != 0)
+                                {
+                                    <RadzenFormField Text="ИД тэга СИР" Variant="@variant" Style="width: 100%; max-width: 900px;">
+                                        <RadzenNumeric @bind-Value="@ActiveMesParamDTO.Id" Disabled/>
+                                    </RadzenFormField>
+                                }
                                 <RadzenFormField Text="Код тэга СИР" Variant="@variant" Style="width: 100%; max-width: 900px;">
                                     <RadzenTextBox @bind-Value="@ActiveMesParamDTO.Code" />
                                 </RadzenFormField>
@@ -476,9 +482,9 @@
                         }
                     }
                 }
-             
+
                 if (ActiveMesParamDTO.MesParamSourceType != null && (ActiveMesParamDTO.MesParamSourceLink == null || ActiveMesParamDTO.MesParamSourceLink.Trim() == ""))
-                {                    
+                {
                     await _jsRuntime.ToastrError("Выбран \"Источник\", но не введён \"Тэг/ИД источника\"");
                     return;
                 }
