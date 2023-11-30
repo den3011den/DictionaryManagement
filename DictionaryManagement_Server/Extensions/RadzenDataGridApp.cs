@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
 using Radzen.Blazor;
 
 namespace DictionaryManagement_Server.Extensions
@@ -31,7 +32,16 @@ namespace DictionaryManagement_Server.Extensions
             base.ColumnsShowingText = "колонок отображается";
             base.ColumnsText = "Не выбрано";
             base.PagingSummaryFormat = $"Страница {{0}} из {{1}} (всего записей {{2}} )";
-            base.EmptyText = "Нет записей для отображения";
+            //base.EmptyText = "Нет записей для отображения";
+            base.EmptyTemplate = BuildRenderTree;
+        }
+
+        public void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            builder.OpenElement(1, "p");
+            builder.AddAttribute(2, "style", "color: lightgrey; font-size: 24px; text-align: center; margin: 2rem;");
+            builder.AddContent(3, "Нет записей для отображения");
+            builder.CloseElement();            
         }
     }
 }
