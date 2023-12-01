@@ -329,9 +329,9 @@ namespace DictionaryManagement_Business.Repository
         }
 
 
-        public async Task<IEnumerable<MesMovementsDTO>> GetAllByReportEntityId(Guid reportEntityId)
+        public async Task<IEnumerable<MesMovementsDTO>> GetAllByReportEntityId(Guid? reportEntityId)
         {
-            if (reportEntityId != Guid.Empty)
+            if (reportEntityId != null && reportEntityId != Guid.Empty)
             {
                 var hhh1 = _db.MesMovements
                                     .Include("AddUserFK")

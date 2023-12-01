@@ -100,6 +100,26 @@ namespace DictionaryManagement_Business.Repository
 
         }
 
+        public async Task<IEnumerable<MesNdoStocksDTO>> GetAllByReportEntityId(Guid? reportEntityId)
+        {
+
+            if (reportEntityId != null && reportEntityId != Guid.Empty)
+            {
+                var hhh1 = _db.MesNdoStocks
+                    .Include("MesParamFK")
+                    .Include("AddUserFK")
+                    .Include("ReportEntityFK")
+                    .Include("SapNdoOUTFK")
+                    .Where(u => u.ReportGuid == reportEntityId).ToListWithNoLock();
+                return _mapper.Map<IEnumerable<MesNdoStocks>, IEnumerable<MesNdoStocksDTO>>(hhh1);
+            }
+            else
+            {
+                return new List<MesNdoStocksDTO>();
+            }
+
+        }
+
 
         public async Task<MesNdoStocksDTO> Update(MesNdoStocksDTO objectToUpdateDTO)
         {
