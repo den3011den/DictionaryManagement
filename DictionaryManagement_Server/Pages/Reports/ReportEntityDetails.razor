@@ -26,196 +26,200 @@
     }
     else
     {
-        @*  <EditForm Model="ActiveReportEntityDTO" OnSubmit="ReportEntityDetailesClose"> *@
-        <RadzenRow Gap="1rem">
-            <RadzenColumn Size="12">
-                <RadzenStack>
-                    <RadzenFieldset AllowCollapse="true" Collapsed="true">
-                        <HeaderTemplate>
-                            <span class="d-inline-flex align-items-center align-middle">
-                                <RadzenIcon class="me-1" /><b>Данные экземпляра отчёта</b>
-                            </span>
-                        </HeaderTemplate>
-                        <ChildContent>
-                            <RadzenStack Gap="1rem">
 
-                                <RadzenFormField Text="ИД экземпляра отчёта" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                    <RadzenTextBox Value="@ActiveReportEntityDTO.Id.ToString()" ReadOnly="true" />
-                                </RadzenFormField>
+        <RadzenTabs @bind-SelectedIndex=@selectedTabIndex>
 
-                                <RadzenFormField Text="Данные в отчёте с даты" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                    <RadzenDatePicker ShowTime="false" ShowSeconds="false" DateFormat="dd.MM.yyyy" @bind-Value="@ActiveReportEntityDTO.ReportTimeStart" ReadOnly="true" />
-                                </RadzenFormField>
+            <Tabs>
+                <RadzenTabsItem Text="Детали">
 
-                                <RadzenFormField Text="Данные в отчёте по дату" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                    <RadzenDatePicker ShowTime="false" ShowSeconds="false" DateFormat="dd.MM.yyyy" @bind-Value="@ActiveReportEntityDTO.ReportTimeEnd" ReadOnly="true" />
-                                </RadzenFormField>
+                    <RadzenRow Gap="1rem">
+                        <RadzenColumn Size="12" SizeMD="5">
+                            <RadzenStack>
+                                <RadzenFieldset Text="Данные экземпляра отчёта" Style="font-weight: bold;">
+                                    <RadzenStack Gap="1rem">
+                                        <RadzenFormField Text="ИД экземпляра отчёта" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                            <RadzenTextBox Value="@ActiveReportEntityDTO.Id.ToString()" ReadOnly="true" />
+                                        </RadzenFormField>
 
-                                <RadzenFormField Text="Производство" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                    <RadzenTextBox @bind-Value="@ActiveReportEntityDTO.ReportDepartmentDTOFK.ShortName"
-                                                          ReadOnly />
-                                 </RadzenFormField>
+                                        <RadzenFormField Text="Данные в отчёте с даты" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                            <RadzenDatePicker ShowTime="false" ShowSeconds="false" DateFormat="dd.MM.yyyy" @bind-Value="@ActiveReportEntityDTO.ReportTimeStart" ReadOnly="true" />
+                                        </RadzenFormField>
+
+                                        <RadzenFormField Text="Данные в отчёте по дату" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                            <RadzenDatePicker ShowTime="false" ShowSeconds="false" DateFormat="dd.MM.yyyy" @bind-Value="@ActiveReportEntityDTO.ReportTimeEnd" ReadOnly="true" />
+                                        </RadzenFormField>
+
+                                         <RadzenFormField Text="Производство" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                            <RadzenTextArea @bind-Value="@ActiveReportEntityDTO.ReportDepartmentDTOFK.ShortName" ReadOnly="true" />
+                                         </RadzenFormField>
+
+                                     </RadzenStack>
+                                 </RadzenFieldset>
                              </RadzenStack>
-                         </ChildContent>
-                     </RadzenFieldset>
-                     <RadzenFieldset AllowCollapse="true" Collapsed="true">
-                         <HeaderTemplate>
-                             <span class="d-inline-flex align-items-center align-middle">
-                                 <RadzenIcon class="me-1" /><b>Информация о скачивании отчёта</b>
-                             </span>
-                         </HeaderTemplate>
-                         <ChildContent>
-                             <RadzenStack Gap="1rem">
-                                 <RadzenFormField Text="Время скачивания файла" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                     <RadzenDatePicker ShowTime="true" ShowSeconds="true" DateFormat="dd.MM.yyyy hh:mm:ss" @bind-Value="@ActiveReportEntityDTO.DownloadTime" ReadOnly="true" />
-                                 </RadzenFormField>
+                             <RadzenStack>
+                                 <RadzenFieldset Text="Информация о скачивании отчёта" Style="font-weight: bold;">
+                                     <RadzenStack Gap="1rem">
+                                         <RadzenFormField Text="Время скачивания файла" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                             <RadzenDatePicker ShowTime="true" ShowSeconds="true" DateFormat="dd.MM.yyyy hh:mm:ss" @bind-Value="@ActiveReportEntityDTO.DownloadTime" ReadOnly="true" />
+                                         </RadzenFormField>
 
-                                 <RadzenFormField Text="Кто скачивал файл" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                     <RadzenTextBox @bind-Value="@ActiveReportEntityDTO.DownloadUserDTOFK.UserName" ReadOnly="true" />
-                                 </RadzenFormField>
+                                         <RadzenFormField Text="Кто скачивал файл" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                             <RadzenTextBox @bind-Value="@ActiveReportEntityDTO.DownloadUserDTOFK.UserName" ReadOnly="true" />
+                                         </RadzenFormField>
 
-                                 <div class="rz-text-align-left">
-                                     <RadzenCheckBox Disabled="true" @bind-Value=@ActiveReportEntityDTO.DownloadSuccessFlag Name="CheckBox31" />
-                                     <RadzenLabel Text="Успех скачивания файла пользователем" Component="CheckBox3" />
-                                 </div>
+                                         <div class="rz-text-align-left">
+                                             <RadzenCheckBox Disabled="true" @bind-Value=@ActiveReportEntityDTO.DownloadSuccessFlag Name="CheckBox31" />
+                                             <RadzenLabel Style="font-weight: normal;" Text="Успех скачивания файла пользователем" Component="CheckBox3" />
+                                         </div>
 
-                                 <div class="rz-text-align-left">
-                                     <RadzenButton title="Скачать файл" Icon="download" Disabled="@(String.IsNullOrEmpty(fileDownloadFullPath))" ButtonStyle="ButtonStyle.Light " Style="margin-top: 10px;" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityDownloadFile(@ActiveReportEntityDTO.Id))" @onclick:stopPropagation="true">
-                                     </RadzenButton>
-                                     <RadzenFormField Text="Скачаный файл на сервере" Variant="@variant" Style="width: 100%; max-width: 900px;">
-                                         <RadzenTextBox @bind-Value="@fileDownloadFullPath"
-                                                                  ReadOnly />
-                                     </RadzenFormField>
-                                 </div>
+                                         <div class="rz-text-align-left">
+                                             <RadzenButton title="Скачать файл" Icon="download" Disabled="@(String.IsNullOrEmpty(fileDownloadFullPath))" ButtonStyle="ButtonStyle.Light " Style="margin-top: 10px;" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityDownloadFile(@ActiveReportEntityDTO.Id))" @onclick:stopPropagation="true">
+                                             </RadzenButton>
+                                             <RadzenFormField Text="Скачанный файл на сервере" Variant="@variant" Style="width: 92%; max-width: 900px;">
+                                                 <RadzenTextBox @bind-Value="@fileDownloadFullPath" ReadOnly />
+                                             </RadzenFormField>
+                                         </div>
 
+                                     </RadzenStack>
+                                 </RadzenFieldset>
                              </RadzenStack>
-                         </ChildContent>
-                     </RadzenFieldset>
+                         </RadzenColumn>
+
+                         <RadzenColumn Size="12" SizeMD="5">
+
+                             <RadzenStack>
+                                 <RadzenFieldset Text="Информация о шаблоне отчёта" Style="font-weight: bold;">
+                                     <RadzenStack Gap="1rem">
 
 
+                                         <RadzenFormField Text="ИД шаблона отчёта" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                             <RadzenTextBox Value="@ActiveReportEntityDTO.ReportTemplateId.ToString()" ReadOnly="true" />
+                                         </RadzenFormField>
 
-                     <RadzenFieldset AllowCollapse="true" Collapsed="true">
-                         <HeaderTemplate>
-                             <span class="d-inline-flex align-items-center align-middle">
-                                 <RadzenIcon class="me-1" /><b>Информация о загрузке отчёта</b>
-                             </span>
-                         </HeaderTemplate>
-                         <ChildContent>
+                                         <RadzenFormField Text="Тип шаблона отчёта" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                             <RadzenTextBox Value="@ActiveReportEntityDTO.ReportTemplateDTOFK.ReportTemplateTypeDTOFK.Name" ReadOnly="true" />
+                                         </RadzenFormField>
 
-                             <RadzenStack Gap="1rem">
-                                 <RadzenFormField Text="Время загрузки файла" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                     <RadzenDatePicker ShowTime="true" ShowSeconds="true" DateFormat="dd.MM.yyyy hh:mm:ss" @bind-Value="@ActiveReportEntityDTO.UploadTime" ReadOnly="true" />
-                                 </RadzenFormField>
+                                         <RadzenFormField Text="Производство" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                             <RadzenTextBox Value="@ActiveReportEntityDTO.ReportTemplateDTOFK.MesDepartmentDTOFK.ShortName" ReadOnly="true" />
+                                         </RadzenFormField>
 
-                                 @if (ActiveReportEntityDTO.UploadUserDTOFK != null)
-                                {
-                                    <RadzenFormField Text="Кто загружал файл" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                        <RadzenTextBox @bind-Value="@ActiveReportEntityDTO.UploadUserDTOFK.UserName"
-                                                              ReadOnly />
-                                     </RadzenFormField>
-                                }
-                                else
-                                {
-                                    <RadzenFormField Text="Кто загружал файл" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                        <RadzenTextBox ReadOnly />
-                                     </RadzenFormField>
+                                         <RadzenFormField Text="Наименование шаблона отчёта" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                             <RadzenTextArea Value="@ActiveReportEntityDTO.ReportTemplateDTOFK.Description" ReadOnly="true" />
+                                         </RadzenFormField>
 
-                                }
-
-                                <div class="rz-text-align-left">
-                                    <RadzenCheckBox Disabled="true" @bind-Value=@ActiveReportEntityDTO.UploadSuccessFlag Name="CheckBox41" />
-                                    <RadzenLabel Text="Успех загрузки файла пользователем" Component="CheckBox4" Style="margin-left: 1px;" />
-                                </div>
-
-                                <div class="rz-text-align-left">
-                                    <RadzenButton title="Скачать файл" Icon="download" Disabled="@(String.IsNullOrEmpty(fileUploadFullPath))" ButtonStyle="ButtonStyle.Light" Style="margin-top: 10px;" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityUploadFile(@ActiveReportEntityDTO.Id))" @onclick:stopPropagation="true">
-                                    </RadzenButton>
-
-                                    <RadzenFormField Text="Загруженный файл на сервере" Variant="@variant" Style="width: 100%; max-width: 900px;">
-                                        <RadzenTextBox @bind-Value="@fileUploadFullPath"
-                                                                  ReadOnly />
-                                     </RadzenFormField>
-                                 </div>
+                                     </RadzenStack>
+                                 </RadzenFieldset>
                              </RadzenStack>
-                         </ChildContent>
-                     </RadzenFieldset>
 
 
+                             <RadzenStack>
+                                 <RadzenFieldset Text="Информация о загрузке отчёта" Style="font-weight: bold;">
+                                     <RadzenStack Gap="1rem">
+                                         <RadzenFormField Text="Время загрузки файла" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                             <RadzenDatePicker ShowTime="true" ShowSeconds="true" DateFormat="dd.MM.yyyy hh:mm:ss" @bind-Value="@ActiveReportEntityDTO.UploadTime" ReadOnly="true" />
+                                         </RadzenFormField>
 
-                     <RadzenFieldset AllowCollapse="true" Collapsed="true">
-                         <HeaderTemplate>
-                             <span class="d-inline-flex align-items-center align-middle">
-                                 <RadzenIcon class="me-1" /><b>Информация о шаблоне отчёта</b>
-                             </span>
-                         </HeaderTemplate>
-                         <ChildContent>
+                                         @if (ActiveReportEntityDTO.UploadUserDTOFK != null)
+                                        {
+                                            <RadzenFormField Text="Кто загружал файл" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                                <RadzenTextBox @bind-Value="@ActiveReportEntityDTO.UploadUserDTOFK.UserName"
+                                                                      ReadOnly />
+                                             </RadzenFormField>
+                                        }
+                                        else
+                                        {
+                                            <RadzenFormField Text="Кто загружал файл" Variant="@variant" Style="width: 100%; max-width: 940px;">
+                                                <RadzenTextBox ReadOnly />
+                                             </RadzenFormField>
+                                        }
 
-                             <RadzenStack Gap="1rem">
-                                 <RadzenFormField Text="ИД шаблона отчёта" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                     <RadzenTextBox Value="@ActiveReportEntityDTO.ReportTemplateId.ToString()" ReadOnly="true" />
-                                 </RadzenFormField>
+                                        <div class="rz-text-align-left">
+                                            <RadzenCheckBox Disabled="true" @bind-Value=@ActiveReportEntityDTO.UploadSuccessFlag Name="CheckBox41" />
+                                            <RadzenLabel Text="Успех загрузки файла пользователем" Component="CheckBox4" Style="margin-left: 1px; font-weight: normal;" />
+                                        </div>
 
-                                 <RadzenFormField Text="Наименование шаблона отчёта" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                     <RadzenTextBox Value="@ActiveReportEntityDTO.ReportTemplateDTOFK.Description" ReadOnly="true" />
-                                 </RadzenFormField>
+                                        <div class="rz-text-align-left">
+                                            <RadzenButton title="Скачать файл" Icon="download" Disabled="@(String.IsNullOrEmpty(fileUploadFullPath))" ButtonStyle="ButtonStyle.Light" Style="margin-top: 10px;" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadReportEntityUploadFile(@ActiveReportEntityDTO.Id))" @onclick:stopPropagation="true">
+                                            </RadzenButton>
+
+                                            <RadzenFormField Text="Загруженный файл на сервере" Variant="@variant" Style="width: 92%; max-width: 900px;">
+                                                <RadzenTextBox @bind-Value="@fileUploadFullPath"
+                                                                          ReadOnly />
+                                             </RadzenFormField>
+                                         </div>
+                                     </RadzenStack>
+                                 </RadzenFieldset>
                              </RadzenStack>
-                         </ChildContent>
-                     </RadzenFieldset>
 
-                     <RadzenFieldset AllowCollapse="true" Collapsed="false">
-                         <HeaderTemplate>
-                             <span class="d-inline-flex align-items-center align-middle">
-                                 <RadzenIcon class="me-1" /><b>События экземпляра отчёта</b>
-                             </span>
-                         </HeaderTemplate>
-                         <ChildContent>
-
-                             <RadzenStack Gap="1rem">
-                                 <RadzenDataGridApp AllowAlternatingRows="true" AllowFiltering="true" PageSize="5" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                                                 Data="reportEntityLogDTOs" TItem="ReportEntityLogDTO"
-                                                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                                 FilterMode="FilterMode.Simple"
-                                                 Density=Density.Compact
-                                                 ShowPagingSummary="true"
-                                                 EmptyText="Нет записей для отображения"
-                                                 AllowVirtualization="true">
-                                     <Columns>
-                                         <RadzenDataGridColumn TItem="ReportEntityLogDTO" Property="Id" Title="Ид записи" Width="30px">
-                                         </RadzenDataGridColumn>
+                             @* <RadzenStack>
+                    <RadzenFieldset Text="События экземпляра отчёта">
+                    <RadzenStack Gap="1rem">
 
 
-                                         <RadzenDataGridColumn TItem="ReportEntityLogDTO" Property="LogTime" Title="Время события" Width="60px">
-                                         </RadzenDataGridColumn>
+                    <RadzenDataGridApp AllowAlternatingRows="true" AllowFiltering="true" PageSize="5" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                    Data="reportEntityLogDTOs" TItem="ReportEntityLogDTO"
+                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    FilterMode="FilterMode.Simple"
+                    Density=Density.Compact
+                    ShowPagingSummary="true"
+                    EmptyText="Нет записей для отображения"
+                    AllowVirtualization="true">
+                    <Columns>
+                    <RadzenDataGridColumn TItem="ReportEntityLogDTO" Property="Id" Title="Ид записи" Width="30px">
+                    </RadzenDataGridColumn>
 
-                                         <RadzenDataGridColumn TItem="ReportEntityLogDTO" Property="LogType" Title="Тип" Width="55px">
-                                         </RadzenDataGridColumn>
 
-                                         <RadzenDataGridColumn TItem="ReportEntityLogDTO" Property="LogMessage" Title="Событие" Width="150px" FilterProperty="LogMessage" SortProperty="LogMessage">
-                                             <Template Context="data1">
-                                                 <RadzenCard Style="white-space:pre-wrap">
-                                                     <RadzenText TextStyle="TextStyle.Body2">
-                                                         <strong>
-                                                             @data1.LogMessage
-                                                         </strong>
-                                                     </RadzenText>
-                                                 </RadzenCard>
-                                             </Template>
-                                         </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="ReportEntityLogDTO" Property="LogTime" Title="Время события" Width="60px">
+                    </RadzenDataGridColumn>
 
-                                         <RadzenDataGridColumn TItem="ReportEntityLogDTO" Property="IsError" Title="Ошибка" Filterable="true" Width="30px">
-                                             <Template Context="data">
-                                                 <RadzenCheckBox @bind-Value=data.IsError Disabled="true" TriState="false" TValue="bool" />
-                                             </Template>
-                                         </RadzenDataGridColumn>
-                                     </Columns>
-                                 </RadzenDataGridApp>
-                             </RadzenStack>
-                         </ChildContent>
-                     </RadzenFieldset>
+                    <RadzenDataGridColumn TItem="ReportEntityLogDTO" Property="LogType" Title="Тип" Width="55px">
+                    </RadzenDataGridColumn>
 
-                 </RadzenStack>
-             </RadzenColumn>
-         </RadzenRow>
+                    <RadzenDataGridColumn TItem="ReportEntityLogDTO" Property="LogMessage" Title="Событие" Width="150px" FilterProperty="LogMessage" SortProperty="LogMessage">
+                    <Template Context="data1">
+                    <RadzenCard Style="white-space:pre-wrap">
+                    <RadzenText TextStyle="TextStyle.Body2">
+                    <strong>
+                    @data1.LogMessage
+                    </strong>
+                    </RadzenText>
+                    </RadzenCard>
+                    </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="ReportEntityLogDTO" Property="IsError" Title="Ошибка" Filterable="true" Width="30px">
+                    <Template Context="data">
+                    <RadzenCheckBox @bind-Value=data.IsError Disabled="true" TriState="false" TValue="bool" />
+                    </Template>
+                    </RadzenDataGridColumn>
+                    </Columns>
+                    </RadzenDataGridApp>
+                    </RadzenStack>
+                    </RadzenFieldset>
+                    </RadzenStack>*@
+                         </RadzenColumn>
+                     </RadzenRow>
+                 </RadzenTabsItem>
+
+                 <RadzenTabsItem Text="Данные в Архиве данных">
+                     Данные в Архиве данных
+                 </RadzenTabsItem>
+                 <RadzenTabsItem Text="Входные данные (InputData)">
+                     InputData
+                 </RadzenTabsItem>
+                 <RadzenTabsItem Text="Тэги (TagList)">
+                     TagList
+                 </RadzenTabsItem>
+                 <RadzenTabsItem Text="Входные данные (OutputData)">
+                     OutputData
+                 </RadzenTabsItem>
+                 <RadzenTabsItem Text="Журнал событий (LogEvent)">
+                     OutputData
+                 </RadzenTabsItem>
+             </Tabs>
+
+         </RadzenTabs>
 
         @*    <div class="form-group py-2">
         <NavLink @onclick="(() => ReportEntityDetailesClose())" class="btn btn-primary">OK</NavLink>
@@ -227,6 +231,11 @@
 
 
 @code {
+
+    [CascadingParameter]
+    bool iconMenuActive { get; set; }
+
+    int selectedTabIndex = 0;
 
     _Dialogs? _dialogs { get; set; }
 

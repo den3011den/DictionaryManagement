@@ -162,11 +162,14 @@
 
 @code {
 
+    [CascadingParameter]
+    bool iconMenuActive { get; set; }
+
     _Dialogs? _dialogs { get; set; }
 
     IEnumerable<ReportEntityDTO>? reportEntityDTOs;
 
-    RadzenDataGrid<ReportEntityDTO> reportEntityDTOGrid;    
+    RadzenDataGrid<ReportEntityDTO> reportEntityDTOGrid;
     DateTime startDate = DateTime.Today.AddMonths(-1);
     DateTime endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
     DateTime maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
@@ -322,7 +325,9 @@
             else
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<ReportEntityDetails>("Подробно по экземпляру отчёта ", new Dictionary<string, object>() { { "ReportEntityId", reportEntityDTO.Id } }, new DialogOptions() { Width = $"{1100}px" });
+                dialogResult = await _dialogService.OpenAsync<ReportEntityDetails>("Подробно по экземпляру отчёта ", new Dictionary
+                    <string, object>
+                    () { { "ReportEntityId", reportEntityDTO.Id } }, new DialogOptions() { Width = iconMenuActive ? $"{1700}px" : $"{1560}px", Left = $"{20}px" });
             }
 
             IsLoading = false;
