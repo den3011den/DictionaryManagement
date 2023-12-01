@@ -164,7 +164,7 @@
                      <div class="row">
                          @if (IsLoading != true)
                         {
-                            <RadzenDataGridApp @ref="mesMovementsDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            <RadzenDataGridApp @bind-Settings="@MesMovementsGridSettingsForReportEntity" @ref="mesMovementsDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                                Data="@mesMovementsDTOs" TItem="MesMovementsDTO"
                                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                                FilterMode="FilterMode.Simple"
@@ -351,12 +351,12 @@
                     <div class="row">
                         @if (IsLoading != true)
                         {
-                            <RadzenDataGridApp @ref="logEventDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            <RadzenDataGridApp @bind-Settings="@LogEventGridSettingsForReportEntity" @ref="logEventDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                                Data="@logEventDTOs" TItem="LogEventDTO"
                                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                                FilterMode="FilterMode.Simple"
                                                Density=Density.Compact
-                                               ShowPagingSummary="true"                                               
+                                               ShowPagingSummary="true"
                                                AllowVirtualization="true"
                                                Style="height:70vh">
                                 <Columns>
@@ -467,10 +467,16 @@
 
     int selectedTabIndex = 0;
 
+    bool firstTimeMesMovementsTab = true;
+    bool firstTimeLogEventTab = true;
+
     _Dialogs? _dialogs { get; set; }
 
     IEnumerable<ReportEntityLogDTO>? reportEntityLogDTOs;
+
+    IEnumerable<MesMovementsDTO>? mesMovementsDTOs;
     RadzenDataGrid<MesMovementsDTO> mesMovementsDTOGrid;
+
 
     IEnumerable<LogEventDTO>? logEventDTOs;
     RadzenDataGrid<LogEventDTO> logEventDTOGrid;
@@ -479,7 +485,7 @@
     [Parameter]
     public Guid ReportEntityId { get; set; }
 
-    IEnumerable<MesMovementsDTO>? mesMovementsDTOs;
+
 
     Variant variant = Variant.Outlined;
 
@@ -552,6 +558,40 @@
         }
     }
 
+
+    DataGridSettings _mesMovementsGridSettingsForReportEntity;
+    public DataGridSettings MesMovementsGridSettingsForReportEntity
+    {
+        get
+        {
+            return _mesMovementsGridSettingsForReportEntity;
+        }
+        set
+        {
+            if (_mesMovementsGridSettingsForReportEntity != value)
+            {
+                _mesMovementsGridSettingsForReportEntity = value;                
+            }
+        }
+    }
+
+    DataGridSettings _logEventGridSettingsForReportEntity;
+    public DataGridSettings LogEventGridSettingsForReportEntity
+    {
+        get
+        {
+            return _logEventGridSettingsForReportEntity;
+        }
+        set
+        {
+            if (_logEventGridSettingsForReportEntity != value)
+            {
+                _logEventGridSettingsForReportEntity = value;
+            }
+        }
+    }
+
+
     async Task OnTabChange(int value)
     {
         selectedTabIndex = value;
@@ -582,7 +622,7 @@
                 }
             case 5:
                 {
-                    await GetLogEventDTOs(ReportEntityId);                    
+                    await GetLogEventDTOs(ReportEntityId);
                     break;
                 }
             default:
@@ -596,20 +636,29 @@
 
     async Task GetMesMovementsDTOs(Guid reportEntityId)
     {
-        IsLoading = true;
-        StateHasChanged();
-        mesMovementsDTOs = await _mesMovementsRepository.GetAllByReportEntityId(ReportEntityId);
-        IsLoading = false;
-        StateHasChanged();
+        if (firstTimeMesMovementsTab)
+        {
+            IsLoading = true;
+            StateHasChanged();
+            mesMovementsDTOs = await _mesMovementsRepository.GetAllByReportEntityId(ReportEntityId);
+            IsLoading = false;
+            firstTimeMesMovementsTab = false;
+            StateHasChanged();
+
+        }
     }
 
     async Task GetLogEventDTOs(Guid reportEntityId)
     {
-        IsLoading = true;
-        StateHasChanged();
-        logEventDTOs = await _logEventRepository.GetAllByReportEntityId(ReportEntityId);
-        IsLoading = false;
-        StateHasChanged();
+        if (firstTimeLogEventTab)
+        {
+            IsLoading = true;
+            StateHasChanged();
+            logEventDTOs = await _logEventRepository.GetAllByReportEntityId(ReportEntityId);
+            IsLoading = false;
+            firstTimeLogEventTab = false;
+            StateHasChanged();
+        }
     }
 
 
