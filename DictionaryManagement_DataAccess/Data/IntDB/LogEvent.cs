@@ -30,7 +30,11 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public User UserFK { get; set; }
 
         public string Description { get; set; }
-        
+
+        public Guid? ReportEntityId { get; set; }
+        [ForeignKey("ReportEntityId")]
+        public ReportEntity? ReportEntityFK { get; set; }
+
         public bool? IsCritical { get; set; } = false;
         public bool? IsError { get; set; } = false;
         public bool? IsWarning { get; set; } = false;

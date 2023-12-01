@@ -1708,6 +1708,8 @@ namespace DictionaryManagement_Business.Repository
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Описание (Description)";
                 excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "ИД экз. отчёта (ReportEntityId)";
+                excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Крит. (IsCritical)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Ошибка (IsError)";
@@ -1747,6 +1749,8 @@ namespace DictionaryManagement_Business.Repository
                     }
                     
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.Description;                    
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.ToStringReportEntityId;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.IsCritical == true ? "Да" : "";
                     excelColNum++;

@@ -325,7 +325,7 @@
             else
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<ReportEntityDetails>("Подробно по экземпляру отчёта ", new Dictionary
+                dialogResult = await _dialogService.OpenAsync<ReportEntityDetails>("Подробно по экземпляру отчёта " + reportEntityDTO.Id.ToString(), new Dictionary
                     <string, object>
                     () { { "ReportEntityId", reportEntityDTO.Id } }, new DialogOptions() { Width = iconMenuActive ? $"{1700}px" : $"{1560}px", Left = $"{20}px" });
             }

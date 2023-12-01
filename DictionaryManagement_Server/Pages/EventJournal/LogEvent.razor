@@ -90,7 +90,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="Description" Title="Описание" Width="180px" TextAlign="TextAlign.Start"
+                    <RadzenDataGridColumn TItem="LogEventDTO" Property="Description" Title="Описание" Width="130px" TextAlign="TextAlign.Start"
                                           FilterProperty="Description" FilterOperator="FilterOperator.Contains" SortProperty="Description">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
@@ -98,6 +98,17 @@
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn TItem="LogEventDTO" Property="ToStringReportEntityId" Title="ИД экз. отчёта" Width="60px" TextAlign="TextAlign.Start"
+                                          FilterProperty="ToStringReportEntityId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringReportEntityId">
+                        <Template Context="data1">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                @data1.ToStringReportEntityId
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+
 
                     <RadzenDataGridColumn TItem="LogEventDTO" Property="IsCriticalBool" Title="Крит." Filterable="true" Width="35px" TextAlign="TextAlign.Center">
                         <Template Context="data">

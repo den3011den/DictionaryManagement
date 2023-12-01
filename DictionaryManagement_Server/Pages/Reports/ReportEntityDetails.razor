@@ -10,6 +10,7 @@
 @inject IReportEntityLogRepository _reportReportEntityLogRepository
 @inject ISettingsRepository _settingsRepository
 @inject IMesMovementsRepository _mesMovementsRepository
+@inject ILogEventRepository _logEventRepository
 
 
 @inject DialogService _dialogService
@@ -169,14 +170,14 @@
                                                FilterMode="FilterMode.Simple"
                                                Density=Density.Compact
                                                ShowPagingSummary="true"
-                                               Style="height:80vh"
+                                               Style="height:70vh"
                                                AllowVirtualization="true"
                                                AllowColumnReorder="true"
-                                               AllowColumnResize="true"                                               
-                                               ColumnWidth="200px"                                             
+                                               AllowColumnResize="true"
+                                               ColumnWidth="200px"
                                                GridLines="DataGridGridLines.Both">
 
-                                              @* Style=@(iconMenuActive ? "height:calc(100vh - 170px); width:1760px" : "height:calc(100vh - 170px); width:1600px") *@
+                                @* Style=@(iconMenuActive ? "height:calc(100vh - 170px); width:1760px" : "height:calc(100vh - 170px); width:1600px") *@
 
                                 <Columns>
                                     <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
@@ -347,7 +348,104 @@
                     @selectedTabIndex.ToString()
                 </RadzenTabsItem>
                 <RadzenTabsItem Text="Журнал событий (LogEvent)">
-                    @selectedTabIndex.ToString()
+                    <div class="row">
+                        @if (IsLoading != true)
+                        {
+                            <RadzenDataGridApp @ref="logEventDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                                               Data="@logEventDTOs" TItem="LogEventDTO"
+                                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                               FilterMode="FilterMode.Simple"
+                                               Density=Density.Compact
+                                               ShowPagingSummary="true"                                               
+                                               AllowVirtualization="true"
+                                               Style="height:70vh">
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="LogEventDTO" Property="ToStringId" Title="Ид записи" Width="35px" TextAlign="TextAlign.Center"
+                                                          FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
+                                        <Template Context="data1">
+                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                @data1.ToStringId
+                                            </div>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+
+                                    <RadzenDataGridColumn TItem="LogEventDTO" Property="EventTime" Title="Время" Width="60px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                                        <Template Context="data1">
+                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                <strong>
+                                                    @data1.EventTime
+                                                </strong>
+                                            </div>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+
+                                    <RadzenDataGridColumn TItem="LogEventDTO" Property="LogEventTypeDTOFK.Name" Title="Тип события" Width="100px"
+                                                          TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
+                                        <Template Context="data1">
+                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                @data1.LogEventTypeDTOFK.Name
+                                            </div>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+
+                                    <RadzenDataGridColumn TItem="LogEventDTO" Property="Description" Title="Описание" Width="130px" TextAlign="TextAlign.Start"
+                                                          FilterProperty="Description" FilterOperator="FilterOperator.Contains" SortProperty="Description">
+                                        <Template Context="data1">
+                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                @data1.Description
+                                            </div>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+
+                                    <RadzenDataGridColumn TItem="LogEventDTO" Property="IsCriticalBool" Title="Крит." Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                                        <Template Context="data">
+                                            @if (data.IsCriticalBool)
+                                            {
+                                                <RadzenCheckBox @bind-Value=data.IsCriticalBool ReadOnly="true" TriState="false" TValue="bool"
+                                                                Style="background-color: red;border: 1px solid red;" />
+                                            }
+                                            else
+                                            {
+                                                <RadzenCheckBox @bind-Value=data.IsCriticalBool ReadOnly="true" TriState="false" TValue="bool" />
+                                            }
+                                        </Template>
+                                    </RadzenDataGridColumn>
+
+                                    <RadzenDataGridColumn TItem="LogEventDTO" Property="IsErrorBool" Title="Ошибка" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                                        <Template Context="data">
+                                            @if (data.IsErrorBool)
+                                            {
+
+                                                <RadzenCheckBox @bind-Value=data.IsErrorBool ReadOnly="true" TriState="false" TValue="bool"
+                                                                Style="background-color: red;border: 1px solid red;" />
+                                            }
+                                            else
+                                            {
+                                                <RadzenCheckBox @bind-Value=data.IsErrorBool ReadOnly="true" TriState="false" TValue="bool" />
+                                            }
+                                        </Template>
+                                    </RadzenDataGridColumn>
+
+                                    <RadzenDataGridColumn TItem="LogEventDTO" Property="IsWarningBool" Title="Предупреждение" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                                        <Template Context="data">
+                                            <RadzenCheckBox @bind-Value=data.IsWarningBool ReadOnly="true" TriState="false" TValue="bool" />
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                </Columns>
+                            </RadzenDataGridApp>
+                        }
+                        else
+                        {
+                            if (IsLoading)
+                            {
+                                //отображение gif загрузки
+                                <div class="text-center">
+                                    <img src="/images/loading.gif">
+                                </div>
+
+                            }
+                        }
+                    </div>
                 </RadzenTabsItem>
             </Tabs>
 
@@ -364,22 +462,26 @@
 
 @code {
 
-        [CascadingParameter]
-        bool iconMenuActive { get; set; }
+    [CascadingParameter]
+    bool iconMenuActive { get; set; }
 
-        int selectedTabIndex = 0;
+    int selectedTabIndex = 0;
 
-        _Dialogs? _dialogs { get; set; }
+    _Dialogs? _dialogs { get; set; }
 
-        IEnumerable<ReportEntityLogDTO>? reportEntityLogDTOs;
-        RadzenDataGrid<MesMovementsDTO> mesMovementsDTOGrid;
+    IEnumerable<ReportEntityLogDTO>? reportEntityLogDTOs;
+    RadzenDataGrid<MesMovementsDTO> mesMovementsDTOGrid;
 
-        [Parameter]
-        public Guid ReportEntityId { get; set; }
+    IEnumerable<LogEventDTO>? logEventDTOs;
+    RadzenDataGrid<LogEventDTO> logEventDTOGrid;
 
-        IEnumerable<MesMovementsDTO>? mesMovementsDTOs;
 
-        Variant variant = Variant.Outlined;
+    [Parameter]
+    public Guid ReportEntityId { get; set; }
+
+    IEnumerable<MesMovementsDTO>? mesMovementsDTOs;
+
+    Variant variant = Variant.Outlined;
 
     public string reportDownloadPath = "";
     public string reportUploadPath = "";
@@ -454,7 +556,7 @@
     {
         selectedTabIndex = value;
 
-        switch(selectedTabIndex)
+        switch (selectedTabIndex)
         {
             case 0:
                 {
@@ -462,32 +564,33 @@
                 }
 
             case 1:
-            {
-                await GetMesMovementsDTOs(ReportEntityId);
-                break;
-            }
+                {
+                    await GetMesMovementsDTOs(ReportEntityId);
+                    break;
+                }
             case 2:
-            {
-                break;
-            }
+                {
+                    break;
+                }
             case 3:
                 {
                     break;
                 }
             case 4:
-            {
-                break;
-            }
-            case 5:
                 {
                     break;
                 }
-        default:
+            case 5:
+                {
+                    await GetLogEventDTOs(ReportEntityId);                    
+                    break;
+                }
+            default:
                 {
                     break;
                 }
         }
-        
+
         StateHasChanged();
     }
 
@@ -499,5 +602,15 @@
         IsLoading = false;
         StateHasChanged();
     }
+
+    async Task GetLogEventDTOs(Guid reportEntityId)
+    {
+        IsLoading = true;
+        StateHasChanged();
+        logEventDTOs = await _logEventRepository.GetAllByReportEntityId(ReportEntityId);
+        IsLoading = false;
+        StateHasChanged();
+    }
+
 
 }
