@@ -17,16 +17,22 @@ using System.IO;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Bibliography;
 
 namespace DictionaryManagement_Business.Repository
 {
     public class SimpleExcelExportRepository : ISimpleExcelExportRepository
     {
         private readonly ISettingsRepository _settingsRepository;
+        private readonly IntDBApplicationDbContext _db;
+        private readonly IMapper _mapper;
 
-        public SimpleExcelExportRepository(ISettingsRepository settingsRepository)
+        public SimpleExcelExportRepository(ISettingsRepository settingsRepository, IntDBApplicationDbContext db, IMapper mapper)
         {
             _settingsRepository = settingsRepository;
+            _db = db;
+            _mapper = mapper;
         }
 
         public async Task<string> GenerateExcelReportEntity(string filename, IEnumerable<ReportEntityDTO> data)
@@ -2557,6 +2563,104 @@ namespace DictionaryManagement_Business.Repository
                     wbook.Dispose();
             }
             return fullfilepath;
+        }
+        
+        public async Task<Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>> GetTagLibraryData(ReportEntityDTO? reportEntityDTO)
+        {
+            if (reportEntityDTO != null)
+            {
+                string pathVar = (await _settingsRepository.GetByName(SD.ReportUploadPathSettingName)).Value;
+                string fileName = reportEntityDTO.DownloadReportFileName;
+                string file = System.IO.Path.Combine(pathVar, fileName);
+                var extension = Path.GetExtension(fileName);
+                if (System.IO.File.Exists(file))
+                {
+                    XLWorkbook workbook = null;
+                    try
+                    {
+                        workbook = new XLWorkbook(file);
+                    }
+                    catch (Exception ex1)
+                    {
+                        return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(), "Не удалось загрузить файл (ClosedXML). " + ex1.Message);
+                    }
+
+                    if (workbook.IsProtected)
+                        try
+                        {
+                            workbook.Unprotect("sirreport");
+                        }
+                        catch (Exception exx1)
+                        {
+                            return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(), "Не удалось снять защиту с книги с помощью пароля sirreport " + exx1.Message);
+                        }
+
+                    string? tagLibrarySheetName = (await _settingsRepository.GetByName(SD.ReportTagLibrarySheetSettingName)).Value;
+
+                    if(tagLibrarySheetName.IsNullOrEmpty())
+                    {
+                        return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(),
+                            "Не удалось найти настройку в таблице Settings или у неё пустое значение в Value: " + SD.ReportTagLibrarySheetSettingName);
+                    }
+
+                    IXLWorksheet worksheet = null;
+                    try
+                    {
+                        worksheet = workbook.Worksheet(tagLibrarySheetName);
+                    }
+                    catch (Exception ex2)
+                    {
+                        return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(), "Не удалось загрузить лист (ClosedXML). " + ex2.Message);
+                    }
+                     
+                    var rows = worksheet.RangeUsed().RowsUsed(); // пропуск заголовочной строки
+
+                    List<TagLibrarySheetDTO> reportList = new List<TagLibrarySheetDTO>();
+
+                    foreach (var row in rows)
+                    {                        
+                        TagLibrarySheetDTO rowItem = new TagLibrarySheetDTO
+                        {
+                            MesParamCode = row.Cell(1).Value.ToString(),
+                            MesParamNameТМ = row.Cell(2).Value.ToString(),
+                            MesParamNameTI = row.Cell(3).Value.ToString()
+                        };
+                        reportList.Add(rowItem);
+                    }
+
+                    IEnumerable<TagLibrarySheetWithSirTagsDTO>? returnResult;
+
+                    returnResult = (from reportListAlias in reportList
+                                    join MP_prom1 in _db.MesParam.AsNoTracking().ToListWithNoLock() on
+                                         reportListAlias.MesParamCode equals MP_prom1.Code
+                                    into MP_prom2
+                                    from MP in MP_prom2.DefaultIfEmpty()
+                                    select
+                                            new TagLibrarySheetWithSirTagsDTO
+                                                            {
+                                                                    MesParamCode = reportListAlias.MesParamCode,
+                                                                    MesParamNameТМ = reportListAlias.MesParamNameТМ,
+                                                                    MesParamNameTI = reportListAlias.MesParamNameTI,
+                                                                    MesParamDTOFK = _mapper.Map<MesParam, MesParamDTO>(MP),
+                                                               }).ToList();
+
+                    if (workbook != null)
+                        workbook.Dispose();
+
+                    return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(returnResult, "");
+                }
+            else
+                {
+                    return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(), "Не удалось найти файл " + file);
+                }
+
+            }
+            else
+            {
+                return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(), "Пустой объект экземпляра отчёта");
+            }
+            return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(), "");
+            
         }
 
     }

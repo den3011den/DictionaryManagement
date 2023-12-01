@@ -12,8 +12,7 @@
 @inject IMesMovementsRepository _mesMovementsRepository
 @inject IMesNdoStocksRepository _mesNdoStocksRepository
 @inject ILogEventRepository _logEventRepository
-
-
+@inject ISimpleExcelExportRepository _simpleExcelExportRepository
 
 
 @inject DialogService _dialogService
@@ -169,167 +168,167 @@
                         {
                             @if (@ActiveReportEntityDTO.ReportTemplateDTOFK.ReportTemplateTypeDTOFK.Name.Trim().ToUpper() != "РУЧНОЙ ВВОД НДО")
                             {
-                            <RadzenDataGridApp @bind-Settings="@MesMovementsGridSettingsForReportEntity" @ref="mesMovementsDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                                               Data="@mesMovementsDTOs" TItem="MesMovementsDTO"
-                                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                               FilterMode="FilterMode.Simple"
-                                               Density=Density.Compact
-                                               ShowPagingSummary="true"
-                                               Style="height:70vh"
-                                               AllowVirtualization="true"
-                                               AllowColumnReorder="true"
-                                               AllowColumnResize="true"
-                                               ColumnWidth="200px"
-                                               GridLines="DataGridGridLines.Both">
+                                <RadzenDataGridApp @bind-Settings="@MesMovementsGridSettingsForReportEntity" @ref="mesMovementsDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                                                   Data="@mesMovementsDTOs" TItem="MesMovementsDTO"
+                                                   FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                                   FilterMode="FilterMode.Simple"
+                                                   Density=Density.Compact
+                                                   ShowPagingSummary="true"
+                                                   Style="height:70vh"
+                                                   AllowVirtualization="true"
+                                                   AllowColumnReorder="true"
+                                                   AllowColumnResize="true"
+                                                   ColumnWidth="200px"
+                                                   GridLines="DataGridGridLines.Both">
 
-                                @* Style=@(iconMenuActive ? "height:calc(100vh - 170px); width:1760px" : "height:calc(100vh - 170px); width:1600px") *@
+                                    @* Style=@(iconMenuActive ? "height:calc(100vh - 170px); width:1760px" : "height:calc(100vh - 170px); width:1600px") *@
 
-                                <Columns>
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
-                                                          FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
-                                        <Template Context="data1">
-                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                @data1.ToStringId
-                                            </div>
-                                        </Template>
-                                    </RadzenDataGridColumn>
-
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
-                                        <Template Context="data1">
-                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                <strong>
-                                                    @data1.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
-                                                </strong>
-                                            </div>
-                                        </Template>
-                                    </RadzenDataGridColumn>
-
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="DataTypeDTOFK.Name" Title="Тип"
-                                                          TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
-                                        <Template Context="data1">
-                                            @if (data1.DataTypeDTOFK != null)
-                                            {
-
+                                    <Columns>
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
+                                                              FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
+                                            <Template Context="data1">
                                                 <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                    @data1.DataTypeDTOFK.Name
+                                                    @data1.ToStringId
                                                 </div>
-                                            }
-                                        </Template>
-                                    </RadzenDataGridColumn>
+                                            </Template>
+                                        </RadzenDataGridColumn>
 
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesParamDTOFK.Code" Title="Тэг (code)"
-                                                          TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
-                                        <Template Context="data1">
-                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                @(data1.MesParamDTOFK.Code == null ? "" : data1.MesParamDTOFK.Code)
-                                            </div>
-                                        </Template>
-                                    </RadzenDataGridColumn>
-
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesParamDTOFK.Name" Title="Тэг (name)"
-                                                          TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
-                                        <Template Context="data1">
-                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                @(data1.MesParamDTOFK.Name == null ? "" : data1.MesParamDTOFK.Name)
-                                            </div>
-                                        </Template>
-                                    </RadzenDataGridColumn>
-
-
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ValueTime" Title="Время значения" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
-                                        <Template Context="data1">
-                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                <strong>
-                                                    @data1.ValueTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
-                                                </strong>
-                                            </div>
-                                        </Template>
-                                    </RadzenDataGridColumn>
-
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ToStringValue" Title="Значение" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
-                                                          FilterProperty="ToStringValue" SortProperty="Value" FilterOperator="FilterOperator.Contains">
-                                        <Template Context="data1">
-                                            <div style="white-space:pre-wrap; font-size: 12px">
-                                                <strong>
-                                                    @data1.ToStringValue
-                                                </strong>
-                                            </div>
-                                        </Template>
-                                    </RadzenDataGridColumn>
-
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ToStringPreviousRecordId" Title="ИД пред. записи" FilterProperty="ToStringPreviousRecordId" SortProperty="ToStringPreviousRecordId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
-                                        <Template Context="data1">
-                                            @if (data1.ToStringPreviousRecordId != null)
-                                            {
-                                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                    @data1.ToStringPreviousRecordId
-                                                </div>
-                                            }
-                                        </Template>
-                                    </RadzenDataGridColumn>
-
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesGoneBool" Title="MES забрал" Filterable="true" TextAlign="TextAlign.Center">
-                                        <Template Context="data">
-                                            <RadzenCheckBox @bind-Value=data.MesGoneBool ReadOnly="true" TriState="false" TValue="bool" />
-                                        </Template>
-                                    </RadzenDataGridColumn>
-
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesGoneTime" Title="Время MES забрал" TextAlign="TextAlign.Center"
-                                                          FilterProperty="MesGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="MesGoneTime">
-                                        <Template Context="data1">
-                                            @if (data1.MesGoneTime != null)
-                                            {
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                                            <Template Context="data1">
                                                 <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                                     <strong>
-                                                        @(((DateTime)data1.MesGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff"))
+                                                        @data1.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
                                                     </strong>
                                                 </div>
-                                            }
-                                        </Template>
-                                    </RadzenDataGridColumn>
+                                            </Template>
+                                        </RadzenDataGridColumn>
 
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="SapGoneBool" Title="Sap забрал" Filterable="true" TextAlign="TextAlign.Center">
-                                        <Template Context="data">
-                                            <RadzenCheckBox @bind-Value=data.SapGoneBool ReadOnly="true" TriState="false" TValue="bool" />
-                                        </Template>
-                                    </RadzenDataGridColumn>
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="DataTypeDTOFK.Name" Title="Тип"
+                                                              TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
+                                            <Template Context="data1">
+                                                @if (data1.DataTypeDTOFK != null)
+                                                {
 
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="SapMovementsOUTDTOFK.SapGoneTime" Title="Время Sap забрал" TextAlign="TextAlign.Center"
-                                                          FilterProperty="SapMovementsOUTDTOFK.SapGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="SapMovementsOUTDTOFK.SapGoneTime">
-                                        <Template Context="data1">
-                                            @if (data1.SapMovementOutId != null)
-                                            {
-                                                @if (data1.SapMovementsOUTDTOFK.SapGoneTime != null)
+                                                    <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                        @data1.DataTypeDTOFK.Name
+                                                    </div>
+                                                }
+                                            </Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesParamDTOFK.Code" Title="Тэг (code)"
+                                                              TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
+                                            <Template Context="data1">
+                                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                    @(data1.MesParamDTOFK.Code == null ? "" : data1.MesParamDTOFK.Code)
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesParamDTOFK.Name" Title="Тэг (name)"
+                                                              TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
+                                            <Template Context="data1">
+                                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                    @(data1.MesParamDTOFK.Name == null ? "" : data1.MesParamDTOFK.Name)
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+
+
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ValueTime" Title="Время значения" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                                            <Template Context="data1">
+                                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                    <strong>
+                                                        @data1.ValueTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
+                                                    </strong>
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ToStringValue" Title="Значение" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
+                                                              FilterProperty="ToStringValue" SortProperty="Value" FilterOperator="FilterOperator.Contains">
+                                            <Template Context="data1">
+                                                <div style="white-space:pre-wrap; font-size: 12px">
+                                                    <strong>
+                                                        @data1.ToStringValue
+                                                    </strong>
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ToStringPreviousRecordId" Title="ИД пред. записи" FilterProperty="ToStringPreviousRecordId" SortProperty="ToStringPreviousRecordId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
+                                            <Template Context="data1">
+                                                @if (data1.ToStringPreviousRecordId != null)
+                                                {
+                                                    <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                        @data1.ToStringPreviousRecordId
+                                                    </div>
+                                                }
+                                            </Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesGoneBool" Title="MES забрал" Filterable="true" TextAlign="TextAlign.Center">
+                                            <Template Context="data">
+                                                <RadzenCheckBox @bind-Value=data.MesGoneBool ReadOnly="true" TriState="false" TValue="bool" />
+                                            </Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="MesGoneTime" Title="Время MES забрал" TextAlign="TextAlign.Center"
+                                                              FilterProperty="MesGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="MesGoneTime">
+                                            <Template Context="data1">
+                                                @if (data1.MesGoneTime != null)
                                                 {
                                                     <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                                         <strong>
-                                                            @(((DateTime)data1.SapMovementsOUTDTOFK.SapGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff"))
+                                                            @(((DateTime)data1.MesGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff"))
                                                         </strong>
                                                     </div>
                                                 }
-                                            }
-                                        </Template>
-                                    </RadzenDataGridColumn>
+                                            </Template>
+                                        </RadzenDataGridColumn>
 
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ToStringCorrectionReason" Title="Причина корректировки"
-                                                          TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
-                                        <Template Context="data1">
-                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                @(data1.ToStringCorrectionReason == null ? "" : data1.ToStringCorrectionReason)
-                                            </div>
-                                        </Template>
-                                    </RadzenDataGridColumn>
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="SapGoneBool" Title="Sap забрал" Filterable="true" TextAlign="TextAlign.Center">
+                                            <Template Context="data">
+                                                <RadzenCheckBox @bind-Value=data.SapGoneBool ReadOnly="true" TriState="false" TValue="bool" />
+                                            </Template>
+                                        </RadzenDataGridColumn>
 
-                                    <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ToStringCorrectionComment" Title="Комментарий корректировки"
-                                                          TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
-                                        <Template Context="data1">
-                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                @(data1.ToStringCorrectionComment == null ? "" : data1.ToStringCorrectionComment)
-                                            </div>
-                                        </Template>
-                                    </RadzenDataGridColumn>
-                                </Columns>
-                            </RadzenDataGridApp>
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="SapMovementsOUTDTOFK.SapGoneTime" Title="Время Sap забрал" TextAlign="TextAlign.Center"
+                                                              FilterProperty="SapMovementsOUTDTOFK.SapGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="SapMovementsOUTDTOFK.SapGoneTime">
+                                            <Template Context="data1">
+                                                @if (data1.SapMovementOutId != null)
+                                                {
+                                                    @if (data1.SapMovementsOUTDTOFK.SapGoneTime != null)
+                                                    {
+                                                        <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                            <strong>
+                                                                @(((DateTime)data1.SapMovementsOUTDTOFK.SapGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff"))
+                                                            </strong>
+                                                        </div>
+                                                    }
+                                                }
+                                            </Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ToStringCorrectionReason" Title="Причина корректировки"
+                                                              TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
+                                            <Template Context="data1">
+                                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                    @(data1.ToStringCorrectionReason == null ? "" : data1.ToStringCorrectionReason)
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+
+                                        <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ToStringCorrectionComment" Title="Комментарий корректировки"
+                                                              TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
+                                            <Template Context="data1">
+                                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                    @(data1.ToStringCorrectionComment == null ? "" : data1.ToStringCorrectionComment)
+                                                </div>
+                                            </Template>
+                                        </RadzenDataGridColumn>
+                                    </Columns>
+                                </RadzenDataGridApp>
                             }
                             else
                             {
@@ -338,12 +337,12 @@
                                                    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                                    FilterMode="FilterMode.Simple"
                                                    Density=Density.Compact
-                                                   ShowPagingSummary="true"                                                   
+                                                   ShowPagingSummary="true"
                                                    AllowVirtualization="true"
                                                    AllowColumnReorder="true"
                                                    AllowColumnResize="true"
                                                    Style="height:70vh"
-                                                   ColumnWidth="200px"                                                   
+                                                   ColumnWidth="200px"
                                                    GridLines="DataGridGridLines.Both">
 
                                     <Columns>
@@ -484,8 +483,99 @@
                 <RadzenTabsItem Text="Входные данные (InputData)">
                     @selectedTabIndex.ToString()
                 </RadzenTabsItem>
-                <RadzenTabsItem Text="Тэги (TagList)">
-                    @selectedTabIndex.ToString()
+                <RadzenTabsItem Text="Тэги (лист TagLibrary)">
+
+                    <div class="row">
+                        @if (IsLoading != true)
+                        {
+
+                            <RadzenDataGridApp @bind-Settings="@TagLibrarySheetWithSirTagsGridSettings" @ref="tagLibrarySheetWithSirTagsDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                                               Data="@tagLibrarySheetWithSirTagsDTOs" TItem="TagLibrarySheetWithSirTagsDTO"
+                                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                               FilterMode="FilterMode.Simple"
+                                               Density=Density.Compact
+                                               ShowPagingSummary="true"
+                                               AllowVirtualization="true"
+                                               AllowColumnReorder="true"
+                                               AllowColumnResize="true"
+                                               Style="height:70vh"
+                                               ColumnWidth="200px"
+                                               GridLines="DataGridGridLines.Both">
+                                <Columns>
+                                    <RadzenDataGridColumn TItem="TagLibrarySheetWithSirTagsDTO" Property="MesParamCode" Title="Столбец 1" TextAlign="TextAlign.Center"
+                                                          FilterProperty="MesParamCode" FilterOperator="FilterOperator.Contains" SortProperty="MesParamCode">
+                                        <Template Context="data1">
+                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                <strong>
+                                                    @data1.MesParamCode
+                                                </strong>
+                                            </div>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+
+                                    <RadzenDataGridColumn TItem="TagLibrarySheetWithSirTagsDTO" Property="MesParamNameТМ" Title="Столбец 2" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                                        <Template Context="data1">
+                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                @data1.MesParamNameТМ
+                                            </div>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+
+                                    <RadzenDataGridColumn TItem="TagLibrarySheetWithSirTagsDTO" Property="MesParamNameТI" Title="Столбец 3" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                                        <Template Context="data1">
+                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                @data1.MesParamNameTI
+                                            </div>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+
+                                    <RadzenDataGridColumn TItem="TagLibrarySheetWithSirTagsDTO" Property="MesParamIdToString" Title="ИД тэга в СИР (Id)" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                                        <Template Context="data1">
+
+                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                <strong>
+                                                    @data1.MesParamIdToString
+                                                </strong>
+                                            </div>
+                                        </Template>
+                                    </RadzenDataGridColumn>
+
+                                    <RadzenDataGridColumn TItem="TagLibrarySheetWithSirTagsDTO" Property="MesParamCodeNameToString" Title="Тэг в СИР (Code + Name)" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                                        <Template Context="data1">
+                                            @if (@data1.MesParamCodeNameToString == "НЕ НАЙДЕН")
+                                            {
+
+                                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px; color: red">
+                                                    <strong>
+                                                        @data1.MesParamCodeNameToString
+                                                    </strong>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                                    <strong>
+                                                        @data1.MesParamCodeNameToString
+                                                    </strong>
+                                                </div>
+                                            }
+                                        </Template>
+                                    </RadzenDataGridColumn>
+                                </Columns>
+                            </RadzenDataGridApp>
+                        }
+                        else
+                        {
+                            if (IsLoading)
+                            {
+                                //отображение gif загрузки
+                                <div class="text-center">
+                                    <img src="/images/loading.gif">
+                                </div>
+                            }
+                        }
+                    </div>
+
                 </RadzenTabsItem>
                 <RadzenTabsItem Text="Входные данные (OutputData)">
                     @selectedTabIndex.ToString()
@@ -612,6 +702,7 @@
 
     bool firstTimeMesMovementsTab = true;
     bool firstTimeLogEventTab = true;
+    bool firstTagLibraryTab = true;
 
     _Dialogs? _dialogs { get; set; }
 
@@ -626,9 +717,12 @@
     IEnumerable<LogEventDTO>? logEventDTOs;
     RadzenDataGrid<LogEventDTO> logEventDTOGrid;
 
+    IEnumerable<TagLibrarySheetWithSirTagsDTO>? tagLibrarySheetWithSirTagsDTOs;
+    RadzenDataGrid<TagLibrarySheetWithSirTagsDTO> tagLibrarySheetWithSirTagsDTOGrid;
+
+
     [Parameter]
     public Guid ReportEntityId { get; set; }
-
 
 
     Variant variant = Variant.Outlined;
@@ -714,7 +808,7 @@
         {
             if (_mesMovementsGridSettingsForReportEntity != value)
             {
-                _mesMovementsGridSettingsForReportEntity = value;                
+                _mesMovementsGridSettingsForReportEntity = value;
             }
         }
     }
@@ -751,6 +845,23 @@
         }
     }
 
+    DataGridSettings _tagLibrarySheetWithSirTagsGridSettings;
+    public DataGridSettings TagLibrarySheetWithSirTagsGridSettings
+    {
+        get
+        {
+            return _tagLibrarySheetWithSirTagsGridSettings;
+        }
+        set
+        {
+            if (_tagLibrarySheetWithSirTagsGridSettings != value)
+            {
+                _tagLibrarySheetWithSirTagsGridSettings = value;
+            }
+        }
+    }
+
+
 
     async Task OnTabChange(int value)
     {
@@ -781,6 +892,7 @@
                 }
             case 3:
                 {
+                    await GetTagLibrarySheetWithSirTagsDTOs();
                     break;
                 }
             case 4:
@@ -829,7 +941,6 @@
         }
     }
 
-
     async Task GetLogEventDTOs(Guid reportEntityId)
     {
         if (firstTimeLogEventTab)
@@ -843,5 +954,31 @@
         }
     }
 
+    async Task GetTagLibrarySheetWithSirTagsDTOs()
+    {
+        if (firstTagLibraryTab)
+        {
+            IsLoading = true;
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+
+            Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string> tmp = await _simpleExcelExportRepository.GetTagLibraryData(ActiveReportEntityDTO);
+
+            tagLibrarySheetWithSirTagsDTOs = tmp.Item1;
+            string errorString = tmp.Item2;
+
+            if (errorString != "")
+            {
+                await _jsRuntime.ToastrError(errorString);
+            }
+            IsLoading = false;
+            firstTagLibraryTab = false;
+
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+
+
+        }
+    }
 
 }

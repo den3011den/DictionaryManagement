@@ -56,13 +56,14 @@ namespace DictionaryManagement_Common
             Edit = 3
         }
 
-        //public static UserDTO CurrentUserDTO = new UserDTO
-        //{
-        //    Id = new Guid("A8281E55-524B-4E5E-911A-A8949B011372"),
-        //    Login = "sibur.local\\User1",
-        //    UserName = "Пользователь 1",
-        //    Description = "Это Пользователь 1 с логином sibur.local\\User1",
-        //    IsArchive = false
-        //};
+        public static string ReportDownloadPathSettingName = "ReportDownloadPath";
+        public static string ReportUploadPathSettingName = "ReportUploadPath";
+        public static string ReportInputSheetSettingName = "ReportInputSheet";
+        public static string ReportOutputSheetSettingName = "ReportOutputSheet";
+        public static string ReportStartEndDateSheetSettingName = "ReportStartEndDateSheet";
+        public static string ReportReasonLiabrarySheetSettingName = "ReportReasonLiabrarySheet";
+        public static string ReportTagLibrarySheetSettingName = "ReportTagLibrary";
+        public static string ReportTemplatePathSettingName = "ReportTemplatePath";
+        
     }
 }
