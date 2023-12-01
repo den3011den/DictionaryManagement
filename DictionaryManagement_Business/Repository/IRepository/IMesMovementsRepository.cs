@@ -17,5 +17,6 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<MesMovementsDTO> Update(MesMovementsDTO objDTO);
         public Task<MesMovementsDTO> Create(MesMovementsDTO objectToAddDTO);
         public Task<int> Delete(Guid id);
+        public Task<IEnumerable<MesMovementsDTO>> GetAllByReportEntityId(Guid reportEntityId);
     }
 }

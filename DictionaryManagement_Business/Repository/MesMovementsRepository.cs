@@ -327,5 +327,28 @@ namespace DictionaryManagement_Business.Repository
             }
             return 0;
         }
+
+
+        public async Task<IEnumerable<MesMovementsDTO>> GetAllByReportEntityId(Guid reportEntityId)
+        {
+            if (reportEntityId != Guid.Empty)
+            {
+                var hhh1 = _db.MesMovements
+                                    .Include("AddUserFK")
+                                    .Include("MesParamFK")
+                                    .Include("SapMovementsOUTFK")
+                                    .Include("SapMovementsINFK")
+                                    .Include("DataSourceFK")
+                                    .Include("DataTypeFK")
+                                    .Include("ReportEntityFK")
+                                    .Include("MesMovementsFK")
+                                    .Include("MesMovementsCommentList").Include("MesMovementsCommentList.CorrectionReasonFK")
+                                .Where(u => u.ReportGuid == reportEntityId).ToListWithNoLock();
+                return _mapper.Map<IEnumerable<MesMovements>, IEnumerable<MesMovementsDTO>>(hhh1);
+            }
+            else
+                return new List<MesMovementsDTO>();
+        }
+
     }
 }
