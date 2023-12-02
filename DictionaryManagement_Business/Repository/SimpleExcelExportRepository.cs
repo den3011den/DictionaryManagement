@@ -9,6 +9,8 @@ using ClosedXML.Excel;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Spreadsheet;
+using System.Xml.XPath;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -2644,27 +2646,29 @@ namespace DictionaryManagement_Business.Repository
 
                 var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
 
+                bool notImplementedThirdColumnForEmbReport = (reportEntityDTO.ReportTemplateDTOFK.ReportTemplateTypeDTOFK.Name.Trim().ToUpper() == "ОТЧЁТ ЭМБ"
+                    && sheetSettingName == SD.ReportOutputSheetSettingName);
+
                 foreach (var row in rows)
                 {
-                    var cell = row.Cell(1);
+                    ExcelSheetWithSirTagsDTO rowItem = new ExcelSheetWithSirTagsDTO();
+                    
+                    rowItem.Column1 = await GetCellValue(row.Cell(1));
+                    rowItem.Column2 = await GetCellValue(row.Cell(2));
+                    if (notImplementedThirdColumnForEmbReport)
+                        rowItem.Column3 = "Формула не поддерживается";
+                    else
+                        rowItem.Column3 = await GetCellValue(row.Cell(3));
+                    rowItem.Column4 = await GetCellValue(row.Cell(4));
+                    rowItem.Column5 = await GetCellValue(row.Cell(5));
+                    rowItem.Column6 = await GetCellValue(row.Cell(6));
+                    rowItem.Column7 = await GetCellValue(row.Cell(7));
+                    rowItem.Column8 = await GetCellValue(row.Cell(8));
+                    rowItem.Column9 = await GetCellValue(row.Cell(9));
+                    rowItem.Column10 = await GetCellValue(row.Cell(10));
+                    rowItem.Column11 = await GetCellValue(row.Cell(11));
+                    rowItem.Column12 = await GetCellValue(row.Cell(12));
 
-                    var cellval = cell.CachedValue.ToString();
-
-                    ExcelSheetWithSirTagsDTO rowItem = new ExcelSheetWithSirTagsDTO
-                    {
-                        Column1 = row.Cell(1).CachedValue.ToString(),
-                        Column2 = row.Cell(2).CachedValue.ToString(),
-                        Column3 = row.Cell(3).CachedValue.ToString(),
-                        Column4 = row.Cell(4).CachedValue.ToString(),
-                        Column5 = row.Cell(5).CachedValue.ToString(),
-                        Column6 = row.Cell(6).CachedValue.ToString(),
-                        Column7 = row.Cell(7).CachedValue.ToString(),
-                        Column8 = row.Cell(8).CachedValue.ToString(),
-                        Column9 = row.Cell(9).CachedValue.ToString(),
-                        Column10 = row.Cell(10).CachedValue.ToString(),
-                        Column11 = row.Cell(11).CachedValue.ToString(),
-                        Column12 = row.Cell(12).CachedValue.ToString()
-                    };
                     reportList.excelSheetWithSirTagsDTOList.Add(rowItem);
                 }
 
@@ -2713,5 +2717,69 @@ namespace DictionaryManagement_Business.Repository
             return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "", workbook);
         }
 
+        public async Task<string> GetCellValue(IXLCell? cell)
+        {
+            string retVar = "";
+            if (cell == null)
+                return "";
+            retVar = cell.CachedValue.ToString();
+
+            if (!string.IsNullOrEmpty(retVar))
+                return retVar;
+
+            if (cell.NeedsRecalculation)
+            {
+                
+                switch (cell.DataType)
+                {
+                    case XLDataType.Text:
+                        {
+                            string ggg;
+                            if (cell.TryGetValue<string>(out ggg))
+                                retVar = ggg;
+                            break;
+                        }
+                    case XLDataType.Boolean:
+                        {
+                            bool ggg;
+                            if (cell.TryGetValue<bool>(out ggg))
+                                retVar = ggg.ToString();
+                            break;
+                        }
+                    case XLDataType.DateTime:
+                        {
+                            DateTime ggg;
+                            if (cell.TryGetValue<DateTime>(out ggg))
+                                retVar = ggg.ToString();
+                            break;
+                        }
+                    case XLDataType.Number:
+                        {
+                            Decimal ggg;
+                            if (cell.TryGetValue<Decimal>(out ggg))
+                                retVar = ggg.ToString();
+                            break;
+                        }
+                    case XLDataType.Blank:
+                        {
+                            var ttt = cell.Style.DateFormat.NumberFormatId;
+                            if (ttt == 14)
+                            {
+                                DateTime ggg;
+                                if (cell.TryGetValue<DateTime>(out ggg))
+                                    retVar = ggg.ToString();
+                            }
+                            else
+                            {
+                                string ggg;
+                                if (cell.TryGetValue<string>(out ggg))
+                                    retVar = ggg;
+                            }
+                            break;
+                        }
+                }
+            }
+            return retVar;
+        }
     }
 }
