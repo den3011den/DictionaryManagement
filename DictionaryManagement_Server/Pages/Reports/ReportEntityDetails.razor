@@ -33,7 +33,6 @@
     {
 
         <RadzenTabs @bind-SelectedIndex=@selectedTabIndex Change="@(args => OnTabChange(args))">
-
             <Tabs>
                 <RadzenTabsItem Text="Детали">
 
@@ -162,7 +161,7 @@
                      </RadzenRow>
                  </RadzenTabsItem>
 
-                 <RadzenTabsItem Text="Данные в Архиве данных">
+                 <RadzenTabsItem Text="Данные в Архиве данных" Disabled="@(ActiveReportEntityDTO.UploadSuccessFlag ? false : true)">
                      <div class="row">
                          @if (IsLoading != true)
                         {
@@ -481,88 +480,10 @@
                     </div>
                 </RadzenTabsItem>
                 <RadzenTabsItem Text="Входные данные (InputData)">
-                    @selectedTabIndex.ToString()
-                </RadzenTabsItem>
-                <RadzenTabsItem Text="Тэги (лист TagLibrary)">
-
                     <div class="row">
                         @if (IsLoading != true)
                         {
-
-                            <RadzenDataGridApp @bind-Settings="@TagLibrarySheetWithSirTagsGridSettings" @ref="tagLibrarySheetWithSirTagsDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                                               Data="@tagLibrarySheetWithSirTagsDTOs" TItem="TagLibrarySheetWithSirTagsDTO"
-                                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                                               FilterMode="FilterMode.Simple"
-                                               Density=Density.Compact
-                                               ShowPagingSummary="true"
-                                               AllowVirtualization="true"
-                                               AllowColumnReorder="true"
-                                               AllowColumnResize="true"
-                                               Style="height:70vh"
-                                               ColumnWidth="200px"
-                                               GridLines="DataGridGridLines.Both">
-                                <Columns>
-                                    <RadzenDataGridColumn TItem="TagLibrarySheetWithSirTagsDTO" Property="MesParamCode" Title="Столбец 1" TextAlign="TextAlign.Center"
-                                                          FilterProperty="MesParamCode" FilterOperator="FilterOperator.Contains" SortProperty="MesParamCode">
-                                        <Template Context="data1">
-                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                <strong>
-                                                    @data1.MesParamCode
-                                                </strong>
-                                            </div>
-                                        </Template>
-                                    </RadzenDataGridColumn>
-
-                                    <RadzenDataGridColumn TItem="TagLibrarySheetWithSirTagsDTO" Property="MesParamNameТМ" Title="Столбец 2" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
-                                        <Template Context="data1">
-                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                @data1.MesParamNameТМ
-                                            </div>
-                                        </Template>
-                                    </RadzenDataGridColumn>
-
-                                    <RadzenDataGridColumn TItem="TagLibrarySheetWithSirTagsDTO" Property="MesParamNameТI" Title="Столбец 3" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
-                                        <Template Context="data1">
-                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                @data1.MesParamNameTI
-                                            </div>
-                                        </Template>
-                                    </RadzenDataGridColumn>
-
-                                    <RadzenDataGridColumn TItem="TagLibrarySheetWithSirTagsDTO" Property="MesParamIdToString" Title="ИД тэга в СИР (Id)" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
-                                        <Template Context="data1">
-
-                                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                <strong>
-                                                    @data1.MesParamIdToString
-                                                </strong>
-                                            </div>
-                                        </Template>
-                                    </RadzenDataGridColumn>
-
-                                    <RadzenDataGridColumn TItem="TagLibrarySheetWithSirTagsDTO" Property="MesParamCodeNameToString" Title="Тэг в СИР (Code + Name)" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
-                                        <Template Context="data1">
-                                            @if (@data1.MesParamCodeNameToString == "НЕ НАЙДЕН")
-                                            {
-
-                                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px; color: red">
-                                                    <strong>
-                                                        @data1.MesParamCodeNameToString
-                                                    </strong>
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                                    <strong>
-                                                        @data1.MesParamCodeNameToString
-                                                    </strong>
-                                                </div>
-                                            }
-                                        </Template>
-                                    </RadzenDataGridColumn>
-                                </Columns>
-                            </RadzenDataGridApp>
+                            <ShowExcelSheetData gridSettings="InputDataSheetWithSirTagsGridSettings" gridRef="inputDataExcelSheetWithSirTagsDTOGrid" gridData="inputDataExcelSheetWithSirTagsDTOList"></ShowExcelSheetData>
                         }
                         else
                         {
@@ -577,8 +498,49 @@
                     </div>
 
                 </RadzenTabsItem>
-                <RadzenTabsItem Text="Входные данные (OutputData)">
-                    @selectedTabIndex.ToString()
+                <RadzenTabsItem Text="Тэги (лист TagLibrary)">
+                    <div class="row">
+                        @if (IsLoading != true)
+                        {
+                            <ShowExcelSheetData gridSettings="TagLibrarySheetWithSirTagsGridSettings" gridRef="tagExcelSheetWithSirTagsDTOGrid" gridData="tagLibraryExcelSheetWithSirTagsDTOList"></ShowExcelSheetData>
+
+                        }
+                        else
+                        {
+                            if (IsLoading)
+                            {
+                                //отображение gif загрузки
+                                <div class="text-center">
+                                    <img src="/images/loading.gif">
+                                </div>
+                            }
+                        }
+                    </div>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Выходные данные (OutputData)" Disabled="@(ActiveReportEntityDTO.UploadSuccessFlag ? false : true)">
+                    <div class="row">
+                        @if (IsLoading != true)
+                        {
+                            <p>                            
+                                <center>
+                                <RadzenLabel Style="font-size: 12px; color:powderblue; font-weight:bold;" Text="Отображаются только кэшированные данные, если они есть в файле. Пересчёт формул не производится" />
+                                </center>
+                            </p>
+                            <ShowExcelSheetData gridSettings="OutputDataSheetWithSirTagsGridSettings" gridRef="outputDataExcelSheetWithSirTagsDTOGrid" gridData="outputDataExcelSheetWithSirTagsDTOList"></ShowExcelSheetData>
+                            
+                        }
+                        else
+                        {
+                            if (IsLoading)
+                            {
+                                //отображение gif загрузки
+                                <div class="text-center">
+                                    <img src="/images/loading.gif">
+                                </div>
+                            }
+                        }
+                    </div>
+
                 </RadzenTabsItem>
                 <RadzenTabsItem Text="Журнал событий (LogEvent)">
                     <div class="row">
@@ -703,6 +665,8 @@
     bool firstTimeMesMovementsTab = true;
     bool firstTimeLogEventTab = true;
     bool firstTagLibraryTab = true;
+    bool firstOutputDataTab = true;
+    bool firstInputDataTab = true;
 
     _Dialogs? _dialogs { get; set; }
 
@@ -717,8 +681,14 @@
     IEnumerable<LogEventDTO>? logEventDTOs;
     RadzenDataGrid<LogEventDTO> logEventDTOGrid;
 
-    IEnumerable<TagLibrarySheetWithSirTagsDTO>? tagLibrarySheetWithSirTagsDTOs;
-    RadzenDataGrid<TagLibrarySheetWithSirTagsDTO> tagLibrarySheetWithSirTagsDTOGrid;
+    ExcelSheetWithSirTagsDTOList tagLibraryExcelSheetWithSirTagsDTOList;
+    RadzenDataGrid<ExcelSheetWithSirTagsDTO> tagExcelSheetWithSirTagsDTOGrid;
+
+    ExcelSheetWithSirTagsDTOList outputDataExcelSheetWithSirTagsDTOList;
+    RadzenDataGrid<ExcelSheetWithSirTagsDTO> outputDataExcelSheetWithSirTagsDTOGrid;
+
+    ExcelSheetWithSirTagsDTOList inputDataExcelSheetWithSirTagsDTOList;
+    RadzenDataGrid<ExcelSheetWithSirTagsDTO> inputDataExcelSheetWithSirTagsDTOGrid;
 
 
     [Parameter]
@@ -861,6 +831,37 @@
         }
     }
 
+    DataGridSettings _outputDataSheetWithSirTagsGridSettings;
+    public DataGridSettings OutputDataSheetWithSirTagsGridSettings
+    {
+        get
+        {
+            return _outputDataSheetWithSirTagsGridSettings;
+        }
+        set
+        {
+            if (_outputDataSheetWithSirTagsGridSettings != value)
+            {
+                _outputDataSheetWithSirTagsGridSettings = value;
+            }
+        }
+    }
+
+    DataGridSettings _inputDataSheetWithSirTagsGridSettings;
+    public DataGridSettings InputDataSheetWithSirTagsGridSettings
+    {
+        get
+        {
+            return _inputDataSheetWithSirTagsGridSettings;
+        }
+        set
+        {
+            if (_inputDataSheetWithSirTagsGridSettings != value)
+            {
+                _inputDataSheetWithSirTagsGridSettings = value;
+            }
+        }
+    }
 
 
     async Task OnTabChange(int value)
@@ -888,6 +889,7 @@
                 }
             case 2:
                 {
+                    await GetInputDataSheetWithSirTagsDTOs();
                     break;
                 }
             case 3:
@@ -897,6 +899,7 @@
                 }
             case 4:
                 {
+                    await GetOutputDataSheetWithSirTagsDTOs();
                     break;
                 }
             case 5:
@@ -962,9 +965,9 @@
             await Task.Delay(200);
             await InvokeAsync(StateHasChanged);
 
-            Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string> tmp = await _simpleExcelExportRepository.GetTagLibraryData(ActiveReportEntityDTO);
+            Tuple<ExcelSheetWithSirTagsDTOList, string> tmp = await _simpleExcelExportRepository.GetSheetData(ActiveReportEntityDTO, SD.ReportTagLibrarySheetSettingName);
 
-            tagLibrarySheetWithSirTagsDTOs = tmp.Item1;
+            tagLibraryExcelSheetWithSirTagsDTOList = tmp.Item1;
             string errorString = tmp.Item2;
 
             if (errorString != "")
@@ -977,8 +980,61 @@
             await Task.Delay(200);
             await InvokeAsync(StateHasChanged);
 
+        }
+    }
+
+    async Task GetOutputDataSheetWithSirTagsDTOs()
+    {
+        if (firstOutputDataTab)
+        {
+            IsLoading = true;
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+
+            Tuple<ExcelSheetWithSirTagsDTOList, string> tmp = await _simpleExcelExportRepository.GetSheetData(ActiveReportEntityDTO, SD.ReportOutputSheetSettingName);
+
+            outputDataExcelSheetWithSirTagsDTOList = tmp.Item1;
+            string errorString = tmp.Item2;
+
+            if (errorString != "")
+            {
+                await _jsRuntime.ToastrError(errorString);
+            }
+            IsLoading = false;
+            firstOutputDataTab = false;
+
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+
 
         }
     }
+
+    async Task GetInputDataSheetWithSirTagsDTOs()
+    {
+        if (firstInputDataTab)
+        {
+            IsLoading = true;
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+
+            Tuple<ExcelSheetWithSirTagsDTOList, string> tmp = await _simpleExcelExportRepository.GetSheetData(ActiveReportEntityDTO, SD.ReportInputSheetSettingName);
+
+            inputDataExcelSheetWithSirTagsDTOList = tmp.Item1;
+            string errorString = tmp.Item2;
+
+            if (errorString != "")
+            {
+                await _jsRuntime.ToastrError(errorString);
+            }
+            IsLoading = false;
+            firstInputDataTab = false;
+
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+
+        }
+    }
+
 
 }

@@ -32,7 +32,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<string> GenerateExcelLogEventType(string filename, IEnumerable<LogEventTypeDTO> data);
         public Task<string> GenerateExcelSmena(string filename, IEnumerable<SmenaDTO> data);
         public Task<string> GenerateExcelScheduler(string filename, IEnumerable<SchedulerDTO> data);
-        public Task<Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>> GetTagLibraryData(ReportEntityDTO? reportEntityDTO);
+        public Task<Tuple<ExcelSheetWithSirTagsDTOList, string>> GetSheetData(ReportEntityDTO? reportEntityDTO, string sheetSettingName);
 
     }
 }

@@ -487,7 +487,7 @@ namespace DictionaryManagement_Business.Repository
 
                 ws.Row(excelRowNum).Style.Font.SetBold(true);
                 ws.Row(excelRowNum).Style.Fill.BackgroundColor = XLColor.LightCyan;
-                                
+
                 ws.SheetView.FreezeRows(excelRowNum);
 
                 excelRowNum = 2;
@@ -516,7 +516,7 @@ namespace DictionaryManagement_Business.Repository
                     ws.Column(j).AdjustToContents();
 
                 var range = ws.Range(ws.Cell(1, 1).Address, ws.Cell(excelRowNum, excelColNum).Address);
-                range.SetAutoFilter();                
+                range.SetAutoFilter();
 
                 wbook.SaveAs(fullfilepath);
                 if (wbook != null)
@@ -596,10 +596,10 @@ namespace DictionaryManagement_Business.Repository
                 var wsReportTemplateTypeTоRole = wbook.AddWorksheet("ReportTemplateTypeTоRole");
                 var wsRoleToADGroup = wbook.AddWorksheet("RoleToADGroup");
                 var wsRoleToDepartment = wbook.AddWorksheet("RoleToDepartment");
-                
+
                 int excelRowNum = 1;
                 int excelColNum = 1;
-                
+
                 wsRole.Cell(excelRowNum, excelColNum).Value = "ИД (Id)";
                 excelColNum++;
                 wsRole.Cell(excelRowNum, excelColNum).Value = "Наименование (Name)";
@@ -915,7 +915,7 @@ namespace DictionaryManagement_Business.Repository
 
                 var rangeUserToRole = wsUserToRole.Range(wsUserToRole.Cell(1, 1).Address, wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Address);
                 rangeUserToRole.SetAutoFilter();
-                
+
                 var rangeReportTemplateTypeTоRole = wsReportTemplateTypeTоRole.Range(wsReportTemplateTypeTоRole.Cell(1, 1).Address,
                     wsReportTemplateTypeTоRole.Cell(wsReportTemplateTypeTоRoleRowNum, wsReportTemplateTypeTоRoleColNum).Address);
                 rangeReportTemplateTypeTоRole.SetAutoFilter();
@@ -945,7 +945,7 @@ namespace DictionaryManagement_Business.Repository
                 foreach (var topLevelItem in topLevelList)
                 {
                     MesDepartmentVMDTO? parentDepartmentVMDTO = topLevelItem;
-                   
+
                     int breakCount = 0;
                     while (parentDepartmentVMDTO != null && breakCount <= 100)
                     {
@@ -954,7 +954,7 @@ namespace DictionaryManagement_Business.Repository
                         //int a = 3;
                         //}
                         //else
-                            ws.Cell(excelRowNum, parentDepartmentVMDTO.DepLevel).Value = parentDepartmentVMDTO.ShortName;
+                        ws.Cell(excelRowNum, parentDepartmentVMDTO.DepLevel).Value = parentDepartmentVMDTO.ShortName;
                         parentDepartmentVMDTO = parentDepartmentVMDTO.DepartmentParentVMDTO;
                         breakCount++;
                     }
@@ -997,7 +997,7 @@ namespace DictionaryManagement_Business.Repository
 
                 int excelRowNum = 1;
                 int excelColNum = 1;
-                
+
                 for (int j = 1; j <= maxLevel; j++)
                 {
                     ws.Cell(excelRowNum, j).Value = "Производство - Уровень " + j.ToString();
@@ -1151,7 +1151,7 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
-        
+
 
         public async Task<string> GenerateExcelSapNdoOUT(string filename, IEnumerable<SapNdoOUTDTO> data)
         {
@@ -1315,7 +1315,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementsOUTDTOFK == null ? "" : mesMovementsDTO.SapMovementsOUTDTOFK.SapErrorMessage == null ? "" : mesMovementsDTO.SapMovementsOUTDTOFK.SapErrorMessage;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementInId == null ? "" : mesMovementsDTO.SapMovementInId.ToString(); 
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementInId == null ? "" : mesMovementsDTO.SapMovementInId.ToString();
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.SapMovementsINDTOFK == null ? "" : mesMovementsDTO.SapMovementsINDTOFK.AddTime == null ? "" : mesMovementsDTO.SapMovementsINDTOFK.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
@@ -1327,8 +1327,8 @@ namespace DictionaryManagement_Business.Repository
 
                     string correctionNames = "";
                     string correctionComments = "";
-                    
-                    foreach(var correctionItem in mesMovementsDTO.MesMovementsCommentListDTO)
+
+                    foreach (var correctionItem in mesMovementsDTO.MesMovementsCommentListDTO)
                     {
                         if (correctionItem.CorrectionReasonDTOFK != null)
                             correctionNames = correctionNames + correctionItem.CorrectionReasonDTOFK.Name + "\n";
@@ -1356,7 +1356,7 @@ namespace DictionaryManagement_Business.Repository
             return fullfilepath;
         }
 
-        
+
         public async Task<string> GenerateExcelSapMovementsOUT(string filename, IEnumerable<SapMovementsOUTDTO> data)
         {
 
@@ -1512,7 +1512,7 @@ namespace DictionaryManagement_Business.Repository
             return fullfilepath;
         }
 
-        
+
         public async Task<string> GenerateExcelSapMovementsIN(string filename, IEnumerable<SapMovementsINDTO> data)
         {
 
@@ -1546,7 +1546,7 @@ namespace DictionaryManagement_Business.Repository
                 ws.Cell(excelRowNum, excelColNum).Value = "Код ресурса источника SAP (ErpIdSource)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "ИД источника SAP в СИР (SapEquipment.Id)";
-                excelColNum++;                
+                excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Наим. источника SAP в СИР (SapEquipment.Name)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Является складом (IsWarehouseSource)";
@@ -1685,7 +1685,7 @@ namespace DictionaryManagement_Business.Repository
             return fullfilepath;
         }
 
-        
+
         public async Task<string> GenerateExcelLogEvent(string filename, IEnumerable<LogEventDTO> data)
         {
 
@@ -1753,8 +1753,8 @@ namespace DictionaryManagement_Business.Repository
                         firstIteration = false;
                         ws.Column(excelColNum).Width = 80;
                     }
-                    
-                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.Description;                    
+
+                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.Description;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.ToStringReportEntityId;
                     excelColNum++;
@@ -1763,7 +1763,7 @@ namespace DictionaryManagement_Business.Repository
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.IsError == true ? "Да" : "";
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.IsWarning == true ? "Да" : "";
-                    
+
                     excelRowNum++;
                 }
 
@@ -1824,7 +1824,7 @@ namespace DictionaryManagement_Business.Repository
                     ws.Cell(excelRowNum, excelColNum).Value = mesMaterialDTO.ShortName;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesMaterialDTO.IsArchive == true ? "Да" : "";
-                    
+
                     excelRowNum++;
                 }
 
@@ -1897,7 +1897,7 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
-        
+
         public async Task<string> GenerateExcelSapUnitOfMeasure(string filename, IEnumerable<SapUnitOfMeasureDTO> data)
         {
 
@@ -2046,7 +2046,7 @@ namespace DictionaryManagement_Business.Repository
 
                     ws.Cell(excelRowNum, excelColNum).Value = correctionReasonDTO.Id.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = correctionReasonDTO.Name;                    
+                    ws.Cell(excelRowNum, excelColNum).Value = correctionReasonDTO.Name;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = correctionReasonDTO.IsArchive == true ? "Да" : "";
 
@@ -2065,7 +2065,7 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
-        
+
         public async Task<string> GenerateExcelMesParamSourceType(string filename, IEnumerable<MesParamSourceTypeDTO> data)
         {
 
@@ -2179,7 +2179,7 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
-        
+
 
         public async Task<string> GenerateExcelDataSource(string filename, IEnumerable<DataSourceDTO> data)
         {
@@ -2233,7 +2233,7 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
-        
+
         public async Task<string> GenerateExcelReportTemplateType(string filename, IEnumerable<ReportTemplateTypeDTO> data)
         {
 
@@ -2384,7 +2384,7 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
-        
+
         public async Task<string> GenerateExcelLogEventType(string filename, IEnumerable<LogEventTypeDTO> data)
         {
 
@@ -2486,7 +2486,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.DepartmentDTOFK == null ? "" : smenaDTO.DepartmentDTOFK.ShortName;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = (DateTime.MinValue + smenaDTO.StartTime).ToString("HH:mm:ss",CultureInfo.InvariantCulture);
+                    ws.Cell(excelRowNum, excelColNum).Value = (DateTime.MinValue + smenaDTO.StartTime).ToString("HH:mm:ss", CultureInfo.InvariantCulture);
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.HoursDuration.ToString();
                     excelColNum++;
@@ -2507,7 +2507,7 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
-      
+
         public async Task<string> GenerateExcelScheduler(string filename, IEnumerable<SchedulerDTO> data)
         {
 
@@ -2564,12 +2564,17 @@ namespace DictionaryManagement_Business.Repository
             }
             return fullfilepath;
         }
-        
-        public async Task<Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>> GetTagLibraryData(ReportEntityDTO? reportEntityDTO)
+
+        public async Task<Tuple<ExcelSheetWithSirTagsDTOList, string>> GetSheetData(ReportEntityDTO? reportEntityDTO, string sheetSettingName)
         {
             if (reportEntityDTO != null)
             {
-                string pathVar = (await _settingsRepository.GetByName(SD.ReportUploadPathSettingName)).Value;
+                string pathVar = "";
+                if (reportEntityDTO.UploadSuccessFlag)
+                    pathVar = (await _settingsRepository.GetByName(SD.ReportUploadPathSettingName)).Value;
+                else
+                    pathVar = (await _settingsRepository.GetByName(SD.ReportDownloadPathSettingName)).Value;
+
                 string fileName = reportEntityDTO.DownloadReportFileName;
                 string file = System.IO.Path.Combine(pathVar, fileName);
                 var extension = Path.GetExtension(fileName);
@@ -2582,8 +2587,9 @@ namespace DictionaryManagement_Business.Repository
                     }
                     catch (Exception ex1)
                     {
-                        return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(), "Не удалось загрузить файл (ClosedXML). " + ex1.Message);
+                        return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(), "Не удалось загрузить файл (ClosedXML). " + ex1.Message);
                     }
+                    workbook.CalculateMode = XLCalculateMode.Manual;
 
                     if (workbook.IsProtected)
                         try
@@ -2592,75 +2598,122 @@ namespace DictionaryManagement_Business.Repository
                         }
                         catch (Exception exx1)
                         {
-                            return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(), "Не удалось снять защиту с книги с помощью пароля sirreport " + exx1.Message);
+                            return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(), "Не удалось снять защиту с книги с помощью пароля sirreport " + exx1.Message);
                         }
 
-                    string? tagLibrarySheetName = (await _settingsRepository.GetByName(SD.ReportTagLibrarySheetSettingName)).Value;
+                    string? sheetName = (await _settingsRepository.GetByName(sheetSettingName)).Value;
 
-                    if(tagLibrarySheetName.IsNullOrEmpty())
+                    if (sheetName.IsNullOrEmpty())
                     {
-                        return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(),
+                        return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(),
                             "Не удалось найти настройку в таблице Settings или у неё пустое значение в Value: " + SD.ReportTagLibrarySheetSettingName);
                     }
 
                     IXLWorksheet worksheet = null;
                     try
                     {
-                        worksheet = workbook.Worksheet(tagLibrarySheetName);
+                        worksheet = workbook.Worksheet(sheetName);
                     }
                     catch (Exception ex2)
                     {
-                        return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(), "Не удалось загрузить лист (ClosedXML). " + ex2.Message);
+                        return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(), "Не удалось загрузить лист (ClosedXML). " + ex2.Message);
                     }
-                     
-                    var rows = worksheet.RangeUsed().RowsUsed(); // пропуск заголовочной строки
 
-                    List<TagLibrarySheetDTO> reportList = new List<TagLibrarySheetDTO>();
+                    ExcelSheetWithSirTagsDTOList reportList = new ExcelSheetWithSirTagsDTOList();
+
+                    var headerRows = worksheet.Row(1);
+
+                    reportList.Column1Name = headerRows.Cell(1).CachedValue.ToString();
+                    reportList.Column2Name = headerRows.Cell(2).CachedValue.ToString();
+                    reportList.Column3Name = headerRows.Cell(3).CachedValue.ToString();
+                    reportList.Column4Name = headerRows.Cell(4).CachedValue.ToString();
+                    reportList.Column5Name = headerRows.Cell(5).CachedValue.ToString();
+                    reportList.Column6Name = headerRows.Cell(6).CachedValue.ToString();
+                    reportList.Column7Name = headerRows.Cell(7).CachedValue.ToString();
+                    reportList.Column8Name = headerRows.Cell(8).CachedValue.ToString();
+                    reportList.Column9Name = headerRows.Cell(9).CachedValue.ToString();
+                    reportList.Column10Name = headerRows.Cell(10).CachedValue.ToString();
+                    reportList.Column11Name = headerRows.Cell(11).CachedValue.ToString();
+                    reportList.Column12Name = headerRows.Cell(12).CachedValue.ToString();
+
+                    var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
 
                     foreach (var row in rows)
-                    {                        
-                        TagLibrarySheetDTO rowItem = new TagLibrarySheetDTO
+                    {
+
+                        var cell = row.Cell(1);
+
+                        var cellval = cell.CachedValue.ToString();
+
+                        ExcelSheetWithSirTagsDTO rowItem = new ExcelSheetWithSirTagsDTO
                         {
-                            MesParamCode = row.Cell(1).Value.ToString(),
-                            MesParamNameТМ = row.Cell(2).Value.ToString(),
-                            MesParamNameTI = row.Cell(3).Value.ToString()
+                            Column1 = row.Cell(1).CachedValue.ToString(),
+                            Column2 = row.Cell(2).CachedValue.ToString(),
+                            Column3 = row.Cell(3).CachedValue.ToString(),
+                            Column4 = row.Cell(4).CachedValue.ToString(),
+                            Column5 = row.Cell(5).CachedValue.ToString(),
+                            Column6 = row.Cell(6).CachedValue.ToString(),
+                            Column7 = row.Cell(7).CachedValue.ToString(),
+                            Column8 = row.Cell(8).CachedValue.ToString(),
+                            Column9 = row.Cell(9).CachedValue.ToString(),
+                            Column10 = row.Cell(10).CachedValue.ToString(),
+                            Column11 = row.Cell(11).CachedValue.ToString(),
+                            Column12 = row.Cell(12).CachedValue.ToString()
+
                         };
-                        reportList.Add(rowItem);
+                        reportList.excelSheetWithSirTagsDTOList.Add(rowItem);
                     }
 
-                    IEnumerable<TagLibrarySheetWithSirTagsDTO>? returnResult;
+                    IEnumerable<ExcelSheetWithSirTagsDTO>? returnResult;
 
-                    returnResult = (from reportListAlias in reportList
+                    returnResult = (from reportListAlias in reportList.excelSheetWithSirTagsDTOList
                                     join MP_prom1 in _db.MesParam.AsNoTracking().ToListWithNoLock() on
-                                         reportListAlias.MesParamCode equals MP_prom1.Code
+                                         reportListAlias.Column1 equals MP_prom1.Code
                                     into MP_prom2
                                     from MP in MP_prom2.DefaultIfEmpty()
                                     select
-                                            new TagLibrarySheetWithSirTagsDTO
-                                                            {
-                                                                    MesParamCode = reportListAlias.MesParamCode,
-                                                                    MesParamNameТМ = reportListAlias.MesParamNameТМ,
-                                                                    MesParamNameTI = reportListAlias.MesParamNameTI,
-                                                                    MesParamDTOFK = _mapper.Map<MesParam, MesParamDTO>(MP),
-                                                               }).ToList();
+                                            new ExcelSheetWithSirTagsDTO
+                                            {
+                                                Column1 = reportListAlias.Column1,
+                                                Column2 = reportListAlias.Column2,
+                                                Column3 = reportListAlias.Column3,
+                                                Column4 = reportListAlias.Column4,
+                                                Column5 = reportListAlias.Column5,
+                                                Column6 = reportListAlias.Column6,
+                                                Column7 = reportListAlias.Column7,
+                                                Column8 = reportListAlias.Column8,
+                                                Column9 = reportListAlias.Column9,
+                                                Column10 = reportListAlias.Column10,
+                                                Column11 = reportListAlias.Column11,
+                                                Column12 = reportListAlias.Column12,
+                                                MesParamDTOFK = _mapper.Map<MesParam, MesParamDTO>(MP),
+                                            }).ToList();
+
+                    reportList.excelSheetWithSirTagsDTOList = (List<ExcelSheetWithSirTagsDTO>)returnResult
+                        .Where(u => ((!u.Column1.IsNullOrEmpty()) || (!u.Column2.IsNullOrEmpty())
+                         || (!u.Column3.IsNullOrEmpty()) || (!u.Column4.IsNullOrEmpty()) || (!u.Column5.IsNullOrEmpty())
+                         || (!u.Column6.IsNullOrEmpty()) || (!u.Column7.IsNullOrEmpty()) || (!u.Column8.IsNullOrEmpty())
+                         || (!u.Column9.IsNullOrEmpty()) || (!u.Column10.IsNullOrEmpty()) || (!u.Column11.IsNullOrEmpty())
+                          || (!u.Column12.IsNullOrEmpty())
+                        )).ToList();
 
                     if (workbook != null)
                         workbook.Dispose();
 
-                    return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(returnResult, "");
+                    return new Tuple<ExcelSheetWithSirTagsDTOList, string>(reportList, "");
                 }
-            else
+                else
                 {
-                    return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(), "Не удалось найти файл " + file);
+                    return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(), "Не удалось найти файл " + file);
                 }
 
             }
             else
             {
-                return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(), "Пустой объект экземпляра отчёта");
+                return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(), "Пустой объект экземпляра отчёта");
             }
-            return new Tuple<IEnumerable<TagLibrarySheetWithSirTagsDTO>, string>(new List<TagLibrarySheetWithSirTagsDTO>(), "");
-            
+            return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(), "");
+
         }
 
     }
