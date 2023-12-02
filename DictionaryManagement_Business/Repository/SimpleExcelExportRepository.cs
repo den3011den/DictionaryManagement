@@ -2737,6 +2737,8 @@ namespace DictionaryManagement_Business.Repository
                             string ggg;
                             if (cell.TryGetValue<string>(out ggg))
                                 retVar = ggg;
+                            else
+                                retVar = "Формула не поддерживается";
                             break;
                         }
                     case XLDataType.Boolean:
@@ -2744,6 +2746,8 @@ namespace DictionaryManagement_Business.Repository
                             bool ggg;
                             if (cell.TryGetValue<bool>(out ggg))
                                 retVar = ggg.ToString();
+                            else
+                                retVar = "Формула не поддерживается";
                             break;
                         }
                     case XLDataType.DateTime:
@@ -2751,6 +2755,8 @@ namespace DictionaryManagement_Business.Repository
                             DateTime ggg;
                             if (cell.TryGetValue<DateTime>(out ggg))
                                 retVar = ggg.ToString();
+                            else
+                                retVar = "Формула не поддерживается";
                             break;
                         }
                     case XLDataType.Number:
@@ -2758,22 +2764,28 @@ namespace DictionaryManagement_Business.Repository
                             Decimal ggg;
                             if (cell.TryGetValue<Decimal>(out ggg))
                                 retVar = ggg.ToString();
+                            else
+                                retVar = "Формула не поддерживается";
                             break;
                         }
                     case XLDataType.Blank:
                         {
                             var ttt = cell.Style.DateFormat.NumberFormatId;
-                            if (ttt == 14)
+                            if (ttt == 14 || ttt == -1)
                             {
                                 DateTime ggg;
                                 if (cell.TryGetValue<DateTime>(out ggg))
                                     retVar = ggg.ToString();
+                                else
+                                    retVar = "Формула не поддерживается";
                             }
                             else
                             {
                                 string ggg;
                                 if (cell.TryGetValue<string>(out ggg))
                                     retVar = ggg;
+                                else
+                                    retVar = "Формула не поддерживается";
                             }
                             break;
                         }
