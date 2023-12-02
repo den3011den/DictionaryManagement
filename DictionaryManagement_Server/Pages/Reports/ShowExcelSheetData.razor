@@ -45,7 +45,7 @@
                 @if (gridData.Column3Name.Trim() != "")
                 {
                     <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="Column3" Title="@(gridData.Column3Name)" TextAlign="TextAlign.Center"
-                    FilterProperty="Column3" FilterOperator="FilterOperator.Contains" SortProperty="Column3">
+                                          FilterProperty="Column3" FilterOperator="FilterOperator.Contains" SortProperty="Column3">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Column3
@@ -60,7 +60,7 @@
                 @if (gridData.Column4Name.Trim() != "")
                 {
                     <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="Column4" Title="@(gridData.Column4Name)" TextAlign="TextAlign.Center"
-                    FilterProperty="Column4" FilterOperator="FilterOperator.Contains" SortProperty="Column4">
+                                          FilterProperty="Column4" FilterOperator="FilterOperator.Contains" SortProperty="Column4">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Column4
@@ -75,7 +75,7 @@
                 @if (gridData.Column5Name.Trim() != "")
                 {
                     <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="Column5" Title="@(gridData.Column5Name)" TextAlign="TextAlign.Center"
-                    FilterProperty="Column5" FilterOperator="FilterOperator.Contains" SortProperty="Column5">
+                                          FilterProperty="Column5" FilterOperator="FilterOperator.Contains" SortProperty="Column5">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Column5
@@ -90,7 +90,7 @@
                 @if (gridData.Column6Name.Trim() != "")
                 {
                     <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="Column5" Title="@(gridData.Column6Name)" TextAlign="TextAlign.Center"
-                    FilterProperty="Column6" FilterOperator="FilterOperator.Contains" SortProperty="Column6">
+                                          FilterProperty="Column6" FilterOperator="FilterOperator.Contains" SortProperty="Column6">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Column6
@@ -104,7 +104,7 @@
                 @if (gridData.Column7Name.Trim() != "")
                 {
                     <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="Column7" Title="@(gridData.Column7Name)" TextAlign="TextAlign.Center"
-                    FilterProperty="Column7" FilterOperator="FilterOperator.Contains" SortProperty="Column7">
+                                          FilterProperty="Column7" FilterOperator="FilterOperator.Contains" SortProperty="Column7">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Column7
@@ -118,7 +118,7 @@
                 @if (gridData.Column8Name.Trim() != "")
                 {
                     <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="Column8" Title="@(gridData.Column8Name)" TextAlign="TextAlign.Center"
-                    FilterProperty="Column8" FilterOperator="FilterOperator.Contains" SortProperty="Column8">
+                                          FilterProperty="Column8" FilterOperator="FilterOperator.Contains" SortProperty="Column8">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Column8
@@ -132,7 +132,7 @@
                 @if (gridData.Column9Name.Trim() != "")
                 {
                     <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="Column9" Title="@(gridData.Column5Name)" TextAlign="TextAlign.Center"
-                    FilterProperty="Column9" FilterOperator="FilterOperator.Contains" SortProperty="Column9">
+                                          FilterProperty="Column9" FilterOperator="FilterOperator.Contains" SortProperty="Column9">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Column9
@@ -146,7 +146,7 @@
                 @if (gridData.Column10Name.Trim() != "")
                 {
                     <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="Column10" Title="@(gridData.Column10Name)" TextAlign="TextAlign.Center"
-                    FilterProperty="Column10" FilterOperator="FilterOperator.Contains" SortProperty="Column10">
+                                          FilterProperty="Column10" FilterOperator="FilterOperator.Contains" SortProperty="Column10">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Column10
@@ -160,7 +160,7 @@
                 @if (gridData.Column11Name.Trim() != "")
                 {
                     <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="Column11" Title="@(gridData.Column11Name)" TextAlign="TextAlign.Center"
-                    FilterProperty="Column11" FilterOperator="FilterOperator.Contains" SortProperty="Column11">
+                                          FilterProperty="Column11" FilterOperator="FilterOperator.Contains" SortProperty="Column11">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Column11
@@ -174,7 +174,7 @@
                 @if (gridData.Column12Name.Trim() != "")
                 {
                     <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="Column12" Title="@(gridData.Column12Name)" TextAlign="TextAlign.Center"
-                    FilterProperty="Column12" FilterOperator="FilterOperator.Contains" SortProperty="Column12">
+                                          FilterProperty="Column12" FilterOperator="FilterOperator.Contains" SortProperty="Column12">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Column12
@@ -184,37 +184,43 @@
                 }
             }
 
-            <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="MesParamIdToString" Title="ИД тэга в СИР (Id)" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
-                <Template Context="data1">
-                    <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                        <strong>
-                            @data1.MesParamIdToString
-                        </strong>
-                    </div>
-                </Template>
-            </RadzenDataGridColumn>
+            @if (gridData.Column1Name != null)
+            {
+                @if (gridData.Column1Name.Trim().ToUpper() == "MESPARAMCODE")
+                {
+                    <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="MesParamIdToString" Title="ИД тэга в СИР (Id)" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                        <Template Context="data1">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                <strong>
+                                    @data1.MesParamIdToString
+                                </strong>
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
 
-            <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="MesParamCodeNameToString" Title="Тэг в СИР (Code + Name)" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
-                <Template Context="data1">
-                    @if (@data1.MesParamCodeNameToString == "НЕ НАЙДЕН")
-                    {
+                    <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="MesParamCodeNameToString" Title="Тэг в СИР (Code + Name)" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                        <Template Context="data1">
+                            @if (@data1.MesParamCodeNameToString == "НЕ НАЙДЕН")
+                            {
 
-                        <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px; color: red">
-                            <strong>
-                                @data1.MesParamCodeNameToString
-                            </strong>
-                        </div>
-                    }
-                    else
-                    {
-                        <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                            <strong>
-                                @data1.MesParamCodeNameToString
-                            </strong>
-                        </div>
-                    }
-                </Template>
-            </RadzenDataGridColumn>
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px; color: red">
+                                    <strong>
+                                        @data1.MesParamCodeNameToString
+                                    </strong>
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                    <strong>
+                                        @data1.MesParamCodeNameToString
+                                    </strong>
+                                </div>
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                }
+            }
         }
     </Columns>
 </RadzenDataGridApp>

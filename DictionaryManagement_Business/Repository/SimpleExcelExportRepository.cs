@@ -5,20 +5,10 @@ using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 using ClosedXML.Excel;
-using System.Reflection.Metadata.Ecma335;
-using System.IO;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
-using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Bibliography;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -2565,9 +2555,14 @@ namespace DictionaryManagement_Business.Repository
             return fullfilepath;
         }
 
-        public async Task<Tuple<ExcelSheetWithSirTagsDTOList, string>> GetSheetData(ReportEntityDTO? reportEntityDTO, string sheetSettingName)
+        public async Task<Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook?>> GetSheetData(ReportEntityDTO? reportEntityDTO, string sheetSettingName, XLWorkbook? workbook)
         {
-            if (reportEntityDTO != null)
+            if (reportEntityDTO == null)
+            {
+                return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "Пустой объект экземпляра отчёта", workbook);
+            }
+
+            if (workbook == null)
             {
                 string pathVar = "";
                 if (reportEntityDTO.UploadSuccessFlag)
@@ -2580,91 +2575,103 @@ namespace DictionaryManagement_Business.Repository
                 var extension = Path.GetExtension(fileName);
                 if (System.IO.File.Exists(file))
                 {
-                    XLWorkbook workbook = null;
                     try
                     {
                         workbook = new XLWorkbook(file);
                     }
                     catch (Exception ex1)
                     {
-                        return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(), "Не удалось загрузить файл (ClosedXML). " + ex1.Message);
+                        return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "Не удалось загрузить файл: " + file
+                            + " Возможно не является файлом формата xlsx", workbook);
                     }
-                    workbook.CalculateMode = XLCalculateMode.Manual;
+                }
+                else
+                {
+                    return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "Не удалось найти файл " + file, workbook);
+                }
 
-                    if (workbook.IsProtected)
-                        try
-                        {
-                            workbook.Unprotect("sirreport");
-                        }
-                        catch (Exception exx1)
-                        {
-                            return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(), "Не удалось снять защиту с книги с помощью пароля sirreport " + exx1.Message);
-                        }
+            }
 
-                    string? sheetName = (await _settingsRepository.GetByName(sheetSettingName)).Value;
+            if (workbook != null)
+            {
+                workbook.CalculateMode = XLCalculateMode.Manual;
 
-                    if (sheetName.IsNullOrEmpty())
-                    {
-                        return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(),
-                            "Не удалось найти настройку в таблице Settings или у неё пустое значение в Value: " + SD.ReportTagLibrarySheetSettingName);
-                    }
-
-                    IXLWorksheet worksheet = null;
+                if (workbook.IsProtected)
+                {
                     try
                     {
-                        worksheet = workbook.Worksheet(sheetName);
+                        workbook.Unprotect(SD.ExcelWorkBookProtectionPassword);
                     }
-                    catch (Exception ex2)
+                    catch (Exception exx1)
                     {
-                        return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(), "Не удалось загрузить лист (ClosedXML). " + ex2.Message);
+                        return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "Не удалось снять защиту с книги с помощью пароля: " + SD.ExcelWorkBookProtectionPassword, workbook);
                     }
+                }
+                string? sheetName = (await _settingsRepository.GetByName(sheetSettingName)).Value;
 
-                    ExcelSheetWithSirTagsDTOList reportList = new ExcelSheetWithSirTagsDTOList();
+                if (sheetName.IsNullOrEmpty())
+                {
+                    return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(),
+                            "Не удалось найти настройку в таблице Settings или у неё пустое значение в Value: " + SD.ReportTagLibrarySheetSettingName, workbook);
+                }
 
-                    var headerRows = worksheet.Row(1);
+                IXLWorksheet worksheet = null;
+                try
+                {
+                    worksheet = workbook.Worksheet(sheetName);
+                }
+                catch (Exception ex2)
+                {
+                    return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "Не удалось загрузить лист: " + sheetName, workbook);
+                }
 
-                    reportList.Column1Name = headerRows.Cell(1).CachedValue.ToString();
-                    reportList.Column2Name = headerRows.Cell(2).CachedValue.ToString();
-                    reportList.Column3Name = headerRows.Cell(3).CachedValue.ToString();
-                    reportList.Column4Name = headerRows.Cell(4).CachedValue.ToString();
-                    reportList.Column5Name = headerRows.Cell(5).CachedValue.ToString();
-                    reportList.Column6Name = headerRows.Cell(6).CachedValue.ToString();
-                    reportList.Column7Name = headerRows.Cell(7).CachedValue.ToString();
-                    reportList.Column8Name = headerRows.Cell(8).CachedValue.ToString();
-                    reportList.Column9Name = headerRows.Cell(9).CachedValue.ToString();
-                    reportList.Column10Name = headerRows.Cell(10).CachedValue.ToString();
-                    reportList.Column11Name = headerRows.Cell(11).CachedValue.ToString();
-                    reportList.Column12Name = headerRows.Cell(12).CachedValue.ToString();
+                ExcelSheetWithSirTagsDTOList reportList = new ExcelSheetWithSirTagsDTOList();
 
-                    var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
+                var headerRows = worksheet.Row(1);
 
-                    foreach (var row in rows)
+                reportList.Column1Name = headerRows.Cell(1).CachedValue.ToString();
+                reportList.Column2Name = headerRows.Cell(2).CachedValue.ToString();
+                reportList.Column3Name = headerRows.Cell(3).CachedValue.ToString();
+                reportList.Column4Name = headerRows.Cell(4).CachedValue.ToString();
+                reportList.Column5Name = headerRows.Cell(5).CachedValue.ToString();
+                reportList.Column6Name = headerRows.Cell(6).CachedValue.ToString();
+                reportList.Column7Name = headerRows.Cell(7).CachedValue.ToString();
+                reportList.Column8Name = headerRows.Cell(8).CachedValue.ToString();
+                reportList.Column9Name = headerRows.Cell(9).CachedValue.ToString();
+                reportList.Column10Name = headerRows.Cell(10).CachedValue.ToString();
+                reportList.Column11Name = headerRows.Cell(11).CachedValue.ToString();
+                reportList.Column12Name = headerRows.Cell(12).CachedValue.ToString();
+
+                var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
+
+                foreach (var row in rows)
+                {
+                    var cell = row.Cell(1);
+
+                    var cellval = cell.CachedValue.ToString();
+
+                    ExcelSheetWithSirTagsDTO rowItem = new ExcelSheetWithSirTagsDTO
                     {
+                        Column1 = row.Cell(1).CachedValue.ToString(),
+                        Column2 = row.Cell(2).CachedValue.ToString(),
+                        Column3 = row.Cell(3).CachedValue.ToString(),
+                        Column4 = row.Cell(4).CachedValue.ToString(),
+                        Column5 = row.Cell(5).CachedValue.ToString(),
+                        Column6 = row.Cell(6).CachedValue.ToString(),
+                        Column7 = row.Cell(7).CachedValue.ToString(),
+                        Column8 = row.Cell(8).CachedValue.ToString(),
+                        Column9 = row.Cell(9).CachedValue.ToString(),
+                        Column10 = row.Cell(10).CachedValue.ToString(),
+                        Column11 = row.Cell(11).CachedValue.ToString(),
+                        Column12 = row.Cell(12).CachedValue.ToString()
+                    };
+                    reportList.excelSheetWithSirTagsDTOList.Add(rowItem);
+                }
 
-                        var cell = row.Cell(1);
+                IEnumerable<ExcelSheetWithSirTagsDTO>? returnResult;
 
-                        var cellval = cell.CachedValue.ToString();
-
-                        ExcelSheetWithSirTagsDTO rowItem = new ExcelSheetWithSirTagsDTO
-                        {
-                            Column1 = row.Cell(1).CachedValue.ToString(),
-                            Column2 = row.Cell(2).CachedValue.ToString(),
-                            Column3 = row.Cell(3).CachedValue.ToString(),
-                            Column4 = row.Cell(4).CachedValue.ToString(),
-                            Column5 = row.Cell(5).CachedValue.ToString(),
-                            Column6 = row.Cell(6).CachedValue.ToString(),
-                            Column7 = row.Cell(7).CachedValue.ToString(),
-                            Column8 = row.Cell(8).CachedValue.ToString(),
-                            Column9 = row.Cell(9).CachedValue.ToString(),
-                            Column10 = row.Cell(10).CachedValue.ToString(),
-                            Column11 = row.Cell(11).CachedValue.ToString(),
-                            Column12 = row.Cell(12).CachedValue.ToString()
-
-                        };
-                        reportList.excelSheetWithSirTagsDTOList.Add(rowItem);
-                    }
-
-                    IEnumerable<ExcelSheetWithSirTagsDTO>? returnResult;
+                if (reportList.Column1Name.Trim().ToUpper() == "MESPARAMCODE")
+                {
 
                     returnResult = (from reportListAlias in reportList.excelSheetWithSirTagsDTOList
                                     join MP_prom1 in _db.MesParam.AsNoTracking().ToListWithNoLock() on
@@ -2688,8 +2695,12 @@ namespace DictionaryManagement_Business.Repository
                                                 Column12 = reportListAlias.Column12,
                                                 MesParamDTOFK = _mapper.Map<MesParam, MesParamDTO>(MP),
                                             }).ToList();
-
-                    reportList.excelSheetWithSirTagsDTOList = (List<ExcelSheetWithSirTagsDTO>)returnResult
+                }
+                else
+                {
+                    returnResult = reportList.excelSheetWithSirTagsDTOList;
+                }
+                reportList.excelSheetWithSirTagsDTOList = (List<ExcelSheetWithSirTagsDTO>)returnResult
                         .Where(u => ((!u.Column1.IsNullOrEmpty()) || (!u.Column2.IsNullOrEmpty())
                          || (!u.Column3.IsNullOrEmpty()) || (!u.Column4.IsNullOrEmpty()) || (!u.Column5.IsNullOrEmpty())
                          || (!u.Column6.IsNullOrEmpty()) || (!u.Column7.IsNullOrEmpty()) || (!u.Column8.IsNullOrEmpty())
@@ -2697,23 +2708,9 @@ namespace DictionaryManagement_Business.Repository
                           || (!u.Column12.IsNullOrEmpty())
                         )).ToList();
 
-                    if (workbook != null)
-                        workbook.Dispose();
-
-                    return new Tuple<ExcelSheetWithSirTagsDTOList, string>(reportList, "");
-                }
-                else
-                {
-                    return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(), "Не удалось найти файл " + file);
-                }
-
+                return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(reportList, "", workbook);
             }
-            else
-            {
-                return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(), "Пустой объект экземпляра отчёта");
-            }
-            return new Tuple<ExcelSheetWithSirTagsDTOList, string>(new ExcelSheetWithSirTagsDTOList(), "");
-
+            return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "", workbook);
         }
 
     }

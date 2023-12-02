@@ -3,6 +3,8 @@
 
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
+@using ClosedXML.Excel;
+@using DocumentFormat.OpenXml;
 
 @inject IJSRuntime _jsRuntime
 
@@ -160,8 +162,110 @@
                          </RadzenColumn>
                      </RadzenRow>
                  </RadzenTabsItem>
+                 <RadzenTabsItem Text="Лист TagLibrary)">
+                     <div class="row">
+                         @if (IsLoading != true)
+                        {
+                            <ShowExcelSheetData gridSettings="TagLibrarySheetWithSirTagsGridSettings" gridRef="tagExcelSheetWithSirTagsDTOGrid" gridData="tagLibraryExcelSheetWithSirTagsDTOList"></ShowExcelSheetData>
 
-                 <RadzenTabsItem Text="Данные в Архиве данных" Disabled="@(ActiveReportEntityDTO.UploadSuccessFlag ? false : true)">
+                        }
+                        else
+                        {
+                            if (IsLoading)
+                            {
+                                //отображение gif загрузки
+                                <div class="text-center">
+                                    <img src="/images/loading.gif">
+                                </div>
+                            }
+                        }
+                    </div>
+                </RadzenTabsItem>
+
+                <RadzenTabsItem Text="Лист StartEndDate">
+                    <div class="row">
+                        @if (IsLoading != true)
+                        {
+                            <ShowExcelSheetData gridSettings="StartEndDateSheetWithSirTagsGridSettings" gridRef="startEndDateExcelSheetWithSirTagsDTOGrid" gridData="startEndDateExcelSheetWithSirTagsDTOList"></ShowExcelSheetData>
+
+                        }
+                        else
+                        {
+                            if (IsLoading)
+                            {
+                                //отображение gif загрузки
+                                <div class="text-center">
+                                    <img src="/images/loading.gif">
+                                </div>
+                            }
+                        }
+                    </div>
+                </RadzenTabsItem>
+
+                <RadzenTabsItem Text="Лист ReasonLibrary">
+                    <div class="row">
+                        @if (IsLoading != true)
+                        {
+                            <ShowExcelSheetData gridSettings="ReasonLibrarySheetWithSirTagsGridSettings" gridRef="reasonLibraryExcelSheetWithSirTagsDTOGrid" gridData="reasonLibraryExcelSheetWithSirTagsDTOList"></ShowExcelSheetData>
+                        }
+                        else
+                        {
+                            if (IsLoading)
+                            {
+                                //отображение gif загрузки
+                                <div class="text-center">
+                                    <img src="/images/loading.gif">
+                                </div>
+                            }
+                        }
+                    </div>
+                </RadzenTabsItem>
+
+                <RadzenTabsItem Text="Лист InputData">
+                    <div class="row">
+                        @if (IsLoading != true)
+                        {
+                            <ShowExcelSheetData gridSettings="InputDataSheetWithSirTagsGridSettings" gridRef="inputDataExcelSheetWithSirTagsDTOGrid" gridData="inputDataExcelSheetWithSirTagsDTOList"></ShowExcelSheetData>
+                        }
+                        else
+                        {
+                            if (IsLoading)
+                            {
+                                //отображение gif загрузки
+                                <div class="text-center">
+                                    <img src="/images/loading.gif">
+                                </div>
+                            }
+                        }
+                    </div>
+                </RadzenTabsItem>
+
+                <RadzenTabsItem Text="Лист OutputData" Disabled="@(ActiveReportEntityDTO.UploadSuccessFlag ? false : true)">
+                    <div class="row">
+                        @if (IsLoading != true)
+                        {
+                            <p>
+                                <center>
+                                    <RadzenLabel Style="font-size: 12px; color:powderblue; font-weight:bold;" Text="Отображаются только кэшированные данные, если они есть в файле. Пересчёт формул не производится" />
+                                </center>
+                            </p>
+                            <ShowExcelSheetData gridSettings="OutputDataSheetWithSirTagsGridSettings" gridRef="outputDataExcelSheetWithSirTagsDTOGrid" gridData="outputDataExcelSheetWithSirTagsDTOList"></ShowExcelSheetData>
+
+                        }
+                        else
+                        {
+                            if (IsLoading)
+                            {
+                                //отображение gif загрузки
+                                <div class="text-center">
+                                    <img src="/images/loading.gif">
+                                </div>
+                            }
+                        }
+                    </div>
+                </RadzenTabsItem>
+
+                 <RadzenTabsItem Text="Данные в Архиве данных пришедшие из отчёта" Disabled="@(ActiveReportEntityDTO.UploadSuccessFlag ? false : true)">
                      <div class="row">
                          @if (IsLoading != true)
                         {
@@ -479,69 +583,7 @@
                         }
                     </div>
                 </RadzenTabsItem>
-                <RadzenTabsItem Text="Входные данные (InputData)">
-                    <div class="row">
-                        @if (IsLoading != true)
-                        {
-                            <ShowExcelSheetData gridSettings="InputDataSheetWithSirTagsGridSettings" gridRef="inputDataExcelSheetWithSirTagsDTOGrid" gridData="inputDataExcelSheetWithSirTagsDTOList"></ShowExcelSheetData>
-                        }
-                        else
-                        {
-                            if (IsLoading)
-                            {
-                                //отображение gif загрузки
-                                <div class="text-center">
-                                    <img src="/images/loading.gif">
-                                </div>
-                            }
-                        }
-                    </div>
 
-                </RadzenTabsItem>
-                <RadzenTabsItem Text="Тэги (лист TagLibrary)">
-                    <div class="row">
-                        @if (IsLoading != true)
-                        {
-                            <ShowExcelSheetData gridSettings="TagLibrarySheetWithSirTagsGridSettings" gridRef="tagExcelSheetWithSirTagsDTOGrid" gridData="tagLibraryExcelSheetWithSirTagsDTOList"></ShowExcelSheetData>
-
-                        }
-                        else
-                        {
-                            if (IsLoading)
-                            {
-                                //отображение gif загрузки
-                                <div class="text-center">
-                                    <img src="/images/loading.gif">
-                                </div>
-                            }
-                        }
-                    </div>
-                </RadzenTabsItem>
-                <RadzenTabsItem Text="Выходные данные (OutputData)" Disabled="@(ActiveReportEntityDTO.UploadSuccessFlag ? false : true)">
-                    <div class="row">
-                        @if (IsLoading != true)
-                        {
-                            <p>                            
-                                <center>
-                                <RadzenLabel Style="font-size: 12px; color:powderblue; font-weight:bold;" Text="Отображаются только кэшированные данные, если они есть в файле. Пересчёт формул не производится" />
-                                </center>
-                            </p>
-                            <ShowExcelSheetData gridSettings="OutputDataSheetWithSirTagsGridSettings" gridRef="outputDataExcelSheetWithSirTagsDTOGrid" gridData="outputDataExcelSheetWithSirTagsDTOList"></ShowExcelSheetData>
-                            
-                        }
-                        else
-                        {
-                            if (IsLoading)
-                            {
-                                //отображение gif загрузки
-                                <div class="text-center">
-                                    <img src="/images/loading.gif">
-                                </div>
-                            }
-                        }
-                    </div>
-
-                </RadzenTabsItem>
                 <RadzenTabsItem Text="Журнал событий (LogEvent)">
                     <div class="row">
                         @if (IsLoading != true)
@@ -667,6 +709,8 @@
     bool firstTagLibraryTab = true;
     bool firstOutputDataTab = true;
     bool firstInputDataTab = true;
+    bool firstStartEndDateTab = true;
+    bool firstReasonLibraryTab = true;
 
     _Dialogs? _dialogs { get; set; }
 
@@ -690,10 +734,16 @@
     ExcelSheetWithSirTagsDTOList inputDataExcelSheetWithSirTagsDTOList;
     RadzenDataGrid<ExcelSheetWithSirTagsDTO> inputDataExcelSheetWithSirTagsDTOGrid;
 
+    ExcelSheetWithSirTagsDTOList startEndDateExcelSheetWithSirTagsDTOList;
+    RadzenDataGrid<ExcelSheetWithSirTagsDTO> startEndDateExcelSheetWithSirTagsDTOGrid;
+
+    ExcelSheetWithSirTagsDTOList reasonLibraryExcelSheetWithSirTagsDTOList;
+    RadzenDataGrid<ExcelSheetWithSirTagsDTO> reasonLibraryExcelSheetWithSirTagsDTOGrid;
+
+    XLWorkbook? workbook = null;
 
     [Parameter]
     public Guid ReportEntityId { get; set; }
-
 
     Variant variant = Variant.Outlined;
 
@@ -708,7 +758,6 @@
     public ReportEntityDTO? ActiveReportEntityDTO { get; set; }
 
     private string Title { get; set; } = "Данные экземпляра отчёта";
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -864,6 +913,40 @@
     }
 
 
+    DataGridSettings _startEndDateSheetWithSirTagsGridSettings;
+    public DataGridSettings StartEndDateSheetWithSirTagsGridSettings
+    {
+        get
+        {
+            return _startEndDateSheetWithSirTagsGridSettings;
+        }
+        set
+        {
+            if (_startEndDateSheetWithSirTagsGridSettings != value)
+            {
+                _startEndDateSheetWithSirTagsGridSettings = value;
+            }
+        }
+    }
+
+    DataGridSettings _reasonLibrarySheetWithSirTagsGridSettings;
+    public DataGridSettings ReasonLibrarySheetWithSirTagsGridSettings
+    {
+        get
+        {
+            return _reasonLibrarySheetWithSirTagsGridSettings;
+        }
+        set
+        {
+            if (_reasonLibrarySheetWithSirTagsGridSettings != value)
+            {
+                _reasonLibrarySheetWithSirTagsGridSettings = value;
+            }
+        }
+    }
+
+
+
     async Task OnTabChange(int value)
     {
         selectedTabIndex = value;
@@ -875,7 +958,36 @@
                     break;
                 }
 
-            case 1:
+            case 1: // TagLibrary
+                {
+                    await GetTagLibrarySheetWithSirTagsDTOs();
+                    break;
+                }
+            case 2: // StartEndDate
+                {
+                    await GetStartEndDateSheetWithSirTagsDTOs();
+                    break;
+                }
+
+            case 3: // ReasonLibrary
+                {
+                    await GetReasonLibrarySheetWithSirTagsDTOs();
+                    break;
+                }
+
+            case 4: // InputData
+                {
+                    await GetInputDataSheetWithSirTagsDTOs();
+                    break;
+                }
+
+            case 5: // OutputData
+                {
+                    await GetOutputDataSheetWithSirTagsDTOs();
+                    break;
+                }
+
+            case 6: // MesMovements
                 {
                     if (ActiveReportEntityDTO.ReportTemplateDTOFK.ReportTemplateTypeDTOFK.Name.Trim().ToUpper() != "РУЧНОЙ ВВОД НДО")
                     {
@@ -887,22 +999,8 @@
                     }
                     break;
                 }
-            case 2:
-                {
-                    await GetInputDataSheetWithSirTagsDTOs();
-                    break;
-                }
-            case 3:
-                {
-                    await GetTagLibrarySheetWithSirTagsDTOs();
-                    break;
-                }
-            case 4:
-                {
-                    await GetOutputDataSheetWithSirTagsDTOs();
-                    break;
-                }
-            case 5:
+
+            case 7: // LogEvent
                 {
                     await GetLogEventDTOs(ReportEntityId);
                     break;
@@ -965,10 +1063,11 @@
             await Task.Delay(200);
             await InvokeAsync(StateHasChanged);
 
-            Tuple<ExcelSheetWithSirTagsDTOList, string> tmp = await _simpleExcelExportRepository.GetSheetData(ActiveReportEntityDTO, SD.ReportTagLibrarySheetSettingName);
+            Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook?> tmp = await _simpleExcelExportRepository.GetSheetData(ActiveReportEntityDTO, SD.ReportTagLibrarySheetSettingName, workbook);
 
             tagLibraryExcelSheetWithSirTagsDTOList = tmp.Item1;
             string errorString = tmp.Item2;
+            workbook = tmp.Item3;
 
             if (errorString != "")
             {
@@ -991,10 +1090,11 @@
             await Task.Delay(200);
             await InvokeAsync(StateHasChanged);
 
-            Tuple<ExcelSheetWithSirTagsDTOList, string> tmp = await _simpleExcelExportRepository.GetSheetData(ActiveReportEntityDTO, SD.ReportOutputSheetSettingName);
+            Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook?> tmp = await _simpleExcelExportRepository.GetSheetData(ActiveReportEntityDTO, SD.ReportOutputSheetSettingName, workbook);
 
             outputDataExcelSheetWithSirTagsDTOList = tmp.Item1;
             string errorString = tmp.Item2;
+            workbook = tmp.Item3;
 
             if (errorString != "")
             {
@@ -1018,10 +1118,11 @@
             await Task.Delay(200);
             await InvokeAsync(StateHasChanged);
 
-            Tuple<ExcelSheetWithSirTagsDTOList, string> tmp = await _simpleExcelExportRepository.GetSheetData(ActiveReportEntityDTO, SD.ReportInputSheetSettingName);
+            Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook?> tmp = await _simpleExcelExportRepository.GetSheetData(ActiveReportEntityDTO, SD.ReportInputSheetSettingName, workbook);
 
             inputDataExcelSheetWithSirTagsDTOList = tmp.Item1;
             string errorString = tmp.Item2;
+            workbook = tmp.Item3;
 
             if (errorString != "")
             {
@@ -1032,9 +1133,59 @@
 
             await Task.Delay(200);
             await InvokeAsync(StateHasChanged);
-
         }
     }
 
+    async Task GetStartEndDateSheetWithSirTagsDTOs()
+    {
+        if (firstStartEndDateTab)
+        {
+            IsLoading = true;
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+
+            Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook?> tmp = await _simpleExcelExportRepository.GetSheetData(ActiveReportEntityDTO, SD.ReportStartEndDateSheetSettingName, workbook);
+
+            startEndDateExcelSheetWithSirTagsDTOList = tmp.Item1;
+            string errorString = tmp.Item2;
+            workbook = tmp.Item3;
+
+            if (errorString != "")
+            {
+                await _jsRuntime.ToastrError(errorString);
+            }
+            IsLoading = false;
+            firstStartEndDateTab = false;
+
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    async Task GetReasonLibrarySheetWithSirTagsDTOs()
+    {
+        if (firstReasonLibraryTab)
+        {
+            IsLoading = true;
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+
+            Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook?> tmp = await _simpleExcelExportRepository.GetSheetData(ActiveReportEntityDTO, SD.ReportReasonLiabrarySheetSettingName, workbook);
+
+            reasonLibraryExcelSheetWithSirTagsDTOList = tmp.Item1;
+            string errorString = tmp.Item2;
+            workbook = tmp.Item3;
+
+            if (errorString != "")
+            {
+                await _jsRuntime.ToastrError(errorString);
+            }
+            IsLoading = false;
+            firstReasonLibraryTab = false;
+
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
 
 }

@@ -1,4 +1,5 @@
 ﻿
+using ClosedXML.Excel;
 using DictionaryManagement_Models.IntDBModels;
 
 namespace DictionaryManagement_Business.Repository.IRepository
@@ -32,7 +33,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<string> GenerateExcelLogEventType(string filename, IEnumerable<LogEventTypeDTO> data);
         public Task<string> GenerateExcelSmena(string filename, IEnumerable<SmenaDTO> data);
         public Task<string> GenerateExcelScheduler(string filename, IEnumerable<SchedulerDTO> data);
-        public Task<Tuple<ExcelSheetWithSirTagsDTOList, string>> GetSheetData(ReportEntityDTO? reportEntityDTO, string sheetSettingName);
+        public Task<Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook?>> GetSheetData(ReportEntityDTO? reportEntityDTO, string sheetSettingName, XLWorkbook? workbook);
 
     }
 }

@@ -64,6 +64,6 @@ namespace DictionaryManagement_Common
         public static string ReportReasonLiabrarySheetSettingName = "ReportReasonLiabrarySheet";
         public static string ReportTagLibrarySheetSettingName = "ReportTagLibrary";
         public static string ReportTemplatePathSettingName = "ReportTemplatePath";
-        
+        public static string ExcelWorkBookProtectionPassword = "sirreport";        
     }
 }
