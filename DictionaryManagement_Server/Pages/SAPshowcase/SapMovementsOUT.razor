@@ -531,7 +531,7 @@
 
     async Task CleanAllOrders()
     {
-
+        
         bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Очистить сортировки",
             "Будут очищены все сортировки", "Очистить", "Отмена");
         if (selectionResult == false)
