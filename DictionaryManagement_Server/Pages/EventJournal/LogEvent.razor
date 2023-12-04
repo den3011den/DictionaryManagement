@@ -70,8 +70,17 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="LogEventTypeDTOFK.Name" Title="Тип события" Width="100px"
-                                          TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
+@*                     <RadzenDataGridColumn TItem="LogEventDTO" Property="LogEventTypeDTOFK.Name" Title="Тип события" Width="100px"
+                                          TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains"> *@
+
+                    <RadzenDataGridColumn TItem="LogEventDTO" Title="Тип события" Property="LogEventTypeDTOFK.Name" Type="typeof(IEnumerable<string>)" Width="100px"
+                                          FilterValue="@selectedLogEventTypes" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
+
+                        <FilterTemplate>
+                            <RadzenDropDown @bind-Value=@selectedLogEventTypes
+                                            Change=OnSelectedLogEventTypesChange Data="@(logEventTypes)" AllowClear="true" Multiple="true" Style="width: 300px"
+                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано"/>                            
+                        </FilterTemplate>
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.LogEventTypeDTOFK.Name
@@ -98,17 +107,6 @@
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="ToStringReportEntityId" Title="ИД экз. отчёта" Width="60px" TextAlign="TextAlign.Start"
-                                          FilterProperty="ToStringReportEntityId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringReportEntityId">
-                        <Template Context="data1">
-                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                @data1.ToStringReportEntityId
-                            </div>
-                        </Template>
-                    </RadzenDataGridColumn>
-
-
 
                     <RadzenDataGridColumn TItem="LogEventDTO" Property="IsCriticalBool" Title="Крит." Filterable="true" Width="35px" TextAlign="TextAlign.Center">
                         <Template Context="data">
@@ -169,6 +167,10 @@
     IEnumerable<LogEventDTO>? logEventDTOs;
 
     RadzenDataGrid<LogEventDTO> logEventDTOGrid;
+
+    IEnumerable<string> selectedLogEventTypes;
+
+    List<string> logEventTypes = new List<string>();
 
     DateTime startDate = DateTime.Today.AddDays(-2);
     DateTime endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
@@ -276,6 +278,8 @@
         await LoadStateAsync();
         StateHasChanged();
         logEventDTOs = await _logEventRepository.GetAllByTimeInterval(startDate, endDate);
+
+        logEventTypes = (List<string>)logEventDTOs.Select(u => u.LogEventTypeDTOFK.Name).Distinct().ToList();
         ApplyButtonDisabled = true;
         IsLoading = false;
         StateHasChanged();
@@ -312,6 +316,15 @@
         excelExportFlag = false;
         await Task.Delay(200);
         await InvokeAsync(StateHasChanged);
+    }
+
+
+    void OnSelectedLogEventTypesChange(object value)
+    {
+        if (selectedLogEventTypes != null && !selectedLogEventTypes.Any())
+        {
+            selectedLogEventTypes = null;
+        }
     }
 
 }

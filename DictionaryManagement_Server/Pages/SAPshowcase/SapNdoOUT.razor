@@ -68,6 +68,8 @@
                     @* <div style="text-align: right; width: 400px; margin-left: -12px"; font-size: 12px"> *@
                     <RadzenButton Size="ButtonSize.Small" Text="Сбросить настройки интерфейса страницы" Click=@(() => CleanPageSettings())
                                   Icon="clear" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все фильтры" Click=@(() => sapNdoOUTDTOGrid.Reset())
+                                  Icon="filter_alt_off" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
                     <RadzenLabel Style="font-size: 10px; color:powderblue" Text="* Можно менять порядок колонок, ширину, скрывать/отображать колонки. Данные настройки страницы сохранятся в браузере" />
                 </HeaderTemplate>
 

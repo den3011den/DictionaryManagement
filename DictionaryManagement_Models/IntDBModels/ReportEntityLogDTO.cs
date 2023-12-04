@@ -39,5 +39,36 @@ namespace DictionaryManagement_Models.IntDBModels
         [Required(ErrorMessage = "Флаг ошибки обязателен к заполнению")]
         public bool IsError { get; set; } = false;
 
+        [NotMapped]
+        [Display(Name = "Тэг СИР")]
+        public string ToStringId
+        {
+            get
+            {
+                return Id.ToString();
+            }
+            set
+            {
+                ToStringId = value;
+            }
+        }
+
+        [NotMapped]
+        [Display(Name = "Ошибка")]
+        public bool IsErrorBool
+        {
+            get
+            {
+
+                return IsError == null ? false : (bool)IsError;
+
+            }
+            set
+            {
+                IsErrorBool = value;
+            }
+        }
+
+
     }
 }

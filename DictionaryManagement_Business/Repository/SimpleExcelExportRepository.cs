@@ -1748,8 +1748,6 @@ namespace DictionaryManagement_Business.Repository
 
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.Description;
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.ToStringReportEntityId;
-                    excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.IsCritical == true ? "Да" : "";
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = logEventDTO.IsError == true ? "Да" : "";
@@ -2668,6 +2666,8 @@ namespace DictionaryManagement_Business.Repository
                     rowItem.Column10 = await GetCellValue(row.Cell(10));
                     rowItem.Column11 = await GetCellValue(row.Cell(11));
                     rowItem.Column12 = await GetCellValue(row.Cell(12));
+                    rowItem.MesParamFoundFlag = false;
+
 
                     reportList.excelSheetWithSirTagsDTOList.Add(rowItem);
                 }
@@ -2698,6 +2698,7 @@ namespace DictionaryManagement_Business.Repository
                                                 Column11 = reportListAlias.Column11,
                                                 Column12 = reportListAlias.Column12,
                                                 MesParamDTOFK = _mapper.Map<MesParam, MesParamDTO>(MP),
+                                                MesParamFoundFlag = (MP == null ? true : false),
                                             }).ToList();
                 }
                 else

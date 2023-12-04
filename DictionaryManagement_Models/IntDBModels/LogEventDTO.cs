@@ -54,12 +54,6 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Предупреждение")]
         public bool? IsWarning { get; set; } = false;
         
-        [Display(Name = "ИД экземпляра отчёта")]
-        public Guid? ReportEntityId { get; set; }
-        
-        public ReportEntityDTO? ReportEntityDTOFK { get; set; }
-
-
         [NotMapped]
         [Display(Name = "Тэг СИР")]
         public string ToStringId
@@ -117,20 +111,6 @@ namespace DictionaryManagement_Models.IntDBModels
             set
             {
                 IsWarningBool = value;
-            }
-        }
-
-        [NotMapped]
-        [Display(Name = "ИД экземпляра отчёта")]
-        public string ToStringReportEntityId
-        {
-            get
-            {
-                return ReportEntityId == null ? "" : ReportEntityId.ToString();
-            }
-            set
-            {
-                ToStringReportEntityId = value;
             }
         }
 

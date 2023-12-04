@@ -91,6 +91,16 @@ namespace DictionaryManagement_Business.Repository
 
         }
 
+        public async Task<IEnumerable<ReportEntityLogDTO>> GetAllByReportEntityId(Guid reportEntityId)
+        {
+
+            var hhh1 = _db.ReportEntityLog
+                            .Include("ReportEntityFK")
+                            .Where(u => u.ReportEntityId == reportEntityId).ToListWithNoLock().OrderBy(u => u.LogTime);
+            return _mapper.Map<IEnumerable<ReportEntityLog>, IEnumerable<ReportEntityLogDTO>>(hhh1);
+
+        }
+
         public async Task<ReportEntityLogDTO> Update(ReportEntityLogDTO objectToUpdateDTO)
         {
             var objectToUpdate = _db.ReportEntityLog

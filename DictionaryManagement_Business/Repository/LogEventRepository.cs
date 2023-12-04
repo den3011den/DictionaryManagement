@@ -30,30 +30,11 @@ namespace DictionaryManagement_Business.Repository
 
             var hhh2 = _db.LogEvent
                         .Include("LogEventTypeFK")
-                        .Include("UserFK")
-                        .Include("ReportEntityFK")
+                        .Include("UserFK")                        
                         .Where(u => u.EventTime >= startTime && u.EventTime <= endTime).ToListWithNoLock();
             return _mapper.Map<IEnumerable<LogEvent>, IEnumerable<LogEventDTO>>(hhh2);
         }
 
-
-        public async Task<IEnumerable<LogEventDTO>> GetAllByReportEntityId(Guid reportEntityId)
-        {
-            if (reportEntityId != Guid.Empty)
-            {
-                var hhh2 = _db.LogEvent
-                .Include("LogEventTypeFK")
-                .Include("UserFK")
-                .Include("ReportEntityFK")
-                .Where(u => u.ReportEntityId == reportEntityId).ToListWithNoLock().OrderBy(u => u.EventTime);
-                return _mapper.Map<IEnumerable<LogEvent>, IEnumerable<LogEventDTO>>(hhh2);
-            }
-            else
-            {
-                return new List<LogEventDTO>();
-            }
-
-        }
     }
 }
 

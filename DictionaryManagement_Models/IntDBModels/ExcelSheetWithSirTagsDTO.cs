@@ -24,6 +24,8 @@ namespace DictionaryManagement_Models.IntDBModels
         public string Column12 { get; set; }
         public MesParamDTO? MesParamDTOFK { get; set; }
 
+        public bool MesParamFoundFlag { get; set; }
+
         [NotMapped]        
         public string MesParamIdToString
         {

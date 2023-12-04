@@ -64,9 +64,12 @@
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both">
                 <HeaderTemplate>
-                    <RadzenButton Size="ButtonSize.Small" Text="Сбросить настройки интерфейса страницы" Click=@(() => CleanPageSettings())
-                                  Icon="clear" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
-                    <RadzenLabel Style="font-size: 10px; color:powderblue" Text="* Можно менять порядок колонок, ширину, скрывать/отображать колонки. Данные настройки страницы сохранятся в браузере" />
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить настройки интерфейса страницы" Click=@(() => CleanPageSettings())
+                                  Icon="settings" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все фильтры" Click="@(args => CleanAllFilters())"
+                                  Icon="filter_alt" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все сортировки" Click="@(args => CleanAllOrders())"
+                                  Icon="swap_vert" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
                 </HeaderTemplate>
                 <Columns>
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="ErpId" Title="Ид записи" TextAlign="TextAlign.Center"
@@ -133,15 +136,15 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-@*                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="IsWarehouseSource" Title="Источник в SAP является складом" Filterable="true" TextAlign="TextAlign.Center">
-                        <Template Context="data">
-                            @if (data.IsWarehouseSource != null)
-                            {
-                                <RadzenCheckBox @bind-Value=data.IsWarehouseSource ReadOnly="true" TriState="false" TValue="bool?" />
-                            }
-                        </Template>
-                    </RadzenDataGridColumn>
- *@
+                    @*                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="IsWarehouseSource" Title="Источник в SAP является складом" Filterable="true" TextAlign="TextAlign.Center">
+            <Template Context="data">
+            @if (data.IsWarehouseSource != null)
+            {
+            <RadzenCheckBox @bind-Value=data.IsWarehouseSource ReadOnly="true" TriState="false" TValue="bool?" />
+            }
+            </Template>
+            </RadzenDataGridColumn>
+            *@
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapEquipmentSourceDTOFK.ToStringErpPlantIdErpIdName" Title="Источник в СИР" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             @if (data1.SapEquipmentSourceDTOFK != null)
@@ -184,11 +187,11 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-@*                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="IsWarehouseDest" Title="Приёмник в SAP является складом" Filterable="true" TextAlign="TextAlign.Center">
-                        <Template Context="data">
-                            <RadzenCheckBox @bind-Value=data.IsWarehouseDest ReadOnly="true" TriState="false" TValue="bool?" />
-                        </Template>
-                    </RadzenDataGridColumn> *@
+                    @*                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="IsWarehouseDest" Title="Приёмник в SAP является складом" Filterable="true" TextAlign="TextAlign.Center">
+            <Template Context="data">
+            <RadzenCheckBox @bind-Value=data.IsWarehouseDest ReadOnly="true" TriState="false" TValue="bool?" />
+            </Template>
+            </RadzenDataGridColumn> *@
 
                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName" Title="Приёмник в СИР" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
@@ -261,7 +264,7 @@
                         <Template Context="data1">
                             @if (data1.MesGoneTime != null)
                             {
-                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">                                
+                                <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                     <strong>
                                         @(((DateTime)data1.MesGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff"))
                                     </strong>
@@ -404,7 +407,7 @@
     _Dialogs? _dialogs { get; set; }
 
     IEnumerable<SapMovementsINDTO>? sapMovementsINDTOs;
-      
+
     RadzenDataGrid<SapMovementsINDTO> sapMovementsINDTOGrid;
 
     DateTime startDate = DateTime.Today.AddDays(-7);
@@ -568,8 +571,7 @@
     }
 
     @code {
-        // void ShowTooltip(ElementReference elementReference, TooltipOptions options = null, string toolTipText = "") =>
-        // tooltipService.Open(elementReference, toolTipText, options);
+
 
         private async Task CleanPageSettings()
         {
@@ -577,18 +579,67 @@
             await Task.CompletedTask;
 
             bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Сбросить настройки интерфейса страницы",
-                    "Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Очистить?", "Отмена");
+                    "Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Очистить", "Отмена");
             if (selectionResult == false)
             {
-                InvokeAsync(SaveStateAsync);
+                await InvokeAsync(SaveStateAsync);
                 return;
             }
 
             var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.removeItem", "SapMovementsINGridSettings");
-            
+
             _sapMovementsINGridSettings = null;
-            InvokeAsync(SaveStateAsync);
+
         }
+
+        async Task CleanAllFilters()
+        {
+
+            bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Очистить фильтры",
+                "Будут очищены все фильтры", "Очистить", "Отмена");
+            if (selectionResult == false)
+            {
+                await InvokeAsync(SaveStateAsync);
+                return;
+            }
+
+            if (SapMovementsINGridSettings != null)
+            {
+                foreach (var c in SapMovementsINGridSettings.Columns)
+                {
+                    c.FilterValue = null;
+                    c.SecondFilterValue = null;
+                }
+                await InvokeAsync(SaveStateAsync);
+                await Task.Delay(200);
+                await InvokeAsync(StateHasChanged);
+            }
+
+        }
+
+        async Task CleanAllOrders()
+        {
+
+            bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Очистить сортировки",
+                "Будут очищены все сортировки", "Очистить", "Отмена");
+            if (selectionResult == false)
+            {
+                await InvokeAsync(SaveStateAsync);
+                return;
+            }
+
+            if (SapMovementsINGridSettings != null)
+            {
+                foreach (var c in SapMovementsINGridSettings.Columns)
+                {
+                    c.SortOrder = null;
+                }
+                await InvokeAsync(SaveStateAsync);
+                await Task.Delay(200);
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+
     }
 
 }

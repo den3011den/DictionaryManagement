@@ -74,10 +74,13 @@
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both">
 
-                <HeaderTemplate>                
-                    <RadzenButton Size="ButtonSize.Small" Text="Сбросить настройки интерфейса страницы" Click=@(() => CleanPageSettings())
-                                  Icon="clear" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
-                    <RadzenLabel Style="font-size: 10px; color:powderblue" Text="* Можно менять порядок колонок, ширину, скрывать/отображать колонки. Данные настройки страницы сохранятся в браузере" />
+                <HeaderTemplate>
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить настройки интерфейса страницы" Click=@(() => CleanPageSettings())
+                                  Icon="settings" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все фильтры" Click="@(args => CleanAllFilters())"
+                                  Icon="filter_alt" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все сортировки" Click="@(args => CleanAllOrders())"
+                                  Icon="swap_vert" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />                    
                 </HeaderTemplate>
                 <Columns>
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
@@ -481,31 +484,73 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    @code {
-        // void ShowTooltip(ElementReference elementReference, TooltipOptions options = null, string toolTipText = "") =>
-        // tooltipService.Open(elementReference, toolTipText, options);
 
-        private async Task CleanPageSettings()
+    private async Task CleanPageSettings()
+    {
+
+        await Task.CompletedTask;
+
+        bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Сбросить настройки интерфейса страницы",
+                "Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Очистить", "Отмена");
+        if (selectionResult == false)
         {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
 
-            await Task.CompletedTask;
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.removeItem", "SapMovementsOUTGridSettings");
 
-            bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Сбросить настройки интерфейса страницы",
-                    "Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Очистить?", "Отмена");
-            if (selectionResult == false)
+        _sapMovementsOUTGridSettings = null;
+
+    }
+
+    async Task CleanAllFilters()
+    {
+
+        bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Очистить фильтры",
+            "Будут очищены все фильтры", "Очистить", "Отмена");
+        if (selectionResult == false)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        if (SapMovementsOUTGridSettings != null)
+        {
+            foreach (var c in SapMovementsOUTGridSettings.Columns)
             {
-                InvokeAsync(SaveStateAsync);
-                return;
+                c.FilterValue = null;
+                c.SecondFilterValue = null;
             }
-
-            var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.removeItem", "SapMovementsOUTGridSettings");
-
-            _sapMovementsOUTGridSettings = null;
-            InvokeAsync(SaveStateAsync);
-
+            await InvokeAsync(SaveStateAsync);
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
         }
 
     }
 
+    async Task CleanAllOrders()
+    {
+
+        bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Очистить сортировки",
+            "Будут очищены все сортировки", "Очистить", "Отмена");
+        if (selectionResult == false)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        if (SapMovementsOUTGridSettings != null)
+        {
+            foreach (var c in SapMovementsOUTGridSettings.Columns)
+            {
+                c.SortOrder = null;
+            }
+            await InvokeAsync(SaveStateAsync);
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
 }
+
 
