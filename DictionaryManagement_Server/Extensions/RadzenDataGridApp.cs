@@ -54,8 +54,8 @@ namespace DictionaryManagement_Server.Extensions
             base.ColumnsText = "Не выбрано";
             base.PagingSummaryFormat = $"Страница {{0}} из {{1}} (всего записей {{2}} )";
             //base.EmptyText = "Нет записей для отображения";
-            base.EmptyTemplate = EmptyTemplateRender;
-            base.HeaderTemplate = HeaderTemplateRender;
+            base.EmptyTemplate = EmptyTemplateRender;            
+            base.HeaderTemplate = HeaderTemplateRender;            
         }
         
         
@@ -71,11 +71,9 @@ namespace DictionaryManagement_Server.Extensions
         {
             if (ShowCleanGridSettingsHeaderButton == true || ShowCleanGridFiltersHeaderButton == true || ShowCleanGridSortsHeaderButton == true)
             {
-
-                
                 if (ShowCleanGridSettingsHeaderButton == true)
                 {
-                    builder.OpenComponent<RadzenButton>(1);                    
+                    builder.OpenComponent<RadzenButton>(1);
                     builder.AddAttribute(2, "Size", ButtonSize.Small);
                     builder.AddAttribute(3, "Text", "Очистить настройки интерфейса страницы");
                     builder.AddAttribute(4, "Icon", "settings");
@@ -83,7 +81,7 @@ namespace DictionaryManagement_Server.Extensions
                     builder.AddAttribute(6, "Variant", Variant.Flat);
                     builder.AddAttribute(7, "Click", Microsoft.AspNetCore.Components.CompilerServices.RuntimeHelpers.TypeCheck<Microsoft.AspNetCore.Components.EventCallback<Microsoft.AspNetCore.Components.Web.MouseEventArgs>>(Microsoft.AspNetCore.Components.EventCallback.Factory.Create<Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this,
                             (args) => CleanPageSettings()
-                            )));                    
+                            )));
                     builder.CloseComponent();
                 }
                 if (ShowCleanGridFiltersHeaderButton == true)
@@ -114,7 +112,10 @@ namespace DictionaryManagement_Server.Extensions
 
                     builder.CloseComponent();
                 }
-
+            }
+            else
+            {
+                HeaderTemplate = null;                
             }
         };
 

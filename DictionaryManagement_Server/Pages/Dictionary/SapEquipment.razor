@@ -134,6 +134,7 @@
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
+   
 
     public bool excelExportFlag { get; set; } = false;
 
@@ -428,5 +429,4 @@
         await Task.Delay(200);
         await InvokeAsync(StateHasChanged);
     }
-
 }

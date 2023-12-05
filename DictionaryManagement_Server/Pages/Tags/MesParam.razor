@@ -54,11 +54,11 @@
 
 
                 <Columns>
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Id" Title="Ид записи" Width="40px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Id" Title="Ид записи" Width="35px">
                     </RadzenDataGridColumn>
 
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Code" Title="Код тэга СИР" Width="80px">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Code" Title="Код тэга СИР" Width="65px">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Code
@@ -151,7 +151,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapUnitOfMeasureDTOFK" Title="Ед.изм SAP" Width="60px" FilterProperty="SapUnitOfMeasureDTOFK.ShortName" SortProperty="SapUnitOfMeasureDTOFK.ShortName">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapUnitOfMeasureDTOFK" Title="Ед.изм SAP" Width="50px" FilterProperty="SapUnitOfMeasureDTOFK.ShortName" SortProperty="SapUnitOfMeasureDTOFK.ShortName">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 @(data1.SapUnitOfMeasureDTOFK == null ? "" : data1.SapUnitOfMeasureDTOFK.ShortName)
@@ -161,14 +161,14 @@
 
 
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsNdoBool" Title="НДО" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsNdoBool" Title="НДО" Filterable="true" Width="50px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsNdoBool ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumn>
 
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="30px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="50px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>

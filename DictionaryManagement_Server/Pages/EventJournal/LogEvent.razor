@@ -252,7 +252,7 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('LogEventSettings', '{JsonSerializer.Serialize<DataGridSettings>(LogEventGridSettings)}')");
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('LogEventGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(LogEventGridSettings)}')");
     }
 
 
