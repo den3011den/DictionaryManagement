@@ -49,17 +49,7 @@
                 </RadzenColumn>
             </RadzenRow>
 
-            @*             <RadzenDataGridApp @bind-Settings="@SapMovementsOUTGridSettings" @ref="sapMovementsOUTDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-    Data="@sapMovementsOUTDTOs" TItem="SapMovementsOUTDTO"
-    FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-    FilterMode="FilterMode.Simple"
-    Density=Density.Compact
-    ShowPagingSummary="true"
-    EmptyText="Нет записей для отображения"
-    AllowVirtualization="true"
-    Style="height:calc(100vh - 170px)"> *@
-
-            <RadzenDataGridApp @bind-Settings="@SapMovementsOUTGridSettings" @ref="sapMovementsOUTDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @bind-Settings="@SapMovementsOUTGridSettings" SettingsName="SapMovementsOUTGridSettings" @ref="sapMovementsOUTDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@sapMovementsOUTDTOs" TItem="SapMovementsOUTDTO"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                FilterMode="FilterMode.Advanced"
@@ -73,15 +63,6 @@
                                ColumnWidth="200px"
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both">
-
-                <HeaderTemplate>
-                    <RadzenButton Size="ButtonSize.Small" Text="Очистить настройки интерфейса страницы" Click=@(() => CleanPageSettings())
-                                  Icon="settings" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
-                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все фильтры" Click="@(args => CleanAllFilters())"
-                                  Icon="filter_alt" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
-                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все сортировки" Click="@(args => CleanAllOrders())"
-                                  Icon="swap_vert" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />                    
-                </HeaderTemplate>
                 <Columns>
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
@@ -248,22 +229,6 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    @*                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapError" Title="SAP ошибка" Filterable="true" TextAlign="TextAlign.Center">
-            <Template Context="data">
-            @if (data.SapError == true)
-            {
-            <RadzenCheckBox @bind-Value=data.SapError ReadOnly="true" TriState="false" TValue="bool?"
-            MouseEnter="@(args => ShowTooltip(args, new TooltipOptions(){ Position = TooltipPosition.Bottom }, data.SapErrorMessage))" />
-
-
-            }
-            else
-            {
-            <RadzenCheckBox @bind-Value=data.SapError ReadOnly="true" TriState="false" TValue="bool?" />
-            }
-            </Template>
-            </RadzenDataGridColumn>
-            *@
                     <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringMesMovementId" Title="ИД в архиве данных" FilterProperty="ToStringMesMovementId" SortProperty="ToStringMesMovementId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.ToStringMesMovementId != null)
@@ -482,74 +447,6 @@
         excelExportFlag = false;
         await Task.Delay(200);
         await InvokeAsync(StateHasChanged);
-    }
-
-
-    private async Task CleanPageSettings()
-    {
-
-        await Task.CompletedTask;
-
-        bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Сбросить настройки интерфейса страницы",
-                "Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Очистить", "Отмена");
-        if (selectionResult == false)
-        {
-            await InvokeAsync(SaveStateAsync);
-            return;
-        }
-
-        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.removeItem", "SapMovementsOUTGridSettings");
-
-        _sapMovementsOUTGridSettings = null;
-
-    }
-
-    async Task CleanAllFilters()
-    {
-
-        bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Очистить фильтры",
-            "Будут очищены все фильтры", "Очистить", "Отмена");
-        if (selectionResult == false)
-        {
-            await InvokeAsync(SaveStateAsync);
-            return;
-        }
-
-        if (SapMovementsOUTGridSettings != null)
-        {
-            foreach (var c in SapMovementsOUTGridSettings.Columns)
-            {
-                c.FilterValue = null;
-                c.SecondFilterValue = null;
-            }
-            await InvokeAsync(SaveStateAsync);
-            await Task.Delay(200);
-            await InvokeAsync(StateHasChanged);
-        }
-
-    }
-
-    async Task CleanAllOrders()
-    {
-        
-        bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Очистить сортировки",
-            "Будут очищены все сортировки", "Очистить", "Отмена");
-        if (selectionResult == false)
-        {
-            await InvokeAsync(SaveStateAsync);
-            return;
-        }
-
-        if (SapMovementsOUTGridSettings != null)
-        {
-            foreach (var c in SapMovementsOUTGridSettings.Columns)
-            {
-                c.SortOrder = null;
-            }
-            await InvokeAsync(SaveStateAsync);
-            await Task.Delay(200);
-            await InvokeAsync(StateHasChanged);
-        }
     }
 }
 

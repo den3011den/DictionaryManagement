@@ -33,7 +33,7 @@
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить группу AD" Click="@(args => EditRow(null))" />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
-            <RadzenDataGridApp @bind-Settings="@ADGroupGridSettings" @ref="adGroupDTOGrid" AllowAlternatingRows="true"
+            <RadzenDataGridApp @bind-Settings="@ADGroupGridSettings" SettingsName="ADGroupGridSettings" @ref="adGroupDTOGrid" AllowAlternatingRows="true"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
                             Data="@adGroupDTOs" TItem="ADGroupDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"

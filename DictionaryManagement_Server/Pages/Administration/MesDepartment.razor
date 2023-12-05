@@ -46,7 +46,7 @@
                     <RadzenLabel Text="* фильтр работает только по записям, которые развёрнуты в отображаемом списке" />
                 </div>
             </RadzenRow>
-            <RadzenDataGridApp @bind-Settings="@MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" ExpandMode="DataGridExpandMode.Multiple"
+            <RadzenDataGridApp @bind-Settings="@MesDepartmentGridSettings" SettingsName="MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" ExpandMode="DataGridExpandMode.Multiple"
                             Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"

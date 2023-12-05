@@ -4,6 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using System.Text.Json
 
 
 @inject DialogService DialogService
@@ -31,7 +32,7 @@
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый материал MES" Click="@InsertRow" Disabled=@(mesMaterialDTOToInsert != null || mesMaterialDTOToUpdate != null) />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
-            <RadzenDataGridApp @ref="mesMaterialDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @bind-Settings="@MesMaterialGridSettings" SettingsName="MesMaterialGridSettings" @ref="mesMaterialDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@mesMaterialDTOs" TItem="MesMaterialDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
@@ -150,6 +151,41 @@
         mesMaterialDTOToUpdate = null;
     }
 
+    DataGridSettings _mesMaterialGridSettings;
+    public DataGridSettings MesMaterialGridSettings
+    {
+        get
+        {
+            return _mesMaterialGridSettings;
+        }
+        set
+        {
+            if (_mesMaterialGridSettings != value)
+            {
+                _mesMaterialGridSettings = value;
+                InvokeAsync(SaveStateAsync);
+            }
+        }
+    }
+
+    private async Task LoadStateAsync()
+    {
+        await Task.CompletedTask;
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "MesMaterialGridSettings");
+        if (!string.IsNullOrEmpty(result))
+        {
+            _mesMaterialGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+        }
+    }
+    private async Task SaveStateAsync()
+    {
+        await Task.CompletedTask;
+
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesMaterialGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesMaterialGridSettings)}')");
+    }
+
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -165,6 +201,7 @@
             if (firstRender)
             {
                 IsLoading = true;
+                await LoadStateAsync();
                 StateHasChanged();
                 mesMaterialDTOs = _mesMaterialRepository.GetAll(SD.SelectDictionaryScope.All).Result;
                 IsLoading = false;

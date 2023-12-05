@@ -13,7 +13,10 @@
                    AllowColumnResize="true"
                    Style="height:70vh"
                    ColumnWidth="200px"
-                   GridLines="DataGridGridLines.Both">
+                   GridLines="DataGridGridLines.Both"
+                   ShowCleanGridSettingsHeaderButton="false"
+                   ShowCleanGridFiltersHeaderButton="false"
+                   ShowCleanGridSortsHeaderButton="false">
     <Columns>
         <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="Column1" Title="@(gridData.Column1Name)" TextAlign="TextAlign.Center"
                               FilterProperty="Column1" FilterOperator="FilterOperator.Contains" SortProperty="Column1">
@@ -27,14 +30,11 @@
         </RadzenDataGridColumn>
 
         @if (gridData.Column2Name != null)
-                {
+        {
             @if (gridData.Column2Name.Trim() != "")
             {
-                <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property
-                ="Column2" Title
-                ="@(gridData.Column2Name)" TextAlign
-                ="TextAlign.Center"
-                FilterProperty="Column2" FilterOperator="FilterOperator.Contains" SortProperty="Column2">
+                <RadzenDataGridColumn TItem="ExcelSheetWithSirTagsDTO" Property="Column2" Title="@(gridData.Column2Name)" TextAlign="TextAlign.Center"
+                                      FilterProperty="Column2" FilterOperator="FilterOperator.Contains" SortProperty="Column2">
                     <Template Context="data1">
                         <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                             @data1.Column2
@@ -238,12 +238,12 @@
 </RadzenDataGridApp>
 
 
-        @code
-        {
-        [Parameter]
-        public DataGridSettings gridSettings { get; set; }
-        [Parameter]
-        public RadzenDataGrid<ExcelSheetWithSirTagsDTO> gridRef { get; set; }
-        [Parameter]
-        public ExcelSheetWithSirTagsDTOList gridData { get; set; }
+@code
+{
+    [Parameter]
+    public DataGridSettings gridSettings { get; set; }
+    [Parameter]
+    public RadzenDataGrid<ExcelSheetWithSirTagsDTO> gridRef { get; set; }
+    [Parameter]
+    public ExcelSheetWithSirTagsDTOList gridData { get; set; }
 }

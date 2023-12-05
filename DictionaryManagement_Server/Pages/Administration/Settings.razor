@@ -4,6 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using System.Text.Json
 
 
 
@@ -28,7 +29,7 @@
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новую настройку" Click="@InsertRow" Disabled=@(settingsDTOToInsert != null || settingsDTOToUpdate != null) />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
-            <RadzenDataGridApp @ref="settingsDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @bind-Settings="@SettingsGridSettings" SettingsName="SettingsGridSettings" @ref="settingsDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@settingsDTOs" TItem="SettingsDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
@@ -36,7 +37,7 @@
                             AllowColumnResize="false"
                             AllowVirtualization="true"
                             GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)">                
+                            Style="height:calc(100vh - 170px)">
                 <Columns>
                     <RadzenDataGridColumn TItem="SettingsDTO" Property="Id" Title="Ид записи" Width="90px" />
                     <RadzenDataGridColumn TItem="SettingsDTO" Property="Name" Title="Наименование" Width="280px">
@@ -130,10 +131,46 @@
         settingsDTOToUpdate = null;
     }
 
+
+    DataGridSettings _settingsGridSettings;
+    public DataGridSettings SettingsGridSettings
+    {
+        get
+        {
+            return _settingsGridSettings;
+        }
+        set
+        {
+            if (_settingsGridSettings != value)
+            {
+                _settingsGridSettings = value;
+                InvokeAsync(SaveStateAsync);
+            }
+        }
+    }
+
+    private async Task LoadStateAsync()
+    {
+        await Task.CompletedTask;
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SettingsGridSettings");
+        if (!string.IsNullOrEmpty(result))
+        {
+            _settingsGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+        }
+    }
+
+    private async Task SaveStateAsync()
+    {
+        await Task.CompletedTask;
+
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SettingsGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SettingsGridSettings)}')");
+    }
+
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -144,6 +181,7 @@
             if (firstRender)
             {
                 IsLoading = true;
+                await LoadStateAsync();
                 StateHasChanged();
                 settingsDTOs = _settingsRepository.GetAll().Result;
                 IsLoading = false;

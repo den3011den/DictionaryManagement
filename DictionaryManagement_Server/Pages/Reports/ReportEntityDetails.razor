@@ -282,7 +282,10 @@
                                                    AllowColumnReorder="true"
                                                    AllowColumnResize="true"
                                                    ColumnWidth="200px"
-                                                   GridLines="DataGridGridLines.Both">
+                                                   GridLines="DataGridGridLines.Both"
+                                                   ShowCleanGridSettingsHeaderButton="false"
+                                                   ShowCleanGridFiltersHeaderButton="false"
+                                                   ShowCleanGridSortsHeaderButton="false">
 
                                     @* Style=@(iconMenuActive ? "height:calc(100vh - 170px); width:1760px" : "height:calc(100vh - 170px); width:1600px") *@
 
@@ -446,7 +449,10 @@
                                                    AllowColumnResize="true"
                                                    Style="height:70vh"
                                                    ColumnWidth="200px"
-                                                   GridLines="DataGridGridLines.Both">
+                                                   GridLines="DataGridGridLines.Both"
+                                                   ShowCleanGridSettingsHeaderButton="false"
+                                                   ShowCleanGridFiltersHeaderButton="false"
+                                                   ShowCleanGridSortsHeaderButton="false">
 
                                     <Columns>
                                         <RadzenDataGridColumn TItem="MesNdoStocksDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
@@ -595,7 +601,10 @@
                                                Density=Density.Compact
                                                ShowPagingSummary="true"
                                                AllowVirtualization="true"
-                                               Style="height:70vh">
+                                               Style="height:70vh"
+                                               ShowCleanGridSettingsHeaderButton="false"
+                                               ShowCleanGridFiltersHeaderButton="false"
+                                               ShowCleanGridSortsHeaderButton="false">
                                 <Columns>
                                     <RadzenDataGridColumn TItem="ReportEntityLogDTO" Property="ToStringId" Title="Ид записи" Width="35px" TextAlign="TextAlign.Center"
                                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">

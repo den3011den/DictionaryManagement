@@ -4,6 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using System.Text.Json
 
 
 @inject IJSRuntime _jsRuntime
@@ -27,7 +28,7 @@
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
 
-            <RadzenDataGridApp @ref="sapEquipmentDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @bind-Settings="@SapEquipmentGridSettings" SettingsName="SapEquipmentGridSettings" @ref="sapEquipmentDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@sapEquipmentDTOs" TItem="SapEquipmentDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
@@ -35,7 +36,6 @@
                                FilterMode="FilterMode.Advanced"
                             GridLines="DataGridGridLines.Both"
                             Style="height:calc(100vh - 170px)">
-
                 <Columns>
                     <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Id" Title="Ид записи" Width="80px" />
                     <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpPlantId" Title="Код завода SAP" Width="130px">
@@ -143,6 +143,40 @@
         sapEquipmentDTOToUpdate = null;
     }
 
+    DataGridSettings _sapEquipmentGridSettings;
+    public DataGridSettings SapEquipmentGridSettings
+    {
+        get
+        {
+            return _sapEquipmentGridSettings;
+        }
+        set
+        {
+            if (_sapEquipmentGridSettings != value)
+            {
+                _sapEquipmentGridSettings = value;
+                InvokeAsync(SaveStateAsync);
+            }
+        }
+    }
+
+    private async Task LoadStateAsync()
+    {
+        await Task.CompletedTask;
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SapEquipmentGridSettings");
+        if (!string.IsNullOrEmpty(result))
+        {
+            _sapEquipmentGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+        }
+    }
+    private async Task SaveStateAsync()
+    {
+        await Task.CompletedTask;
+
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SapEquipmentGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SapEquipmentGridSettings)}')");
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -158,6 +192,7 @@
             if (firstRender)
             {
                 IsLoading = true;
+                await LoadStateAsync();
                 StateHasChanged();
                 sapEquipmentDTOs = _sapEquipmentRepository.GetAll(SD.SelectDictionaryScope.All).Result;
                 IsLoading = false;

@@ -34,7 +34,7 @@
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить нового пользователя" Click="@(args => EditRow(null))" />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
-            <RadzenDataGridApp @bind-Settings="@UserGridSettings" @ref="userDTOGrid" AllowAlternatingRows="true"
+            <RadzenDataGridApp @bind-Settings="@UserGridSettings" SettingsName="UserGridSettings" @ref="userDTOGrid" AllowAlternatingRows="true"
                                AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
                                Data="@userDTOs" TItem="UserDTO"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"

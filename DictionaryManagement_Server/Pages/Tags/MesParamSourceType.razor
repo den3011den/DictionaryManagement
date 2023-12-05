@@ -25,19 +25,22 @@
             </RadzenRow>
 
             <RadzenDataGridApp @ref="mesParamSourceTypeDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@mesParamSourceTypeDTOs" TItem="MesParamSourceTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Simple"
-                            AllowColumnResize="false"
-                            AllowVirtualization="true"
-                            GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)">                
+                               Data="@mesParamSourceTypeDTOs" TItem="MesParamSourceTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                               EmptyText="Нет записей для отображения"
+                               FilterMode="FilterMode.Simple"
+                               AllowColumnResize="false"
+                               AllowVirtualization="true"
+                               GridLines="DataGridGridLines.Both"
+                               Style="height:calc(100vh - 170px)"
+                               ShowCleanGridSettingsHeaderButton="false"
+                               ShowCleanGridFiltersHeaderButton="false"
+                               ShowCleanGridSortsHeaderButton="false">
                 <Columns>
                     <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="Id" Title="Ид записи" Width="100px" />
                     <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="Name" Title="Наименование" Width="300px">
                         <EditTemplate Context="mesParamSourceTypeDTO">
-                            <RadzenTextBox @bind-Value="mesParamSourceTypeDTO.Name" Style="width:100%; display: block" Name="Name"/>
+                            <RadzenTextBox @bind-Value="mesParamSourceTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>

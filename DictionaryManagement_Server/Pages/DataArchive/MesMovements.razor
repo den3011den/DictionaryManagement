@@ -48,7 +48,7 @@
                 </RadzenColumn>
             </RadzenRow>
 
-            <RadzenDataGridApp @bind-Settings="@MesMovementsGridSettings" @ref="mesMovementsDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @bind-Settings="@MesMovementsGridSettings" SettingsName="MesMovementsGridSettings" @ref="mesMovementsDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@mesMovementsDTOs" TItem="MesMovementsDTO"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                FilterMode="FilterMode.Advanced"
@@ -62,12 +62,6 @@
                                ColumnWidth="200px"
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both">                               
-
-                <HeaderTemplate>
-                    <RadzenButton Size="ButtonSize.Small" Text="Сбросить настройки интерфейса страницы" Click=@(() => CleanPageSettings())
-                                  Icon="clear" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" />
-                    <RadzenLabel Style="font-size: 10px; color:powderblue" Text="* Можно менять порядок колонок, ширину, скрывать/отображать колонки. Данные настройки страницы сохранятся в браузере" />
-                </HeaderTemplate>
                 <Columns>
                     <RadzenDataGridColumn TItem="MesMovementsDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
@@ -445,26 +439,6 @@
         excelExportFlag = false;
         await Task.Delay(200);
         await InvokeAsync(StateHasChanged);
-
-    }
-
-    private async Task CleanPageSettings()
-    {
-
-        await Task.CompletedTask;
-
-        bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Сбросить настройки интерфейса страницы",
-                "Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Очистить?", "Отмена");
-        if (selectionResult == false)
-        {
-            InvokeAsync(SaveStateAsync);
-            return;
-        }
-
-        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.removeItem", "MesMovementsGridSettings");
-
-        _mesMovementsGridSettings = null;
-        InvokeAsync(SaveStateAsync);
 
     }
 }

@@ -41,7 +41,7 @@
                 </RadzenColumn>
             </RadzenRow>
 
-            <RadzenDataGridApp @bind-Settings="@LogEventGridSettings" @ref="logEventDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @bind-Settings="@LogEventGridSettings" SettingsName="LogEventGridSettings" @ref="logEventDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@logEventDTOs" TItem="LogEventDTO"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                FilterMode="FilterMode.Simple"

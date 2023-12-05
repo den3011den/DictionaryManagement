@@ -41,7 +41,7 @@
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
 
-            <RadzenDataGridApp @bind-Settings="@RoleGridSettings" @ref="roleVMDTOGrid" AllowAlternatingRows="true"
+            <RadzenDataGridApp @bind-Settings="@RoleGridSettings" SettingsName="RoleGridSettings" @ref="roleVMDTOGrid" AllowAlternatingRows="true"
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
                             Data="@roleVMDTOs" TItem="RoleVMDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"

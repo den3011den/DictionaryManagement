@@ -4,6 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using System.Text.Json
 
 
 @inject IJSRuntime _jsRuntime
@@ -30,7 +31,7 @@
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый материал SAP" Click="@InsertRow" Disabled=@(sapMaterialDTOToInsert != null || sapMaterialDTOToUpdate != null) />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
-            <RadzenDataGridApp @ref="sapMaterialDTOGrid" AllowFiltering="true" AllowPaging="false" AllowAlternatingRows="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+            <RadzenDataGridApp @ref="sapMaterialDTOGrid" @bind-Settings="@SapMaterialGridSettings" SettingsName="SapMaterialGridSettings" AllowFiltering="true" AllowPaging="false" AllowAlternatingRows="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@sapMaterialDTOs" TItem="SapMaterialDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                                EmptyText="Нет записей для отображения"
                                FilterMode="FilterMode.Advanced"
@@ -143,6 +144,41 @@
         sapMaterialDTOToUpdate = null;
     }
 
+    
+    DataGridSettings _sapMaterialGridSettings;
+    public DataGridSettings SapMaterialGridSettings
+    {
+        get
+        {
+            return _sapMaterialGridSettings;
+        }
+        set
+        {
+            if (_sapMaterialGridSettings != value)
+            {
+                _sapMaterialGridSettings = value;
+                InvokeAsync(SaveStateAsync);
+            }
+        }
+    }
+
+    private async Task LoadStateAsync()
+    {
+        await Task.CompletedTask;
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SapMaterialGridSettings");
+        if (!string.IsNullOrEmpty(result))
+        {
+            _sapMaterialGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+        }
+    }
+    private async Task SaveStateAsync()
+    {
+        await Task.CompletedTask;
+
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SapMaterialGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SapMaterialGridSettings)}')");
+    }
+    
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -157,8 +193,8 @@
             IsAdmin = true;
             if (firstRender)
             {
-
                 IsLoading = true;
+                await LoadStateAsync();
                 StateHasChanged();
                 sapMaterialDTOs = _sapMaterialRepository.GetAll(SD.SelectDictionaryScope.All).Result;
                 IsLoading = false;
