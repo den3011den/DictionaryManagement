@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
     public class DataTypeDTO
     {
         [Display(Name = "Ид записи")]
-        [Required(ErrorMessage = "Код вида данных является обязательным для заполнения полем")]        
+        [Required(ErrorMessage = "Код вида данных является обязательным для заполнения полем")]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Наименование вида данных является обязательным для заполнения полем")]

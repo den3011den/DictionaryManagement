@@ -1,21 +1,14 @@
-﻿using DictionaryManagement_Common;
-using DictionaryManagement_DataAccess.Data.IntDB;
-using DictionaryManagement_Models.IntDBModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DictionaryManagement_Models.IntDBModels;
 using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository.IRepository
 {
     public interface IRoleVMRepository
     {
-        public Task<RoleVMDTO?> Get(Guid Id); 
+        public Task<RoleVMDTO?> Get(Guid Id);
         public Task<IEnumerable<RoleVMDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All);
         public Task<RoleVMDTO> Update(RoleVMDTO? objVMDTO, UpdateMode updateMode = UpdateMode.Update);
-        public Task<RoleVMDTO?> Create(RoleVMDTO objectToAddDTO);        
+        public Task<RoleVMDTO?> Create(RoleVMDTO objectToAddDTO);
         public Task<RoleVMDTO?> GetByName(string name = "");
 
         public Task<UserToRoleDTO?> AddUserToRole(RoleVMDTO roleVMDTO, UserDTO addUserDTO);

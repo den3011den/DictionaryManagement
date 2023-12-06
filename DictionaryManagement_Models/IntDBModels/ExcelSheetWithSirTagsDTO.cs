@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -26,7 +20,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         public bool MesParamFoundFlag { get; set; }
 
-        [NotMapped]        
+        [NotMapped]
         public string MesParamIdToString
         {
             get
@@ -45,7 +39,7 @@ namespace DictionaryManagement_Models.IntDBModels
             get
             {
                 string retVar = "НЕ НАЙДЕН";
-                if(MesParamDTOFK != null)
+                if (MesParamDTOFK != null)
                 {
                     retVar = MesParamDTOFK.Code + " " + MesParamDTOFK.Name;
                 }

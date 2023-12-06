@@ -12,7 +12,7 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<SapMaterial, SapMaterialDTO>().ReverseMap();
             CreateMap<MesMaterial, MesMaterialDTO>().ReverseMap();
             CreateMap<MesUnitOfMeasure, MesUnitOfMeasureDTO>().ReverseMap();
-            CreateMap<SapUnitOfMeasure, SapUnitOfMeasureDTO>().ReverseMap();            
+            CreateMap<SapUnitOfMeasure, SapUnitOfMeasureDTO>().ReverseMap();
             CreateMap<CorrectionReason, CorrectionReasonDTO>().ReverseMap();
 
             CreateMap<MesParamSourceType, MesParamSourceTypeDTO>().ReverseMap();
@@ -22,7 +22,7 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.IsAutoCalcDestDataType, opt => opt.MapFrom(src => src.IsAutoCalcDestDataType == null ? false : src.IsAutoCalcDestDataType));
 
             CreateMap<DataSource, DataSourceDTO>().ReverseMap();
-            
+
             CreateMap<ReportTemplateType, ReportTemplateTypeDTO>()
                 .ForMember(dest => dest.NeedAutoCalc, opt => opt.MapFrom(src => src.NeedAutoCalc == null ? false : src.NeedAutoCalc));
             CreateMap<ReportTemplateTypeDTO, ReportTemplateType>()
@@ -70,7 +70,7 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.SapMaterialFK, opt => opt.MapFrom(src => src.SapMaterialDTOFK))
                 .ForMember(dest => dest.MesUnitOfMeasureFK, opt => opt.MapFrom(src => src.MesUnitOfMeasureDTOFK))
                 .ForMember(dest => dest.SapUnitOfMeasureFK, opt => opt.MapFrom(src => src.SapUnitOfMeasureDTOFK));
-                //.ForMember(dest => dest.MesParamSourceLink, opt => opt.MapFrom(src => src.MesParamSourceLink == "" ? null : src.MesParamSourceLink));
+            //.ForMember(dest => dest.MesParamSourceLink, opt => opt.MapFrom(src => src.MesParamSourceLink == "" ? null : src.MesParamSourceLink));
 
             CreateMap<MesParam, MesParamDTO>()
                 .ForMember(dest => dest.MesParamSourceTypeDTOFK, opt => opt.MapFrom(src => src.MesParamSourceTypeFK))
@@ -81,7 +81,7 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.SapMaterialDTOFK, opt => opt.MapFrom(src => src.SapMaterialFK))
                 .ForMember(dest => dest.MesUnitOfMeasureDTOFK, opt => opt.MapFrom(src => src.MesUnitOfMeasureFK))
                 .ForMember(dest => dest.SapUnitOfMeasureDTOFK, opt => opt.MapFrom(src => src.SapUnitOfMeasureFK));
-                //.ForMember(dest => dest.MesParamSourceLink, opt => opt.MapFrom(src => (src.MesParamSourceLink == null || src.MesParamSourceLink.ToUpper() == "NULL") ? "" : src.MesParamSourceLink));
+            //.ForMember(dest => dest.MesParamSourceLink, opt => opt.MapFrom(src => (src.MesParamSourceLink == null || src.MesParamSourceLink.ToUpper() == "NULL") ? "" : src.MesParamSourceLink));
 
             CreateMap<ReportTemplate, ReportTemplateDTO>()
                 .ForMember(dest => dest.AddUserDTOFK, opt => opt.MapFrom(src => src.AddUserFK))
@@ -124,7 +124,7 @@ namespace DictionaryManagement_Business.Mapper
                     .ForMember(dest => dest.DownloadUserFK, opt => opt.MapFrom(src => src.DownloadUserDTOFK));
 
             CreateMap<ReportEntityLog, ReportEntityLogDTO>()
-                    .ForMember(dest => dest.ReportEntityDTOFK, opt => opt.MapFrom(src => src.ReportEntityFK)); 
+                    .ForMember(dest => dest.ReportEntityDTOFK, opt => opt.MapFrom(src => src.ReportEntityFK));
 
             CreateMap<ReportEntityLogDTO, ReportEntityLog>()
                     .ForMember(dest => dest.ReportEntityFK, opt => opt.MapFrom(src => src.ReportEntityDTOFK));
@@ -150,7 +150,7 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<UserToRole, UserToRoleDTO>()
                     .ForMember(dest => dest.UserDTOFK, opt => opt.MapFrom(src => src.UserFK))
                     .ForMember(dest => dest.RoleDTOFK, opt => opt.MapFrom(src => src.RoleFK));
-    
+
             CreateMap<UserToRoleDTO, UserToRole>()
                     .ForMember(dest => dest.UserFK, opt => opt.MapFrom(src => src.UserDTOFK))
                     .ForMember(dest => dest.RoleFK, opt => opt.MapFrom(src => src.RoleDTOFK));
@@ -159,7 +159,7 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.ChildrenDTO, opt => opt.AllowNull())
                 .ForMember(dest => dest.DepartmentParentVMDTO, opt => opt.MapFrom(src => src.DepartmentParentDTO))
                 .ForMember(dest => dest.DepLevel, opt => opt.MapFrom(src => src.DepLevel));
-            CreateMap<MesDepartmentVMDTO, MesDepartmentDTO>()                
+            CreateMap<MesDepartmentVMDTO, MesDepartmentDTO>()
                 .ForMember(dest => dest.DepartmentParentDTO, opt => opt.MapFrom(src => src.DepartmentParentVMDTO))
                 .ForMember(dest => dest.DepLevel, opt => opt.MapFrom(src => src.DepLevel));
 
@@ -204,7 +204,7 @@ namespace DictionaryManagement_Business.Mapper
 
             CreateMap<SapMovementsOUT, SapMovementsOUTDTO>()
                 .ForMember(dest => dest.MesMovementsDTOFK, opt => opt.MapFrom(src => src.MesMovementsFK))
-                .ForMember(dest => dest.MesParamDTOFK, opt => opt.MapFrom(src => src.MesParamFK))                                                
+                .ForMember(dest => dest.MesParamDTOFK, opt => opt.MapFrom(src => src.MesParamFK))
                 .ForMember(dest => dest.PreviousRecordDTOFK, opt => opt.MapFrom(src => src.PreviousRecordFK))
                 .ForMember(dest => dest.SapMaterialDTOFK, opt => opt.MapFrom(src => src.SapMaterialFK))
                 .ForMember(dest => dest.SapEquipmentSourceDTOFK, opt => opt.MapFrom(src => src.SapEquipmentSourceFK))
@@ -225,7 +225,7 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.SapMaterialDTOFK, opt => opt.MapFrom(src => src.SapMaterialFK))
                 .ForMember(dest => dest.SapEquipmentSourceDTOFK, opt => opt.MapFrom(src => src.SapEquipmentSourceFK))
                 .ForMember(dest => dest.SapEquipmentDestDTOFK, opt => opt.MapFrom(src => src.SapEquipmentDestFK));
-                
+
             CreateMap<SapMovementsINDTO, SapMovementsIN>()
                 .ForMember(dest => dest.PreviousRecordFK, opt => opt.MapFrom(src => src.PreviousRecordDTOFK))
                 .ForMember(dest => dest.MesMovementFK, opt => opt.MapFrom(src => src.MesMovementDTOFK))

@@ -2,9 +2,9 @@ using DictionaryManagement_Business.Repository;
 using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
-using Microsoft.AspNetCore.Authentication.Negotiate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -109,7 +109,7 @@ if (!app.Environment.IsDevelopment())
 else
     // app.UseForwardedHeaders();
 
-app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -128,4 +128,4 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Home}/{action=Index}/{id?}");
 });
 
-app.Run();  
+app.Run();

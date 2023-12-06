@@ -23,10 +23,10 @@ namespace DictionaryManagement_Business.Repository
         {
 
             UserToRole objectToAdd = new UserToRole();
-                
-                objectToAdd.Id = objectToAddDTO.Id;
-                objectToAdd.UserId = objectToAddDTO.UserId;
-                objectToAdd.RoleId = objectToAddDTO.RoleId;
+
+            objectToAdd.Id = objectToAddDTO.Id;
+            objectToAdd.UserId = objectToAddDTO.UserId;
+            objectToAdd.RoleId = objectToAddDTO.RoleId;
 
 
             var addedUserToRole = _db.UserToRole.Add(objectToAdd);
@@ -61,7 +61,7 @@ namespace DictionaryManagement_Business.Repository
         {
             IEnumerable<UserToRole> hhh = _db.UserToRole.Include("UserFK").Include("RoleFK").AsNoTracking().ToListWithNoLock();
             return _mapper.Map<IEnumerable<UserToRole>, IEnumerable<UserToRoleDTO>>(hhh);
-            
+
 
         }
 
@@ -74,7 +74,7 @@ namespace DictionaryManagement_Business.Repository
 
                 if (objectToUpdate.UserId != objectToUpdateDTO.UserDTOFK.Id)
                 {
-                    objectToUpdate.UserId = objectToUpdateDTO.UserDTOFK.Id;                    
+                    objectToUpdate.UserId = objectToUpdateDTO.UserDTOFK.Id;
                     objectToUpdate.UserFK = _mapper.Map<UserDTO, User>(objectToUpdateDTO.UserDTOFK);
                 }
                 if (objectToUpdate.RoleId != objectToUpdateDTO.RoleDTOFK.Id)
@@ -105,7 +105,7 @@ namespace DictionaryManagement_Business.Repository
 
         }
 
-        
+
         public async Task<int> DeleteByRoleIdAndUserId(Guid roleId, Guid userId)
         {
             if (roleId != Guid.Empty && userId != Guid.Empty)
@@ -138,9 +138,9 @@ namespace DictionaryManagement_Business.Repository
                     && u.RoleFK.Name.Trim().ToUpper() == roleName.Trim().ToUpper()
                     && u.RoleFK.IsArchive != true).AsNoTracking().FirstOrDefaultWithNoLock();
 
-            if (objToGet == null ) 
+            if (objToGet == null)
                 return false;
-            else 
+            else
                 return true;
         }
     }

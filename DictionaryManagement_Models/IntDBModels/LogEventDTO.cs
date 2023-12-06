@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -53,7 +47,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "Предупреждение")]
         public bool? IsWarning { get; set; } = false;
-        
+
         [NotMapped]
         [Display(Name = "Тэг СИР")]
         public string ToStringId

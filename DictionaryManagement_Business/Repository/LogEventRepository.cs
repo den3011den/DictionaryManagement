@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using DictionaryManagement_Business.Repository.IRepository;
-using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
-using DocumentFormat.OpenXml.Drawing;
 using Microsoft.EntityFrameworkCore;
 
 namespace DictionaryManagement_Business.Repository
@@ -30,7 +28,7 @@ namespace DictionaryManagement_Business.Repository
 
             var hhh2 = _db.LogEvent
                         .Include("LogEventTypeFK")
-                        .Include("UserFK")                        
+                        .Include("UserFK")
                         .Where(u => u.EventTime >= startTime && u.EventTime <= endTime).ToListWithNoLock();
             return _mapper.Map<IEnumerable<LogEvent>, IEnumerable<LogEventDTO>>(hhh2);
         }

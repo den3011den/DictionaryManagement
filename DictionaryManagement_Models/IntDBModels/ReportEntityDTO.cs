@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography.X509Certificates;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -60,7 +54,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public Guid? UploadUserId { get; set; }
 
         [Display(Name = "Кто загрузил")]
-        public UserDTO? UploadUserDTOFK { get; set; } 
+        public UserDTO? UploadUserDTOFK { get; set; }
 
         [Display(Name = "Имя загруженного файла")]
         public string? UploadReportFileName { get; set; }
@@ -68,7 +62,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Успешно загружен")]
         public bool UploadSuccessFlag { get; set; } = false;
 
-        
+
         [NotMapped]
         [Display(Name = "Ид записи")]
         public string ToStringId

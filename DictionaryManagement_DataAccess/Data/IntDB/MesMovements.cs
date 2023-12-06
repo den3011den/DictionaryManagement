@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DictionaryManagement_DataAccess.Data.IntDB
 {
@@ -34,7 +29,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         [Required]
         public decimal Value { get; set; } = decimal.Zero;
-        
+
         public Guid? SapMovementOutId { get; set; }
         [ForeignKey("SapMovementOutId")]
         public SapMovementsOUT? SapMovementsOUTFK { get; set; }
@@ -62,7 +57,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public bool? MesGone { get; set; }
 
         public DateTime? MesGoneTime { get; set; }
-        
+
         public virtual ICollection<MesMovementsComment>? MesMovementsCommentList { get; set; }
 
     }

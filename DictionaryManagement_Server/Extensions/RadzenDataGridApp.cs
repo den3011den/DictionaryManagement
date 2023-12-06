@@ -1,17 +1,8 @@
-﻿using ClosedXML;
-using DictionaryManagement_Models.IntDBModels;
-using DocumentFormat.OpenXml.Bibliography;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Radzen;
 using Radzen.Blazor;
-using System.Security.Cryptography.Xml;
 using System.Text.Json;
-using Microsoft.JSInterop;
-using System;
-using System.Runtime.CompilerServices;
-
 
 namespace DictionaryManagement_Server.Extensions
 {
@@ -21,15 +12,15 @@ namespace DictionaryManagement_Server.Extensions
         [Parameter] public bool? ShowCleanGridFiltersHeaderButton { get; set; } = true;
         [Parameter] public bool? ShowCleanGridSortsHeaderButton { get; set; } = true;
         [Parameter] public string? SettingsName { get; set; } = "";
-        
+
         [Inject]
         IJSRuntime? JS { get; set; }
 
         [Inject]
         DialogService _dialogs { get; set; }
-              
+
         public RadzenDataGridApp() : base()
-        {                          
+        {
             base.AndOperatorText = "И";
             base.OrOperatorText = "ИЛИ";
             base.StartsWithText = "Начинается с";
@@ -53,12 +44,12 @@ namespace DictionaryManagement_Server.Extensions
             base.ColumnsShowingText = "колонок отображается";
             base.ColumnsText = "Не выбрано";
             base.PagingSummaryFormat = $"Страница {{0}} из {{1}} (всего записей {{2}} )";
-            //base.EmptyText = "Нет записей для отображения";
-            base.EmptyTemplate = EmptyTemplateRender;            
-            base.HeaderTemplate = HeaderTemplateRender;            
+            base.Density = Density.Compact;
+            base.EmptyTemplate = EmptyTemplateRender;
+            base.HeaderTemplate = HeaderTemplateRender;
         }
-        
-        
+
+
         private RenderFragment EmptyTemplateRender => (builder) =>
         {
             builder.OpenElement(1, "p");
@@ -71,6 +62,7 @@ namespace DictionaryManagement_Server.Extensions
         {
             if (ShowCleanGridSettingsHeaderButton == true || ShowCleanGridFiltersHeaderButton == true || ShowCleanGridSortsHeaderButton == true)
             {
+
                 if (ShowCleanGridSettingsHeaderButton == true)
                 {
                     builder.OpenComponent<RadzenButton>(1);
@@ -115,7 +107,7 @@ namespace DictionaryManagement_Server.Extensions
             }
             else
             {
-                HeaderTemplate = null;                
+                HeaderTemplate = null;
             }
         };
 
@@ -125,7 +117,7 @@ namespace DictionaryManagement_Server.Extensions
             var selectionResult = await _dialogs.Confirm("Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Сбросить настройки интерфейса страницы",
                 new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
 
-            if (selectionResult == false)
+            if (selectionResult != true)
             {
                 await InvokeAsync(SaveStateAsync);
                 return;
@@ -136,22 +128,22 @@ namespace DictionaryManagement_Server.Extensions
             Settings = null;
 
             await Task.Delay(200);
-            await InvokeAsync(StateHasChanged);            
+            await InvokeAsync(StateHasChanged);
 
         }
-        
+
         async Task CleanAllFilters()
         {
             var selectionResult = await _dialogs.Confirm("Будут очищены все фильтры", "Очистить фильтры",
                 new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
 
-            if (selectionResult == false)
+            if (selectionResult != true)
             {
                 await InvokeAsync(SaveStateAsync);
                 return;
             }
             //if (SettingsData != null)
-            
+
 
 
             if (Settings != null)
@@ -171,16 +163,16 @@ namespace DictionaryManagement_Server.Extensions
         async Task CleanAllOrders()
         {
 
-            var selectionResult = await _dialogs.Confirm("Будут очищены все сортировки", "Очистить сортировки", 
+            var selectionResult = await _dialogs.Confirm("Будут очищены все сортировки", "Очистить сортировки",
                 new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
-            
-            if (selectionResult == false)
+
+            if (selectionResult != false)
             {
                 await InvokeAsync(SaveStateAsync);
                 return;
             }
 
-            if (Settings!= null)
+            if (Settings != null)
             {
                 foreach (var c in Settings.Columns)
                 {
@@ -189,14 +181,14 @@ namespace DictionaryManagement_Server.Extensions
                 await InvokeAsync(SaveStateAsync);
                 await Task.Delay(200);
                 await InvokeAsync(StateHasChanged);
-            }            
+            }
         }
 
         private async Task SaveStateAsync()
         {
-            await Task.CompletedTask;            
-            await JS.InvokeVoidAsync("eval", "window.localStorage.setItem('"+ SettingsName + "', '" + JsonSerializer.Serialize<DataGridSettings>(Settings)+"')");
+            await Task.CompletedTask;
+            await JS.InvokeVoidAsync("eval", "window.localStorage.setItem('" + SettingsName + "', '" + JsonSerializer.Serialize<DataGridSettings>(Settings) + "')");
         }
-        
+
     }
 }

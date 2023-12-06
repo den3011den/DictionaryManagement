@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -20,7 +14,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Required(ErrorMessage = "Время добавления обязательно")]
         public DateTime AddTime { get; set; } = DateTime.Now;
 
-        [Display(Name = "Номер партии")]        
+        [Display(Name = "Номер партии")]
         public string? BatchNo { get; set; }
 
         [Display(Name = "Код материала SAP")]

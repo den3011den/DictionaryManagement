@@ -4,12 +4,6 @@ using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
@@ -27,7 +21,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<MesUnitOfMeasureDTO> Create(MesUnitOfMeasureDTO objectToAddDTO)
         {
-            var objectToAdd = _mapper.Map<MesUnitOfMeasureDTO, MesUnitOfMeasure>(objectToAddDTO);            
+            var objectToAdd = _mapper.Map<MesUnitOfMeasureDTO, MesUnitOfMeasure>(objectToAddDTO);
             var addedMesUnitOfMeasure = _db.MesUnitOfMeasure.Add(objectToAdd);
             _db.SaveChanges();
             return _mapper.Map<MesUnitOfMeasure, MesUnitOfMeasureDTO>(addedMesUnitOfMeasure.Entity);
@@ -46,7 +40,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<MesUnitOfMeasureDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
-            {                
+            {
                 return _mapper.Map<IEnumerable<MesUnitOfMeasure>, IEnumerable<MesUnitOfMeasureDTO>>(_db.MesUnitOfMeasure.ToListWithNoLock());
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)

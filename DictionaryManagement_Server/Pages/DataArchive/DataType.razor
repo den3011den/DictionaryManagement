@@ -4,6 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using System.Text.Json
 
 
 @inject DialogService DialogService
@@ -30,17 +31,15 @@
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
             <RadzenDataGridApp @ref="dataTypeDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@dataTypeDTOs" TItem="DataTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Simple"
-                            AllowColumnResize="false"
-                            AllowVirtualization="true"
-                            GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)"
-                            ShowCleanGridSettingsHeaderButton="false"
-                            ShowCleanGridFiltersHeaderButton="false"
-                            ShowCleanGridSortsHeaderButton="false">
+                               @bind-Settings="@DataTypeGridSettings" SettingsName="DataTypeGridSettings"
+                               Data="@dataTypeDTOs" TItem="DataTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                               EmptyText="Нет записей для отображения"
+                               FilterMode="FilterMode.Simple"
+                               AllowColumnResize="false"
+                               AllowVirtualization="true"
+                               GridLines="DataGridGridLines.Both"
+                               Style="height:calc(100vh - 170px)">
                 <Columns>
                     <RadzenDataGridColumn TItem="DataTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
                     <RadzenDataGridColumn TItem="DataTypeDTO" Property="Name" Title="Наименование" Width="200px">
@@ -79,7 +78,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn Title = "Действия" TItem="DataTypeDTO" Context="dataTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumn Title="Действия" TItem="DataTypeDTO" Context="dataTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="dataTypeDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(dataTypeDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -137,6 +136,42 @@
     public bool IsAdmin { get; set; }
     public bool excelExportFlag { get; set; } = false;
 
+    DataGridSettings _dataTypeGridSettings;
+    public DataGridSettings DataTypeGridSettings
+    {
+        get
+        {
+            return _dataTypeGridSettings;
+        }
+        set
+        {
+            if (_dataTypeGridSettings != value)
+            {
+                _dataTypeGridSettings = value;
+                InvokeAsync(SaveStateAsync);
+            }
+        }
+    }
+
+    private async Task LoadStateAsync()
+    {
+        await Task.CompletedTask;
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "DataTypeGridSettings");
+        if (!string.IsNullOrEmpty(result))
+        {
+            _dataTypeGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+        }
+    }
+    private async Task SaveStateAsync()
+    {
+        await Task.CompletedTask;
+
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('DataTypeGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(DataTypeGridSettings)}')");
+    }
+
+
+
     void Reset()
     {
         dataTypeDTOToInsert = null;
@@ -157,6 +192,7 @@
             if (firstRender)
             {
                 IsLoading = true;
+                await LoadStateAsync();
                 StateHasChanged();
                 dataTypeDTOs = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
                 IsLoading = false;

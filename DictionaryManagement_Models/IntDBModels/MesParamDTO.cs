@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -17,7 +11,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Код обязателен для заполнения")]
-        [StringLength(100, MinimumLength = 1, ErrorMessage = "Код может быть от 1 до 100 символов")]        
+        [StringLength(100, MinimumLength = 1, ErrorMessage = "Код может быть от 1 до 100 символов")]
         [Display(Name = "Код СИР")]
         public string Code { get; set; }
 
@@ -25,7 +19,7 @@ namespace DictionaryManagement_Models.IntDBModels
         //[StringLength(250, MinimumLength = 3, ErrorMessage = "Наименование может быть от 3 до 250 символов")]
         [Display(Name = "Наименование")]
         public string? Name { get; set; }
-        
+
         [StringLength(100, MinimumLength = 3, ErrorMessage = "Описание может быть от 3 до 100 символов")]
         [Display(Name = "Описание")]
         public string? Description { get; set; }

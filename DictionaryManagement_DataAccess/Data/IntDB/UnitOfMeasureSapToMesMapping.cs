@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace DictionaryManagement_DataAccess.Data.IntDB
 {
@@ -17,7 +11,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
         public int Id { get; set; }
-    
+
         public int SapUnitId { get; set; }
 
         [ForeignKey("SapUnitId")]
@@ -26,12 +20,12 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public int MesUnitId { get; set; }
 
         [ForeignKey("MesUnitId")]
-        public MesUnitOfMeasure? MesUnitOfMeasure { get; set; } 
+        public MesUnitOfMeasure? MesUnitOfMeasure { get; set; }
 
         [Required]
-        [Range(0.0001, 1000000000, ErrorMessage = "Значение должно быть между {1} and {2}")]        
+        [Range(0.0001, 1000000000, ErrorMessage = "Значение должно быть между {1} and {2}")]
         public decimal SapToMesTransformKoef { get; set; } = decimal.One;
-        
+
     }
 
 }

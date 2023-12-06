@@ -4,6 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using System.Text.Json
 
 
 
@@ -32,16 +33,14 @@
             </RadzenRow>
 
             <RadzenDataGridApp @ref="sapUnitOfMeasureDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                            @bind-Settings="@SapUnitOfMeasureGridSettings" SettingsName="SapUnitOfMeasureGridSettings"
                             Data="@sapUnitOfMeasureDTOs" TItem="SapUnitOfMeasureDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
                             FilterMode="FilterMode.Simple"
                             AllowColumnResize="false"                            
                             GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)"
-                            ShowCleanGridSettingsHeaderButton="false"
-                            ShowCleanGridFiltersHeaderButton="false"
-                            ShowCleanGridSortsHeaderButton="false">
+                            Style="height:calc(100vh - 170px)">
                 <Columns>
                     <RadzenDataGridColumn TItem="SapUnitOfMeasureDTO" Property="Id" Title="Ид записи" Width="120px" />
                     <RadzenDataGridColumn TItem="SapUnitOfMeasureDTO" Property="Name" Title="Наименование">
@@ -125,6 +124,41 @@
 
     public bool excelExportFlag { get; set; } = false;
 
+    DataGridSettings _sapUnitOfMeasureGridSettings;
+    public DataGridSettings SapUnitOfMeasureGridSettings
+    {
+        get
+        {
+            return _sapUnitOfMeasureGridSettings;
+        }
+        set
+        {
+            if (_sapUnitOfMeasureGridSettings != value)
+            {
+                _sapUnitOfMeasureGridSettings = value;
+                InvokeAsync(SaveStateAsync);
+            }
+        }
+    }
+
+    private async Task LoadStateAsync()
+    {
+        await Task.CompletedTask;
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SapUnitOfMeasureGridSettings");
+        if (!string.IsNullOrEmpty(result))
+        {
+            _sapUnitOfMeasureGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+        }
+    }
+    private async Task SaveStateAsync()
+    {
+        await Task.CompletedTask;
+
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SapUnitOfMeasureGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SapUnitOfMeasureGridSettings)}')");
+    }
+
+
     void Reset()
     {
         sapUnitOfMeasureDTOToInsert = null;
@@ -145,6 +179,7 @@
             if (firstRender)
             {
                 IsLoading = true;
+                await LoadStateAsync();
                 StateHasChanged();
                 sapUnitOfMeasureDTOs = _sapUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.All).Result;
                 IsLoading = false;

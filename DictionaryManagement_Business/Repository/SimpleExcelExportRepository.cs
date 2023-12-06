@@ -1,16 +1,14 @@
 ﻿using AutoMapper;
+using ClosedXML.Excel;
 using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
+using DocumentFormat.OpenXml;
 using Microsoft.EntityFrameworkCore;
-using ClosedXML.Excel;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Spreadsheet;
-using System.Xml.XPath;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -2650,7 +2648,7 @@ namespace DictionaryManagement_Business.Repository
                 foreach (var row in rows)
                 {
                     ExcelSheetWithSirTagsDTO rowItem = new ExcelSheetWithSirTagsDTO();
-                    
+
                     rowItem.Column1 = await GetCellValue(row.Cell(1));
                     rowItem.Column2 = await GetCellValue(row.Cell(2));
                     if (notImplementedThirdColumnForEmbReport)
@@ -2730,7 +2728,7 @@ namespace DictionaryManagement_Business.Repository
 
             if (cell.NeedsRecalculation)
             {
-                
+
                 switch (cell.DataType)
                 {
                     case XLDataType.Text:

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
     public class DataSourceDTO
     {
         [Display(Name = "Ид записи")]
-        [Required(ErrorMessage = "Код источника данных является обязательным для заполнения полем")]        
+        [Required(ErrorMessage = "Код источника данных является обязательным для заполнения полем")]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Наименование источника данных является обязательным для заполнения полем")]

@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace DictionaryManagement_Models.IntDBModels
@@ -14,7 +14,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Наименование модуля")]
         [Required(ErrorMessage = "Наименование модуля обязательно")]
         public string ModuleName { get; set; }
-    
+
         [Display(Name = "Время старта задания")]
         [Required(ErrorMessage = "Время старта задания обязательно")]
         public TimeSpan StartTime { get; set; }

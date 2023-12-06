@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -13,7 +7,7 @@ namespace DictionaryManagement_Models.IntDBModels
     {
 
         [Display(Name = "Ид записи")]
-        [Required(ErrorMessage = "ИД обязателен")]        
+        [Required(ErrorMessage = "ИД обязателен")]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Код обязателен для заполнения")]
@@ -30,7 +24,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Сокр. наименование")]
         [MaxLength(500, ErrorMessage = "Длина сокр. наименование не может быть больше 500 символов")]
         public string ShortName { get; set; } = string.Empty;
-        
+
         [Display(Name = "Ид родителя")]
         public int? ParentDepartmentId { get; set; }
 

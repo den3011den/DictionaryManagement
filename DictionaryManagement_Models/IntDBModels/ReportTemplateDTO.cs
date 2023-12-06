@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -16,14 +10,14 @@ namespace DictionaryManagement_Models.IntDBModels
         [Required(ErrorMessage = "ИД обязателен")]
         public Guid Id { get; set; }
 
-        [Required(ErrorMessage = "Время добавления обязательно")]        
+        [Required(ErrorMessage = "Время добавления обязательно")]
         [Display(Name = "Время добавления")]
         public DateTime AddTime { get; set; }
 
         //[Required(ErrorMessage = "ИД добавившего пользователя обязательно")]
         [Display(Name = "Ид добавившего пользователя")]
         public Guid AddUserId { get; set; }
-        
+
         //[Required(ErrorMessage = "Выбор пользователя обязателен")]
         [Display(Name = "Пользователь")]
         public UserDTO AddUserDTOFK { get; set; }

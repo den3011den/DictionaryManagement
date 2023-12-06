@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography.X509Certificates;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
     public class SmenaDTO
     {
 
-        [Display(Name = "Ид записи")]        
+        [Display(Name = "Ид записи")]
         public int Id { get; set; }
 
         [Display(Name = "Наименование")]
@@ -26,9 +20,9 @@ namespace DictionaryManagement_Models.IntDBModels
         [Required(ErrorMessage = "Выбор производства обязателен")]
         [Display(Name = "Производство")]
         public MesDepartmentDTO DepartmentDTOFK { get; set; }
-    
+
         [Display(Name = "Время начала смены")]
-        [Required(ErrorMessage = "Время начала смены обязательно")]                
+        [Required(ErrorMessage = "Время начала смены обязательно")]
         public TimeSpan StartTime { get; set; }
 
         [NotMapped]
@@ -44,6 +38,6 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "В архиве")]
         public bool? IsArchive { get; set; }
-       
+
     }
 }

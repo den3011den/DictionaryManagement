@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
 using DictionaryManagement_Business.Repository.IRepository;
-using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -29,10 +22,10 @@ namespace DictionaryManagement_Business.Repository
         {
 
             RoleToADGroup objectToAdd = new RoleToADGroup();
-                
-                objectToAdd.Id = objectToAddDTO.Id;
-                objectToAdd.RoleId = objectToAddDTO.RoleId;
-                objectToAdd.ADGroupId = objectToAddDTO.ADGroupId;
+
+            objectToAdd.Id = objectToAddDTO.Id;
+            objectToAdd.RoleId = objectToAddDTO.RoleId;
+            objectToAdd.ADGroupId = objectToAddDTO.ADGroupId;
 
 
             var addedRoleToADGroup = _db.RoleToADGroup.Add(objectToAdd);
@@ -64,7 +57,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<RoleToADGroupDTO>> GetByRoleId(Guid roleId)
         {
-            var objToGet = _db.RoleToADGroup.Include("RoleFK").Include("ADGroupFK").Where(u => u.RoleId == roleId).AsNoTracking().ToListWithNoLock();                            
+            var objToGet = _db.RoleToADGroup.Include("RoleFK").Include("ADGroupFK").Where(u => u.RoleId == roleId).AsNoTracking().ToListWithNoLock();
             if (objToGet != null)
             {
                 return _mapper.Map<IEnumerable<RoleToADGroup>, IEnumerable<RoleToADGroupDTO>>(objToGet);
@@ -75,7 +68,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<RoleToADGroupDTO>> GetAll()
         {
-            var hhh = _db.RoleToADGroup.Include("RoleFK").Include("ADGroupFK").AsNoTracking().ToListWithNoLock();            
+            var hhh = _db.RoleToADGroup.Include("RoleFK").Include("ADGroupFK").AsNoTracking().ToListWithNoLock();
             return _mapper.Map<IEnumerable<RoleToADGroup>, IEnumerable<RoleToADGroupDTO>>(hhh);
 
         }
@@ -89,7 +82,7 @@ namespace DictionaryManagement_Business.Repository
 
                 if (objectToUpdate.RoleId != objectToUpdateDTO.RoleDTOFK.Id)
                 {
-                    objectToUpdate.RoleId = objectToUpdateDTO.RoleDTOFK.Id;                    
+                    objectToUpdate.RoleId = objectToUpdateDTO.RoleDTOFK.Id;
                     objectToUpdate.RoleFK = _mapper.Map<RoleDTO, Role>(objectToUpdateDTO.RoleDTOFK);
                 }
                 if (objectToUpdate.ADGroupId != objectToUpdateDTO.ADGroupDTOFK.Id)

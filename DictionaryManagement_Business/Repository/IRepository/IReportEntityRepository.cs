@@ -1,12 +1,4 @@
-﻿using DictionaryManagement_Common;
-using DictionaryManagement_DataAccess.Data.IntDB;
-using DictionaryManagement_Models.IntDBModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
+﻿using DictionaryManagement_Models.IntDBModels;
 
 namespace DictionaryManagement_Business.Repository.IRepository
 {
@@ -18,6 +10,6 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<IEnumerable<ReportEntityDTO>> GetAllByUploadTimeInterval(DateTime? startUploadTime, DateTime? endUploadTime);
         public Task<ReportEntityDTO> Update(ReportEntityDTO objDTO);
         public Task<ReportEntityDTO> Create(ReportEntityDTO objectToAddDTO);
-        public Task<int> Delete(Guid id);        
+        public Task<int> Delete(Guid id);
     }
 }

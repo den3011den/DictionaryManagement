@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 
 
 namespace DictionaryManagement_Models.IntDBModels
@@ -21,7 +19,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Required(ErrorMessage = "Запись архива данных обязателена")]
         public MesMovementsDTO MesMovementsDTOFK { get; set; }
 
-        [Display(Name = "ИД записи причины корректировки")]        
+        [Display(Name = "ИД записи причины корректировки")]
         public int? CorrectionReasonId { get; set; }
 
         [Display(Name = "Запись причины корректировки")]
@@ -30,7 +28,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Причина корректировки")]
         public string? CorrectionComment { get; set; }
 
-        
+
         [NotMapped]
         [Display(Name = "Ид записи")]
         public string ToStringId

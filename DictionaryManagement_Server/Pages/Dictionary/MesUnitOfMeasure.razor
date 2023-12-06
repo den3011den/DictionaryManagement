@@ -4,6 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using System.Text.Json
 
 
 
@@ -27,16 +28,14 @@
         </RadzenRow>
 
         <RadzenDataGridApp @ref="mesUnitOfMeasureDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                        Data="@mesUnitOfMeasureDTOs" TItem="MesUnitOfMeasureDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
-                        FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                        EmptyText="Нет записей для отображения"
-                        AllowColumnResize="false"
-                        FilterMode="FilterMode.Simple"
-                        GridLines="DataGridGridLines.Both"
-                        Style="height:calc(100vh - 170px)"
-                        ShowCleanGridSettingsHeaderButton="false"
-                        ShowCleanGridFiltersHeaderButton="false"
-                        ShowCleanGridSortsHeaderButton="false">
+                           @bind-Settings="@MesUnitOfMeasureGridSettings" SettingsName="MesUnitOfMeasureGridSettings"
+                           Data="@mesUnitOfMeasureDTOs" TItem="MesUnitOfMeasureDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
+                           FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                           EmptyText="Нет записей для отображения"
+                           AllowColumnResize="false"
+                           FilterMode="FilterMode.Simple"
+                           GridLines="DataGridGridLines.Both"
+                           Style="height:calc(100vh - 170px)">
             <Columns>
                 <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Id" Title="Ид записи" Width="120px" />
                 <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Name" Title="Наименование" Width="270px">
@@ -118,6 +117,43 @@
     public bool IsAdmin { get; set; }
     public bool excelExportFlag { get; set; } = false;
 
+
+    DataGridSettings _mesUnitOfMeasureGridSettings;
+    public DataGridSettings MesUnitOfMeasureGridSettings
+    {
+        get
+        {
+            return _mesUnitOfMeasureGridSettings;
+        }
+        set
+        {
+            if (_mesUnitOfMeasureGridSettings != value)
+            {
+                _mesUnitOfMeasureGridSettings = value;
+                InvokeAsync(SaveStateAsync);
+            }
+        }
+    }
+
+    private async Task LoadStateAsync()
+    {
+        await Task.CompletedTask;
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "MesUnitOfMeasureGridSettings");
+        if (!string.IsNullOrEmpty(result))
+        {
+            _mesUnitOfMeasureGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+        }
+    }
+    private async Task SaveStateAsync()
+    {
+        await Task.CompletedTask;
+
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesUnitOfMeasureGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesUnitOfMeasureGridSettings)}')");
+    }
+
+
+
     void Reset()
     {
         mesUnitOfMeasureDTOToInsert = null;
@@ -139,6 +175,7 @@
             if (firstRender)
             {
                 IsLoading = true;
+                await LoadStateAsync();
                 StateHasChanged();
                 mesUnitOfMeasureDTOs = _mesUnitOfMeasureRepository.GetAll(SD.SelectDictionaryScope.All).Result;
                 IsLoading = false;

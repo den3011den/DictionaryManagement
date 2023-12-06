@@ -1,15 +1,11 @@
 ﻿using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
-using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.JSInterop;
-using System.Security.Claims;
-using static DictionaryManagement_Common.SD;
-using Microsoft.Extensions.Configuration;
 using System.DirectoryServices.AccountManagement;
-using Microsoft.AspNetCore.Authentication;
+using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {

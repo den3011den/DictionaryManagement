@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
 using DictionaryManagement_Business.Repository.IRepository;
-using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -29,10 +22,10 @@ namespace DictionaryManagement_Business.Repository
         {
 
             RoleToDepartment objectToAdd = new RoleToDepartment();
-                
-                objectToAdd.Id = objectToAddDTO.Id;
-                objectToAdd.RoleId = objectToAddDTO.RoleId;
-                objectToAdd.DepartmentId = objectToAddDTO.DepartmentId;
+
+            objectToAdd.Id = objectToAddDTO.Id;
+            objectToAdd.RoleId = objectToAddDTO.RoleId;
+            objectToAdd.DepartmentId = objectToAddDTO.DepartmentId;
 
 
             var addedRoleToDepartment = _db.RoleToDepartment.Add(objectToAdd);
@@ -67,7 +60,7 @@ namespace DictionaryManagement_Business.Repository
         {
             var hhh = _db.RoleToDepartment.Include("RoleFK").Include("DepartmentFK").ToListWithNoLock();
             return _mapper.Map<IEnumerable<RoleToDepartment>, IEnumerable<RoleToDepartmentDTO>>(hhh);
-            
+
         }
 
         public async Task<RoleToDepartmentDTO> Update(RoleToDepartmentDTO objectToUpdateDTO)

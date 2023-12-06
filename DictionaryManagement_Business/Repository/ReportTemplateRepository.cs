@@ -5,12 +5,6 @@ using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
@@ -91,7 +85,7 @@ namespace DictionaryManagement_Business.Repository
         {
 
             if (reportTemplateTypeId > 0 && destDataTypeId > 0 && departmentId > 0)
-            { 
+            {
                 var objToGet = _db.ReportTemplate
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
@@ -176,7 +170,7 @@ namespace DictionaryManagement_Business.Repository
                 else
                 {
                     if (objectToUpdate.ReportTemplateTypeId != objectToUpdateDTO.ReportTemplateTypeId)
-                    {                        
+                    {
                         objectToUpdate.ReportTemplateTypeId = objectToUpdateDTO.ReportTemplateTypeId;
                         var objectReportTemplateTypeToUpdate = _db.ReportTemplateType.
                                 FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.ReportTemplateTypeId);

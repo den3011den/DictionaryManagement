@@ -4,13 +4,6 @@ using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -49,7 +42,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<ADGroupDTO>> GetAll(SD.SelectDictionaryScope selectDictionaryScope = SD.SelectDictionaryScope.All)
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
-            {                
+            {
                 return _mapper.Map<IEnumerable<ADGroup>, IEnumerable<ADGroupDTO>>(_db.ADGroup.ToListWithNoLock());
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)

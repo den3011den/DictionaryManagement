@@ -1,9 +1,7 @@
 ﻿using DictionaryManagement_Business.Repository;
 using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 
 namespace DictionaryManagement_Server.Controllers
 {

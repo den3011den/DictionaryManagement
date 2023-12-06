@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -54,7 +48,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Display(Name = "ИД записи в зеркале SAP")]
         public Int64? SapNdoOutId { get; set; }
-        
+
         public SapNdoOUTDTO? SapNdoOUTDTOFK { get; set; }
 
         [NotMapped]
@@ -112,13 +106,13 @@ namespace DictionaryManagement_Models.IntDBModels
                 else
                 {
                     return SapNdoOUTDTOFK.SapGone == null ? false : SapNdoOUTDTOFK.SapGone;
-                }                
+                }
             }
             set
             {
                 SapGoneBool = value;
             }
-        }        
+        }
     }
 }
 

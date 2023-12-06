@@ -4,12 +4,6 @@ using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
@@ -49,10 +43,10 @@ namespace DictionaryManagement_Business.Repository
         public async Task<MesMaterialDTO> GetByCode(string code = "")
         {
             var objToGet = _db.MesMaterial.FirstOrDefaultWithNoLock(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
-                if (objToGet != null)
-                {
-                    return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
-                }            
+            if (objToGet != null)
+            {
+                return _mapper.Map<MesMaterial, MesMaterialDTO>(objToGet);
+            }
             return null;
         }
 
@@ -79,7 +73,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<MesMaterialDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
-            {                
+            {
                 return _mapper.Map<IEnumerable<MesMaterial>, IEnumerable<MesMaterialDTO>>(_db.MesMaterial.ToListWithNoLock());
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)

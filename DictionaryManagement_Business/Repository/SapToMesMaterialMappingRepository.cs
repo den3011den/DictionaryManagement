@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
 using DictionaryManagement_Business.Repository.IRepository;
-using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -30,10 +23,10 @@ namespace DictionaryManagement_Business.Repository
             //var objectToAdd = _mapper.Map<UnitOfMeasureSapToMesMappingDTO, UnitOfMeasureSapToMesMapping>(objectToAddDTO);
 
             SapToMesMaterialMapping objectToAdd = new SapToMesMaterialMapping();
-                
-                objectToAdd.Id = objectToAddDTO.Id;
-                objectToAdd.SapMaterialId = objectToAddDTO.SapMaterialId;
-                objectToAdd.MesMaterialId = objectToAddDTO.MesMaterialId;
+
+            objectToAdd.Id = objectToAddDTO.Id;
+            objectToAdd.SapMaterialId = objectToAddDTO.SapMaterialId;
+            objectToAdd.MesMaterialId = objectToAddDTO.MesMaterialId;
 
 
             var addedSapToMesMaterialMapping = _db.SapToMesMaterialMapping.Add(objectToAdd);
@@ -66,9 +59,9 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<SapToMesMaterialMappingDTO>> GetAll()
         {
-            var hhh = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").ToListWithNoLock();            
+            var hhh = _db.SapToMesMaterialMapping.Include("SapMaterial").Include("MesMaterial").ToListWithNoLock();
             return _mapper.Map<IEnumerable<SapToMesMaterialMapping>, IEnumerable<SapToMesMaterialMappingDTO>>(hhh);
-            
+
         }
 
         public async Task<SapToMesMaterialMappingDTO> Update(SapToMesMaterialMappingDTO objectToUpdateDTO)
@@ -80,7 +73,7 @@ namespace DictionaryManagement_Business.Repository
 
                 if (objectToUpdate.SapMaterialId != objectToUpdateDTO.SapMaterialDTO.Id)
                 {
-                    objectToUpdate.SapMaterialId = objectToUpdateDTO.SapMaterialDTO.Id;                    
+                    objectToUpdate.SapMaterialId = objectToUpdateDTO.SapMaterialDTO.Id;
                     objectToUpdate.SapMaterial = _mapper.Map<SapMaterialDTO, SapMaterial>(objectToUpdateDTO.SapMaterialDTO);
                 }
                 if (objectToUpdate.MesMaterialId != objectToUpdateDTO.MesMaterialDTO.Id)

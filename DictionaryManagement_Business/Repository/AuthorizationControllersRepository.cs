@@ -1,11 +1,7 @@
 ﻿using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
-using DictionaryManagement_DataAccess.Data.IntDB;
-using DictionaryManagement_Models.IntDBModels;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.JSInterop;
-using static DictionaryManagement_Business.Repository.IAuthorizationControllersRepository;
 using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
@@ -18,7 +14,7 @@ namespace DictionaryManagement_Business.Repository
         private readonly IJSRuntime _jsRuntime;
 
         public AuthorizationControllersRepository(IUserToRoleRepository userToRoleRepository, IUserRepository userRepository, IJSRuntime jsRuntime)
-        {        
+        {
             _userToRoleRepository = userToRoleRepository;
             _userRepository = userRepository;
             _jsRuntime = jsRuntime;

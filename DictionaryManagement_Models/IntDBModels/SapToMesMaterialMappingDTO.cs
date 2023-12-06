@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using DictionaryManagement_Models.IntDBModels;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DictionaryManagement_Models.IntDBModels;
 
 namespace DictionaryManagement_DataAccess.Data.IntDB
-{    
+{
     public class SapToMesMaterialMappingDTO
     {
 
@@ -29,9 +23,9 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public int MesMaterialId { get; set; }
 
         [Required]
-        [Display(Name = "Материал MES")]       
+        [Display(Name = "Материал MES")]
         public MesMaterialDTO? MesMaterialDTO { get; set; }
-        
+
     }
 
 }

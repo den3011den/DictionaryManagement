@@ -2,9 +2,7 @@
 using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_Models.IntDBModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 
 namespace DictionaryManagement_Server.Controllers
 {
@@ -108,7 +106,7 @@ namespace DictionaryManagement_Server.Controllers
             if (System.IO.File.Exists(file))
             {
                 try
-                { 
+                {
                     var repTmplTypeDTO = await _reportTemplateTypeRepository.Get(foundEntity.ReportTemplateDTOFK.ReportTemplateTypeId);
                     var forFileName = ("Download_" + repTmplTypeDTO.Name + "_"
                         + foundEntity.DownloadUserDTOFK.UserName
@@ -204,8 +202,8 @@ namespace DictionaryManagement_Server.Controllers
                 return StatusCode(401, "Не удалось проверить авторизацию. Вы не авторизованы. Доступ запрещён. Возможно авторизация отключена.");
             }
 
-            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;            
-            string file = System.IO.Path.Combine(pathVar, filename);            
+            string pathVar = (await _settingsRepository.GetByName("TempFilePath")).Value;
+            string file = System.IO.Path.Combine(pathVar, filename);
             if (System.IO.File.Exists(file))
             {
                 try

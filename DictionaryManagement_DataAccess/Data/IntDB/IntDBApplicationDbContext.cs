@@ -1,10 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 
 namespace DictionaryManagement_DataAccess.Data.IntDB
 {
@@ -19,7 +13,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<SapUnitOfMeasure> SapUnitOfMeasure { get; set; }
         public DbSet<MesUnitOfMeasure> MesUnitOfMeasure { get; set; }
         public DbSet<MesMaterial> MesMaterial { get; set; }
-        public DbSet<SapMaterial> SapMaterial { get; set; }      
+        public DbSet<SapMaterial> SapMaterial { get; set; }
         public DbSet<CorrectionReason> CorrectionReason { get; set; }
 
         public DbSet<MesParamSourceType> MesParamSourceType { get; set; }
@@ -41,7 +35,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public DbSet<RoleToADGroup> RoleToADGroup { get; set; }
         public DbSet<RoleToDepartment> RoleToDepartment { get; set; }
 
-        public DbSet<ReportTemplate> ReportTemplate { get; set; }      
+        public DbSet<ReportTemplate> ReportTemplate { get; set; }
         public DbSet<ReportTemplateTypeTоRole> ReportTemplateTypeTоRole { get; set; }
         public DbSet<ReportEntity> ReportEntity { get; set; }
         public DbSet<ReportEntityLog> ReportEntityLog { get; set; }
@@ -59,7 +53,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         public DbSet<MesMovementsComment> MesMovementsComment { get; set; }
 
-        
+
 
 
 

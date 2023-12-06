@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -22,7 +16,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         [Required(ErrorMessage = "Код ресурса/склада SAP является обязательным для заполнения полем")]
         [Display(Name = "Код ресурса/склада SAP")]
-        [MaxLength(100, ErrorMessage = "Код ресурса/склада SAP не может быть больше 100 символов")]        
+        [MaxLength(100, ErrorMessage = "Код ресурса/склада SAP не может быть больше 100 символов")]
         public string ErpId { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Наименование ресурса/склада SAP является обязательным для заполнения полем")]
@@ -50,7 +44,7 @@ namespace DictionaryManagement_Models.IntDBModels
         }
 
         public override string ToString()
-        {            
+        {
             return ErpPlantId + "|" + ErpId + " " + Name; ;
         }
 
@@ -59,7 +53,7 @@ namespace DictionaryManagement_Models.IntDBModels
         {
             get
             {
-                
+
                 return ErpPlantId + "|" + ErpId + " " + Name;
             }
             set

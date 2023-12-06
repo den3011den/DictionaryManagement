@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -35,7 +29,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Required(ErrorMessage = "Признак передачи в SAP обязателен")]
         public bool SapGone { get; set; } = false;
 
-        [Display(Name = "Признак передачи в SAP")]        
+        [Display(Name = "Признак передачи в SAP")]
         public DateTime? SapGoneTime { get; set; }
 
         [NotMapped]

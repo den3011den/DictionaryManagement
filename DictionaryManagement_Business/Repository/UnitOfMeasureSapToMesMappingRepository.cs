@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
 using DictionaryManagement_Business.Repository.IRepository;
-using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -30,10 +23,10 @@ namespace DictionaryManagement_Business.Repository
             //var objectToAdd = _mapper.Map<UnitOfMeasureSapToMesMappingDTO, UnitOfMeasureSapToMesMapping>(objectToAddDTO);
 
             UnitOfMeasureSapToMesMapping objectToAdd = new UnitOfMeasureSapToMesMapping();
-                
-                objectToAdd.Id = objectToAddDTO.Id;
-                objectToAdd.SapUnitId = objectToAddDTO.SapUnitId;
-                objectToAdd.MesUnitId = objectToAddDTO.MesUnitId;
+
+            objectToAdd.Id = objectToAddDTO.Id;
+            objectToAdd.SapUnitId = objectToAddDTO.SapUnitId;
+            objectToAdd.MesUnitId = objectToAddDTO.MesUnitId;
 
 
             var addedUnitOfMeasureSapToMesMapping = _db.UnitOfMeasureSapToMesMapping.Add(objectToAdd);
@@ -66,7 +59,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<UnitOfMeasureSapToMesMappingDTO>> GetAll()
         {
-            var hhh = _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure").ToListWithNoLock();           
+            var hhh = _db.UnitOfMeasureSapToMesMapping.Include("SapUnitOfMeasure").Include("MesUnitOfMeasure").ToListWithNoLock();
             return _mapper.Map<IEnumerable<UnitOfMeasureSapToMesMapping>, IEnumerable<UnitOfMeasureSapToMesMappingDTO>>(hhh);
         }
 

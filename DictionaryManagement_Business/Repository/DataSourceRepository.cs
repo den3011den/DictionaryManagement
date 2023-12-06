@@ -4,12 +4,6 @@ using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
@@ -27,9 +21,9 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<DataSourceDTO> Create(DataSourceDTO objectToAddDTO)
         {
-            var objectToAdd = _mapper.Map<DataSourceDTO, DataSource>(objectToAddDTO);            
+            var objectToAdd = _mapper.Map<DataSourceDTO, DataSource>(objectToAddDTO);
             var addedDataSource = _db.DataSource.Add(objectToAdd);
-             _db.SaveChanges();
+            _db.SaveChanges();
             return _mapper.Map<DataSource, DataSourceDTO>(addedDataSource.Entity);
         }
 
@@ -46,7 +40,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<DataSourceDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
-            {                
+            {
                 return _mapper.Map<IEnumerable<DataSource>, IEnumerable<DataSourceDTO>>(_db.DataSource.ToListWithNoLock());
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)

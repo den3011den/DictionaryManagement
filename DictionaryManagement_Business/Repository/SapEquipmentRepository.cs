@@ -4,13 +4,6 @@ using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -90,7 +83,7 @@ namespace DictionaryManagement_Business.Repository
                     if (objectToUpdate.ErpPlantId != objectToUpdateDTO.ErpPlantId)
                         objectToUpdate.ErpPlantId = objectToUpdateDTO.ErpPlantId;
                     if (objectToUpdate.ErpId != objectToUpdateDTO.ErpId)
-                        objectToUpdate.ErpId = objectToUpdateDTO.ErpId;                    
+                        objectToUpdate.ErpId = objectToUpdateDTO.ErpId;
                     if (objectToUpdate.Name != objectToUpdateDTO.Name)
                         objectToUpdate.Name = objectToUpdateDTO.Name;
                     if (objectToUpdate.IsWarehouse != objectToUpdateDTO.IsWarehouse)

@@ -4,12 +4,6 @@ using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
@@ -27,7 +21,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<LogEventTypeDTO> Create(LogEventTypeDTO objectToAddDTO)
         {
-            var objectToAdd = _mapper.Map<LogEventTypeDTO, LogEventType>(objectToAddDTO);            
+            var objectToAdd = _mapper.Map<LogEventTypeDTO, LogEventType>(objectToAddDTO);
             var addedLogEventType = _db.LogEventType.Add(objectToAdd);
             _db.SaveChanges();
             return _mapper.Map<LogEventType, LogEventTypeDTO>(addedLogEventType.Entity);
@@ -46,7 +40,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<LogEventTypeDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
-            {                
+            {
                 return _mapper.Map<IEnumerable<LogEventType>, IEnumerable<LogEventTypeDTO>>(_db.LogEventType.ToListWithNoLock());
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)

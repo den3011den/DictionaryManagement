@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DictionaryManagement_DataAccess.Data.IntDB
 {
@@ -12,12 +7,12 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
     public class User
     {
 
-        [Key]        
+        [Key]
         [Required]
         public Guid Id { get; set; }
 
         [Required]
-        public string Login { get; set; }        
+        public string Login { get; set; }
 
         public string? UserName { get; set; }
 
@@ -27,7 +22,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         public bool? IsSyncWithAD { get; set; } = true;
 
-        public DateTime? SyncWithADGroupsLastTime { get; set; } =  (DateTime) System.Data.SqlTypes.SqlDateTime.MinValue;
+        public DateTime? SyncWithADGroupsLastTime { get; set; } = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
     }
 
 }

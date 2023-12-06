@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DictionaryManagement_DataAccess.Data.IntDB
 {
@@ -25,7 +20,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public string SapMaterialCode { get; set; }
 
         [NotMapped]
-        public  SapMaterial? SapMaterialFK { get; set; }
+        public SapMaterial? SapMaterialFK { get; set; }
 
         public string? ErpPlantIdSource { get; set; }
 
@@ -49,7 +44,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         [Required]
         public decimal Value { get; set; } = decimal.Zero;
-        
+
         public decimal Correction2Previous { get; set; } = decimal.Zero;
 
         public bool? IsReconciled { get; set; }
@@ -63,7 +58,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public bool? SapError { get; set; }
 
         public string? SapErrorMessage { get; set; }
-        
+
         public Guid? MesMovementId { get; set; }
         [ForeignKey("MesMovementId")]
         public MesMovements? MesMovementsFK { get; set; }

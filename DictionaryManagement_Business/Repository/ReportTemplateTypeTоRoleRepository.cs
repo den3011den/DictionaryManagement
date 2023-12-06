@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
 using DictionaryManagement_Business.Repository.IRepository;
-using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -29,13 +22,13 @@ namespace DictionaryManagement_Business.Repository
         {
 
             ReportTemplateTypeTоRole objectToAdd = new ReportTemplateTypeTоRole();
-                
-                objectToAdd.Id = objectToAddDTO.Id;
-                objectToAdd.ReportTemplateTypeId = objectToAddDTO.ReportTemplateTypeId;
-                objectToAdd.RoleId = objectToAddDTO.RoleId;
-                objectToAdd.CanDownload = objectToAddDTO.CanDownload;
-                objectToAdd.CanUpload = objectToAddDTO.CanUpload;
-            
+
+            objectToAdd.Id = objectToAddDTO.Id;
+            objectToAdd.ReportTemplateTypeId = objectToAddDTO.ReportTemplateTypeId;
+            objectToAdd.RoleId = objectToAddDTO.RoleId;
+            objectToAdd.CanDownload = objectToAddDTO.CanDownload;
+            objectToAdd.CanUpload = objectToAddDTO.CanUpload;
+
             var addedReportTemplateTypeTоRole = _db.ReportTemplateTypeTоRole.Add(objectToAdd);
             _db.SaveChanges();
             return _mapper.Map<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>(addedReportTemplateTypeTоRole.Entity);
@@ -68,7 +61,7 @@ namespace DictionaryManagement_Business.Repository
         {
             var hhh = _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportTemplateTypeTоRole>, IEnumerable<ReportTemplateTypeTоRoleDTO>>(hhh);
-            
+
         }
 
         public async Task<ReportTemplateTypeTоRoleDTO> Update(ReportTemplateTypeTоRoleDTO objectToUpdateDTO)
@@ -90,7 +83,7 @@ namespace DictionaryManagement_Business.Repository
 
                 if (objectToUpdate.CanDownload != objectToUpdateDTO.CanDownload)
                     objectToUpdate.CanDownload = objectToUpdateDTO.CanDownload;
-                
+
                 if (objectToUpdate.CanUpload != objectToUpdateDTO.CanUpload)
                     objectToUpdate.CanUpload = objectToUpdateDTO.CanUpload;
 

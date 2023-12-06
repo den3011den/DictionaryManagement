@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -161,7 +155,7 @@ namespace DictionaryManagement_Models.IntDBModels
                     else
                         return "";
                 }
-                    return "";
+                return "";
             }
             set
             {
@@ -174,7 +168,7 @@ namespace DictionaryManagement_Models.IntDBModels
         public string ToStringCorrectionComment
         {
             get
-            {                
+            {
                 MesMovementsCommentDTO? commentVar = MesMovementsCommentListDTO.FirstOrDefault();
                 if (commentVar != null)
                 {

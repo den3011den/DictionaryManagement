@@ -1,16 +1,8 @@
 ﻿using AutoMapper;
 using DictionaryManagement_Business.Repository.IRepository;
-using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -55,7 +47,7 @@ namespace DictionaryManagement_Business.Repository
         }
 
         public async Task<IEnumerable<SettingsDTO>> GetAll()
-        {                      
+        {
             return _mapper.Map<IEnumerable<Settings>, IEnumerable<SettingsDTO>>(_db.Settings.ToListWithNoLock());
         }
 
@@ -63,14 +55,14 @@ namespace DictionaryManagement_Business.Repository
         {
             var objectToUpdate = _db.Settings.FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
             if (objectToUpdate != null)
-            {                
+            {
 
-                    if (objectToUpdate.Name != objectToUpdateDTO.Name)
-                        objectToUpdate.Name = objectToUpdateDTO.Name;
-                    if (objectToUpdate.Description != objectToUpdateDTO.Description)
-                        objectToUpdate.Description = objectToUpdateDTO.Description;
-                    if (objectToUpdate.Value != objectToUpdateDTO.Value)
-                        objectToUpdate.Value = objectToUpdateDTO.Value;
+                if (objectToUpdate.Name != objectToUpdateDTO.Name)
+                    objectToUpdate.Name = objectToUpdateDTO.Name;
+                if (objectToUpdate.Description != objectToUpdateDTO.Description)
+                    objectToUpdate.Description = objectToUpdateDTO.Description;
+                if (objectToUpdate.Value != objectToUpdateDTO.Value)
+                    objectToUpdate.Value = objectToUpdateDTO.Value;
                 _db.Settings.Update(objectToUpdate);
                 _db.SaveChanges();
                 return _mapper.Map<Settings, SettingsDTO>(objectToUpdate);
@@ -84,14 +76,14 @@ namespace DictionaryManagement_Business.Repository
             if (id > 0)
             {
                 var objectToDelete = _db.Settings.FirstOrDefaultWithNoLock(u => u.Id == id);
-                if (objectToDelete!= null)
+                if (objectToDelete != null)
                 {
                     _db.Settings.Remove(objectToDelete);
                     return _db.SaveChanges();
                 }
             }
             return 0;
-            
+
         }
     }
 }

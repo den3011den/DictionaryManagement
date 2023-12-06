@@ -1,16 +1,8 @@
 ﻿using AutoMapper;
 using DictionaryManagement_Business.Repository.IRepository;
-using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -42,7 +34,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SchedulerDTO> GetById(int id)
         {
-            var objToGet = _db.Scheduler                            
+            var objToGet = _db.Scheduler
                             .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
@@ -83,7 +75,7 @@ namespace DictionaryManagement_Business.Repository
         }
         public async Task<int> Delete(int id)
         {
-            if (id!=null && id != 0)
+            if (id != null && id != 0)
             {
                 var objectToDelete = _db.Scheduler.FirstOrDefaultWithNoLock(u => u.Id == id);
                 if (objectToDelete != null)

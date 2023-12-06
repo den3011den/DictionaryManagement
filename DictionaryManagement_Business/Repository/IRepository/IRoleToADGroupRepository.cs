@@ -1,12 +1,4 @@
-﻿using DictionaryManagement_Common;
-using DictionaryManagement_DataAccess.Data.IntDB;
-using DictionaryManagement_Models.IntDBModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
+﻿using DictionaryManagement_Models.IntDBModels;
 
 namespace DictionaryManagement_Business.Repository.IRepository
 {
@@ -18,6 +10,6 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<RoleToADGroupDTO> Update(RoleToADGroupDTO objDTO);
         public Task<RoleToADGroupDTO> Create(RoleToADGroupDTO objectToAddDTO);
         public Task<IEnumerable<RoleToADGroupDTO>> GetByRoleId(Guid roleId);
-        public Task<int> Delete(int Id);        
+        public Task<int> Delete(int Id);
     }
 }

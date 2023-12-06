@@ -4,6 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using System.Text.Json
 
 
 
@@ -32,6 +33,7 @@
             </RadzenRow>
 
             <RadzenDataGridApp @ref="logEventTypeDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                               @bind-Settings="@LogEventTypeGridSettings" SettingsName="LogEventTypeGridSettings"
                             Data="@logEventTypeDTOs" TItem="LogEventTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                             EmptyText="Нет записей для отображения"
@@ -39,10 +41,7 @@
                             AllowColumnResize="false"
                             AllowVirtualization="true"
                             GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)"
-                            ShowCleanGridSettingsHeaderButton="false"
-                            ShowCleanGridFiltersHeaderButton="false"
-                            ShowCleanGridSortsHeaderButton="false">
+                            Style="height:calc(100vh - 170px)">
                 <Columns>
                     <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
                     <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="Name" Title="Наименование">
@@ -123,6 +122,41 @@
     public bool IsAdmin { get; set; }
     public bool excelExportFlag { get; set; } = false;
 
+    DataGridSettings _logEventTypeGridSettings;
+    public DataGridSettings LogEventTypeGridSettings
+    {
+        get
+        {
+            return _logEventTypeGridSettings;
+        }
+        set
+        {
+            if (_logEventTypeGridSettings != value)
+            {
+                _logEventTypeGridSettings = value;
+                InvokeAsync(SaveStateAsync);
+            }
+        }
+    }
+
+    private async Task LoadStateAsync()
+    {
+        await Task.CompletedTask;
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "LogEventTypeGridSettings");
+        if (!string.IsNullOrEmpty(result))
+        {
+            _logEventTypeGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+        }
+    }
+    private async Task SaveStateAsync()
+    {
+        await Task.CompletedTask;
+
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('LogEventTypeGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(LogEventTypeGridSettings)}')");
+    }
+
+
     void Reset()
     {
         logEventTypeDTOToInsert = null;
@@ -143,6 +177,7 @@
             if (firstRender)
             {
                 IsLoading = true;
+                await LoadStateAsync();
                 StateHasChanged();
                 logEventTypeDTOs = _logEventTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
                 IsLoading = false;

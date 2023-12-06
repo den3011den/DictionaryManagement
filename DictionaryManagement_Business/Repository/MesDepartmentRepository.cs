@@ -1,17 +1,10 @@
 ﻿using AutoMapper;
-using AutoMapper.Execution;
-using ClosedXML.Excel;
 using DictionaryManagement_Business.Repository.IRepository;
 using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
@@ -69,7 +62,7 @@ namespace DictionaryManagement_Business.Repository
             {
                 var hhh2 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.IsArchive == true).ToListWithNoLock();
                 return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh2);
-            }            
+            }
             if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
             {
                 var hhh3 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.IsArchive != true).ToListWithNoLock();
@@ -82,25 +75,25 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<IEnumerable<MesDepartmentDTO>> GetAllTopLevel()
         {
-                var hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => (u.ParentDepartmentId == null || u.ParentDepartmentId <= 0)).ToListWithNoLock();
-                return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
+            var hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => (u.ParentDepartmentId == null || u.ParentDepartmentId <= 0)).ToListWithNoLock();
+            return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
         }
 
         public async Task<IEnumerable<MesDepartmentDTO>> GetChildList(int? id)
         {
             IEnumerable<MesDepartment> hhh1 = null;
-                if (id == null)
-                    hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.ParentDepartmentId == null || u.ParentDepartmentId == 0
-                        || u.ParentDepartmentId == u.Id).ToListWithNoLock();
-                else
-                    hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.ParentDepartmentId == id).ToListWithNoLock();
-                return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
+            if (id == null)
+                hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.ParentDepartmentId == null || u.ParentDepartmentId == 0
+                    || u.ParentDepartmentId == u.Id).ToListWithNoLock();
+            else
+                hhh1 = _db.MesDepartment.Include("DepartmentParent").Where(u => u.ParentDepartmentId == id).ToListWithNoLock();
+            return _mapper.Map<IEnumerable<MesDepartment>, IEnumerable<MesDepartmentDTO>>(hhh1);
         }
 
-        public async Task<bool> HasChild(int id)        
+        public async Task<bool> HasChild(int id)
         {
             var hhh5 = _db.MesDepartment.Where(u => u.ParentDepartmentId == id).AsNoTracking().ToListWithNoLock().Any();
-            return hhh5;            
+            return hhh5;
         }
 
         public async Task<MesDepartmentDTO> Update(MesDepartmentDTO objectToUpdateDTO)
@@ -113,7 +106,7 @@ namespace DictionaryManagement_Business.Repository
                 {
                     objectToUpdate.ParentDepartmentId = null;
                     objectToUpdate.DepartmentParent = null;
-                }    
+                }
                 else
                 {
                     if (objectToUpdate.ParentDepartmentId != objectToUpdateDTO.ParentDepartmentId)
@@ -149,7 +142,7 @@ namespace DictionaryManagement_Business.Repository
                     if (updateMode == SD.UpdateMode.MoveToArchive)
                         objectToDelete.IsArchive = true;
                     if (updateMode == SD.UpdateMode.RestoreFromArchive)
-                        objectToDelete.IsArchive = false;                    
+                        objectToDelete.IsArchive = false;
                     _db.MesDepartment.Update(objectToDelete);
                     return _db.SaveChanges();
                 }
@@ -157,7 +150,7 @@ namespace DictionaryManagement_Business.Repository
             return 0;
 
         }
-        
+
         public async Task<MesDepartmentDTO> GetByCode(int? mesCode = 0)
         {
             var objToGet = _db.MesDepartment.FirstOrDefaultWithNoLock(u => u.MesCode == mesCode);
@@ -195,7 +188,7 @@ namespace DictionaryManagement_Business.Repository
             List<MesDepartmentVMDTO>? resutlList = new List<MesDepartmentVMDTO>();
 
             IEnumerable<MesDepartmentVMDTO> topLevelList = _mapper.Map<IEnumerable<MesDepartmentDTO>, IEnumerable<MesDepartmentVMDTO>>(await GetChildList(mesDepartmentRootId));
-            
+
             if (topLevelList != null)
             {
                 foreach (var topLevelItem in topLevelList)
@@ -216,7 +209,7 @@ namespace DictionaryManagement_Business.Repository
 
                     Tuple<IEnumerable<MesDepartmentVMDTO>, int> tmp = await GetAllDepartmentWithChildren(topLevelItem.Id, depLevel + 1, maxLevel, mesDepartmentVMDTO);
                     mesDepartmentVMDTO.ChildrenDTO = tmp.Item1;
-                    maxLevel = tmp.Item2;                    
+                    maxLevel = tmp.Item2;
                     resutlList.Add(mesDepartmentVMDTO);
                 }
                 return new Tuple<IEnumerable<MesDepartmentVMDTO>, int>(resutlList, maxLevel);

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using DictionaryManagement_Models.IntDBModels;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DictionaryManagement_Models.IntDBModels;
 
 namespace DictionaryManagement_DataAccess.Data.IntDB
-{    
+{
     public class UnitOfMeasureSapToMesMappingDTO
     {
 
@@ -21,7 +15,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public int SapUnitId { get; set; }
 
         [Required]
-        [Display(Name = "Единица измерения SAP")]       
+        [Display(Name = "Единица измерения SAP")]
         public SapUnitOfMeasureDTO? SapUnitOfMeasureDTO { get; set; }
 
         [Required]
@@ -29,7 +23,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public int MesUnitId { get; set; }
 
         [Required]
-        [Display(Name = "Единица измерения MES")]       
+        [Display(Name = "Единица измерения MES")]
         public MesUnitOfMeasureDTO? MesUnitOfMeasureDTO { get; set; }
 
         [Required]
@@ -37,7 +31,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [Display(Name = "Коэф. пересчёта ед. изм. SAP в MES")]
         public decimal SapToMesTransformKoef { get; set; } = decimal.One;
 
-        
+
     }
 
 }

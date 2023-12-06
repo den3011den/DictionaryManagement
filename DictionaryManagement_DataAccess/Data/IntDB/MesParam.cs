@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DictionaryManagement_DataAccess.Data.IntDB
 {
@@ -17,14 +12,14 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         [Required]
         public int Id { get; set; }
 
-        public string Code { get; set; }        
+        public string Code { get; set; }
 
         public string? Name { get; set; }
 
         public string? Description { get; set; }
 
         public int? MesParamSourceType { get; set; }
-        
+
         [ForeignKey("MesParamSourceType")]
         public MesParamSourceType? MesParamSourceTypeFK { get; set; }
 
@@ -47,7 +42,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public int? MesMaterialId { get; set; }
         [ForeignKey("MesMaterialId")]
         public MesMaterial? MesMaterialFK { get; set; }
-        
+
         public int? SapMaterialId { get; set; }
         [ForeignKey("SapMaterialId")]
         public SapMaterial? SapMaterialFK { get; set; }

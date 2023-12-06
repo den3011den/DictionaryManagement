@@ -1,16 +1,9 @@
 ﻿using AutoMapper;
 using DictionaryManagement_Business.Repository.IRepository;
-using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -76,15 +69,15 @@ namespace DictionaryManagement_Business.Repository
             return _mapper.Map<IEnumerable<ReportEntityLog>, IEnumerable<ReportEntityLogDTO>>(hhh1);
         }
 
-    public async Task<IEnumerable<ReportEntityLogDTO>> GetAllByLogTimeInterval(DateTime? startLogTime, DateTime? endLogTime)
+        public async Task<IEnumerable<ReportEntityLogDTO>> GetAllByLogTimeInterval(DateTime? startLogTime, DateTime? endLogTime)
         {
 
-            if (startLogTime==null)
+            if (startLogTime == null)
                 startLogTime = DateTime.MinValue;
             if (endLogTime == null)
                 endLogTime = DateTime.MaxValue;
 
-            var hhh1 =  _db.ReportEntityLog
+            var hhh1 = _db.ReportEntityLog
                             .Include("ReportEntityFK")
                             .Where(u => u.LogTime >= startLogTime && u.LogTime <= endLogTime).ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportEntityLog>, IEnumerable<ReportEntityLogDTO>>(hhh1);

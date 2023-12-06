@@ -4,12 +4,6 @@ using DictionaryManagement_Common;
 using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
@@ -27,7 +21,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<SapUnitOfMeasureDTO> Create(SapUnitOfMeasureDTO objectToAddDTO)
         {
-            var objectToAdd = _mapper.Map<SapUnitOfMeasureDTO, SapUnitOfMeasure>(objectToAddDTO);            
+            var objectToAdd = _mapper.Map<SapUnitOfMeasureDTO, SapUnitOfMeasure>(objectToAddDTO);
             var addedSapUnitOfMeasure = _db.SapUnitOfMeasure.Add(objectToAdd);
             _db.SaveChanges();
             return _mapper.Map<SapUnitOfMeasure, SapUnitOfMeasureDTO>(addedSapUnitOfMeasure.Entity);
@@ -67,11 +61,11 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<SapUnitOfMeasureDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
         {
             if (selectDictionaryScope == SD.SelectDictionaryScope.All)
-            {                
+            {
                 return _mapper.Map<IEnumerable<SapUnitOfMeasure>, IEnumerable<SapUnitOfMeasureDTO>>(_db.SapUnitOfMeasure.ToListWithNoLock());
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
-                return _mapper.Map<IEnumerable<SapUnitOfMeasure>, IEnumerable<SapUnitOfMeasureDTO> >(_db.SapUnitOfMeasure.Where(u => u.IsArchive == true).ToListWithNoLock());
+                return _mapper.Map<IEnumerable<SapUnitOfMeasure>, IEnumerable<SapUnitOfMeasureDTO>>(_db.SapUnitOfMeasure.Where(u => u.IsArchive == true).ToListWithNoLock());
             if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
                 return _mapper.Map<IEnumerable<SapUnitOfMeasure>, IEnumerable<SapUnitOfMeasureDTO>>(_db.SapUnitOfMeasure.Where(u => u.IsArchive != true).ToListWithNoLock());
             return _mapper.Map<IEnumerable<SapUnitOfMeasure>, IEnumerable<SapUnitOfMeasureDTO>>(_db.SapUnitOfMeasure.ToListWithNoLock());

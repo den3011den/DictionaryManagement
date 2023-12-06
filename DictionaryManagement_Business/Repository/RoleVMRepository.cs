@@ -6,14 +6,6 @@ using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {
@@ -28,16 +20,16 @@ namespace DictionaryManagement_Business.Repository
         private readonly IMesDepartmentRepository _mesDepartmentRepository;
 
         public RoleVMRepository(IntDBApplicationDbContext db, IMapper mapper
-            ,IUserToRoleRepository userToRoleRepository
-            ,IReportTemplateTypeToRoleRepository reportTemplateTypeToRoleRepository            
-            ,IRoleToADGroupRepository roleToADGroupRepository
-            ,IRoleToDepartmentRepository roleToDepartmentRepository
-            ,IMesDepartmentRepository mesDepartmentRepository)
+            , IUserToRoleRepository userToRoleRepository
+            , IReportTemplateTypeToRoleRepository reportTemplateTypeToRoleRepository
+            , IRoleToADGroupRepository roleToADGroupRepository
+            , IRoleToDepartmentRepository roleToDepartmentRepository
+            , IMesDepartmentRepository mesDepartmentRepository)
         {
             _db = db;
             _mapper = mapper;
             _userToRoleRepository = userToRoleRepository;
-            _reportTemplateTypeToRoleRepository = reportTemplateTypeToRoleRepository;            
+            _reportTemplateTypeToRoleRepository = reportTemplateTypeToRoleRepository;
             _roleToADGroupRepository = roleToADGroupRepository;
             _roleToDepartmentRepository = roleToDepartmentRepository;
             _mesDepartmentRepository = mesDepartmentRepository;
@@ -119,8 +111,8 @@ namespace DictionaryManagement_Business.Repository
                 var objRoleToADGroup = _db.RoleToADGroup.Where(u => u.RoleId == roleId).Include("ADGroupFK").Include("RoleFK").
                     OrderBy(u => u.ADGroupFK.Name).ToListWithNoLock();
 
-              var objRoleToDepartment = _db.RoleToDepartment.Where(u => u.RoleId == roleId).Include("DepartmentFK").Include("RoleFK").
-                      OrderBy(u => u.DepartmentFK.ShortName).ToListWithNoLock();
+                var objRoleToDepartment = _db.RoleToDepartment.Where(u => u.RoleId == roleId).Include("DepartmentFK").Include("RoleFK").
+                        OrderBy(u => u.DepartmentFK.ShortName).ToListWithNoLock();
 
                 var addRoleVMDTO = _mapper.Map<RoleDTO, RoleVMDTO>(roleDTO);
                 if (objUserToRole != null)
@@ -144,7 +136,8 @@ namespace DictionaryManagement_Business.Repository
                 }
 
 
-                if (addRoleVMDTO != null) {
+                if (addRoleVMDTO != null)
+                {
                     roleVMDTOs.Add(addRoleVMDTO);
                 }
             }
@@ -232,7 +225,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<UserToRoleDTO?> AddUserToRole(RoleVMDTO roleVMDTO, UserDTO addUserDTO)
         {
             var checkUserToRole = _db.UserToRole.FirstOrDefaultWithNoLock(u => u.RoleId == roleVMDTO.Id && u.UserId == addUserDTO.Id);
-            if (checkUserToRole != null) 
+            if (checkUserToRole != null)
             {
                 // уже есть связка роли и пользователя
                 return null;
@@ -423,7 +416,7 @@ namespace DictionaryManagement_Business.Repository
                 _mapper.Map<IEnumerable<ReportTemplateTypeTоRole>, IEnumerable<ReportTemplateTypeTоRoleDTO>>
                 (
                     _db.ReportTemplateTypeTоRole.Include("ReportTemplateTypeFK").Include("RoleFK").Where(u => u.RoleId == roleId)
-                        .OrderBy(u=>u.ReportTemplateTypeFK.Name).AsNoTracking().ToListWithNoLock()
+                        .OrderBy(u => u.ReportTemplateTypeFK.Name).AsNoTracking().ToListWithNoLock()
                 );
 
             return reportTemplateTypeTоRoleDTOs;
@@ -468,7 +461,7 @@ namespace DictionaryManagement_Business.Repository
             {
                 foreach (var topLevelItem in topLevelList)
                 {
-                    
+
                     MesDepartmentVMDTO mesDepartmentVMDTO = new MesDepartmentVMDTO();
                     mesDepartmentVMDTO.Id = topLevelItem.Id;
                     mesDepartmentVMDTO.MesCode = topLevelItem.MesCode;
@@ -487,10 +480,10 @@ namespace DictionaryManagement_Business.Repository
                     else
                     {
                         mesDepartmentVMDTO.Checked = false;
-                    }              
+                    }
                     mesDepartmentVMDTO.ChildrenDTO = (await GetAllDepartmentWithChildrenCheckedWithLinkRole(roleId, topLevelItem.Id, mesDepartmentVMDTO));
                     resutlList.Add(mesDepartmentVMDTO);
-                    
+
                 }
                 return resutlList;
             }
@@ -508,7 +501,7 @@ namespace DictionaryManagement_Business.Repository
         {
 
             List<object>? resutlList = new List<object>();
-                        
+
             if (topLevelList != null)
             {
                 foreach (var topLevelItem in topLevelList)

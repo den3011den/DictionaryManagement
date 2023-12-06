@@ -4,6 +4,7 @@
 @using DictionaryManagement_Business.Repository.IRepository;
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
+@using System.Text.Json
 
 
 
@@ -25,6 +26,7 @@
             </RadzenRow>
 
             <RadzenDataGridApp @ref="mesParamSourceTypeDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                               @bind-Settings="@MesParamSourceTypeGridSettings" SettingsName="MesParamSourceTypeGridSettings"
                                Data="@mesParamSourceTypeDTOs" TItem="MesParamSourceTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                EmptyText="Нет записей для отображения"
@@ -32,10 +34,7 @@
                                AllowColumnResize="false"
                                AllowVirtualization="true"
                                GridLines="DataGridGridLines.Both"
-                               Style="height:calc(100vh - 170px)"
-                               ShowCleanGridSettingsHeaderButton="false"
-                               ShowCleanGridFiltersHeaderButton="false"
-                               ShowCleanGridSortsHeaderButton="false">
+                               Style="height:calc(100vh - 170px)">
                 <Columns>
                     <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="Id" Title="Ид записи" Width="100px" />
                     <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="Name" Title="Наименование" Width="300px">
@@ -117,6 +116,42 @@
         mesParamSourceTypeDTOToUpdate = null;
     }
 
+    DataGridSettings _mesParamSourceTypeGridSettings;
+    public DataGridSettings MesParamSourceTypeGridSettings
+    {
+        get
+        {
+            return _mesParamSourceTypeGridSettings;
+        }
+        set
+        {
+            if (_mesParamSourceTypeGridSettings != value)
+            {
+                _mesParamSourceTypeGridSettings = value;
+                InvokeAsync(SaveStateAsync);
+            }
+        }
+    }
+
+
+    private async Task LoadStateAsync()
+    {
+        await Task.CompletedTask;
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "MesParamSourceTypeGridSettings");
+        if (!string.IsNullOrEmpty(result))
+        {
+            _mesParamSourceTypeGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+        }
+    }
+    private async Task SaveStateAsync()
+    {
+        await Task.CompletedTask;
+
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesParamSourceTypeGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesParamSourceTypeGridSettings)}')");
+    }
+
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -131,6 +166,7 @@
             if (firstRender)
             {
                 IsLoading = true;
+                await LoadStateAsync();
                 StateHasChanged();
                 mesParamSourceTypeDTOs = _mesParamSourceTypeRepository.GetAll(SD.SelectDictionaryScope.All).Result;
                 IsLoading = false;

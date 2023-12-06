@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace DictionaryManagement_DataAccess.Data.IntDB
@@ -17,7 +17,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         [ForeignKey("LogEventTypeId")]
         public LogEventType LogEventTypeFK { get; set; }
-        
+
         public string? OldValue { get; set; }
         public string? NewValue { get; set; }
 
