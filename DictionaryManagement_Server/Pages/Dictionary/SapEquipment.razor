@@ -23,19 +23,19 @@
 
         @if (IsLoading != true)
         {
-            <RadzenRow AlignItems="AlignItems.Start">
+             <RadzenRow AlignItems="AlignItems.Start">
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый ресурс" Click="@InsertRow" Disabled=@(sapEquipmentDTOToInsert != null || sapEquipmentDTOToUpdate != null) />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
 
             <RadzenDataGridApp @bind-Settings="@SapEquipmentGridSettings" SettingsName="SapEquipmentGridSettings" @ref="sapEquipmentDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@sapEquipmentDTOs" TItem="SapEquipmentDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            EmptyText="Нет записей для отображения"
-                            AllowColumnResize="false"
+                               Data="@sapEquipmentDTOs" TItem="SapEquipmentDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                               EmptyText="Нет записей для отображения"
+                               AllowColumnResize="false"
                                FilterMode="FilterMode.Advanced"
-                            GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)">
+                               GridLines="DataGridGridLines.Both"
+                               Style="height:calc(100vh - 170px)">
                 <Columns>
                     <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="Id" Title="Ид записи" Width="80px" />
                     <RadzenDataGridColumn TItem="SapEquipmentDTO" Property="ErpPlantId" Title="Код завода SAP" Width="130px">
@@ -65,9 +65,11 @@
                             <RadzenCheckBox @bind-Value=data.IsWarehouse ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                         <EditTemplate Context="data">
-                            <strong>|
-                                <RadzenCheckBox @bind-Value=data.IsWarehouse TriState="false" TValue="bool"/>
-                            |</strong>
+                            <strong>
+                                |
+                                <RadzenCheckBox @bind-Value=data.IsWarehouse TriState="false" TValue="bool" />
+                                |
+                            </strong>
                         </EditTemplate>
                     </RadzenDataGridColumn>
 
@@ -77,7 +79,7 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn Title = "Действия" TItem="SapEquipmentDTO" Context="sapEquipmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="86px">
+                    <RadzenDataGridColumn Title="Действия" TItem="SapEquipmentDTO" Context="sapEquipmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="86px">
                         <Template Context="sapEquipmentDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapEquipmentDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -134,7 +136,7 @@
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
-   
+
 
     public bool excelExportFlag { get; set; } = false;
 
@@ -421,7 +423,7 @@
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
             string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
-            string filename = "SapEquipment_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";            
+            string filename = "SapEquipment_Export_" + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
             await _simpleExcelExportRepository.GenerateExcelSapEquipment(filename, (IEnumerable<SapEquipmentDTO>)sapEquipmentDTOGrid.View);
             await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
         }

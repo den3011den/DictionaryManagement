@@ -27,7 +27,6 @@
 
         @if (IsLoading != true)
         {
-
             <RadzenRow AlignItems="AlignItems.Start">
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый материал MES" Click="@InsertRow" Disabled=@(mesMaterialDTOToInsert != null || mesMaterialDTOToUpdate != null) />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />

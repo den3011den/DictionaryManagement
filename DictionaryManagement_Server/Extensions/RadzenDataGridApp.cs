@@ -166,7 +166,7 @@ namespace DictionaryManagement_Server.Extensions
             var selectionResult = await _dialogs.Confirm("Будут очищены все сортировки", "Очистить сортировки",
                 new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
 
-            if (selectionResult != false)
+            if (selectionResult != true)
             {
                 await InvokeAsync(SaveStateAsync);
                 return;
