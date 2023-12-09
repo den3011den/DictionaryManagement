@@ -58,5 +58,21 @@
         public static string ReportTagLibrarySheetSettingName = "ReportTagLibrary";
         public static string ReportTemplatePathSettingName = "ReportTemplatePath";
         public static string ExcelWorkBookProtectionPassword = "sirreport";
+
+        public static String RemoveInvalidCharsFromFilename(this String file_name, int? maxFileNameLength = 200)
+        {
+            foreach (Char invalid_char in Path.GetInvalidFileNameChars())
+            {
+                file_name = file_name.Replace(oldValue: invalid_char.ToString(), newValue: "_");
+            }
+
+            if(maxFileNameLength!=null)
+            {
+                if ((file_name.Length - (int)maxFileNameLength) > 0)
+                    file_name = file_name.Substring(file_name.Length - (int) maxFileNameLength);
+            }
+
+            return file_name;
+        }
     }
 }

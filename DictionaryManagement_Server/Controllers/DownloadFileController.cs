@@ -60,9 +60,8 @@ namespace DictionaryManagement_Server.Controllers
             {
                 try
                 {
-                    var forFileName = "Template_" + foundTemplate.ReportTemplateTypeDTOFK.Name + "_"
-                        + foundTemplate.MesDepartmentDTOFK.ShortName + "_" + fileName
-                        .Replace(":", "_").Replace(",", "_").Replace("\"", "_").Replace("\'", "_");
+                    var forFileName = SD.RemoveInvalidCharsFromFilename("Template_" + foundTemplate.ReportTemplateTypeDTOFK.Name + "_"
+                        + foundTemplate.MesDepartmentDTOFK.ShortName + "_", 190) + SD.RemoveInvalidCharsFromFilename(fileName);
                     return File(new FileStream(file, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", forFileName /*+ extension*/);
                 }
                 catch (Exception ex)
@@ -108,11 +107,10 @@ namespace DictionaryManagement_Server.Controllers
                 try
                 {
                     var repTmplTypeDTO = await _reportTemplateTypeRepository.Get(foundEntity.ReportTemplateDTOFK.ReportTemplateTypeId);
-                    var forFileName = ("Download_" + repTmplTypeDTO.Name + "_"
+                    var forFileName = (SD.RemoveInvalidCharsFromFilename("Download_" + repTmplTypeDTO.Name + "_"
                         + foundEntity.DownloadUserDTOFK.UserName
-                        + "_" + foundEntity.DownloadTime.ToString() + "_"
-                        + fileName)
-                        .Replace(":", "_").Replace(",", "_").Replace("\"", "_").Replace("\'", "_");
+                        + "_" + foundEntity.DownloadTime.ToString() + "_", 190)
+                        + SD.RemoveInvalidCharsFromFilename(fileName));
                     return File(new FileStream(file, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", forFileName /*+ extension*/);
                 }
                 catch (Exception ex)
@@ -163,10 +161,10 @@ namespace DictionaryManagement_Server.Controllers
                 try
                 {
                     var reportTemptateTypeDTO = await _reportTemplateTypeRepository.Get(foundEntity.ReportTemplateDTOFK.ReportTemplateTypeId);
-                    var forFileName = ("Upload_" + reportTemptateTypeDTO.Name + "_"
+                    var forFileName = (SD.RemoveInvalidCharsFromFilename("Upload_" + reportTemptateTypeDTO.Name + "_"
                         + foundEntity.UploadUserDTOFK.UserName
-                        + "_" + foundEntity.UploadTime.ToString() + "_"
-                        + fileName)
+                        + "_" + foundEntity.UploadTime.ToString() + "_", 190)
+                        + SD.RemoveInvalidCharsFromFilename(fileName))
                         .Replace(":", "_").Replace(",", "_").Replace("\"", "_").Replace("\'", "_");
                     return File(new FileStream(file, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", forFileName/* + extension*/);
                 }
@@ -208,7 +206,7 @@ namespace DictionaryManagement_Server.Controllers
             {
                 try
                 {
-                    var forFileName = filename.Replace(":", "_").Replace(",", "_").Replace("\"", "_").Replace("\'", "_");
+                    var forFileName = SD.RemoveInvalidCharsFromFilename(filename);
                     return File(new FileStream(file, FileMode.Open), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", forFileName /*+ extension*/);
                 }
                 catch (Exception ex)
