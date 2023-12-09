@@ -52,16 +52,16 @@
                                GridLines="DataGridGridLines.Both"
                                Style="height:calc(100vh - 170px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="ToStringId" Title="Ид записи" Width="35px" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="ToStringId" Title="Ид записи" Width="35px" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.ToStringId
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="EventTime" Title="Время" Width="60px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="EventTime" Title="Время" Width="60px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -69,12 +69,12 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-@*                     <RadzenDataGridColumn TItem="LogEventDTO" Property="LogEventTypeDTOFK.Name" Title="Тип события" Width="100px"
+@*                     <RadzenDataGridColumnApp TItem="LogEventDTO" Property="LogEventTypeDTOFK.Name" Title="Тип события" Width="100px"
                                           TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains"> *@
 
-                    <RadzenDataGridColumn TItem="LogEventDTO" Title="Тип события" Property="LogEventTypeDTOFK.Name" Type="typeof(IEnumerable<string>)" Width="100px"
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Title="Тип события" Property="LogEventTypeDTOFK.Name" Type="typeof(IEnumerable<string>)" Width="100px"
                                           FilterValue="@selectedLogEventTypes" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
 
                         <FilterTemplate>
@@ -87,9 +87,9 @@
                                 @data1.LogEventTypeDTOFK.Name
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="UserDTOFK.UserNameAndLogin" Title="Пользователь" Width="70px"
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="UserDTOFK.UserNameAndLogin" Title="Пользователь" Width="70px"
                                           TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
@@ -98,18 +98,18 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="Description" Title="Описание" Width="130px" TextAlign="TextAlign.Start"
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="Description" Title="Описание" Width="130px" TextAlign="TextAlign.Start"
                                           FilterProperty="Description" FilterOperator="FilterOperator.Contains" SortProperty="Description">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Description
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="IsCriticalBool" Title="Крит." Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="IsCriticalBool" Title="Крит." Filterable="true" Width="35px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             @if (data.IsCriticalBool)
                             {
@@ -121,9 +121,9 @@
                                 <RadzenCheckBox @bind-Value=data.IsCriticalBool ReadOnly="true" TriState="false" TValue="bool"/>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="IsErrorBool" Title="Ошибка" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="IsErrorBool" Title="Ошибка" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             @if (data.IsErrorBool)
                             {
@@ -136,13 +136,13 @@
                                 <RadzenCheckBox @bind-Value=data.IsErrorBool ReadOnly="true" TriState="false" TValue="bool"/>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="LogEventDTO" Property="IsWarningBool" Title="Предупреждение" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="IsWarningBool" Title="Предупреждение" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsWarningBool ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }

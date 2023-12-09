@@ -27,17 +27,17 @@ namespace DictionaryManagement_Server.Extensions
             base.ApplyFilterText = "Применить";
             base.ClearFilterText = "Очистить";
             base.ContainsText = "Содержит";
-            base.EndsWithText = "Кончается на";
+            base.EndsWithText = "Заканчивается на";
             base.DoesNotContainText = "Не содержит";
             base.EqualsText = "Равно";
             base.GreaterThanOrEqualsText = "Больше или равно";
             base.GreaterThanText = "Больше чем";
-            base.IsEmptyText = "Пусто (пустая строка)";
-            base.IsNotEmptyText = "Не пусто (не пустая строка)";
+            base.IsEmptyText = "Пусто";
+            base.IsNotEmptyText = "Не пусто";
             base.LessThanOrEqualsText = "Меньше или равно";
             base.LessThanText = "Меньше чем";
-            base.IsNotNullText = "Не пусто (не NULL)";
-            base.IsNullText = "Пусто (NULL)";
+            base.IsNotNullText = "Не пусто";
+            base.IsNullText = "Пусто";
             base.NotEqualsText = "Не равно";
             base.FilterText = "Фильтр";
             base.AllColumnsText = "Все";
@@ -46,7 +46,7 @@ namespace DictionaryManagement_Server.Extensions
             base.PagingSummaryFormat = $"Страница {{0}} из {{1}} (всего записей {{2}} )";
             base.Density = Density.Compact;
             base.EmptyTemplate = EmptyTemplateRender;
-            base.HeaderTemplate = HeaderTemplateRender;
+            base.HeaderTemplate = HeaderTemplateRender;            
         }
 
 

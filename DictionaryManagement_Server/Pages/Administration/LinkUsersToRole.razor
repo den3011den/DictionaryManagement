@@ -44,18 +44,18 @@
                                                     ShowCleanGridSortsHeaderButton="false">
                                         <Columns>
 
-                                            <RadzenDataGridColumn TItem="UserDTO" Property="Checked" Title=" " Filterable="true" Width="15px">
+                                            <RadzenDataGridColumnApp TItem="UserDTO" Property="Checked" Title=" " Filterable="true" Width="15px">
                                                 <Template Context="data">
                                                     <RadzenCheckBox @bind-Value=data.Checked Disabled="false" TriState="false" TValue="bool" />
                                                 </Template>
-                                            </RadzenDataGridColumn>
+                                            </RadzenDataGridColumnApp>
 
-                                            <RadzenDataGridColumn TItem="UserDTO" Property="ToStringId" Filterable="true" FilterProperty="ToStringId" Title="Ид" Width="85px">
-                                            </RadzenDataGridColumn>
-                                            <RadzenDataGridColumn TItem="UserDTO" Property="Login" Title="Логин" Width="60px">
-                                            </RadzenDataGridColumn>
-                                            <RadzenDataGridColumn TItem="UserDTO" Property="UserName" Title="Наименование" Width="140px">
-                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumnApp TItem="UserDTO" Property="ToStringId" Filterable="true" FilterProperty="ToStringId" Title="Ид" Width="85px">
+                                            </RadzenDataGridColumnApp>
+                                            <RadzenDataGridColumnApp TItem="UserDTO" Property="Login" Title="Логин" Width="60px">
+                                            </RadzenDataGridColumnApp>
+                                            <RadzenDataGridColumnApp TItem="UserDTO" Property="UserName" Title="Наименование" Width="140px">
+                                            </RadzenDataGridColumnApp>
                                         </Columns>
                                     </RadzenDataGridApp>
                                 </RadzenStack>

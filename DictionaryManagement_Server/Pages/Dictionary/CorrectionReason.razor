@@ -36,13 +36,13 @@
                                Data="@correctionReasonDTOs" TItem="CorrectionReasonDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                EmptyText="Нет записей для отображения"
-                               FilterMode="FilterMode.Simple"
+                               FilterMode="FilterMode.Advanced"
                                AllowColumnResize="false"
                                GridLines="DataGridGridLines.Both"
                                Style="height:calc(100vh - 170px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="Name" Title="Наименование" Width="320px">
+                    <RadzenDataGridColumnApp TItem="CorrectionReasonDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumnApp TItem="CorrectionReasonDTO" Property="Name" Title="Наименование" Width="320px">
                         <Template Context="correctionReasonDTO">
                             <div style="white-space:pre-wrap">
                                 @correctionReasonDTO.Name
@@ -53,14 +53,14 @@
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="CorrectionReasonDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn Title="Действия" TItem="CorrectionReasonDTO" Context="correctionReasonDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp Title="Действия" TItem="CorrectionReasonDTO" Context="correctionReasonDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="correctionReasonDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(correctionReasonDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -83,7 +83,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(correctionReasonDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }

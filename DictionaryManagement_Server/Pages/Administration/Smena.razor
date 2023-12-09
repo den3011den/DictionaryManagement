@@ -34,7 +34,7 @@
             <RadzenDataGridApp @bind-Settings="@SmenaGridSettings" SettingsName="SmenaGridSettings" @ref="smenaDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@smenaDTOs" TItem="SmenaDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            FilterMode="FilterMode.Simple"
+                            FilterMode="FilterMode.Advanced"
                             Density=Density.Compact
                             ShowPagingSummary="true"
                             EmptyText="Нет записей для отображения"
@@ -43,13 +43,13 @@
                             GridLines="DataGridGridLines.Both"
                             Style="height:calc(100vh - 170px)">                
                 <Columns>
-                    <RadzenDataGridColumn TItem="SmenaDTO" Property="Id" Title="Ид записи" Width="70px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SmenaDTO" Property="Id" Title="Ид записи" Width="70px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SmenaDTO" Property="Name" Title="Наименование" Width="100px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SmenaDTO" Property="Name" Title="Наименование" Width="100px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SmenaDTO" Property="DepartmentDTOFK.ToStringHierarchyShortName" Title="Производство" Width="100px" FilterProperty="DepartmentDTOFK.ToStringHierarchyShortName" SortProperty="DepartmentDTOFK.ToStringHierarchyShortName">
+                    <RadzenDataGridColumnApp TItem="SmenaDTO" Property="DepartmentDTOFK.ToStringHierarchyShortName" Title="Производство" Width="100px" FilterProperty="DepartmentDTOFK.ToStringHierarchyShortName" SortProperty="DepartmentDTOFK.ToStringHierarchyShortName">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 <strong>
@@ -57,22 +57,22 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SmenaDTO" Property="StartTime" Title="Время начала" Width="60px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SmenaDTO" Property="StartTime" Title="Время начала" Width="60px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SmenaDTO" Property="HoursDuration" Title="Продолжительность (в часах)" Width="60px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SmenaDTO" Property="HoursDuration" Title="Продолжительность (в часах)" Width="60px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="SmenaDTO" Context="smenaDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="55px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="SmenaDTO" Context="smenaDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="55px">
                         <Template Context="smenaDTO">
                             <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(smenaDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                             <RadzenButton title="Удалить" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(smenaDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
             @*   </div>*@

@@ -40,16 +40,16 @@
                             GridLines="DataGridGridLines.Both"
                             Style="height:calc(100vh - 170px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Id" Title="Ид записи" Width="80px" />
-                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Code" Title="Код материала" Width="100px">
+                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="Id" Title="Ид записи" Width="80px" />
+                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="Code" Title="Код материала" Width="100px">
                         <EditTemplate Context="mesMaterialDTO">
                             <RadzenTextBox @bind-Value="mesMaterialDTO.Code" Style="width:50%; display: block" Name="Code" />
                             <RadzenRequiredValidator Text="Код материала обязателен к заполнению" Component="Code" Popup="true" />
                             <RadzenLengthValidator Max=100 Text="Код материала не может быть больше 100 символов" Component="Code" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="Name" Title="Наименование" Width="250px">
+                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="Name" Title="Наименование" Width="250px">
                         <Template Context="mesMaterialDTO">
                             <div style="white-space:pre-wrap">
                                 @mesMaterialDTO.Name
@@ -61,9 +61,9 @@
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="ShortName" Title="Сокр. наименование" Width="250px">
+                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="ShortName" Title="Сокр. наименование" Width="250px">
                         <Template Context="mesMaterialDTO">
                             <div style="white-space:pre-wrap">
                                 @mesMaterialDTO.ShortName
@@ -74,15 +74,15 @@
                             <RadzenRequiredValidator Text="Сокр. наименование обязателено к заполнению" Component="ShortName" Popup="true" />
                             <RadzenLengthValidator Max=100 Text="Сокр. наименование не может быть больше 100 символов" Component="ShortName" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="MesMaterialDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="MesMaterialDTO" Context="mesMaterialDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="86px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="MesMaterialDTO" Context="mesMaterialDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="86px">
                         <Template Context="mesMaterialDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesMaterialDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -106,7 +106,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesMaterialDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }

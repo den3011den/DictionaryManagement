@@ -45,21 +45,21 @@
                             ShowCleanGridFiltersHeaderButton="false"
                             ShowCleanGridSortsHeaderButton="false">
                 <Columns>
-                    <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapUnitOfMeasureDTO" FilterProperty="SapUnitOfMeasureDTO.ShortName" Title="Ед. изм. SAP" Width="280px" Filterable="true">
+                    <RadzenDataGridColumnApp TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapUnitOfMeasureDTO" FilterProperty="SapUnitOfMeasureDTO.ShortName" Title="Ед. изм. SAP" Width="280px" Filterable="true">
                         <EditTemplate Context="unitOfMeasureSapToMesMappingDTO">
                             <RadzenDropDown Data="@sapUnitOfMeasureDTOs" @bind-Value="unitOfMeasureSapToMesMappingDTO.SapUnitOfMeasureDTO" Style="width:100%; display: block;" Name="SapUnit" />
                             <RadzenRequiredValidator Text="Ед. изм. SAP обязательна к выбору" Component="SapUnit" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="MesUnitOfMeasureDTO" Title="Ед. изм. MES" Width="280px" FilterProperty="MesUnitOfMeasureDTO.ShortName" Filterable="true">
+                    <RadzenDataGridColumnApp TItem="UnitOfMeasureSapToMesMappingDTO" Property="MesUnitOfMeasureDTO" Title="Ед. изм. MES" Width="280px" FilterProperty="MesUnitOfMeasureDTO.ShortName" Filterable="true">
                         <EditTemplate Context="unitOfMeasureSapToMesMappingDTO">
                             <RadzenDropDown Data="@mesUnitOfMeasureDTOs" @bind-Value="unitOfMeasureSapToMesMappingDTO.MesUnitOfMeasureDTO" Style="width:100%; display: block;" Name="MesUnit" />
                             <RadzenRequiredValidator Text="Ед. изм. MES обязательна к выбору" Component="MesUnit" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapToMesTransformKoef" Title="Коэф. пересчёта из SAP в MES" FilterProperty="SapToMesTransformKoef" Filterable="true">
+                    <RadzenDataGridColumnApp TItem="UnitOfMeasureSapToMesMappingDTO" Property="SapToMesTransformKoef" Title="Коэф. пересчёта из SAP в MES" FilterProperty="SapToMesTransformKoef" Filterable="true">
                         <Template Context="unitOfMeasureSapToMesMappingDTO">
                             @String.Format(new System.Globalization.CultureInfo("en-US"), "{0:0.0000}", unitOfMeasureSapToMesMappingDTO.SapToMesTransformKoef)
                         </Template>
@@ -67,9 +67,9 @@
                             <RadzenNumeric @bind-Value="unitOfMeasureSapToMesMappingDTO.SapToMesTransformKoef" Style="width:100%" Name="Koef" />
                             <RadzenRequiredValidator Text="Коэффициент обязателено к заполнению" Component="Koef" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="UnitOfMeasureSapToMesMappingDTO" Context="UnitOfMeasureSapToMesMappingDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="UnitOfMeasureSapToMesMappingDTO" Context="UnitOfMeasureSapToMesMappingDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="UnitOfMeasureSapToMesMappingDTO">
                             @* <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(UnitOfMeasureSapToMesMappingDTO))" @onclick:stopPropagation="true"> *@
                             <RadzenButton Icon="edit" Disabled=true ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(UnitOfMeasureSapToMesMappingDTO))" @onclick:stopPropagation="true">
@@ -89,7 +89,7 @@
                             <RadzenButton Disabled=true ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(UnitOfMeasureSapToMesMappingDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
                 </Columns>
             </RadzenDataGridApp>

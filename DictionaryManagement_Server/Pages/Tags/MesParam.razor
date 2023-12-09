@@ -54,20 +54,20 @@
 
 
                 <Columns>
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Id" Title="Ид записи" Width="35px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="Id" Title="Ид записи" Width="35px">
+                    </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Code" Title="Код тэга СИР" Width="65px">
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="Code" Title="Код тэга СИР" Width="65px">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.Code
                             </div>
                         </Template>
 
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="Name" Title="Наименование" Width="80px">
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="Name" Title="Наименование" Width="80px">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -75,9 +75,9 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceTypeDTOFK" Title="Источник" Width="50px" FilterProperty="MesParamSourceTypeDTOFK.ToStringValue" SortProperty="MesParamSourceTypeDTOFK.ToStringValue">
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="MesParamSourceTypeDTOFK" Title="Источник" Width="50px" FilterProperty="MesParamSourceTypeDTOFK.ToStringValue" SortProperty="MesParamSourceTypeDTOFK.ToStringValue">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 <strong>
@@ -85,96 +85,96 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesParamSourceLink" Title="Тэг источника" Width="60px">
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="MesParamSourceLink" Title="Тэг источника" Width="60px">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.MesParamSourceLink
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesDepartmentDTOFK" Title="Производство" Width="80px" FilterProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" SortProperty="MesDepartmentDTOFK.ToStringHierarchyShortName">
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="MesDepartmentDTOFK" Title="Производство" Width="80px" FilterProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" SortProperty="MesDepartmentDTOFK.ToStringHierarchyShortName">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @(data1.MesDepartmentDTOFK == null ? "" : data1.MesDepartmentDTOFK.ToStringHierarchyShortName)
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapEquipmentSourceDTOFK" Title="SAP источник" Width="90px" FilterProperty="SapEquipmentSourceDTOFK.ToStringErpPlantIdErpIdName" SortProperty="SapEquipmentSourceDTOFK.ToStringErpPlantIdErpIdName">
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="SapEquipmentSourceDTOFK" Title="SAP источник" Width="90px" FilterProperty="SapEquipmentSourceDTOFK.ToStringErpPlantIdErpIdName" SortProperty="SapEquipmentSourceDTOFK.ToStringErpPlantIdErpIdName">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 @(data1.SapEquipmentSourceDTOFK == null ? "" : data1.SapEquipmentSourceDTOFK.ToStringErpPlantIdErpIdName)
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapEquipmentDestDTOFK" Title="SAP приемник" Width="90px" FilterProperty="SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName" SortProperty="SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName">
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="SapEquipmentDestDTOFK" Title="SAP приемник" Width="90px" FilterProperty="SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName" SortProperty="SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 @(data1.SapEquipmentDestDTOFK == null ? "" : data1.SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName)
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
                     @*
             @if (SD.AppFactoryMode == SD.FactoryMode.NKNH)
             {
-            <RadzenDataGridColumn TItem="MesParamDTO" Property="MesMaterialDTOFK" Title="Материал MES" Width="70px" FilterProperty="MesMaterialDTOFK.ToStringValue" SortProperty="MesMaterialDTOFK.ToStringValue">
+            <RadzenDataGridColumnApp TItem="MesParamDTO" Property="MesMaterialDTOFK" Title="Материал MES" Width="70px" FilterProperty="MesMaterialDTOFK.ToStringValue" SortProperty="MesMaterialDTOFK.ToStringValue">
             <Template Context="data1">
             <div style="white-space:pre-wrap; font-size: 12px">
             @data1.MesMaterialDTOFK
             </div>
             </Template>
-            </RadzenDataGridColumn>
+            </RadzenDataGridColumnApp>
 
-            <RadzenDataGridColumn TItem="MesParamDTO" Property="MesUnitOfMeasureDTOFK" Title="Ед.изм MES" Width="60px" FilterProperty="MesUnitOfMeasureDTOFK.ToStringValue" SortProperty="MesUnitOfMeasureDTOFK.ToStringValue">
+            <RadzenDataGridColumnApp TItem="MesParamDTO" Property="MesUnitOfMeasureDTOFK" Title="Ед.изм MES" Width="60px" FilterProperty="MesUnitOfMeasureDTOFK.ToStringValue" SortProperty="MesUnitOfMeasureDTOFK.ToStringValue">
             <Template Context="data1">
             <div style="white-space:pre-wrap; font-size: 12px">
             @data1.MesUnitOfMeasureDTOFK
             </div>
             </Template>
-            </RadzenDataGridColumn>
+            </RadzenDataGridColumnApp>
             }
 
             @if (SD.AppFactoryMode == SD.FactoryMode.KOS)
             { *@
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapMaterialDTOFK" Title="Материал SAP" Width="70px" FilterProperty="SapMaterialDTOFK.ToStringCodeName" SortProperty="SapMaterialDTOFK.ToStringCodeName">
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="SapMaterialDTOFK" Title="Материал SAP" Width="70px" FilterProperty="SapMaterialDTOFK.ToStringCodeName" SortProperty="SapMaterialDTOFK.ToStringCodeName">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 @(data1.SapMaterialDTOFK == null ? "" : data1.SapMaterialDTOFK.ToStringCodeName)
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="SapUnitOfMeasureDTOFK" Title="Ед.изм SAP" Width="30px" FilterProperty="SapUnitOfMeasureDTOFK.ShortName" SortProperty="SapUnitOfMeasureDTOFK.ShortName">
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="SapUnitOfMeasureDTOFK" Title="Ед.изм SAP" Width="30px" FilterProperty="SapUnitOfMeasureDTOFK.ShortName" SortProperty="SapUnitOfMeasureDTOFK.ShortName">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 @(data1.SapUnitOfMeasureDTOFK == null ? "" : data1.SapUnitOfMeasureDTOFK.ShortName)
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsNdoBool" Title="НДО" Filterable="true" Width="60px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="IsNdoBool" Title="НДО" Filterable="true" Width="60px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsNdoBool ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="60px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="60px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="MesParamDTO" Context="mesParamDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="70px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="MesParamDTO" Context="mesParamDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="70px">
                         <Template Context="mesParamDTO">
                             <RadzenButton title="Создать на основании" Icon="add_box" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO, SD.EditMode.CreateBasedOnRow))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -191,7 +191,7 @@
                                 </RadzenButton>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
             @*   </div>*@

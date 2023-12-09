@@ -41,40 +41,39 @@
             <RadzenDataGridApp @bind-Settings="@ReportTemplateGridSettings" SettingsName="ReportTemplateGridSettings" @ref="reportTemplateDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@reportTemplateDTOs" TItem="ReportTemplateDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            FilterMode="FilterMode.Simple"
+                            FilterMode="FilterMode.Advanced"
                             Density=Density.Compact
-                            ShowPagingSummary="true"
-                            EmptyText="Нет записей для отображения"
+                            ShowPagingSummary="true"                            
                             AllowColumnResize="false"
                             AllowVirtualization="true"
                             GridLines="DataGridGridLines.Both"
                             Style="height:calc(100vh - 170px)">
                 <Columns>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="ToStringId" Title="Ид шаблона отчёта" Width="110px"
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="ToStringId" Title="Ид шаблона отчёта" Width="110px"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" Width="60px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" Width="60px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="AddUserDTOFK.UserName" Title="Добавил" Width="55px">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AddUserDTOFK.UserName" Title="Добавил" Width="55px">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 @data1.AddUserDTOFK.UserName
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="ReportTemplateTypeDTOFK.Name" Title="Тип отчёта" Width="60px">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="ReportTemplateTypeDTOFK.Name" Title="Тип отчёта" Width="60px">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 @data1.ReportTemplateTypeDTOFK.Name
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="MesDepartmentDTOFK.ToStringHierarchyShortName" Title="Производство" Width="100px" FilterProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" SortProperty="MesDepartmentDTOFK.ToStringHierarchyShortName">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="MesDepartmentDTOFK.ToStringHierarchyShortName" Title="Производство" Width="100px" FilterProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" SortProperty="MesDepartmentDTOFK.ToStringHierarchyShortName">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 <strong>
@@ -82,32 +81,32 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="DestDataTypeDTOFK.Name" Title="Тип вых данных" Width="60px">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="DestDataTypeDTOFK.Name" Title="Тип вых данных" Width="60px">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 @data1.DestDataTypeDTOFK.Name
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="TemplateFileName" Title="Имя файла" Width="90px">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="TemplateFileName" Title="Имя файла" Width="90px">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 @data1.TemplateFileName
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="25px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="25px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="65px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="65px">
                         <Template Context="reportTemplateDTO">
                             <RadzenButton title="Скачать файл шаблона" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadTemplate(reportTemplateDTO.Id))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -124,7 +123,7 @@
                                 </RadzenButton>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
             @*   </div>*@

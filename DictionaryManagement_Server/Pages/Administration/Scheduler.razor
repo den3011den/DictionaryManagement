@@ -35,35 +35,34 @@
             <RadzenDataGridApp @bind-Settings="@SchedulerGridSettings" SettingsName="SchedulerGridSettings" @ref="schedulerDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@schedulerDTOs" TItem="SchedulerDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            FilterMode="FilterMode.Simple"
+                            FilterMode="FilterMode.Advanced"
                             Density=Density.Compact
-                            ShowPagingSummary="true"
-                            EmptyText="Нет записей для отображения"
+                            ShowPagingSummary="true"                            
                             AllowVirtualization="true"
                             AllowColumnResize="false"
                             GridLines="DataGridGridLines.Both"
                             Style="height:calc(100vh - 170px)">                
                 <Columns>
-                    <RadzenDataGridColumn TItem="SchedulerDTO" Property="Id" Title="Ид записи" Width="70px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SchedulerDTO" Property="Id" Title="Ид записи" Width="70px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SchedulerDTO" Property="ModuleName" Title="Наименование модуля" Width="100px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SchedulerDTO" Property="ModuleName" Title="Наименование модуля" Width="100px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SchedulerDTO" Property="StartTime" Title="Время начала" Width="60px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SchedulerDTO" Property="StartTime" Title="Время начала" Width="60px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SchedulerDTO" Property="LastExecuted" Title="Время последнего выполнения" Width="120px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SchedulerDTO" Property="LastExecuted" Title="Время последнего выполнения" Width="120px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="SchedulerDTO" Context="SchedulerDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="55px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="SchedulerDTO" Context="SchedulerDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="55px">
                         <Template Context="schedulerDTO">
                             <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(schedulerDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                             <RadzenButton title="Удалить" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(schedulerDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
 

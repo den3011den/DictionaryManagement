@@ -41,16 +41,16 @@
                                GridLines="DataGridGridLines.Both"
                                Style="height:calc(100vh - 170px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Id" Title="Ид записи" Width="80px" />
-                    <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Code" Title="Код материала" Width="100px">
+                    <RadzenDataGridColumnApp TItem="SapMaterialDTO" Property="Id" Title="Ид записи" Width="80px" />
+                    <RadzenDataGridColumnApp TItem="SapMaterialDTO" Property="Code" Title="Код материала" Width="100px">
                         <EditTemplate Context="sapMaterialDTO">
                             <RadzenTextBox @bind-Value="sapMaterialDTO.Code" Style="width:50%; display: block" Name="Code" />
                             <RadzenRequiredValidator Text="Код материала обязателен к заполнению" Component="Code" Popup="true" />
                             <RadzenLengthValidator Max=100 Text="Код материала не может быть больше 100 символов" Component="Code" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMaterialDTO" Property="Name" Title="Наименование" Width="300px">
+                    <RadzenDataGridColumnApp TItem="SapMaterialDTO" Property="Name" Title="Наименование" Width="300px">
                         <Template Context="sapMaterialDTO">
                             <div style="white-space:pre-wrap">
                                 @sapMaterialDTO.Name
@@ -61,9 +61,9 @@
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMaterialDTO" Property="ShortName" Title="Сокр. наименование" Width="300px">
+                    <RadzenDataGridColumnApp TItem="SapMaterialDTO" Property="ShortName" Title="Сокр. наименование" Width="300px">
                         <Template Context="sapMaterialDTO">
                             <div style="white-space:pre-wrap">
                                 @sapMaterialDTO.ShortName
@@ -74,14 +74,14 @@
                             <RadzenRequiredValidator Text="Сокр. наименование обязателено к заполнению" Component="ShortName" Popup="true" />
                             <RadzenLengthValidator Max=100 Text="Сокр. наименование не может быть больше 100 символов" Component="ShortName" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMaterialDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="SapMaterialDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn Title="Действия" TItem="SapMaterialDTO" Context="sapMaterialDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="86px">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp Title="Действия" TItem="SapMaterialDTO" Context="sapMaterialDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="86px">
                         <Template Context="sapMaterialDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapMaterialDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -105,7 +105,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(sapMaterialDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }

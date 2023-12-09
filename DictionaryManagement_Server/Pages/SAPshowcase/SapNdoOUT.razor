@@ -64,7 +64,7 @@
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both">
                 <Columns>
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
@@ -74,25 +74,25 @@
                             </div>
                         </Template>
 
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="TagName" Title="Имя тэга" FilterProperty="TagName" SortProperty="TagName" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="TagName" Title="Имя тэга" FilterProperty="TagName" SortProperty="TagName" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.TagName
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="ValueTime" Title="Время значения" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="ValueTime" Title="Время значения" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -100,9 +100,9 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="ToStringValue" Title="Значение" TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains"
+                    <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="ToStringValue" Title="Значение" TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains"
                                           FilterProperty="ToStringValue" SortProperty="Value">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
@@ -111,15 +111,15 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="SapGone" Title="Забрал SAP" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="SapGone" Title="Забрал SAP" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.SapGone ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapNdoOUTDTO" Property="SapGoneTime" Title="Когда Sap забрал" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="SapGoneTime" Title="Когда Sap забрал" TextAlign="TextAlign.Center"
                                           FilterProperty="SapGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="SapGoneTime">
                         <Template Context="data1">
                             @if (data1.SapGoneTime != null)
@@ -131,17 +131,17 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumn Title="Действия" TItem="SapNdoOUTDTO" Context="sapNdoOUTDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="SapNdoOUTDTO" Context="sapNdoOUTDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
                         <Template Context="sapNdoOUTDTO">
                             <RadzenButton title="Редактировать запись" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapNdoOUTDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                             <RadzenButton title="Удалить запись" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(sapNdoOUTDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }

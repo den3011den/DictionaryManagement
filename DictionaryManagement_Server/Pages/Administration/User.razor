@@ -46,16 +46,16 @@
                                AllowVirtualization="true"
                                Style="height:calc(100vh - 170px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="UserDTO" Property="ToStringId" Title="Ид роли" Width="30px"
+                    <RadzenDataGridColumnApp TItem="UserDTO" Property="ToStringId" Title="Ид роли" Width="30px"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 10px">
                                 @data1.ToStringId
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="UserDTO" Property="Login" Title="Логин" Width="45px" FilterProperty="Login" SortProperty="Login" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="UserDTO" Property="Login" Title="Логин" Width="45px" FilterProperty="Login" SortProperty="Login" FilterOperator="FilterOperator.Contains">
                         <Template Context="data2">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
@@ -63,9 +63,9 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="UserDTO" Property="UserName" Title="ФИО" Width="45px" FilterProperty="UserName" SortProperty="UserName" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="UserDTO" Property="UserName" Title="ФИО" Width="45px" FilterProperty="UserName" SortProperty="UserName" FilterOperator="FilterOperator.Contains">
                         <Template Context="data2">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
@@ -73,32 +73,32 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="UserDTO" Property="Description" Title="Описание" Width="33px" FilterProperty="Description" SortProperty="Description" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="UserDTO" Property="Description" Title="Описание" Width="33px" FilterProperty="Description" SortProperty="Description" FilterOperator="FilterOperator.Contains">
                         <Template Context="data3">
                             <div style="white-space:pre-wrap; font-size: 10px">
                                 @data3.Description
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="UserDTO" Property="IsSyncWithAD" Title="Автомат" Filterable="true" Width="13px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="UserDTO" Property="IsSyncWithAD" Title="Автомат" Filterable="true" Width="13px" TextAlign="TextAlign.Center">
                         <Template Context="data4">
                             <RadzenCheckBox @bind-Value=data4.IsSyncWithAD ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="UserDTO" Property="SyncWithADGroupsLastTime" Title="Время посл. синх. AD" Width="40px" TextAlign="TextAlign.Center">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="UserDTO" Property="SyncWithADGroupsLastTime" Title="Время посл. синх. AD" Width="40px" TextAlign="TextAlign.Center">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="UserDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="8px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="UserDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="8px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="UserDTO" Context="userDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="16px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="UserDTO" Context="userDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="16px">
                         <Template Context="userDTO">
                             <RadzenButton title="Редактировать пользователя" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(userDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -113,7 +113,7 @@
                                 </RadzenButton>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
                 </Columns>
             </RadzenDataGridApp>

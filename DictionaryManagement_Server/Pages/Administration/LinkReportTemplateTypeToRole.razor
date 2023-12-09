@@ -44,22 +44,22 @@
                                                     ShowCleanGridSortsHeaderButton="false">
                                         <Columns>
 
-                                            <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="ToStringId" Filterable="true" FilterProperty="ToStringId" Title="Ид" Width="20px">
-                                            </RadzenDataGridColumn>
-                                            <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="Name" Title="Наименование" Width="90px">
-                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="ToStringId" Filterable="true" FilterProperty="ToStringId" Title="Ид" Width="20px">
+                                            </RadzenDataGridColumnApp>
+                                            <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="Name" Title="Наименование" Width="90px">
+                                            </RadzenDataGridColumnApp>
 
-                                            <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="CanDownload" Title="Чтение" Filterable="true" Width="15px">
+                                            <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="CanDownload" Title="Чтение" Filterable="true" Width="15px">
                                                 <Template Context="data">
                                                     <RadzenCheckBox @bind-Value=data.CanDownload Disabled="false" TriState="false" TValue="bool" />
                                                 </Template>
-                                            </RadzenDataGridColumn>
+                                            </RadzenDataGridColumnApp>
 
-                                            <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="CanUpload" Title="Запись" Filterable="true" Width="15px">
+                                            <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="CanUpload" Title="Запись" Filterable="true" Width="15px">
                                                 <Template Context="data">
                                                     <RadzenCheckBox @bind-Value=data.CanUpload Disabled="false" TriState="false" TValue="bool" />
                                                 </Template>
-                                            </RadzenDataGridColumn>
+                                            </RadzenDataGridColumnApp>
                                         </Columns>
                                     </RadzenDataGridApp>
                                 </RadzenStack>

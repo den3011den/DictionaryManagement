@@ -44,23 +44,23 @@
                                                     ShowCleanGridSortsHeaderButton="false">
                                         <Columns>
 
-                                            <RadzenDataGridColumn TItem="ADGroupDTO" Property="Checked" Title=" " Filterable="true" Width="15px">
+                                            <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="Checked" Title=" " Filterable="true" Width="15px">
                                                 <Template Context="data">
                                                     <RadzenCheckBox @bind-Value=data.Checked Disabled="false" TriState="false" TValue="bool" />
                                                 </Template>
-                                            </RadzenDataGridColumn>
+                                            </RadzenDataGridColumnApp>
 
-                                            <RadzenDataGridColumn TItem="ADGroupDTO" Property="ToStringId" Filterable="true" FilterProperty="ToStringId" Title="Ид" Width="75px">
-                                            </RadzenDataGridColumn>
-                                            <RadzenDataGridColumn TItem="ADGroupDTO" Property="Name" Title="Наименование" Width="130px">
-                                            </RadzenDataGridColumn>
-                                            <RadzenDataGridColumn TItem="ADGroupDTO" Property="Description" Title="Описание" Width="150px">
+                                            <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="ToStringId" Filterable="true" FilterProperty="ToStringId" Title="Ид" Width="75px">
+                                            </RadzenDataGridColumnApp>
+                                            <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="Name" Title="Наименование" Width="130px">
+                                            </RadzenDataGridColumnApp>
+                                            <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="Description" Title="Описание" Width="150px">
                                                 <Template Context="data1">
                                                     <div style="white-space:pre-line; word-wrap: break-word;">
                                                         @data1.Description
                                                     </div>
                                                 </Template>
-                                            </RadzenDataGridColumn>
+                                            </RadzenDataGridColumnApp>
                                         </Columns>
                                     </RadzenDataGridApp>
                                 </RadzenStack>

@@ -42,21 +42,21 @@
                                                        ShowCleanGridFiltersHeaderButton="false"
                                                        ShowCleanGridSortsHeaderButton="false">
                                         <Columns>
-                                            <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Checked" Title=" " Filterable="true" Width="15px">
+                                            <RadzenDataGridColumnApp TItem="MesDepartmentDTO" Property="Checked" Title=" " Filterable="true" Width="15px">
                                                 <Template Context="data">
                                                     <RadzenCheckBox @bind-Value=data.Checked Disabled="false" TriState="false" TValue="bool" />
                                                 </Template>
-                                            </RadzenDataGridColumn>
+                                            </RadzenDataGridColumnApp>
 
-                                            <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ToStringId" Filterable="true" FilterProperty="ToStringId" Title="Ид" Width="75px">
-                                            </RadzenDataGridColumn>
-                                            <RadzenDataGridColumn TItem="MesDepartmentDTO" SortProperty="ToStringHierarchyShortName" FilterProperty="ToStringHierarchyShortName" Property="ToStringHierarchyShortName" Title="Наименование" Width="330px">
+                                            <RadzenDataGridColumnApp TItem="MesDepartmentDTO" Property="ToStringId" Filterable="true" FilterProperty="ToStringId" Title="Ид" Width="75px">
+                                            </RadzenDataGridColumnApp>
+                                            <RadzenDataGridColumnApp TItem="MesDepartmentDTO" SortProperty="ToStringHierarchyShortName" FilterProperty="ToStringHierarchyShortName" Property="ToStringHierarchyShortName" Title="Наименование" Width="330px">
                                                 <Template Context="data">
                                                     <div style="white-space:pre-line; word-wrap: break-word;">
                                                         @data.ToStringHierarchyShortName
                                                     </div>
                                                 </Template>
-                                            </RadzenDataGridColumn>
+                                            </RadzenDataGridColumnApp>
                                         </Columns>
                                     </RadzenDataGridApp>
                                 </RadzenStack>

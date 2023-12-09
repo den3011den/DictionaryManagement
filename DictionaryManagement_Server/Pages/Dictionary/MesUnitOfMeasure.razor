@@ -33,32 +33,32 @@
                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                            EmptyText="Нет записей для отображения"
                            AllowColumnResize="false"
-                           FilterMode="FilterMode.Simple"
+                           FilterMode="FilterMode.Advanced"
                            GridLines="DataGridGridLines.Both"
                            Style="height:calc(100vh - 170px)">
             <Columns>
-                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Id" Title="Ид записи" Width="120px" />
-                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="Name" Title="Наименование" Width="270px">
+                <RadzenDataGridColumnApp TItem="MesUnitOfMeasureDTO" Property="Id" Title="Ид записи" Width="120px" />
+                <RadzenDataGridColumnApp TItem="MesUnitOfMeasureDTO" Property="Name" Title="Наименование" Width="270px">
                     <EditTemplate Context="mesUnitOfMeasureDTO">
                         <RadzenTextBox @bind-Value="mesUnitOfMeasureDTO.Name" Style="width:100%; display: block" Name="Name" />
                         <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                         <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                     </EditTemplate>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="ShortName" Title="Сокр. наименование" Width="270px">
+                </RadzenDataGridColumnApp>
+                <RadzenDataGridColumnApp TItem="MesUnitOfMeasureDTO" Property="ShortName" Title="Сокр. наименование" Width="270px">
                     <EditTemplate Context="mesUnitOfMeasureDTO">
                         <RadzenTextBox @bind-Value="mesUnitOfMeasureDTO.ShortName" Style="width:100%; display: block" Name="ShortName" />
                         <RadzenRequiredValidator Text="Сокр. наименование обязателено к заполнению" Component="ShortName" Popup="true" />
                         <RadzenLengthValidator Max=100 Text="Сокр. наименование не может быть больше 100 символов" Component="ShortName" Popup="true" />
                     </EditTemplate>
-                </RadzenDataGridColumn>
+                </RadzenDataGridColumnApp>
 
-                <RadzenDataGridColumn TItem="MesUnitOfMeasureDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px" TextAlign="TextAlign.Center">
+                <RadzenDataGridColumnApp TItem="MesUnitOfMeasureDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px" TextAlign="TextAlign.Center">
                     <Template Context="data">
                         <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                     </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn Title="Действия" TItem="MesUnitOfMeasureDTO" Context="mesUnitOfMeasureDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                </RadzenDataGridColumnApp>
+                <RadzenDataGridColumnApp Title="Действия" TItem="MesUnitOfMeasureDTO" Context="mesUnitOfMeasureDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                     <Template Context="mesUnitOfMeasureDTO">
                         <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesUnitOfMeasureDTO))" @onclick:stopPropagation="true">
                         </RadzenButton>
@@ -81,7 +81,7 @@
                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesUnitOfMeasureDTO))">
                         </RadzenButton>
                     </EditTemplate>
-                </RadzenDataGridColumn>
+                </RadzenDataGridColumnApp>
             </Columns>
         </RadzenDataGridApp>
     }

@@ -40,17 +40,17 @@
                                GridLines="DataGridGridLines.Both"
                                Style="height:calc(100vh - 170px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="Name" Title="Наименование" Width="250px">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="Name" Title="Наименование" Width="250px">
                         <EditTemplate Context="reportTemplateTypeDTO">
                             <RadzenTextBox @bind-Value="reportTemplateTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="NeedAutoCalc" Title="Требуется авторасчёт" Width="150px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="NeedAutoCalc" Title="Требуется авторасчёт" Width="150px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.NeedAutoCalc ReadOnly="true" TriState="false" TValue="bool?" />
                         </Template>
@@ -61,15 +61,15 @@
                                 |
                             </strong>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="ReportTemplateTypeDTO" Context="reportTemplateTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Context="reportTemplateTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="reportTemplateTypeDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(reportTemplateTypeDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -92,7 +92,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateTypeDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }

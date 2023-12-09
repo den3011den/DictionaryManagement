@@ -37,27 +37,27 @@
                                Data="@dataSourceDTOs" TItem="DataSourceDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                EmptyText="Нет записей для отображения"
-                               FilterMode="FilterMode.Simple"
+                               FilterMode="FilterMode.Advanced"
                                AllowColumnResize="false"
                                AllowVirtualization="true"
                                GridLines="DataGridGridLines.Both"
                                Style="height:calc(100vh - 170px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="DataSourceDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="DataSourceDTO" Property="Name" Title="Наименование">
+                    <RadzenDataGridColumnApp TItem="DataSourceDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumnApp TItem="DataSourceDTO" Property="Name" Title="Наименование">
                         <EditTemplate Context="dataSourceDTO">
                             <RadzenTextBox @bind-Value="dataSourceDTO.Name" Style="width:100%; display: block" Name="Name" />
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="DataSourceDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="DataSourceDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn Title="Действия" TItem="DataSourceDTO" Context="dataSourceDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp Title="Действия" TItem="DataSourceDTO" Context="dataSourceDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="dataSourceDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(dataSourceDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -80,7 +80,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataSourceDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }

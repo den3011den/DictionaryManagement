@@ -35,29 +35,29 @@
                                Data="@dataTypeDTOs" TItem="DataTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                EmptyText="Нет записей для отображения"
-                               FilterMode="FilterMode.Simple"
+                               FilterMode="FilterMode.Advanced"
                                AllowColumnResize="false"
                                AllowVirtualization="true"
                                GridLines="DataGridGridLines.Both"
                                Style="height:calc(100vh - 170px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Name" Title="Наименование" Width="200px">
+                    <RadzenDataGridColumnApp TItem="DataTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumnApp TItem="DataTypeDTO" Property="Name" Title="Наименование" Width="200px">
                         <EditTemplate Context="dataTypeDTO">
                             <RadzenTextBox @bind-Value="dataTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Priority" Title="Приоритет передачи в SAP (чем больше число - тем выше приоритет)" Width="150px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="DataTypeDTO" Property="Priority" Title="Приоритет передачи в SAP (чем больше число - тем выше приоритет)" Width="150px" TextAlign="TextAlign.Center">
                         <EditTemplate Context="dataTypeDTO">
                             <RadzenNumeric @bind-Value="dataTypeDTO.Priority" Style="width:100%; display: block" Name="Priority" />
                             @* <RadzenNumericRangeValidator Min=1 Max=@(int.MaxValue) Text="Приоритет передачи в SAP не может быть меньше 1" Component="Priority" Popup="true" /> *@
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="IsAutoCalcDestDataType" Title="Результирующий тип авторасчёта" Width="150px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="DataTypeDTO" Property="IsAutoCalcDestDataType" Title="Результирующий тип авторасчёта" Width="150px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsAutoCalcDestDataType ReadOnly="true" TriState="false" TValue="bool?" />
                         </Template>
@@ -68,17 +68,17 @@
                                 |
                             </strong>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
 
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="90px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="DataTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="90px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="DataTypeDTO" Context="dataTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="DataTypeDTO" Context="dataTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="dataTypeDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(dataTypeDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -101,7 +101,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataTypeDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }

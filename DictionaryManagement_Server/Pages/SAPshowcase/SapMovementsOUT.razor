@@ -64,16 +64,16 @@
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both">
                 <Columns>
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.ToStringId
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -81,18 +81,18 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="MesParamDTOFK.ToStringCodeName" Title="Тэг СИР (Код + Наименование)"
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="MesParamDTOFK.ToStringCodeName" Title="Тэг СИР (Код + Наименование)"
                                           TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.MesParamDTOFK.ToStringCodeName
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapMaterialDTOFK.ToStringCodeName" Title="Материал SAP"
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="SapMaterialDTOFK.ToStringCodeName" Title="Материал SAP"
                                           TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
@@ -101,46 +101,46 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapEquipmentSourceDTOFK.ToStringErpPlantIdErpIdName" Title="Источник SAP"
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="SapEquipmentSourceDTOFK.ToStringErpPlantIdErpIdName" Title="Источник SAP"
                                           TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.SapEquipmentSourceDTOFK.ToStringErpPlantIdErpIdName
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="IsWarehouseSource" Title="Источник является складом" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="IsWarehouseSource" Title="Источник является складом" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             @if (data.IsWarehouseSource != null)
                             {
                                 <RadzenCheckBox @bind-Value=data.IsWarehouseSource ReadOnly="true" TriState="false" TValue="bool?" />
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName" Title="Приёмник SAP"
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName" Title="Приёмник SAP"
                                           TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="IsWarehouseDest" Title="Приёмник является складом" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="IsWarehouseDest" Title="Приёмник является складом" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             @if (data.IsWarehouseDest != null)
                             {
                                 <RadzenCheckBox @bind-Value=data.IsWarehouseDest ReadOnly="true" TriState="false" TValue="bool?" />
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ValueTime" Title="Время значения" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="ValueTime" Title="Время значения" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -148,9 +148,9 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringValue" Title="Значение" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="ToStringValue" Title="Значение" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
                                           FilterProperty="ToStringValue" SortProperty="Value" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
@@ -159,9 +159,9 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringCorrection2Previous" Title="Корректировка" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="ToStringCorrection2Previous" Title="Корректировка" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
                                           FilterProperty="ToStringCorrection2Previous" SortProperty="Correction2Previous" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
@@ -170,9 +170,9 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapUnitOfMeasure" Title="Ед.изм.SAP" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="SapUnitOfMeasure" Title="Ед.изм.SAP" TextAlign="TextAlign.Center"
                                           FilterProperty="SapUnitOfMeasure" FilterOperator="FilterOperator.Contains" SortProperty="SapUnitOfMeasure">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
@@ -181,22 +181,22 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="IsReconciled" Title="Согласованные" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="IsReconciled" Title="Согласованные" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsReconciled ReadOnly="true" TriState="false" TValue="bool?" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapGoneBool" Title="Забрал SAP" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="SapGoneBool" Title="Забрал SAP" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.SapGoneBool ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapGoneTime" Title="Время забрал SAP" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="SapGoneTime" Title="Время забрал SAP" TextAlign="TextAlign.Center"
                                           FilterProperty="SapGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="SapGoneTime">
                         <Template Context="data1">
                             @if (data1.SapGoneTime != null)
@@ -209,15 +209,15 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapErrorBool" Title="SAP ошибка" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="SapErrorBool" Title="SAP ошибка" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.SapErrorBool ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="SapErrorMessage" Title="SAP сообщение об ошибке" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="SapErrorMessage" Title="SAP сообщение об ошибке" TextAlign="TextAlign.Center"
                                           FilterProperty="SapErrorMessage" FilterOperator="FilterOperator.Contains" SortProperty="SapErrorMessage">
                         <Template Context="data1">
                             @if (data1.SapErrorMessage != null)
@@ -227,9 +227,9 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringMesMovementId" Title="ИД в архиве данных" FilterProperty="ToStringMesMovementId" SortProperty="ToStringMesMovementId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="ToStringMesMovementId" Title="ИД в архиве данных" FilterProperty="ToStringMesMovementId" SortProperty="ToStringMesMovementId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.ToStringMesMovementId != null)
                             {
@@ -238,9 +238,9 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsOUTDTO" Property="ToStringPreviousRecordId" Title="ИД пред. записи" FilterProperty="ToStringPreviousRecordId" SortProperty="ToStringPreviousRecordId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="SapMovementsOUTDTO" Property="ToStringPreviousRecordId" Title="ИД пред. записи" FilterProperty="ToStringPreviousRecordId" SortProperty="ToStringPreviousRecordId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.ToStringPreviousRecordId != null)
                             {
@@ -249,16 +249,16 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="SapMovementsOUTDTO" Context="sapMovementsOUTDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="SapMovementsOUTDTO" Context="sapMovementsOUTDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
                         <Template Context="sapMovementsOUTDTO">
                             <RadzenButton title="Редактировать запись" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapMovementsOUTDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                             <RadzenButton title="Удалить запись" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(sapMovementsOUTDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }
