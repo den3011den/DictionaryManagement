@@ -684,7 +684,7 @@
 
         if (reportTemplateTypeToRoleId == null)
         {
-            await _jsRuntime.ToastrError("Пустой код связки ролди и типа шаблона отчёта!");
+            await _jsRuntime.ToastrError("Пустой код связки роли и типа шаблона отчёта!");
             return;
         }
 
@@ -744,7 +744,7 @@
             UserDTO dialogResult;
 
             IsLoading = false;
-            dialogResult = await _dialogService.OpenAsync<AddEditUser>("Изменить пользователя", new Dictionary<string, object>() { { "UserId", userId } }, new DialogOptions() { Width = $"{700}px", Left = $"{300}px" });
+            dialogResult = await _dialogService.OpenAsync<AddEditUser>("Изменить пользователя", new Dictionary<string, object>() { { "UserId", userId } }, new DialogOptions() { Width = $"{900}px", Left = $"{300}px" });
 
             if (dialogResult != null)
             {
@@ -766,7 +766,7 @@
             ADGroupDTO dialogResult;
 
             IsLoading = false;
-            dialogResult = await _dialogService.OpenAsync<AddEditADGroup>("Изменить группу AD", new Dictionary<string, object>() { { "ADGroupId", adGroupId } }, new DialogOptions() { Width = $"{700}px", Left = $"{300}px" });
+            dialogResult = await _dialogService.OpenAsync<AddEditADGroup>("Изменить группу AD", new Dictionary<string, object>() { { "ADGroupId", adGroupId } }, new DialogOptions() { Width = $"{900}px", Left = $"{300}px" });
 
             if (dialogResult != null)
             {
@@ -786,7 +786,7 @@
             IsLoading = true;
             MesDepartmentDTO dialogResult;
             IsLoading = false;
-            dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Изменить производство", new Dictionary<string, object>() { { "MesDepartmentId", departmentId } }, new DialogOptions() { Width = $"{700}px", Left = $"{300}px" });
+            dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Изменить производство", new Dictionary<string, object>() { { "MesDepartmentId", departmentId } }, new DialogOptions() { Width = $"{1100}px", Left = $"{300}px" });
 
             if (dialogResult != null)
             {

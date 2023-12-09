@@ -32,17 +32,17 @@
 
                                 @if (ADGroupId != Guid.Empty)
                                 {
-                                    <RadzenFormField Text="ИД" Variant="@variant" Style="width: 100%; max-width: 600px;">
+                                    <RadzenFormField Text="ИД" Variant="@variant" Style="width: 100%; max-width: 900px;">
                                         <RadzenNumeric @bind-Value="@ActiveADGroupDTO.Id" ReadOnly="true" />
                                     </RadzenFormField>
                                 }
 
-                                <RadzenFormField Text="Наименование" Variant="@variant" Style="width: 100%; max-width: 600px;">
+                                <RadzenFormField Text="Наименование" Variant="@variant" Style="width: 100%; max-width: 900px;">
                                     <RadzenTextBox @bind-Value="@ActiveADGroupDTO.Name" />
                                 </RadzenFormField>
                                 <ValidationMessage For="()=>ActiveADGroupDTO.Name"></ValidationMessage>
 
-                                <RadzenFormField Text="Описание" Variant="@variant" Style="width: 100%; max-width: 600px;">
+                                <RadzenFormField Text="Описание" Variant="@variant" Style="width: 100%; max-width: 900px;">
                                     <RadzenTextBox @bind-Value="@ActiveADGroupDTO.Description" />
                                 </RadzenFormField>
                                 <ValidationMessage For="()=>ActiveADGroupDTO.Description"></ValidationMessage>

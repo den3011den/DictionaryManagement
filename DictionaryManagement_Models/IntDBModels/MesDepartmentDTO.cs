@@ -109,9 +109,6 @@ namespace DictionaryManagement_Models.IntDBModels
                 ToStringShortName = value;
             }
         }
-
-
-
     }
 }
 

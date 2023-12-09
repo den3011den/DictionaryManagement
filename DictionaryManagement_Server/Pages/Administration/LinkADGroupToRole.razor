@@ -31,7 +31,7 @@
                         <RadzenColumn Size="12">
                             <RadzenStack>
                                 <RadzenStack Gap="1rem">
-                                    <RadzenDataGridApp AllowAlternatingRows="true" AllowFiltering="true" PageSize="17" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                                    <RadzenDataGridApp AllowAlternatingRows="true" AllowFiltering="true" PageSize="10" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                                     Data="ADGroupList" TItem="ADGroupDTO"
                                                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                                     FilterMode="FilterMode.Simple"
@@ -55,6 +55,11 @@
                                             <RadzenDataGridColumn TItem="ADGroupDTO" Property="Name" Title="Наименование" Width="130px">
                                             </RadzenDataGridColumn>
                                             <RadzenDataGridColumn TItem="ADGroupDTO" Property="Description" Title="Описание" Width="150px">
+                                                <Template Context="data1">
+                                                    <div style="white-space:pre-line; word-wrap: break-word;">
+                                                        @data1.Description
+                                                    </div>
+                                                </Template>
                                             </RadzenDataGridColumn>
                                         </Columns>
                                     </RadzenDataGridApp>
@@ -63,8 +68,10 @@
                         </RadzenColumn>
                     </RadzenRow>
 
-
-
+                    <br />
+                    <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">
+                        * в списке только НЕ архивные группы AD и не включённые в роль @ActiveRoleVMDTO.Name
+                    </RadzenText>
 
                     <div class="form-group py-2">
                         <button class="btn btn-primary">@Title</button>

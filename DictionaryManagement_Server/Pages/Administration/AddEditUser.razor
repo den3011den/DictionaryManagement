@@ -32,23 +32,23 @@
 
                                 @if (UserId != Guid.Empty)
                                 {
-                                    <RadzenFormField Text="ИД" Variant="@variant" Style="width: 100%; max-width: 600px;">
+                                    <RadzenFormField Text="ИД" Variant="@variant" Style="width: 100%; max-width: 900px;">
                                         <RadzenNumeric @bind-Value="@ActiveUserDTO.Id" ReadOnly="true" />
                                     </RadzenFormField>
                                 }
 
-                                <RadzenFormField Text="Логин" Variant="@variant" Style="width: 100%; max-width: 600px;">
+                                <RadzenFormField Text="Логин" Variant="@variant" Style="width: 100%; max-width: 900px;">
                                     <RadzenTextBox @bind-Value="@ActiveUserDTO.Login" />
                                 </RadzenFormField>
                                 <ValidationMessage For="()=>ActiveUserDTO.Login"></ValidationMessage>
 
 
-                                <RadzenFormField Text="ФИО" Variant="@variant" Style="width: 100%; max-width: 600px;">
+                                <RadzenFormField Text="ФИО" Variant="@variant" Style="width: 100%; max-width: 900px;">
                                     <RadzenTextBox @bind-Value="@ActiveUserDTO.UserName" />
                                 </RadzenFormField>
                                 <ValidationMessage For="()=>ActiveUserDTO.UserName"></ValidationMessage>
 
-                                <RadzenFormField Text="Описание" Variant="@variant" Style="width: 100%; max-width: 600px;">
+                                <RadzenFormField Text="Описание" Variant="@variant" Style="width: 100%; max-width: 900px;">
                                     <RadzenTextBox @bind-Value="@ActiveUserDTO.Description" />
                                 </RadzenFormField>
                                 <ValidationMessage For="()=>ActiveUserDTO.Description"></ValidationMessage>
