@@ -81,7 +81,7 @@
 
                                 <RadzenFormField Text="Производство" Variant="@variant" Style="width: 100%; max-width: 900px;">
                                     <RadzenDropDown @ref=@mesDepartmentDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
-                                                    Data=@MesDepartmentDTOList TextProperty="Name" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveMesParamDTO.DepartmentId" Style="width: 100%; max-width: 900px;" />
+                                                    Data=@MesDepartmentDTOList TextProperty="ToStringHierarchyShortName" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveMesParamDTO.DepartmentId" Style="width: 100%; max-width: 900px;" />
                                 </RadzenFormField>
                                 <ValidationMessage For="()=>ActiveMesParamDTO.DepartmentId"></ValidationMessage>
 
@@ -344,7 +344,7 @@
                         break;
                 }
 
-                MesDepartmentDTOList = await _mesDepartmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
+                MesDepartmentDTOList = (await _mesDepartmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly)).OrderBy(u => u.ToStringHierarchyShortName);
                 MesParamSourceTypeDTOList = await _mesParamSourceTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
                 SapEquipmentDTOList = await _sapEquipmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
                 // if (SD.AppFactoryMode == SD.FactoryMode.NKNH)

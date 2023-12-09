@@ -23,7 +23,7 @@
 @if (IsAdmin == true)
 {
     <_Dialogs @ref="_dialogs"></_Dialogs>
-
+ 
 
     @if (IsLoading)
     {
@@ -56,7 +56,7 @@
                                         </RadzenFormField>
 
                                         <RadzenFormField Text="Производство" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                            <RadzenTextArea @bind-Value="@ActiveReportEntityDTO.ReportDepartmentDTOFK.ShortName" ReadOnly="true" />
+                                            <RadzenTextArea @bind-Value="@ActiveReportEntityDTO.ReportDepartmentDTOFK.ToStringHierarchyShortName" ReadOnly="true" />
                                         </RadzenFormField>
 
                                     </RadzenStack>
@@ -107,7 +107,7 @@
                                          </RadzenFormField>
 
                                          <RadzenFormField Text="Производство" Variant="@variant" Style="width: 100%; max-width: 940px;">
-                                             <RadzenTextBox Value="@ActiveReportEntityDTO.ReportTemplateDTOFK.MesDepartmentDTOFK.ShortName" ReadOnly="true" />
+                                             <RadzenTextBox Value="@ActiveReportEntityDTO.ReportTemplateDTOFK.MesDepartmentDTOFK.ToStringHierarchyShortName" ReadOnly="true" />
                                          </RadzenFormField>
 
                                          <RadzenFormField Text="Наименование шаблона отчёта" Variant="@variant" Style="width: 100%; max-width: 940px;">
@@ -162,7 +162,7 @@
                          </RadzenColumn>
                      </RadzenRow>
                  </RadzenTabsItem>
-                 <RadzenTabsItem Text="Лист TagLibrary)">
+                 <RadzenTabsItem Text="Лист (TagLibrary)">
                      <div class="row">
                          @if (IsLoading != true)
                         {

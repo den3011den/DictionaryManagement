@@ -13,7 +13,6 @@
 
 
 <div class="row my-2">
-   @* <h3 class="card-title text-primary mb-3 ml-3">@Title</h3>*@
 
     <div class="col-md-10">
         @if (IsLoading)
@@ -29,36 +28,35 @@
 
                 <RadzenRow Gap="1rem">
                     <RadzenColumn Size="12">
-                        <RadzenStack>                            
+                        <RadzenStack>
 
-                            @if(MesDepartmentId > 0)
+                            @if (MesDepartmentId > 0)
                             {
-                            <RadzenFormField Text="ИД записи" Variant="@variant" Style="width: 100%; max-width: 700px;">
-                                <RadzenNumeric @bind-Value="@ActiveMesDepartmentDTO.Id" ReadOnly="true"/>
-                            </RadzenFormField>
+                                <RadzenFormField Text="ИД записи" Variant="@variant" Style="width: 100%; max-width: 1100px;">
+                                    <RadzenNumeric @bind-Value="@ActiveMesDepartmentDTO.Id" ReadOnly="true" />
+                                </RadzenFormField>
                             }
 
-
-                            <RadzenFormField Text="Код производства" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                            <RadzenFormField Text="Код производства" Variant="@variant" Style="width: 100%; max-width: 1100px;">
                                 <RadzenNumeric @bind-Value="@ActiveMesDepartmentDTO.MesCode" />
                             </RadzenFormField>
                             <ValidationMessage For="()=>ActiveMesDepartmentDTO.MesCode"></ValidationMessage>
 
-                            <RadzenFormField Text="Наименование" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                            <RadzenFormField Text="Наименование" Variant="@variant" Style="width: 100%; max-width: 1100px;">
                                 <RadzenTextBox @bind-Value="@ActiveMesDepartmentDTO.Name" />
                             </RadzenFormField>
                             <ValidationMessage For="()=>ActiveMesDepartmentDTO.Name"></ValidationMessage>
-                            <RadzenFormField Text="Сокр. наименование" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                            <RadzenFormField Text="Сокр. наименование" Variant="@variant" Style="width: 100%; max-width: 1100px;">
                                 <RadzenTextBox @bind-Value="@ActiveMesDepartmentDTO.ShortName" />
                             </RadzenFormField>
                             <ValidationMessage For="()=>ActiveMesDepartmentDTO.ShortName"></ValidationMessage>
 
-                            <RadzenFormField Text="Родительское производство" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                            <RadzenFormField Text="Родительское производство" Variant="@variant" Style="width: 100%; max-width: 1100px;">
                                 <RadzenDropDown @ref=@mesDepartmentDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
-                                                Data=@MesDepartmentDTOList TextProperty="ShortName" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveMesDepartmentDTO.ParentDepartmentId" Style="width: 100%; max-width: 700px;" />
+                                                Data=@MesDepartmentDTOList TextProperty="ToStringHierarchyShortName" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveMesDepartmentDTO.ParentDepartmentId" Style="width: 100%; max-width: 1100px;" />
                             </RadzenFormField>
                             <ValidationMessage For="()=>ActiveMesDepartmentDTO.ParentDepartmentId"></ValidationMessage>
-                            @* </div>*@                            
+                            @* </div>*@
                         </RadzenStack>
                     </RadzenColumn>
                 </RadzenRow>
@@ -137,7 +135,7 @@
                 ActiveMesDepartmentDTO = await _mesDepartmentRepository.GetById(MesDepartmentId);
                 Title = "Изменить производство";
             }
-            MesDepartmentDTOList = await _mesDepartmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
+            MesDepartmentDTOList = (await _mesDepartmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly)).OrderBy(u => u.ToStringHierarchyShortName);
 
             IsLoading = false;
             StateHasChanged();
@@ -149,7 +147,7 @@
     private async Task AddEditMesDepartmentProcedure()
     {
 
-        if (MesDepartmentId<=0)
+        if (MesDepartmentId <= 0)
         { // создание
             var foundByCode = await _mesDepartmentRepository.GetByCode(ActiveMesDepartmentDTO.MesCode);
             if (foundByCode != null)
@@ -219,7 +217,7 @@
             }
 
             await _mesDepartmentRepository.Update(ActiveMesDepartmentDTO);
-            
+
             await _jsRuntime.ToastrSuccess("Производство \"" + ActiveMesDepartmentDTO.ShortName + "\" изменено");
 
             _dialogService.Close(ActiveMesDepartmentDTO);

@@ -74,11 +74,11 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="MesDepartmentDTOFK.ShortName" Title="Производство" Width="100px" FilterProperty="MesDepartmentDTOFK.ShortName" SortProperty="MesDepartmentDTOFK.ShortName">
+                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="MesDepartmentDTOFK.ToStringHierarchyShortName" Title="Производство" Width="100px" FilterProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" SortProperty="MesDepartmentDTOFK.ToStringHierarchyShortName">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 <strong>
-                                    @data1.MesDepartmentDTOFK.ShortName
+                                    @data1.MesDepartmentDTOFK.ToStringHierarchyShortName
                                 </strong>
                             </div>
                         </Template>

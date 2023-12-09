@@ -88,11 +88,11 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportDepartmentId.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportDepartmentDTOFK == null ? "" : reportEntity.ReportDepartmentDTOFK.ShortName.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportDepartmentDTOFK == null ? "" : reportEntity.ReportDepartmentDTOFK.ToStringHierarchyShortName.ToString();
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportTemplateDTOFK.MesDepartmentDTOFK.Id.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportTemplateDTOFK.MesDepartmentDTOFK.ShortName.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportTemplateDTOFK.MesDepartmentDTOFK.ToStringHierarchyShortName.ToString();
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.DownloadTime == null ? "" : ((DateTime)reportEntity.DownloadTime).ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
@@ -247,7 +247,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.DepartmentId == null ? "" : mesParamDTO.DepartmentId.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.MesDepartmentDTOFK == null ? "" : mesParamDTO.MesDepartmentDTOFK.ShortName;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.MesDepartmentDTOFK == null ? "" : mesParamDTO.MesDepartmentDTOFK.ToStringHierarchyShortName;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentIdSource == null ? "" : mesParamDTO.SapEquipmentIdSource.ToString();
                     excelColNum++;
@@ -716,6 +716,8 @@ namespace DictionaryManagement_Business.Repository
                 excelColNum++;
                 wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "Сокр. наименование производства (MesDepartment.ShortName)";
                 excelColNum++;
+                wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "Сокр. наименование производства - полный путь";
+                excelColNum++;
                 wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "В архиве (MesDepartment.IsArchive)";
 
                 wsRoleToDepartment.Row(excelRowNum).Style.Font.SetBold(true);
@@ -875,6 +877,8 @@ namespace DictionaryManagement_Business.Repository
                             wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.Name;
                             wsRoleToDepartmentColNum++;
                             wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.ShortName;
+                            wsRoleToDepartmentColNum++;
+                            wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.ToStringHierarchyShortName;
                             wsRoleToDepartmentColNum++;
                             wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.IsArchive == true ? "Да" : "";
 
@@ -2351,7 +2355,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.DepartmentId.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.MesDepartmentDTOFK == null ? "" : reportTemplateDTO.MesDepartmentDTOFK.ShortName;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.MesDepartmentDTOFK == null ? "" : reportTemplateDTO.MesDepartmentDTOFK.ToStringHierarchyShortName;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.TemplateFileName;
                     excelColNum++;
@@ -2472,7 +2476,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.DepartmentId.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.DepartmentDTOFK == null ? "" : smenaDTO.DepartmentDTOFK.ShortName;
+                    ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.DepartmentDTOFK == null ? "" : smenaDTO.DepartmentDTOFK.ToStringHierarchyShortName;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = (DateTime.MinValue + smenaDTO.StartTime).ToString("HH:mm:ss", CultureInfo.InvariantCulture);
                     excelColNum++;

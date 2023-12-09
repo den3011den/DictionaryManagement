@@ -89,6 +89,29 @@ namespace DictionaryManagement_Models.IntDBModels
         [NotMapped]
         [Display(Name = "Уровень")]
         public int DepLevel { get; set; }
+
+        [NotMapped]
+        public string ToStringHierarchyShortName
+        {
+            get
+            {
+                string ret_var = ShortName;
+                MesDepartmentDTO mesDepartmentDTO = this;
+                while(mesDepartmentDTO.DepartmentParentDTO != null)
+                {
+                    ret_var = mesDepartmentDTO.DepartmentParentDTO.ShortName + " - " + ret_var;
+                    mesDepartmentDTO = mesDepartmentDTO.DepartmentParentDTO;
+                }
+                return ret_var;
+            }
+            set
+            {
+                ToStringShortName = value;
+            }
+        }
+
+
+
     }
 }
 

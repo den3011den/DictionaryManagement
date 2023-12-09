@@ -95,10 +95,10 @@
                         </Template>
                     </RadzenDataGridColumn>
 
-                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesDepartmentDTOFK" Title="Производство" Width="80px" FilterProperty="MesDepartmentDTOFK.ToStringShortName" SortProperty="MesDepartmentDTOFK.ToStringShortName">
+                    <RadzenDataGridColumn TItem="MesParamDTO" Property="MesDepartmentDTOFK" Title="Производство" Width="80px" FilterProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" SortProperty="MesDepartmentDTOFK.ToStringHierarchyShortName">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                @(data1.MesDepartmentDTOFK == null ? "" : data1.MesDepartmentDTOFK.ToStringShortName)
+                                @(data1.MesDepartmentDTOFK == null ? "" : data1.MesDepartmentDTOFK.ToStringHierarchyShortName)
                             </div>
                         </Template>
                     </RadzenDataGridColumn>
