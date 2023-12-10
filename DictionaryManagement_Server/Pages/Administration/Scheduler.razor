@@ -141,6 +141,9 @@
     {
         await Task.CompletedTask;
 
+        if (!(await SD.CheckPageSettingsVersion("SchedulerGridSettings", _jsRuntime)))
+            return;
+
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SchedulerGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -153,6 +156,7 @@
         await Task.CompletedTask;
 
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SchedulerGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SchedulerGridSettings)}')");
+        await SD.SetPageSettingsVersion("SchedulerGridSettings", _jsRuntime);
     }
 
 

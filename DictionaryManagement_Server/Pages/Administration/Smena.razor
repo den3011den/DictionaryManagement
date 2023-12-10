@@ -152,6 +152,8 @@
     {
         await Task.CompletedTask;
 
+        if (!(await SD.CheckPageSettingsVersion("SmenaGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SmenaGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -164,6 +166,7 @@
         await Task.CompletedTask;
 
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SmenaGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SmenaGridSettings)}')");
+        await SD.SetPageSettingsVersion("SmenaGridSettings", _jsRuntime);
     }
 
 

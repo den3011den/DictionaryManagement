@@ -190,6 +190,9 @@
     {
         await Task.CompletedTask;
 
+        if (!(await SD.CheckPageSettingsVersion("MesDepartmentGridSettings", _jsRuntime)))
+            return;
+
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "MesDepartmentGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -202,6 +205,7 @@
         await Task.CompletedTask;
 
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesDepartmentGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesDepartmentGridSettings)}')");        
+        await SD.SetPageSettingsVersion("MesDepartmentGridSettings", _jsRuntime);
     }
 
 

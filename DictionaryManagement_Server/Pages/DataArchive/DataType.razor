@@ -156,7 +156,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("DataTypeGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "DataTypeGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -166,8 +167,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('DataTypeGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(DataTypeGridSettings)}')");
+        await SD.SetPageSettingsVersion("DataTypeGridSettings", _jsRuntime);
     }
 
 

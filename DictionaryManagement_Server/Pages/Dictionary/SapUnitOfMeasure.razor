@@ -143,7 +143,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("SapUnitOfMeasureGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SapUnitOfMeasureGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -153,8 +154,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SapUnitOfMeasureGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SapUnitOfMeasureGridSettings)}')");
+        await SD.SetPageSettingsVersion("SapUnitOfMeasureGridSettings", _jsRuntime);
     }
 
 

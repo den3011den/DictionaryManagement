@@ -33,13 +33,14 @@
                             Data="@settingsDTOs" TItem="SettingsDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"                            
                             FilterMode="FilterMode.Advanced"
+                            Density=Density.Compact
                             AllowColumnResize="false"
                             AllowVirtualization="true"
                             GridLines="DataGridGridLines.Both"
                             Style="height:calc(100vh - 170px)">
                 <Columns>
                     <RadzenDataGridColumnApp TItem="SettingsDTO" Property="Id" Title="Ид записи" Width="90px" />
-                    <RadzenDataGridColumnApp TItem="SettingsDTO" Property="Name" Title="Наименование" Width="280px">
+                    <RadzenDataGridColumnApp TItem="SettingsDTO" Property="Name" Title="Наименование" Width="200px">
                         <EditTemplate Context="settingsDTO">
                             <RadzenTextBox @bind-Value="settingsDTO.Name" Style="width:100%; display: block" Name="Name"/>
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
@@ -47,7 +48,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="SettingsDTO" Property="Description" Title="Описание">
+                    <RadzenDataGridColumnApp TItem="SettingsDTO" Property="Description" Title="Описание" Width="200px">
                         <Template Context="settingsDTO">
                             <div style="white-space:pre-wrap">
                                 @settingsDTO.Description
@@ -59,7 +60,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="SettingsDTO" Property="Value" Title="Значение настройки" Width="280px">
+                    <RadzenDataGridColumnApp TItem="SettingsDTO" Property="Value" Title="Значение настройки" Width="220px">
                         <Template Context="settingsDTO">
                             <div style="white-space:pre-wrap">
                                 @settingsDTO.Value
@@ -152,6 +153,9 @@
     {
         await Task.CompletedTask;
 
+        if (!(await SD.CheckPageSettingsVersion("SettingsGridSettings", _jsRuntime)))
+            return;
+
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SettingsGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -164,6 +168,7 @@
         await Task.CompletedTask;
 
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SettingsGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SettingsGridSettings)}')");
+        await SD.SetPageSettingsVersion("SettingsGridSettings", _jsRuntime);
     }
 
 

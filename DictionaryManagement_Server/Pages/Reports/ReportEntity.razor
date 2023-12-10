@@ -244,7 +244,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("ReportEntityGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "ReportEntityGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -255,8 +256,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('ReportEntityGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(ReportEntityGridSettings)}')");
+        await SD.SetPageSettingsVersion("ReportEntityGridSettings", _jsRuntime);
     }
 
     async Task DownloadReportEntityDownloadFile(Guid id)

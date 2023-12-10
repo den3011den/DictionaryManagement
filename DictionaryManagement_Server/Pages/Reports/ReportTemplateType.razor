@@ -147,7 +147,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("ReportTemplateTypeGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "ReportTemplateTypeGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -157,8 +158,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('ReportTemplateTypeGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(ReportTemplateTypeGridSettings)}')");
+        await SD.SetPageSettingsVersion("ReportTemplateTypeGridSettings", _jsRuntime);
     }
 
 

@@ -1,4 +1,7 @@
-﻿namespace DictionaryManagement_Common
+﻿using System.Text.Json;
+using Microsoft.JSInterop;
+
+namespace DictionaryManagement_Common
 {
     public static class SD
     {
@@ -74,5 +77,44 @@
 
             return file_name;
         }
+
+        public async static Task<bool> CheckPageSettingsVersion(string settingName, IJSRuntime iJSRuntime)
+        {
+            
+            bool needDeleteSettings = false;
+            
+            string resultVersion = (await iJSRuntime.InvokeAsync<string>("window.localStorage.getItem", settingName + "Version"));
+            if (resultVersion == null)
+            {
+                needDeleteSettings = true;
+            }
+            else
+            {
+                string? currVersion = JsonSerializer.Deserialize<string>(resultVersion);
+                if (currVersion == null)
+                {
+                    needDeleteSettings = true;
+                }
+                else
+                {
+                    if (currVersion.Trim().ToUpper() != SD.AppVersion.Trim().ToUpper())
+                    {
+                        needDeleteSettings = true;
+                    }
+                }
+
+                if (needDeleteSettings)
+                {
+                    await iJSRuntime.InvokeAsync<string>("window.localStorage.removeItem", settingName);
+                }
+            }
+            return !needDeleteSettings;
+        }
+        public async static Task SetPageSettingsVersion(string settingName, IJSRuntime iJSRuntime)
+        {
+            await iJSRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('{settingName}Version',
+                '{JsonSerializer.Serialize<string>(SD.AppVersion)}')");
+        }
+
     }
 }

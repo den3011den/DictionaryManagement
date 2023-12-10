@@ -348,7 +348,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("MesMovementsGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "MesMovementsGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -361,6 +362,7 @@
         await Task.CompletedTask;
 
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesMovementsGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesMovementsGridSettings)}')");
+        await SD.SetPageSettingsVersion("MesMovementsGridSettings", _jsRuntime);
     }
 
 

@@ -140,7 +140,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("CorrectionReasonGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "CorrectionReasonGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -150,8 +151,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('CorrectionReasonGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(CorrectionReasonGridSettings)}')");
+        await SD.SetPageSettingsVersion("CorrectionReasonGridSettings", _jsRuntime);
     }
 
 

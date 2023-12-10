@@ -166,7 +166,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("SapEquipmentGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SapEquipmentGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -176,8 +177,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SapEquipmentGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SapEquipmentGridSettings)}')");
+        await SD.SetPageSettingsVersion("SapEquipmentGridSettings", _jsRuntime);
     }
 
     protected override async Task OnInitializedAsync()

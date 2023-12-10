@@ -193,7 +193,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("UserGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "UserGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -204,8 +205,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('UserGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(UserGridSettings)}')");
+        await SD.SetPageSettingsVersion("UserGridSettings", _jsRuntime);
     }
 
 

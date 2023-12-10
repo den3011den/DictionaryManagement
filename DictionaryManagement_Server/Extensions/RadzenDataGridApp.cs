@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using DictionaryManagement_Common;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Radzen;
 using Radzen.Blazor;
@@ -46,7 +47,7 @@ namespace DictionaryManagement_Server.Extensions
             base.PagingSummaryFormat = $"Страница {{0}} из {{1}} (всего записей {{2}} )";
             base.Density = Density.Compact;
             base.EmptyTemplate = EmptyTemplateRender;
-            base.HeaderTemplate = HeaderTemplateRender;            
+            base.HeaderTemplate = HeaderTemplateRender;
         }
 
 
@@ -149,7 +150,7 @@ namespace DictionaryManagement_Server.Extensions
             if (Settings != null)
             {
                 foreach (var c in this.Settings.Columns)
-                {                    
+                {
                     c.FilterValue = null;
                     c.SecondFilterValue = null;
                 }
@@ -189,6 +190,5 @@ namespace DictionaryManagement_Server.Extensions
             await Task.CompletedTask;
             await JS.InvokeVoidAsync("eval", "window.localStorage.setItem('" + SettingsName + "', '" + JsonSerializer.Serialize<DataGridSettings>(Settings) + "')");
         }
-
     }
 }

@@ -20,6 +20,8 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task<UserDTO> Create(UserDTO objectToAddDTO)
         {
+
+            objectToAddDTO.UserName = objectToAddDTO.UserName.Replace("\\", "_").Replace("/", "_"); ;
             var objectToAdd = _mapper.Map<UserDTO, User>(objectToAddDTO);
             var addedUser = _db.User.Add(objectToAdd);
             _db.SaveChanges();
@@ -111,6 +113,7 @@ namespace DictionaryManagement_Business.Repository
             {
                 if (updateMode == SD.UpdateMode.Update)
                 {
+                    objectToUpdateDTO.UserName = objectToUpdateDTO.UserName.Replace("\\", "_").Replace("/", "_");
                     if (objectToUpdate.Login != objectToUpdateDTO.Login)
                         objectToUpdate.Login = objectToUpdateDTO.Login;
                     if (objectToUpdate.UserName != objectToUpdateDTO.UserName)

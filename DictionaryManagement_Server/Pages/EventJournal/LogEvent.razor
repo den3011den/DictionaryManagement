@@ -254,7 +254,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("LogEventGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "LogEventGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -266,6 +267,7 @@
     {
         await Task.CompletedTask;
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('LogEventGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(LogEventGridSettings)}')");
+        await SD.SetPageSettingsVersion("LogEventGridSettings", _jsRuntime);
     }
 
 

@@ -321,6 +321,9 @@
     {
         await Task.CompletedTask;
 
+        if (!(await SD.CheckPageSettingsVersion("RoleGridSettings", _jsRuntime)))
+            return;
+
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "RoleGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -331,8 +334,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('RoleGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(RoleGridSettings)}')");
+        await SD.SetPageSettingsVersion("RoleGridSettings", _jsRuntime);
     }
 
 
