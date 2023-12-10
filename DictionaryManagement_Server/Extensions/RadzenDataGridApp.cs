@@ -149,7 +149,7 @@ namespace DictionaryManagement_Server.Extensions
             if (Settings != null)
             {
                 foreach (var c in this.Settings.Columns)
-                {
+                {                    
                     c.FilterValue = null;
                     c.SecondFilterValue = null;
                 }
