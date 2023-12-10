@@ -65,7 +65,7 @@
                                GridLines="DataGridGridLines.Both">
                 <Columns>
                     <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
-                                          FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
+                                          FilterProperty="Id" SortProperty="Id">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 @data1.ToStringId
@@ -73,7 +73,7 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Property="MesParamDTOFK.ToStringId" Title="ИД тэга СИР" FilterProperty="MesParamDTOFK.ToStringId" SortProperty="MesParamDTOFK.ToStringId" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Property="MesParamDTOFK.ToStringId" Title="ИД тэга СИР" FilterProperty="MesParamDTOFK.Id" SortProperty="MesParamDTOFK.Id">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.MesParamDTOFK.ToStringId
@@ -131,7 +131,7 @@
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Property="ToStringValue" Title="Значение" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
-                                          FilterProperty="ToStringValue" SortProperty="Value" FilterOperator="FilterOperator.Contains">
+                                          FilterProperty="Value" SortProperty="Value">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
@@ -142,7 +142,7 @@
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Property="ToStringValueDifference" Title="Разность" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
-                                          FilterProperty="ToStringValueDifference" SortProperty="ValueDifference" FilterOperator="FilterOperator.Contains">
+                                          FilterProperty="ValueDifference" SortProperty="ValueDifference">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
@@ -165,7 +165,7 @@
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Property="SapNdoOUTDTOFK.ToStringId" Title="ИД записи в витрине" TextAlign="TextAlign.Center"
-                                          FilterProperty="SapNdoOUTDTOFK.ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="SapNdoOUTDTOFK.ToStringId">
+                                          FilterProperty="SapNdoOUTDTOFK.Id" SortProperty="SapNdoOUTDTOFK.Id">
                         <Template Context="data1">
                             @if (data1.SapNdoOutId != null)
                             {

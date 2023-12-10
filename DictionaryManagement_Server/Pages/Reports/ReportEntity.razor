@@ -212,8 +212,7 @@
                 IsLoading = true;
                 await LoadStateAsync();
                 StateHasChanged();
-                await GetRows();
-                //reportEntityDTOs = await _reportEntityRepository.GetAllByDownloadTimeInterval(startDate, endDate);
+                await GetRows();                
 
                 IsLoading = false;
                 StateHasChanged();
@@ -229,6 +228,9 @@
     {
         get
         {
+            // var ttt = new DataGridColumnSettings();
+            // ttt.Property = 
+            // _reportEntityGridSettings.Columns.Append
             return _reportEntityGridSettings;
         }
         set
@@ -244,6 +246,7 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
+        
         if (!(await SD.CheckPageSettingsVersion("ReportEntityGridSettings", _jsRuntime)))
             return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "ReportEntityGridSettings");
@@ -339,6 +342,8 @@
     }
     async Task ExcelExport()
     {
+
+        var ttt = reportEntityDTOGrid;
         excelExportFlag = true;
         await Task.Delay(200);
         await InvokeAsync(StateHasChanged);

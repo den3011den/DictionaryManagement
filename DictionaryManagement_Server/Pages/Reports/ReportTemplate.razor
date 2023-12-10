@@ -41,13 +41,13 @@
             <RadzenDataGridApp @bind-Settings="@ReportTemplateGridSettings" SettingsName="ReportTemplateGridSettings" @ref="reportTemplateDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@reportTemplateDTOs" TItem="ReportTemplateDTO"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                               FilterMode="FilterMode.Advanced"
+                               FilterMode="FilterMode.SimpleWithMenu"
                                Density=Density.Compact
                                ShowPagingSummary="true"
                                AllowColumnResize="false"
                                AllowVirtualization="true"
                                GridLines="DataGridGridLines.Both"
-                               Style="height:calc(100vh - 170px)"
+                               Style="height:calc(100vh - 190px)"
                                ShowCleanGridSortsHeaderButton="false"
                                ShowCleanGridFiltersHeaderButton="false"
                                ShowCleanGridSettingsHeaderButton="false">
@@ -65,20 +65,25 @@
                 </HeaderTemplate>
                 <Columns>
 
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="ToStringId" Title="Ид шаблона отчёта" Width="110px"
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="ToStringId" Title="Ид шаблона отчёта" Width="70px"
                                              FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
+                        <Template Context="data1">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                @data1.ToStringId
+                            </div>
+                        </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" Width="60px">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" Width="70px">
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Добавил" Property="AddUserDTOFK.UserName" Type="typeof(IEnumerable<string>)" Width="55px"
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Добавил" Property="AddUserDTOFK.UserName" Type="typeof(IEnumerable<string>)" Width="70px"
                                              FilterValue="@selectedAddUsers" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
                         <FilterTemplate>
                             <RadzenDropDown @bind-Value=@selectedAddUsers
                                             Change=OnSelectedAddUsersChange Data="@(distinctAddUsersInList)" AllowClear="true" Multiple="true"
-                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Style="width: 300px"
-                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано"/>
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Style="width: 300px; font-size:0.75rem"
+                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
                         </FilterTemplate>
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
@@ -91,35 +96,35 @@
                         <FilterTemplate>
                             <RadzenDropDown @bind-Value=@selectedReportTemplates
                                             Change=OnSelectedReportTemplatesChange Data="@(distinctReportTemplatesInList)" AllowClear="true" Multiple="true"
-                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Style="width: 300px"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Style="width: 300px; font-size:0.75rem"
                                             SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
                         </FilterTemplate>
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
-                        @data1.ReportTemplateTypeDTOFK.Name
+                                @data1.ReportTemplateTypeDTOFK.Name
                             </div>
                         </Template>
                     </RadzenDataGridColumnApp>
-            
+
                     <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Производство" Property="MesDepartmentDTOFK.ToStringHierarchyShortName" Type="typeof(IEnumerable<string>)" Width="100px"
                                              FilterProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" SortProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" FilterValue="@selectedMesDepartments"
                                              FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
                         <FilterTemplate>
                             <RadzenDropDown @bind-Value=@selectedMesDepartments
                                             Change=OnSelectedMesDepartmentsChange Data="@(distinctMesDepartmentsInList)" AllowClear="true" Multiple="true"
-                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Style="width: 500px"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Style="width: 500px; font-size:0.75rem"
                                             SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
                         </FilterTemplate>
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 <strong>
-                            @data1.MesDepartmentDTOFK.ToStringHierarchyShortName
+                                    @data1.MesDepartmentDTOFK.ToStringHierarchyShortName
                                 </strong>
                             </div>
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Тип вых данных" Property="DestDataTypeDTOFK.Name" Type="typeof(IEnumerable<string>)" Width="60px"
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Тип выходных данных" Property="DestDataTypeDTOFK.Name" Type="typeof(IEnumerable<string>)" Width="70px"
                                              FilterValue="@selectedDestDataTypes" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
 
                         <FilterTemplate>
@@ -131,19 +136,10 @@
 
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
-                        @data1.DestDataTypeDTOFK.Name
+                                @data1.DestDataTypeDTOFK.Name
                             </div>
                         </Template>
                     </RadzenDataGridColumnApp>
-
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="TemplateFileName" Title="Имя файла" Width="90px">
-                        <Template Context="data1">
-                            <div style="white-space:pre-wrap">
-                        @data1.TemplateFileName
-                            </div>
-                        </Template>
-                    </RadzenDataGridColumnApp>
-
 
                     <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="25px" TextAlign="TextAlign.Center">
                         <Template Context="data">
@@ -151,22 +147,22 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp Title="Действия" TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="65px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="50px">
                         <Template Context="reportTemplateDTO">
                             <RadzenButton title="Скачать файл шаблона" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadTemplate(reportTemplateDTO.Id))" @onclick:stopPropagation="true">
                             </RadzenButton>
                             <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(reportTemplateDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
-                    @if (!reportTemplateDTO.IsArchive)
-                    {
+                            @if (!reportTemplateDTO.IsArchive)
+                            {
                                 <RadzenButton title="Удалить в архив" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
                                 </RadzenButton>
-                    }
-                    else
-                    {
+                            }
+                            else
+                            {
                                 <RadzenButton title="Восстановить из архива" ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
                                 </RadzenButton>
-                    }
+                            }
                         </Template>
                     </RadzenDataGridColumnApp>
                 </Columns>
@@ -188,6 +184,11 @@
 
     </div>
 }
+<style>
+    .rz-dropdown-item, .rz-menuitem, .rz-autocomplete-list-item, .rz-multiselect-item, .rz-dropdown-items li, .rz-autocomplete-items li, .rz-multiselect-items li {
+        font-size: 0.75rem;
+    }
+</style>
 
 @code {
 
@@ -298,10 +299,8 @@
                 if (col_var4.FilterValue != null)
                 {
                     selectedAddUsers = JsonSerializer.Deserialize<List<string>>(col_var4.FilterValue.ToString());
-                }                
+                }
             }
-
-
         }
     }
 
