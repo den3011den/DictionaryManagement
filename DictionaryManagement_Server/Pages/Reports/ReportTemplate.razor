@@ -78,7 +78,7 @@
                             <RadzenDropDown @bind-Value=@selectedAddUsers
                                             Change=OnSelectedAddUsersChange Data="@(distinctAddUsersInList)" AllowClear="true" Multiple="true"
                                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Style="width: 300px"
-                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
+                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано"/>
                         </FilterTemplate>
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
@@ -191,21 +191,21 @@
 
 @code {
 
-    _Dialogs? _dialogs { get; set; }
+        _Dialogs? _dialogs { get; set; }
 
-    IEnumerable<ReportTemplateDTO>? reportTemplateDTOs;
+        IEnumerable<ReportTemplateDTO>? reportTemplateDTOs;
 
-    RadzenDataGrid<ReportTemplateDTO> reportTemplateDTOGrid;
+        RadzenDataGrid<ReportTemplateDTO> reportTemplateDTOGrid;
 
-    IEnumerable<string> selectedReportTemplates;
-    IEnumerable<string> selectedDestDataTypes;
-    IEnumerable<string> selectedMesDepartments;
-    IEnumerable<string> selectedAddUsers;
+        IEnumerable<string> selectedReportTemplates;
+        IEnumerable<string> selectedDestDataTypes;
+        IEnumerable<string> selectedMesDepartments;
+        IEnumerable<string> selectedAddUsers;
 
-    List<string> distinctReportTemplatesInList = new List<string>();
-    List<string> distinctDestDataTypesInList = new List<string>();
-    List<string> distinctMesDepartmentsInList = new List<string>();
-    List<string> distinctAddUsersInList = new List<string>();
+        List<string> distinctReportTemplatesInList = new List<string>();
+        List<string> distinctDestDataTypesInList = new List<string>();
+        List<string> distinctMesDepartmentsInList = new List<string>();
+        List<string> distinctAddUsersInList = new List<string>();
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
@@ -237,7 +237,7 @@
                     .Select(u => u.AddUserDTOFK.UserName).Distinct().ToList();
 
                 await LoadStateAsync();
-                
+
                 IsLoading = false;
                 StateHasChanged();
             }
@@ -268,6 +268,28 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
+
+        bool needDeleteSettings = false;
+        string resultVersion = (await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "ReportTemplateGridSettingsVersion"));
+        if (resultVersion == null)
+        {
+            needDeleteSettings = true;
+        }
+        else
+        {
+            string? currVersion = JsonSerializer.Deserialize<string>(resultVersion);
+            if (currVersion.Trim().ToUpper() != SD.AppVersion.Trim().ToUpper())
+            {
+                needDeleteSettings = true;
+            }                
+        }
+
+        if (needDeleteSettings)
+        {
+            await _jsRuntime.InvokeAsync<string>("window.localStorage.removeItem", "ReportTemplateGridSettings");
+            return;
+        }
+
 
         var result = (await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "ReportTemplateGridSettings"));
         if (!string.IsNullOrEmpty(result))
@@ -308,6 +330,10 @@
 
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('ReportTemplateGridSettings',
             '{JsonSerializer.Serialize<DataGridSettings>(ReportTemplateGridSettings)}')");
+
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('ReportTemplateGridSettingsVersion',
+            '{JsonSerializer.Serialize<string>(SD.AppVersion)}')");
+
     }
 
     async Task DownloadTemplate(Guid id)
