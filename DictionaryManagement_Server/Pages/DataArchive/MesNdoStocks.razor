@@ -128,7 +128,6 @@
                     <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Title="Кто добaвил" Property="AddUserDTOFK.UserName" Type="typeof(IEnumerable<string>)"
                                              TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
                                              FilterValue="@selectedAddUsers" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
-
                         <FilterTemplate>
                             <RadzenDropDown @bind-Value=@selectedAddUsers
                                             Change=OnSelectedAddUsersChange Data="@(distinctAddUsersInList)" AllowClear="true" Multiple="true"
@@ -136,7 +135,6 @@
                                             Style="font-size:0.75rem;width: 100%;"
                                             SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
                         </FilterTemplate>
-
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 @data1.AddUserDTOFK.UserName
@@ -268,9 +266,7 @@
 
     [CascadingParameter]
     bool iconMenuActive { get; set; }
-
-    string columnAddUserStyle { get; set; } = "font-size:0.75rem;width: 200px; max-width:";
-
+    
     _Dialogs? _dialogs { get; set; }
 
     IEnumerable<MesNdoStocksDTO>? mesNdoStocksDTOs;
@@ -309,8 +305,6 @@
             {
                 applyRadioGroupValue = 1;
                 ApplyButtonDisabled = false;
-
-                //await GetRows();
 
                 startDate = DateTime.Today.AddDays(-7);
                 endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
