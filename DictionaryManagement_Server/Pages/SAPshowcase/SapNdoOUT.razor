@@ -52,14 +52,14 @@
             <RadzenDataGridApp @bind-Settings="@SapNdoOUTGridSettings" SettingsName="SapNdoOUTGridSettings" @ref="sapNdoOUTDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@sapNdoOUTDTOs" TItem="SapNdoOUTDTO"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                               FilterMode="FilterMode.Advanced"
+                               FilterMode="FilterMode.SimpleWithMenu"
                                Density=Density.Compact
                                ShowPagingSummary="true"
                                EmptyText="Нет записей для отображения"
                                AllowVirtualization="true"
                                AllowColumnReorder="true"
                                AllowColumnResize="true"
-                               Style=@(iconMenuActive ? "height:calc(100vh - 170px); width:1760px" : "height:calc(100vh - 170px); width:1600px")
+                               Style=@(iconMenuActive ? "height:calc(100vh - 190px); width:1760px" : "height:calc(100vh - 190px); width:1600px")
                                ColumnWidth="200px"
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both">
@@ -159,6 +159,12 @@
 
     </div>
 }
+
+<style>
+    .rz-dropdown-item, .rz-menuitem, .rz-autocomplete-list-item, .rz-multiselect-item, .rz-dropdown-items li, .rz-autocomplete-items li, .rz-multiselect-items li {
+        font-size: 0.75rem;
+    }
+</style>
 
 @code {
     [CascadingParameter]

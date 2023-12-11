@@ -123,7 +123,7 @@
                                              FilterValue="@selectedDownloadUsers" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
                         <FilterTemplate>
                             <RadzenDropDown @bind-Value=@selectedDownloadUsers
-                                            Change=OnSelectedReportTemplateTypesChange Data="@(distinctDownloadUsersInList)" AllowClear="true" Multiple="true"
+                                            Change=OnSelectedDownloadUsersChange Data="@(distinctDownloadUsersInList)" AllowClear="true" Multiple="true"
                                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Style="width: 300px; font-size:0.75rem"
                                             SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
                         </FilterTemplate>
@@ -148,7 +148,7 @@
                                              FilterValue="@selectedUploadUsers" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
                         <FilterTemplate>
                             <RadzenDropDown @bind-Value=@selectedUploadUsers
-                                            Change=OnSelectedReportTemplateTypesChange Data="@(distinctUploadUsersInList)" AllowClear="true" Multiple="true"
+                                            Change=OnSelectedUploadUsersChange Data="@(distinctUploadUsersInList)" AllowClear="true" Multiple="true"
                                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Style="width: 300px; font-size:0.75rem"
                                             SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
                         </FilterTemplate>

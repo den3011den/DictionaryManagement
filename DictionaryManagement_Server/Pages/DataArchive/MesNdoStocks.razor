@@ -52,7 +52,7 @@
             <RadzenDataGridApp @bind-Settings="@MesNdoStocksGridSettings" SettingsName="MesNdoStocksGridSettings" @ref="mesNdoStocksDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@mesNdoStocksDTOs" TItem="MesNdoStocksDTO"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                               FilterMode="FilterMode.Advanced"
+                               FilterMode="FilterMode.SimpleWithMenu"
                                Density=Density.Compact
                                ShowPagingSummary="true"
                                EmptyText="Нет записей для отображения"
@@ -62,10 +62,25 @@
                                Style=@(iconMenuActive ? "height:calc(100vh - 170px); width:1760px" : "height:calc(100vh - 170px); width:1600px")
                                ColumnWidth="200px"
                                AllowColumnPicking="true"
-                               GridLines="DataGridGridLines.Both">
+                               GridLines="DataGridGridLines.Both"                            
+                               ShowCleanGridSettingsHeaderButton="false"
+                               ShowCleanGridFiltersHeaderButton="false"
+                               ShowCleanGridSortsHeaderButton="false">
+                <HeaderTemplate>
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить настройки интерфейса страницы" Icon="settings"
+                                  ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanPageSettingsCustom()">
+                    </RadzenButton>
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все фильтры" Icon="filter_alt"
+                                  ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanAllFiltersCustom()">
+                    </RadzenButton>
+
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все сортировки" Icon="swap_vert"
+                                  ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanAllOrdersCustom()">
+                    </RadzenButton>
+                </HeaderTemplate>
                 <Columns>
                     <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
-                                          FilterProperty="Id" SortProperty="Id">
+                                             FilterProperty="Id" SortProperty="Id">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 @data1.ToStringId
@@ -108,15 +123,25 @@
                                 </strong>
                             </div>
                         </Template>
-
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Property="AddUserDTOFK.UserName" Title="Кто добавил"
-                                          TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Title="Кто добaвил" Property="AddUserDTOFK.UserName" Type="typeof(IEnumerable<string>)"
+                                             TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
+                                             FilterValue="@selectedAddUsers" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
+
+                        <FilterTemplate>
+                            <RadzenDropDown @bind-Value=@selectedAddUsers
+                                            Change=OnSelectedAddUsersChange Data="@(distinctAddUsersInList)" AllowClear="true" Multiple="true"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true"
+                                            Style="font-size:0.75rem;width: 100%;"
+                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
+                        </FilterTemplate>
+
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 @data1.AddUserDTOFK.UserName
                             </div>
+
                         </Template>
                     </RadzenDataGridColumnApp>
 
@@ -131,7 +156,7 @@
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Property="ToStringValue" Title="Значение" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
-                                          FilterProperty="Value" SortProperty="Value">
+                                             FilterProperty="Value" SortProperty="Value">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
@@ -142,7 +167,7 @@
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Property="ToStringValueDifference" Title="Разность" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
-                                          FilterProperty="ValueDifference" SortProperty="ValueDifference">
+                                             FilterProperty="ValueDifference" SortProperty="ValueDifference">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
@@ -165,7 +190,7 @@
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Property="SapNdoOUTDTOFK.ToStringId" Title="ИД записи в витрине" TextAlign="TextAlign.Center"
-                                          FilterProperty="SapNdoOUTDTOFK.Id" SortProperty="SapNdoOUTDTOFK.Id">
+                                             FilterProperty="SapNdoOUTDTOFK.Id" SortProperty="SapNdoOUTDTOFK.Id">
                         <Template Context="data1">
                             @if (data1.SapNdoOutId != null)
                             {
@@ -189,7 +214,7 @@
 
 
                     <RadzenDataGridColumnApp TItem="MesNdoStocksDTO" Property="SapNdoOUTDTOFK.SapGoneTime" Title="Время Sap забрал" TextAlign="TextAlign.Center"
-                                          FilterProperty="SapNdoOUTDTOFK.SapGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="SapNdoOUTDTOFK.SapGoneTime">
+                                             FilterProperty="SapNdoOUTDTOFK.SapGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="SapNdoOUTDTOFK.SapGoneTime">
                         <Template Context="data1">
                             @if (data1.SapNdoOutId != null)
                             {
@@ -232,16 +257,29 @@
     </div>
 }
 
+<style>
+    .rz-dropdown-item, .rz-menuitem, .rz-autocomplete-list-item, .rz-multiselect-item, .rz-dropdown-items li, .rz-autocomplete-items li, .rz-multiselect-items li {
+        font-size: 0.75rem;
+    }
+</style>
+
+
 @code {
 
     [CascadingParameter]
     bool iconMenuActive { get; set; }
 
+    string columnAddUserStyle { get; set; } = "font-size:0.75rem;width: 200px; max-width:";
+
     _Dialogs? _dialogs { get; set; }
 
     IEnumerable<MesNdoStocksDTO>? mesNdoStocksDTOs;
 
+    IEnumerable<string> selectedAddUsers;
+
     RadzenDataGrid<MesNdoStocksDTO> mesNdoStocksDTOGrid;
+
+    List<string> distinctAddUsersInList = new List<string>();
 
     DateTime startDate = DateTime.Today.AddDays(-7);
     DateTime endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
@@ -284,7 +322,6 @@
                 StateHasChanged();
 
                 await GetRows();
-                //mesNdoStocksDTOs = await _mesNdoStocksRepository.GetAllByTimeInterval(startDate, endDate, "VALUETIME");
 
                 IsLoading = false;
                 StateHasChanged();
@@ -321,6 +358,15 @@
         if (!string.IsNullOrEmpty(result))
         {
             _mesNdoStocksGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+            if (_mesNdoStocksGridSettings != null)
+            {
+                var col_var = _mesNdoStocksGridSettings.Columns.Where(c => c.Property == "AddUserDTOFK.UserName").FirstOrDefault();
+                if (col_var.FilterValue != null)
+                {
+                    selectedAddUsers = JsonSerializer.Deserialize<List<string>>(col_var.FilterValue.ToString());
+                }
+            }
+
         }
     }
     private async Task SaveStateAsync()
@@ -357,6 +403,10 @@
             mesNdoStocksDTOs = await _mesNdoStocksRepository.GetAllByTimeInterval(startDate, endDate, "VALUETIME");
         else
             mesNdoStocksDTOs = await _mesNdoStocksRepository.GetAllByTimeInterval(startDate, endDate, "ADDTIME");
+
+        List<string> distinctAddUsersInList = new List<string>();
+        await GetDistincts();
+
         ApplyButtonDisabled = true;
         IsLoading = false;
         StateHasChanged();
@@ -409,11 +459,111 @@
         await Task.Delay(200);
         await InvokeAsync(StateHasChanged);
     }
-}
 
-@code
-{
-    
+    async Task GetDistincts()
+    {
+        if (mesNdoStocksDTOs != null)
+        {
+            distinctAddUsersInList = (List<string>)mesNdoStocksDTOs.Where(u => u.AddUserDTOFK != null).OrderBy(u => u.AddUserDTOFK.UserName)
+                .Select(u => u.AddUserDTOFK.UserName).Distinct().ToList();
+        }
+    }
+
+    void OnSelectedAddUsersChange(object value)
+    {
+        if (selectedAddUsers != null && !selectedAddUsers.Any())
+        {
+            selectedAddUsers = null;
+        }
+    }
+
+
+    private async Task CleanPageSettingsCustom()
+    {
+        await Task.CompletedTask;
+        var selectionResult = await _dialogService.Confirm("Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Сбросить настройки интерфейса страницы",
+        new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
+
+        if (selectionResult != true)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        var result = await _jsRuntime.InvokeAsync<string>
+            ("window.localStorage.removeItem", "MesNdoStocksGridSettings");
+
+        MesNdoStocksGridSettings = null;
+
+        selectedAddUsers = null;
+
+        if (mesNdoStocksDTOs != null)
+        {
+            await GetDistincts();
+        }
+
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    async Task CleanAllFiltersCustom()
+    {
+        var selectionResult = await _dialogService.Confirm("Будут очищены все фильтры", "Очистить фильтры",
+        new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
+
+        if (selectionResult != true)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        if (MesNdoStocksGridSettings != null)
+        {
+            foreach (var c in MesNdoStocksGridSettings.Columns)
+            {
+                c.FilterValue = null;
+                c.SecondFilterValue = null;
+            }
+
+        }
+
+        selectedAddUsers = null;
+
+        if (mesNdoStocksDTOs != null)
+        {
+            await GetDistincts();
+        }
+
+        await InvokeAsync(SaveStateAsync);
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    async Task CleanAllOrdersCustom()
+    {
+
+        var selectionResult = await _dialogService.Confirm("Будут очищены все сортировки", "Очистить сортировки",
+        new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
+
+        if (selectionResult != true)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        if (MesNdoStocksGridSettings != null)
+        {
+            foreach (var c in MesNdoStocksGridSettings.Columns)
+            {
+                c.SortOrder = null;
+            }
+            await InvokeAsync(SaveStateAsync);
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
 }
 
 
