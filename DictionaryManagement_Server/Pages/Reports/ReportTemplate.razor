@@ -307,15 +307,9 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('ReportTemplateGridSettings',
             '{JsonSerializer.Serialize<DataGridSettings>(ReportTemplateGridSettings)}')");
-
-        // await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('ReportTemplateGridSettingsVersion',
-        //     '{JsonSerializer.Serialize<string>(SD.AppVersion)}')");
-
         await SD.SetPageSettingsVersion("ReportTemplateGridSettings", _jsRuntime);
-
     }
 
     async Task DownloadTemplate(Guid id)

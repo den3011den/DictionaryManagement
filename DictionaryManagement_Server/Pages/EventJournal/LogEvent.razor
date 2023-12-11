@@ -44,15 +44,30 @@
             <RadzenDataGridApp @bind-Settings="@LogEventGridSettings" SettingsName="LogEventGridSettings" @ref="logEventDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@logEventDTOs" TItem="LogEventDTO"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                               FilterMode="FilterMode.Advanced"
+                               FilterMode="FilterMode.SimpleWithMenu"
                                Density=Density.Compact
                                ShowPagingSummary="true"
                                EmptyText="Нет записей для отображения"
                                AllowVirtualization="true"
                                GridLines="DataGridGridLines.Both"
-                               Style="height:calc(100vh - 170px)">
+                               Style="height:calc(100vh - 190px)"
+                               ShowCleanGridSortsHeaderButton="false"
+                               ShowCleanGridFiltersHeaderButton="false"
+                               ShowCleanGridSettingsHeaderButton="false">
+                <HeaderTemplate>
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить настройки интерфейса страницы" Icon="settings"
+                                  ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanPageSettingsCustom()">
+                    </RadzenButton>
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все фильтры" Icon="filter_alt"
+                                  ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanAllFiltersCustom()">
+                    </RadzenButton>
+
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все сортировки" Icon="swap_vert"
+                                  ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanAllOrdersCustom()">
+                    </RadzenButton>
+                </HeaderTemplate>
                 <Columns>
-                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="ToStringId" Title="Ид записи" Width="35px" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="ToStringId" Title="Ид записи" Width="65px" TextAlign="TextAlign.Center"
                                              FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="Id">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
@@ -61,7 +76,7 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="EventTime" Title="Время" Width="60px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="EventTime" Title="Время" Width="80px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -71,14 +86,11 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    @*                     <RadzenDataGridColumnApp TItem="LogEventDTO" Property="LogEventTypeDTOFK.Name" Title="Тип события" Width="100px"
-            TextAlign="TextAlign.Center" Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains"> *@
-
-                    <RadzenDataGridColumnApp TItem="LogEventDTO" Title="Тип события" Property="LogEventTypeDTOFK.Name" Type="typeof(IEnumerable<string>)" Width="100px"
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Title="Тип события" Property="LogEventTypeDTOFK.Name" Type="typeof(IEnumerable<string>)" Width="120px"
                                              FilterValue="@selectedLogEventTypes" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
                         <FilterTemplate>
                             <RadzenDropDown @bind-Value=@selectedLogEventTypes
-                                            Change=OnSelectedLogEventTypesChange Data="@(distinctLogEventTypesInList)" AllowClear="true" Multiple="true" Style="width: 500px"
+                                            Change=OnSelectedLogEventTypesChange Data="@(distinctLogEventTypesInList)" AllowClear="true" Multiple="true" Style="width: 500px; font-size:0.75rem"
                                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true"
                                             SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
                         </FilterTemplate>
@@ -89,28 +101,22 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    @*                     <RadzenDataGridColumnApp TItem="LogEventDTO" Title="Пользователь" Property="UserDTOFK.UserNameAndLogin" Type="typeof(IEnumerable<string>)" Width="70px"
-            FilterValue="@selectedUsers" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
-            *@
-                    @*                         <FilterTemplate>
-            <RadzenDropDown @bind-Value=@selectedUsers
-            Change=OnSelectedUsersChange Data="@(distinctUsersInList)" AllowClear="true" Multiple="true" Style="width: 500px"
-            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true"
-            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
-            </FilterTemplate>*@
-
-                    <RadzenDataGridColumnApp TItem="LogEventDTO" Title="Пользователь" Property="UserDTOFK.UserNameAndLogin" Width="70px"
-                                             FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Title="Пользователь" Property="UserDTOFK.UserName" Type="typeof(IEnumerable<string>)" Width="80px"
+                                             FilterValue="@selectedUsers" LogicalFilterOperator="LogicalFilterOperator.Or">
+                        <FilterTemplate>
+                            <RadzenDropDown @bind-Value=@selectedUsers
+                                            Change=OnSelectedUsersChange Data="@(distinctUsersInList)" AllowClear="true" Multiple="true" Style="width: 500px; font-size:0.75rem"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true"
+                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
+                        </FilterTemplate>
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
-                                <strong>
-                                    @data1.UserDTOFK.UserNameAndLogin
-                                </strong>
+                                @data1.UserDTOFK.UserName
                             </div>
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="Description" Title="Описание" Width="130px" TextAlign="TextAlign.Start"
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="Description" Title="Описание" Width="100px" TextAlign="TextAlign.Start"
                                              FilterProperty="Description" FilterOperator="FilterOperator.Contains" SortProperty="Description">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
@@ -119,7 +125,7 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="IsCriticalBool" Title="Крит." Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="IsCriticalBool" Title="Крит." Filterable="true" Width="40px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             @if (data.IsCriticalBool)
                             {
@@ -133,7 +139,7 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="IsErrorBool" Title="Ошибка" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="IsErrorBool" Title="Ошибка" Filterable="true" Width="40px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             @if (data.IsErrorBool)
                             {
@@ -148,7 +154,7 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="IsWarningBool" Title="Предупреждение" Filterable="true" Width="35px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="LogEventDTO" Property="IsWarningBool" Title="Предупреждение" Filterable="true" Width="40px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsWarningBool ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
@@ -171,6 +177,12 @@
     </div>
 }
 
+<style>
+    .rz-dropdown-item, .rz-menuitem, .rz-autocomplete-list-item, .rz-multiselect-item, .rz-dropdown-items li, .rz-autocomplete-items li, .rz-multiselect-items li {
+        font-size: 0.75rem;
+    }
+</style>
+
 @code {
 
     _Dialogs? _dialogs { get; set; }
@@ -180,10 +192,10 @@
     RadzenDataGrid<LogEventDTO> logEventDTOGrid;
 
     IEnumerable<string> selectedLogEventTypes;
-    // IEnumerable<string> selectedUsers;
+    IEnumerable<string> selectedUsers;
 
     List<string> distinctLogEventTypesInList = new List<string>();
-    // List<string> distinctUsersInList = new List<string>();
+    List<string> distinctUsersInList = new List<string>();
 
     DateTime startDate = DateTime.Today.AddDays(-2);
     DateTime endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
@@ -206,11 +218,12 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        if (firstRender)
         {
-            IsAdmin = true;
-            if (firstRender)
+
+            if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
             {
+                IsAdmin = true;
                 applyRadioGroupValue = 1;
                 ApplyButtonDisabled = false;
 
@@ -228,9 +241,9 @@
                 IsLoading = false;
                 StateHasChanged();
             }
+            else
+                _navigationManager.NavigateTo("/EventJournal");
         }
-        else
-            _navigationManager.NavigateTo("/EventJournal");
     }
 
 
@@ -254,12 +267,26 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
+
         if (!(await SD.CheckPageSettingsVersion("LogEventGridSettings", _jsRuntime)))
             return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "LogEventGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
             _logEventGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+            if (_logEventGridSettings != null)
+            {
+                var col_var = _logEventGridSettings.Columns.Where(c => c.Property == "LogEventTypeDTOFK.Name").FirstOrDefault();
+                if (col_var.FilterValue != null)
+                {
+                    selectedLogEventTypes = JsonSerializer.Deserialize<List<string>>(col_var.FilterValue.ToString());
+                }
+                var col_var2 = _logEventGridSettings.Columns.Where(c => c.Property == "UserDTOFK.UserName").FirstOrDefault();
+                if (col_var2.FilterValue != null)
+                {
+                    selectedUsers = JsonSerializer.Deserialize<List<string>>(col_var2.FilterValue.ToString());
+                }
+            }
         }
     }
 
@@ -294,8 +321,11 @@
         StateHasChanged();
         logEventDTOs = await _logEventRepository.GetAllByTimeInterval(startDate, endDate);
 
-        distinctLogEventTypesInList = (List<string>)logEventDTOs.Select(u => u.LogEventTypeDTOFK.Name).Distinct().ToList();
-        // distinctUsersInList = (List<string>)logEventDTOs.Select(u => u.UserDTOFK.UserNameAndLogin).Distinct().ToList();
+        distinctLogEventTypesInList = (List<string>)logEventDTOs.OrderBy(u => u.LogEventTypeDTOFK.Name)
+            .Select(u => u.LogEventTypeDTOFK.Name).Distinct().ToList();
+        distinctUsersInList = (List<string>)logEventDTOs.OrderBy(u => u.UserDTOFK.UserName)
+            .Select(u => u.UserDTOFK.UserName).Distinct().ToList();
+
         ApplyButtonDisabled = true;
         IsLoading = false;
         StateHasChanged();
@@ -343,13 +373,108 @@
         }
     }
 
-    // void OnSelectedUsersChange(object value)
-    // {
-    //     if (selectedUsers != null && !selectedUsers.Any())
-    //     {
-    //         selectedUsers = null;
-    //     }
-    // }
+    void OnSelectedUsersChange(object value)
+    {
+        if (selectedUsers != null && !selectedUsers.Any())
+        {
+            selectedUsers = null;
+        }
+    }
 
+    private async Task CleanPageSettingsCustom()
+    {
+        await Task.CompletedTask;
+        var selectionResult = await _dialogService.Confirm("Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Сбросить настройки интерфейса страницы",
+            new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
+
+        if (selectionResult != true)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.removeItem", "LogEventGridSettings");
+
+        LogEventGridSettings = null;
+
+        selectedLogEventTypes = null;
+        selectedUsers = null;
+
+        if (logEventDTOs != null)
+        {
+            distinctLogEventTypesInList = (List<string>)logEventDTOs.OrderBy(u => u.LogEventTypeDTOFK.Name)
+            .Select(u => u.LogEventTypeDTOFK.Name).Distinct().ToList();
+            distinctUsersInList = (List<string>)logEventDTOs.OrderBy(u => u.UserDTOFK.UserName)
+                .Select(u => u.UserDTOFK.UserName).Distinct().ToList();
+
+        }
+
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    async Task CleanAllFiltersCustom()
+    {
+        var selectionResult = await _dialogService.Confirm("Будут очищены все фильтры", "Очистить фильтры",
+            new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
+
+        if (selectionResult != true)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        if (LogEventGridSettings != null)
+        {
+            foreach (var c in LogEventGridSettings.Columns)
+            {
+                c.FilterValue = null;
+                c.SecondFilterValue = null;
+            }
+
+        }
+
+        selectedLogEventTypes = null;
+        selectedUsers = null;
+
+        if (logEventDTOs != null)
+        {
+            distinctLogEventTypesInList = (List<string>)logEventDTOs.OrderBy(u => u.LogEventTypeDTOFK.Name)
+            .Select(u => u.LogEventTypeDTOFK.Name).Distinct().ToList();
+            distinctUsersInList = (List<string>)logEventDTOs.OrderBy(u => u.UserDTOFK.UserName)
+                .Select(u => u.UserDTOFK.UserName).Distinct().ToList();
+
+        }
+
+        await InvokeAsync(SaveStateAsync);
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    async Task CleanAllOrdersCustom()
+    {
+
+        var selectionResult = await _dialogService.Confirm("Будут очищены все сортировки", "Очистить сортировки",
+            new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
+
+        if (selectionResult != true)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        if (LogEventGridSettings != null)
+        {
+            foreach (var c in LogEventGridSettings.Columns)
+            {
+                c.SortOrder = null;
+            }
+            await InvokeAsync(SaveStateAsync);
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
 }
 
