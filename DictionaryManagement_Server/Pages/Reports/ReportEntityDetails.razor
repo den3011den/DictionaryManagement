@@ -39,7 +39,7 @@
                 <RadzenTabsItem Text="Детали">
 
                     <RadzenRow Gap="1rem">
-                        <RadzenColumn Size="12" SizeMD="5">
+                        <RadzenColumn Size="12" SizeMD="6">
                             <RadzenStack>
                                 <RadzenFieldset Text="Данные экземпляра отчёта" Style="font-weight: bold;">
                                     <RadzenStack Gap="1rem">
@@ -91,7 +91,7 @@
                              </RadzenStack>
                          </RadzenColumn>
 
-                         <RadzenColumn Size="12" SizeMD="5">
+                         <RadzenColumn Size="12" SizeMD="6">
 
                              <RadzenStack>
                                  <RadzenFieldset Text="Информация о шаблоне отчёта" Style="font-weight: bold;">
@@ -766,7 +766,7 @@
             if (String.IsNullOrEmpty(ActiveReportEntityDTO.UploadReportFileName))
                 fileUploadFullPath = "";
             else
-                fileUploadFullPath = reportUploadPath + ActiveReportEntityDTO.UploadReportFileName;
+                fileUploadFullPath = reportUploadPath + ActiveReportEntityDTO.DownloadReportFileName;
             reportDownloadPath = (await _settingsRepository.GetByName("ReportDownloadPath")).Value;
             if (String.IsNullOrEmpty(ActiveReportEntityDTO.DownloadReportFileName))
                 fileDownloadFullPath = "";

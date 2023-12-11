@@ -228,15 +228,7 @@
 
                 IsLoading = true;
                 reportTemplateDTOs = await _reportTemplateRepository.GetAll(SD.SelectDictionaryScope.All);
-                distinctReportTemplatesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.ReportTemplateTypeDTOFK.Name)
-                    .Select(u => u.ReportTemplateTypeDTOFK.Name).Distinct().ToList();
-                distinctDestDataTypesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.DestDataTypeDTOFK.Name)
-                    .Select(u => u.DestDataTypeDTOFK.Name).Distinct().ToList();
-                distinctMesDepartmentsInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName)
-                    .Select(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName).Distinct().ToList();
-                distinctAddUsersInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.AddUserDTOFK.UserName)
-                    .Select(u => u.AddUserDTOFK.UserName).Distinct().ToList();
-
+                await GetDistincts();
                 await LoadStateAsync();
 
                 IsLoading = false;
@@ -347,14 +339,7 @@
                 await LoadStateAsync();
                 StateHasChanged();
                 reportTemplateDTOs = await _reportTemplateRepository.GetAll(SD.SelectDictionaryScope.All);
-                distinctReportTemplatesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.ReportTemplateTypeDTOFK.Name)
-                    .Select(u => u.ReportTemplateTypeDTOFK.Name).Distinct().ToList();
-                distinctDestDataTypesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.DestDataTypeDTOFK.Name)
-                    .Select(u => u.DestDataTypeDTOFK.Name).Distinct().ToList();
-                distinctMesDepartmentsInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName)
-                    .Select(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName).Distinct().ToList();
-                distinctAddUsersInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.AddUserDTOFK.UserName)
-                    .Select(u => u.AddUserDTOFK.UserName).Distinct().ToList();
+                await GetDistincts();
                 IsLoading = false;
                 StateHasChanged();
             }
@@ -482,14 +467,7 @@
 
         if (reportTemplateDTOs != null)
         {
-            distinctReportTemplatesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.ReportTemplateTypeDTOFK.Name)
-                .Select(u => u.ReportTemplateTypeDTOFK.Name).Distinct().ToList();
-            distinctDestDataTypesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.DestDataTypeDTOFK.Name)
-                .Select(u => u.DestDataTypeDTOFK.Name).Distinct().ToList();
-            distinctMesDepartmentsInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName)
-                .Select(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName).Distinct().ToList();
-            distinctAddUsersInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.AddUserDTOFK.UserName)
-                .Select(u => u.AddUserDTOFK.UserName).Distinct().ToList();
+            await GetDistincts();
         }
 
         await Task.Delay(200);
@@ -525,14 +503,6 @@
 
         if (reportTemplateDTOs != null)
         {
-            distinctReportTemplatesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.ReportTemplateTypeDTOFK.Name)
-                .Select(u => u.ReportTemplateTypeDTOFK.Name).Distinct().ToList();
-            distinctDestDataTypesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.DestDataTypeDTOFK.Name)
-                .Select(u => u.DestDataTypeDTOFK.Name).Distinct().ToList();
-            distinctMesDepartmentsInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName)
-                .Select(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName).Distinct().ToList();
-            distinctAddUsersInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.AddUserDTOFK.UserName)
-                .Select(u => u.AddUserDTOFK.UserName).Distinct().ToList();
         }
 
         await InvokeAsync(SaveStateAsync);
@@ -565,5 +535,16 @@
         }
     }
 
-
+    async Task GetDistincts()
+    {
+                    distinctReportTemplatesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.ReportTemplateTypeDTOFK.Name)
+                .Select(u => u.ReportTemplateTypeDTOFK.Name).Distinct().ToList();
+            distinctDestDataTypesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.DestDataTypeDTOFK.Name)
+                .Select(u => u.DestDataTypeDTOFK.Name).Distinct().ToList();
+            distinctMesDepartmentsInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName)
+                .Select(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName).Distinct().ToList();
+            distinctAddUsersInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.AddUserDTOFK.UserName)
+                .Select(u => u.AddUserDTOFK.UserName).Distinct().ToList();
+        
+    }
 }
