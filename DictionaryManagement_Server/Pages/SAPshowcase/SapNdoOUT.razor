@@ -65,7 +65,7 @@
                                GridLines="DataGridGridLines.Both">
                 <Columns>
                     <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="ToStringId" Title="Ид записи" TextAlign="TextAlign.Center"
-                                          FilterProperty="Id" SortProperty="Id">
+                                             FilterProperty="Id" SortProperty="Id">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
@@ -84,7 +84,8 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center"
+                                             Filterable="true" Sortable="true" FilterOperator="FilterOperator.Equals">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.AddTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
@@ -92,7 +93,8 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="ValueTime" Title="Время значения" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="ValueTime" Title="Время значения" TextAlign="TextAlign.Center"
+                                             Filterable="true" Sortable="true" FilterOperator="FilterOperator.Equals">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -103,7 +105,7 @@
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="ToStringValue" Title="Значение" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
-                                          FilterProperty="Value" SortProperty="Value">
+                                             FilterProperty="Value" SortProperty="Value" FilterOperator="FilterOperator.Equals">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
@@ -120,7 +122,7 @@
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="SapNdoOUTDTO" Property="SapGoneTime" Title="Когда Sap забрал" TextAlign="TextAlign.Center"
-                                          FilterProperty="SapGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="SapGoneTime">
+                                             FilterProperty="SapGoneTime" FilterOperator="FilterOperator.Equals" SortProperty="SapGoneTime">
                         <Template Context="data1">
                             @if (data1.SapGoneTime != null)
                             {

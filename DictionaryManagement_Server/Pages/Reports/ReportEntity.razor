@@ -116,7 +116,8 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="ReportEntityDTO" Property="DownloadTime" Title="Скачан из СИР" Width="150px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="ReportEntityDTO" Property="DownloadTime" Title="Скачан из СИР" Width="150px" TextAlign="TextAlign.Center"
+                                             Filterable="true" Sortable="true" FilterOperator="FilterOperator.Equals">
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="ReportEntityDTO" Title="Кто скачал" Property="DownloadUserDTOFK.UserName" Type="typeof(IEnumerable<string>)" Width="160px"
@@ -142,7 +143,8 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="ReportEntityDTO" Property="UploadTime" Title="Загружен в СИР" Width="150px" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="ReportEntityDTO" Property="UploadTime" Title="Загружен в СИР" Width="150px" TextAlign="TextAlign.Center"
+                                             Filterable="true" Sortable="true" FilterOperator="FilterOperator.Equals">
                     </RadzenDataGridColumnApp>
                     <RadzenDataGridColumnApp TItem="ReportEntityDTO" Title="Кто загрузил" Property="UploadUserDTOFK.UserName" Type="typeof(IEnumerable<string>)" Width="160px"
                                              FilterValue="@selectedUploadUsers" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">

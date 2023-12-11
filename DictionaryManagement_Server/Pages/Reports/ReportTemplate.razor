@@ -74,7 +74,7 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" Width="70px">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" Width="70px" FilterOperator="FilterOperator.Equals">
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Добавил" Property="AddUserDTOFK.UserName" Type="typeof(IEnumerable<string>)" Width="70px"
@@ -537,14 +537,14 @@
 
     async Task GetDistincts()
     {
-                    distinctReportTemplatesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.ReportTemplateTypeDTOFK.Name)
-                .Select(u => u.ReportTemplateTypeDTOFK.Name).Distinct().ToList();
-            distinctDestDataTypesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.DestDataTypeDTOFK.Name)
-                .Select(u => u.DestDataTypeDTOFK.Name).Distinct().ToList();
-            distinctMesDepartmentsInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName)
-                .Select(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName).Distinct().ToList();
-            distinctAddUsersInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.AddUserDTOFK.UserName)
-                .Select(u => u.AddUserDTOFK.UserName).Distinct().ToList();
-        
+        distinctReportTemplatesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.ReportTemplateTypeDTOFK.Name)
+    .Select(u => u.ReportTemplateTypeDTOFK.Name).Distinct().ToList();
+        distinctDestDataTypesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.DestDataTypeDTOFK.Name)
+            .Select(u => u.DestDataTypeDTOFK.Name).Distinct().ToList();
+        distinctMesDepartmentsInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName)
+            .Select(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName).Distinct().ToList();
+        distinctAddUsersInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.AddUserDTOFK.UserName)
+            .Select(u => u.AddUserDTOFK.UserName).Distinct().ToList();
+
     }
 }

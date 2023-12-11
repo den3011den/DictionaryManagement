@@ -88,7 +88,7 @@
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="MesMovementsDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center"
-                            FilterOperator="FilterOperator.Equals" Filterable="true" Sortable="true">
+                                             FilterOperator="FilterOperator.Equals" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -447,7 +447,6 @@
                     selectedCorrectionReasons = JsonSerializer.Deserialize<List<string>>(col_var4.FilterValue.ToString());
                 }
             }
-
         }
     }
 
@@ -603,7 +602,7 @@
         }
 
         var result = await _jsRuntime.InvokeAsync<string>
-            ("window.localStorage.removeItem", "MesNdoStocksGridSettings");
+            ("window.localStorage.removeItem", "MesMovementsGridSettings");
 
         MesMovementsGridSettings = null;
 
