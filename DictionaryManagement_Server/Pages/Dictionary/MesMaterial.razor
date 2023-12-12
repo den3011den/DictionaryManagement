@@ -33,15 +33,14 @@
             </RadzenRow>
             <RadzenDataGridApp @bind-Settings="@MesMaterialGridSettings" SettingsName="MesMaterialGridSettings" @ref="mesMaterialDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@mesMaterialDTOs" TItem="MesMaterialDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            EmptyText="Нет записей для отображения"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"                            
                             AllowColumnResize="false"
-                            FilterMode="FilterMode.Advanced"
+                               FilterMode="FilterMode.SimpleWithMenu"
                             GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)">
+                            Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="Id" Title="Ид записи" Width="80px" />
-                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="Code" Title="Код материала" Width="100px">
+                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="Code" Title="Код материала" Width="120px">
                         <EditTemplate Context="mesMaterialDTO">
                             <RadzenTextBox @bind-Value="mesMaterialDTO.Code" Style="width:50%; display: block" Name="Code" />
                             <RadzenRequiredValidator Text="Код материала обязателен к заполнению" Component="Code" Popup="true" />
@@ -49,7 +48,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="Name" Title="Наименование" Width="250px">
+                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="Name" Title="Наименование" Width="220px">
                         <Template Context="mesMaterialDTO">
                             <div style="white-space:pre-wrap">
                                 @mesMaterialDTO.Name
@@ -63,7 +62,7 @@
                         </EditTemplate>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="ShortName" Title="Сокр. наименование" Width="250px">
+                    <RadzenDataGridColumnApp TItem="MesMaterialDTO" Property="ShortName" Title="Сокр. наименование" Width="220px">
                         <Template Context="mesMaterialDTO">
                             <div style="white-space:pre-wrap">
                                 @mesMaterialDTO.ShortName

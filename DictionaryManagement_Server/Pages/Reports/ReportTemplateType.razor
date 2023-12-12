@@ -32,13 +32,12 @@
             <RadzenDataGridApp @ref="reportTemplateTypeDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                @bind-Settings="@ReportTemplateTypeGridSettings" SettingsName="ReportTemplateTypeGridSettings"
                                Data="@reportTemplateTypeDTOs" TItem="ReportTemplateTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
-                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                               EmptyText="Нет записей для отображения"
-                               FilterMode="FilterMode.Simple"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"                               
+                               FilterMode="FilterMode.SimpleWithMenu"
                                AllowColumnResize="false"
                                AllowVirtualization="true"
                                GridLines="DataGridGridLines.Both"
-                               Style="height:calc(100vh - 170px)">
+                               Style="height:calc(100vh - 190px)">
                 <Columns>
                     <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
                     <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="Name" Title="Наименование" Width="250px">

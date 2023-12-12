@@ -37,11 +37,11 @@
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
                             Data="@adGroupDTOs" TItem="ADGroupDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            FilterMode="FilterMode.Advanced"
+                               FilterMode="FilterMode.SimpleWithMenu"
                             Density=Density.Compact
                             ShowPagingSummary="true"                                                        
                             AllowVirtualization="true"
-                            Style="height:calc(100vh - 170px)">
+                            Style="height:calc(100vh - 190px)">
                 <Columns>
                     <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="ToStringId" Title="Ид роли" Width="40px"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">

@@ -36,30 +36,29 @@
 
         @if (IsLoading != true)
         {
-            <RadzenRow AlignItems="AlignItems.Start">           
+            <RadzenRow AlignItems="AlignItems.Start">
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@(args => EditRow(null))" />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel ВСЕХ производств" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
                 <RadzenButton class="mt-2 mb-4" title="@(IsExpandModeOn ? "Свернуть всю иерархию производств" : "Развернуть всю иерархию производств")" Text="@(IsExpandModeOn ? "Свернуть" : "Развернуть")"
-                        Icon="@(IsExpandModeOn ? "unfold_less" : "unfold_more")" Click="@(args => ToggleRowsExpand(!IsExpandModeOn))"
-                        IsBusy=@ExpandInProgressFlag BusyText="Выполняется ..."/>
+                              Icon="@(IsExpandModeOn ? "unfold_less" : "unfold_more")" Click="@(args => ToggleRowsExpand(!IsExpandModeOn))"
+                              IsBusy=@ExpandInProgressFlag BusyText="Выполняется ..." />
                 <div class="mt-2 mb-4 col-6" style="white-space:pre-wrap; font-size: 10px; color:powderblue">
                     <RadzenLabel Text="* фильтр работает только по записям, которые развёрнуты в отображаемом списке" />
                 </div>
             </RadzenRow>
             <RadzenDataGridApp @bind-Settings="@MesDepartmentGridSettings" SettingsName="MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" ExpandMode="DataGridExpandMode.Multiple"
-                            Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
-                            AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Advanced"
-                            Density="Density.Compact"
-                            AllowColumnResize="false"
-                            GridLines="DataGridGridLines.Both"                           
-                            Style="height:calc(100vh - 170px)">
+                               Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
+                               AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                               EmptyText="Нет записей для отображения"
+                               FilterMode="FilterMode.SimpleWithMenu"
+                               Density="Density.Compact"
+                               AllowColumnResize="false"
+                               GridLines="DataGridGridLines.Both"
+                               Style="height:calc(100vh - 190px)">
                 <Columns>
                     <RadzenDataGridColumnApp TItem="MesDepartmentDTO" Property="Name" Title="Наименование" Frozen="true" Width="200px"
-                                          FilterOperator="FilterOperator.Contains" SortProperty="Name" FilterProperty="Name"
-                                           >
+                                             FilterOperator="FilterOperator.Contains" SortProperty="Name" FilterProperty="Name">
                         <Template Context="data">
                             <div style="white-space:pre-wrap">
                                 <strong>@data.Name</strong>
@@ -159,9 +158,9 @@
                 IsLoading = true;
                 await LoadStateAsync();
                 StateHasChanged();
-                mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();                                
-                IsLoading = false;                
-                StateHasChanged();                
+                mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();
+                IsLoading = false;
+                StateHasChanged();
                 await ToggleRowsExpand(!IsExpandModeOn);
             }
         }
@@ -204,7 +203,7 @@
     {
         await Task.CompletedTask;
 
-        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesDepartmentGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesDepartmentGridSettings)}')");        
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesDepartmentGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesDepartmentGridSettings)}')");
         await SD.SetPageSettingsVersion("MesDepartmentGridSettings", _jsRuntime);
     }
 
@@ -341,7 +340,7 @@
             int maxLevel = 1;
             Tuple<IEnumerable<MesDepartmentVMDTO>, int> tmp = await _mesDepartmentRepository.GetAllDepartmentWithChildren(null, 1, maxLevel, null);
             IEnumerable<MesDepartmentVMDTO> mesDepartmentVMDTOList = tmp.Item1;
-            maxLevel = tmp.Item2;            
+            maxLevel = tmp.Item2;
 
             await _simpleExcelExportRepository.GenerateExcelMesDepartments(filename, mesDepartmentVMDTOList, maxLevel);
             await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
