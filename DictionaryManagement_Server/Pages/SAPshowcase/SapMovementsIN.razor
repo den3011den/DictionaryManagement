@@ -78,7 +78,6 @@
                                   ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanAllOrdersCustom()">
                     </RadzenButton>
                 </HeaderTemplate>
-
                 <Columns>
                     <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="ErpId" Title="Ид записи" TextAlign="TextAlign.Center"
                                              FilterProperty="ErpId" FilterOperator="FilterOperator.Contains" SortProperty="ErpId">
@@ -90,7 +89,7 @@
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
-                            FilterOperator="FilterOperator.Equals">
+                                             FilterOperator="FilterOperator.Equals">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -112,7 +111,7 @@
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="SapMaterialDTOFK.ToStringCodeName" Title="Материал в СИР" TextAlign="TextAlign.Center"
-                                FilterOperator="FilterOperator.Contains" Filterable="true" Sortable="true">
+                                             FilterOperator="FilterOperator.Contains" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             @if (data1.SapMaterialDTOFK != null)
                             {
@@ -140,8 +139,8 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="ErpIdSource" Title="Ресурс-источник SAP" TextAlign="TextAlign.Center" 
-                                            FilterOperator="FilterOperator.Contains" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="ErpIdSource" Title="Ресурс-источник SAP" TextAlign="TextAlign.Center"
+                                             FilterOperator="FilterOperator.Contains" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.ErpIdSource
@@ -269,8 +268,19 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="SapUnitOfMeasure" Title="Ед.изм.SAP" TextAlign="TextAlign.Center"
-                                             FilterProperty="SapUnitOfMeasure" FilterOperator="FilterOperator.Contains" SortProperty="SapUnitOfMeasure">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Title="Ед.изм.SAP"
+                                             Property="SapUnitOfMeasure" Type="typeof(IEnumerable<string>)"
+                                             Filterable="true" Sortable="true"
+                                             FilterValue="@selectedSapUnitOfMeasure" FilterOperator="FilterOperator.Contains"
+                                             LogicalFilterOperator="LogicalFilterOperator.Or"
+                                             TextAlign="TextAlign.Center">
+                        <FilterTemplate>
+                            <RadzenDropDown @bind-Value=@selectedSapUnitOfMeasure
+                                            Change=OnSelectedSapUnitOfMeasureChange Data="@(distinctSapUnitOfMeasureInList)" AllowClear="true" Multiple="true"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true"
+                                            Style="font-size:0.75rem;width: 100%;"
+                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
+                        </FilterTemplate>
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.SapUnitOfMeasure
@@ -443,7 +453,9 @@
     RadzenDataGrid<SapMovementsINDTO> sapMovementsINDTOGrid;
 
     IEnumerable<string> selectedMoveTypes;
+    IEnumerable<string> selectedSapUnitOfMeasure;
     List<string> distinctMoveTypesInList = new List<string>();
+    List<string> distinctSapUnitOfMeasureInList = new List<string>();
 
 
     DateTime startDate = DateTime.Today.AddDays(-7);
@@ -498,6 +510,11 @@
                 if (col_var.FilterValue != null)
                 {
                     selectedMoveTypes = JsonSerializer.Deserialize<List<string>>(col_var.FilterValue.ToString());
+                }
+                var col_var2 = _sapMovementsINGridSettings.Columns.Where(c => c.Property == "SapUnitOfMeasure").FirstOrDefault();
+                if (col_var2.FilterValue != null)
+                {
+                    selectedSapUnitOfMeasure = JsonSerializer.Deserialize<List<string>>(col_var2.FilterValue.ToString());
                 }
             }
         }
@@ -567,6 +584,7 @@
             sapMovementsINDTOs = await _sapMovementsINRepository.GetAllByTimeInterval(startDate, endDate, "ADDTIME");
 
         List<string> distinctMoveTypesInList = new List<string>();
+        List<string> distinctSapUnitOfMeasureInList = new List<string>();
         await GetDistincts();
 
         ApplyButtonDisabled = true;
@@ -627,6 +645,9 @@
         {
             distinctMoveTypesInList = (List<string>)sapMovementsINDTOs.Where(u => u.MoveType != null).OrderBy(u => u.MoveType)
                 .Select(u => u.MoveType).Distinct().ToList();
+            distinctSapUnitOfMeasureInList = (List<string>)sapMovementsINDTOs.Where(u => u.SapUnitOfMeasure != null).OrderBy(u => u.SapUnitOfMeasure)
+                .Select(u => u.SapUnitOfMeasure).Distinct().ToList();
+
         }
     }
 
@@ -635,6 +656,14 @@
         if (selectedMoveTypes != null && !selectedMoveTypes.Any())
         {
             selectedMoveTypes = null;
+        }
+    }
+
+    void OnSelectedSapUnitOfMeasureChange(object value)
+    {
+        if (selectedSapUnitOfMeasure != null && !selectedSapUnitOfMeasure.Any())
+        {
+            selectedSapUnitOfMeasure = null;
         }
     }
 
@@ -656,6 +685,7 @@
         SapMovementsINGridSettings = null;
 
         selectedMoveTypes = null;
+        selectedSapUnitOfMeasure = null;
 
         if (sapMovementsINDTOs != null)
         {
@@ -689,6 +719,7 @@
         }
 
         selectedMoveTypes = null;
+        selectedSapUnitOfMeasure = null;
 
         if (sapMovementsINDTOs != null)
         {
