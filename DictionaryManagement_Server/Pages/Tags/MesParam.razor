@@ -95,7 +95,7 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="MesDepartmentDTOFK" Title="Производство" Width="80px" FilterProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" SortProperty="MesDepartmentDTOFK.ToStringHierarchyShortName">
+                    <RadzenDataGridColumnApp TItem="MesParamDTO" Property="MesDepartmentDTOFK.ToStringHierarchyShortName" Title="Производство" Width="80px" FilterProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" SortProperty="MesDepartmentDTOFK.ToStringHierarchyShortName">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @(data1.MesDepartmentDTOFK == null ? "" : data1.MesDepartmentDTOFK.ToStringHierarchyShortName)

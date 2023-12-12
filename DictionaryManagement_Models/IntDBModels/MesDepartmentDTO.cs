@@ -93,21 +93,45 @@ namespace DictionaryManagement_Models.IntDBModels
         [NotMapped]
         public string ToStringHierarchyShortName
         {
+            //get
+            //{
+            //    string ret_var = ShortName;
+            //    MesDepartmentDTO mesDepartmentDTO = this;
+            //    while(mesDepartmentDTO.DepartmentParentDTO != null)
+            //    {
+            //        ret_var = mesDepartmentDTO.DepartmentParentDTO.ShortName + " - " + ret_var;
+            //        mesDepartmentDTO = mesDepartmentDTO.DepartmentParentDTO;
+            //    }
+            //    return ret_var;
+            //}
+            //set
+            //{
+            //    ToStringShortName = value;
+            //}
+
             get
             {
-                string ret_var = ShortName;
+                string ret_var = "";
                 MesDepartmentDTO mesDepartmentDTO = this;
-                while(mesDepartmentDTO.DepartmentParentDTO != null)
+                while (mesDepartmentDTO.DepartmentParentDTO != null)
                 {
-                    ret_var = mesDepartmentDTO.DepartmentParentDTO.ShortName + " - " + ret_var;
+                    if (string.IsNullOrEmpty(ret_var))
+                        ret_var = mesDepartmentDTO.ShortName;
+                    else
+                        ret_var = mesDepartmentDTO.ShortName + " - " + ret_var;                    
                     mesDepartmentDTO = mesDepartmentDTO.DepartmentParentDTO;
                 }
+                if (string.IsNullOrEmpty(ret_var))
+                    ret_var = mesDepartmentDTO.ShortName;
+                else
+                    ret_var = mesDepartmentDTO.ShortName + " - " + ret_var;                
                 return ret_var;
             }
             set
             {
-                ToStringShortName = value;
+                ToStringHierarchyShortName = value;
             }
+
         }
     }
 }

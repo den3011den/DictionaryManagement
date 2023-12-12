@@ -57,6 +57,10 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
@@ -73,6 +77,10 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .FirstOrDefaultWithNoLock(u => u.TemplateFileName.Trim().ToUpper() == templateFileName.Trim().ToUpper());
             if (objToGet != null)
             {
@@ -91,6 +99,10 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .FirstOrDefaultWithNoLock(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.DestDataTypeId == destDataTypeId && u.DepartmentId == departmentId);
                 if (objToGet != null)
                 {
@@ -110,7 +122,12 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .Where(u => u.IsArchive == true).ToListWithNoLock();
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Where(u => u.IsArchive == true)
+                            .ToListWithNoLock();
                 return _mapper.Map<IEnumerable<ReportTemplate>, IEnumerable<ReportTemplateDTO>>(hhh2);
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
@@ -120,6 +137,10 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Where(u => u.IsArchive != true).ToListWithNoLock();
                 return _mapper.Map<IEnumerable<ReportTemplate>, IEnumerable<ReportTemplateDTO>>(hhh3);
 
@@ -128,7 +149,12 @@ namespace DictionaryManagement_Business.Repository
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
-                            .Include("MesDepartmentFK").ToListWithNoLock();
+                            .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportTemplate>, IEnumerable<ReportTemplateDTO>>(hhh1);
         }
 
@@ -142,6 +168,10 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                         .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)

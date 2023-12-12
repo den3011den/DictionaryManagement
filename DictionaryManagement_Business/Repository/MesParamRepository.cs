@@ -64,14 +64,18 @@ namespace DictionaryManagement_Business.Repository
         public async Task<MesParamDTO> GetById(int id)
         {
             var objToGet = _db.MesParam
-                            .Include("MesParamSourceTypeFK")
-                            .Include("MesDepartmentFK")
+                            .Include("MesParamSourceTypeFK")                            
                             .Include("SapEquipmentSourceFK")
                             .Include("SapEquipmentDestFK")
                             .Include("MesMaterialFK")
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
+                            .Include("MesDepartmentFK").Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
@@ -84,14 +88,18 @@ namespace DictionaryManagement_Business.Repository
         public async Task<MesParamDTO> GetByCode(string code = "")
         {
             var objToGet = _db.MesParam
-                            .Include("MesParamSourceTypeFK")
-                            .Include("MesDepartmentFK")
+                            .Include("MesParamSourceTypeFK")                            
                             .Include("SapEquipmentSourceFK")
                             .Include("SapEquipmentDestFK")
                             .Include("MesMaterialFK")
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
+                            .Include("MesDepartmentFK").Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .FirstOrDefaultWithNoLock(u => u.Code.Trim().ToUpper() == code.Trim().ToUpper());
             if (objToGet != null)
             {
@@ -103,14 +111,18 @@ namespace DictionaryManagement_Business.Repository
         public async Task<MesParamDTO> GetByName(string name = "")
         {
             var objToGet = _db.MesParam
-                            .Include("MesParamSourceTypeFK")
-                            .Include("MesDepartmentFK")
+                            .Include("MesParamSourceTypeFK")                            
                             .Include("SapEquipmentSourceFK")
                             .Include("SapEquipmentDestFK")
                             .Include("MesMaterialFK")
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
+                            .Include("MesDepartmentFK").Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .FirstOrDefaultWithNoLock(u => u.Name.Trim().ToUpper() == name.Trim().ToUpper());
             if (objToGet != null)
             {
@@ -123,14 +135,18 @@ namespace DictionaryManagement_Business.Repository
             if (!mesParamSourceLink.IsNullOrEmpty())
             {
                 var objToGet = _db.MesParam
-                            .Include("MesParamSourceTypeFK")
-                            .Include("MesDepartmentFK")
+                            .Include("MesParamSourceTypeFK")                            
                             .Include("SapEquipmentSourceFK")
                             .Include("SapEquipmentDestFK")
                             .Include("MesMaterialFK")
                             .Include("SapMaterialFK")
                             .Include("MesUnitOfMeasureFK")
                             .Include("SapUnitOfMeasureFK")
+                            .Include("MesDepartmentFK").Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .FirstOrDefaultWithNoLock(u => u.MesParamSourceLink.Trim().ToUpper() == mesParamSourceLink.Trim().ToUpper());
                 if (objToGet != null)
                 {
@@ -147,17 +163,21 @@ namespace DictionaryManagement_Business.Repository
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
             {
                 var hhh2 = _db.MesParam
-                            .Include("MesParamSourceTypeFK").AsNoTracking()
-                            .Include("MesDepartmentFK").AsNoTracking()
+                            .Include("MesParamSourceTypeFK").AsNoTracking()                            
                             .Include("SapEquipmentSourceFK").AsNoTracking()
                             .Include("SapEquipmentDestFK").AsNoTracking()
                             .Include("MesMaterialFK").AsNoTracking()
                             .Include("SapMaterialFK").AsNoTracking()
                             .Include("MesUnitOfMeasureFK").AsNoTracking()
                             .Include("SapUnitOfMeasureFK").AsNoTracking()
+                            .Include("MesDepartmentFK").Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Where(u => u.IsArchive == true).AsNoTracking().ToListWithNoLock();
                 var retVar2 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh2);
-                GC.Collect(2, GCCollectionMode.Forced);
+                //GC.Collect(2, GCCollectionMode.Forced);
                 //_db.Dispose();
                 //GC.Collect();
                 return retVar2;
@@ -166,32 +186,41 @@ namespace DictionaryManagement_Business.Repository
             {
                 var hhh3 = _db.MesParam
                             .Include("MesParamSourceTypeFK").AsNoTracking()
-                            .Include("MesDepartmentFK").AsNoTracking()
                             .Include("SapEquipmentSourceFK").AsNoTracking()
                             .Include("SapEquipmentDestFK").AsNoTracking()
                             .Include("MesMaterialFK").AsNoTracking()
                             .Include("SapMaterialFK").AsNoTracking()
                             .Include("MesUnitOfMeasureFK").AsNoTracking()
                             .Include("SapUnitOfMeasureFK").AsNoTracking()
+                            .Include("MesDepartmentFK").Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Where(u => u.IsArchive != true).AsNoTracking().ToListWithNoLock();
                 var retVar3 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh3);
                 // _db.Dispose();
-                GC.Collect(2, GCCollectionMode.Forced);
+                //GC.Collect(2, GCCollectionMode.Forced);
                 //GC.Collect();
                 return retVar3;
 
             }
             var hhh1 = _db.MesParam
-                        .Include("MesParamSourceTypeFK").AsNoTracking()
-                        .Include("MesDepartmentFK").AsNoTracking()
-                        .Include("SapEquipmentSourceFK").AsNoTracking()
-                        .Include("SapEquipmentDestFK").AsNoTracking()
-                        .Include("MesMaterialFK").AsNoTracking()
-                        .Include("SapMaterialFK").AsNoTracking()
-                        .Include("MesUnitOfMeasureFK").AsNoTracking()
-                        .Include("SapUnitOfMeasureFK").AsNoTracking().ToListWithNoLock();
+                        .Include("MesParamSourceTypeFK")
+                        .Include("SapEquipmentSourceFK")
+                        .Include("SapEquipmentDestFK")
+                        .Include("MesMaterialFK")
+                        .Include("SapMaterialFK")
+                        .Include("MesUnitOfMeasureFK")
+                        .Include("SapUnitOfMeasureFK")
+                        .Include("MesDepartmentFK").Include("MesDepartmentFK.DepartmentParent")
+                        .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                        .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                        .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                        .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                        .ToListWithNoLock();
             var retVar1 = _mapper.Map<IEnumerable<MesParam>, IEnumerable<MesParamDTO>>(hhh1);
-            GC.Collect(2, GCCollectionMode.Forced);
+            //GC.Collect(2, GCCollectionMode.Forced);
             //_db.Dispose();
             //GC.Collect();            
             return retVar1;
@@ -201,14 +230,18 @@ namespace DictionaryManagement_Business.Repository
         public async Task<MesParamDTO> Update(MesParamDTO objectToUpdateDTO)
         {
             var objectToUpdate = _db.MesParam
-                        .Include("MesParamSourceTypeFK")
-                        .Include("MesDepartmentFK")
+                        .Include("MesParamSourceTypeFK")                        
                         .Include("SapEquipmentSourceFK")
                         .Include("SapEquipmentDestFK")
                         .Include("MesMaterialFK")
                         .Include("SapMaterialFK")
                         .Include("MesUnitOfMeasureFK")
                         .Include("SapUnitOfMeasureFK")
+                        .Include("MesDepartmentFK").Include("MesDepartmentFK.DepartmentParent")
+                        .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                        .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                        .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                        .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                         .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)
@@ -412,14 +445,18 @@ namespace DictionaryManagement_Business.Repository
                 if (sapEquipmentIdSource > 0 && sapEquipmentIdDest > 0 && sapMaterialId > 0)
                 {
                     var objToGet = _db.MesParam
-                                    .Include("MesParamSourceTypeFK")
-                                    .Include("MesDepartmentFK")
+                                    .Include("MesParamSourceTypeFK")                                    
                                     .Include("SapEquipmentSourceFK")
                                     .Include("SapEquipmentDestFK")
                                     .Include("MesMaterialFK")
                                     .Include("SapMaterialFK")
                                     .Include("MesUnitOfMeasureFK")
                                     .Include("SapUnitOfMeasureFK")
+                                    .Include("MesDepartmentFK").Include("MesDepartmentFK.DepartmentParent")
+                                    .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                                    .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                                    .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                                    .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                                     .FirstOrDefaultWithNoLock(u => u.SapEquipmentIdSource == sapEquipmentIdSource
                                         && u.SapEquipmentIdDest == sapEquipmentIdDest && u.SapMaterialId == sapMaterialId
                                         && u.Id != idForExclude && u.IsArchive != true);

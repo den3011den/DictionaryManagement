@@ -54,8 +54,18 @@ namespace DictionaryManagement_Business.Repository
         public async Task<ReportEntityDTO> GetById(Guid id)
         {
             var objToGet = _db.ReportEntity
-                            .Include("ReportTemplateFK")
+                            .Include("ReportTemplateFK").Include("ReportTemplateFK.ReportTemplateTypeFK").Include("ReportTemplateFK.MesDepartmentFK")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Include("ReportDepartmentFK")
+                            .Include("ReportDepartmentFK.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFKDepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Include("DownloadUserFK")
                             .Include("UploadUserFK")
                             .FirstOrDefaultWithNoLock(u => u.Id == id);
@@ -70,8 +80,18 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<ReportEntityDTO>> GetAll()
         {
             var hhh1 = _db.ReportEntity
-                            .Include("ReportTemplateFK")
+                            .Include("ReportTemplateFK").Include("ReportTemplateFK.ReportTemplateTypeFK").Include("ReportTemplateFK.MesDepartmentFK")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Include("ReportDepartmentFK")
+                            .Include("ReportDepartmentFK.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Include("DownloadUserFK")
                             .Include("UploadUserFK").ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportEntity>, IEnumerable<ReportEntityDTO>>(hhh1);
@@ -87,7 +107,17 @@ namespace DictionaryManagement_Business.Repository
 
             var hhh1 = _db.ReportEntity
                             .Include("ReportTemplateFK").Include("ReportTemplateFK.ReportTemplateTypeFK").Include("ReportTemplateFK.MesDepartmentFK")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Include("ReportDepartmentFK")
+                            .Include("ReportDepartmentFK.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Include("DownloadUserFK")
                             .Include("UploadUserFK")
                             .Where(u => u.DownloadTime >= startDownloadTime && u.DownloadTime <= endDownloadTime).ToListWithNoLock();
@@ -104,10 +134,20 @@ namespace DictionaryManagement_Business.Repository
 
 
             var hhh1 = _db.ReportEntity
-                .Include("ReportTemplateFK")
-                .Include("ReportDepartmentFK")
-                .Include("DownloadUserFK")
-                .Include("UploadUserFK")
+                .Include("ReportTemplateFK").Include("ReportTemplateFK.ReportTemplateTypeFK").Include("ReportTemplateFK.MesDepartmentFK")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK")
+                            .Include("ReportDepartmentFK.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("DownloadUserFK")
+                            .Include("UploadUserFK")
                 .Where(u => u.UploadTime >= startUploadTime && u.UploadTime <= endUploadTime).ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportEntity>, IEnumerable<ReportEntityDTO>>(hhh1);
         }
@@ -115,10 +155,20 @@ namespace DictionaryManagement_Business.Repository
         public async Task<ReportEntityDTO> Update(ReportEntityDTO objectToUpdateDTO)
         {
             var objectToUpdate = _db.ReportEntity
-                .Include("ReportTemplateFK")
-                .Include("ReportDepartmentFK")
-                .Include("DownloadUserFK")
-                .Include("UploadUserFK")
+                .Include("ReportTemplateFK").Include("ReportTemplateFK.ReportTemplateTypeFK").Include("ReportTemplateFK.MesDepartmentFK")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportTemplateFK.MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK")
+                            .Include("ReportDepartmentFK.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("DownloadUserFK")
+                            .Include("UploadUserFK")
                .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)

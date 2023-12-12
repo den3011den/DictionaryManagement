@@ -5,6 +5,7 @@ using DictionaryManagement_DataAccess.Data.IntDB;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
+using DictionaryManagement_Server.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
