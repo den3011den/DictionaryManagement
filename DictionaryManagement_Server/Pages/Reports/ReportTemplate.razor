@@ -44,10 +44,13 @@
                                FilterMode="FilterMode.SimpleWithMenu"
                                Density=Density.Compact
                                ShowPagingSummary="true"
-                               AllowColumnResize="false"
+                               AllowColumnReorder="true"
+                               AllowColumnResize="true"
+                               AllowColumnPicking="true"
+                               ColumnWidth="200px"
                                AllowVirtualization="true"
                                GridLines="DataGridGridLines.Both"
-                               Style="height:calc(100vh - 190px)"
+                               Style=@(iconMenuActive ? "height:calc(100vh - 190px); width:1760px" : "height:calc(100vh - 190px); width:1600px")                               
                                ShowCleanGridSortsHeaderButton="false"
                                ShowCleanGridFiltersHeaderButton="false"
                                ShowCleanGridSettingsHeaderButton="false">
@@ -64,9 +67,27 @@
                     </RadzenButton>
                 </HeaderTemplate>
                 <Columns>
+                    <RadzenDataGridColumnApp Title="Действия" TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="130px" Frozen="true">
+                        <Template Context="reportTemplateDTO">
+                            <RadzenButton title="Скачать файл шаблона" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadTemplate(reportTemplateDTO.Id))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(reportTemplateDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            @if (!reportTemplateDTO.IsArchive)
+                            {
+                                <RadzenButton title="Удалить в архив" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                            else
+                            {
+                                <RadzenButton title="Восстановить из архива" ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                        </Template>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="ToStringId" Title="Ид шаблона отчёта" Width="70px"
-                                             FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="ToStringId" Title="Ид шаблона отчёта"
+                                     FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.ToStringId
@@ -74,10 +95,10 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" Width="70px" FilterOperator="FilterOperator.Equals">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" FilterOperator="FilterOperator.Equals">
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Добавил" Property="AddUserDTOFK.UserName" Type="typeof(IEnumerable<string>)" Width="70px"
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Добавил" Property="AddUserDTOFK.UserName" Type="typeof(IEnumerable<string>)"
                                              FilterValue="@selectedAddUsers" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
                         <FilterTemplate>
                             <RadzenDropDown @bind-Value=@selectedAddUsers
@@ -91,7 +112,7 @@
                             </div>
                         </Template>
                     </RadzenDataGridColumnApp>
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Тип отчёта" Property="ReportTemplateTypeDTOFK.Name" Type="typeof(IEnumerable<string>)" Width="60px"
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Тип отчёта" Property="ReportTemplateTypeDTOFK.Name" Type="typeof(IEnumerable<string>)"
                                              FilterValue="@selectedReportTemplates" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
                         <FilterTemplate>
                             <RadzenDropDown @bind-Value=@selectedReportTemplates
@@ -106,7 +127,7 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Производство" Property="MesDepartmentDTOFK.ToStringHierarchyShortName" Type="typeof(IEnumerable<string>)" Width="100px"
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Производство" Property="MesDepartmentDTOFK.ToStringHierarchyShortName" Type="typeof(IEnumerable<string>)"
                                              FilterProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" SortProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" FilterValue="@selectedMesDepartments"
                                              FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
                         <FilterTemplate>
@@ -124,7 +145,7 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Тип выходных данных" Property="DestDataTypeDTOFK.Name" Type="typeof(IEnumerable<string>)" Width="70px"
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Тип выходных данных" Property="DestDataTypeDTOFK.Name" Type="typeof(IEnumerable<string>)"
                                              FilterValue="@selectedDestDataTypes" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
 
                         <FilterTemplate>
@@ -141,28 +162,50 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="25px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="NeedAutoCalc" Title="Авторасчёт" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
-                            <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
+                            <RadzenCheckBox @bind-Value=data.NeedAutoCalc ReadOnly="true" TriState="false" TValue="bool?" />
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp Title="Действия" TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="50px">
-                        <Template Context="reportTemplateDTO">
-                            <RadzenButton title="Скачать файл шаблона" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadTemplate(reportTemplateDTO.Id))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                            <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(reportTemplateDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                            @if (!reportTemplateDTO.IsArchive)
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AutoCalcOrder" Title="Порядок авторасчёта" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data1">
+                            @if (data1.NeedAutoCalc == true)
                             {
-                                <RadzenButton title="Удалить в архив" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
-                                </RadzenButton>
+                                <div style="white-space:pre-wrap; font-weight:700">
+                                    @data1.AutoCalcOrder.ToString()                                
+                                </div>
                             }
                             else
                             {
-                                <RadzenButton title="Восстановить из архива" ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
-                                </RadzenButton>
+                                <div style="white-space:pre-wrap; color: #E3E8EB;">
+                                    @data1.AutoCalcOrder.ToString()
+                                </div>
                             }
+                        </Template>
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AutoCalcNumber" Title="Кол-во прогонов авторасчёта" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data1">
+                            @if (data1.NeedAutoCalc == true)
+                            {
+                                <div style="white-space:pre-wrap; font-weight:700">
+                                    @data1.AutoCalcNumber.ToString()
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="white-space:pre-wrap; color: #E3E8EB;">
+                                    @data1.AutoCalcNumber.ToString()
+                                </div>
+                            }
+                        </Template>
+                    </RadzenDataGridColumnApp>
+
+
+
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumnApp>
                 </Columns>
@@ -192,6 +235,8 @@
 
 @code {
 
+    [CascadingParameter]
+    bool iconMenuActive { get; set; }
     _Dialogs? _dialogs { get; set; }
 
     IEnumerable<ReportTemplateDTO>? reportTemplateDTOs;
@@ -324,12 +369,12 @@
             if (reportTemplateDTO == null)
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Добавить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", Guid.Empty } }, new DialogOptions() { Width = $"{800}px" });
+                dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Добавить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", Guid.Empty } }, new DialogOptions() { Width = $"{1450}px", Left = $"{150}px"});
             }
             else
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Изменить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", reportTemplateDTO.Id } }, new DialogOptions() { Width = $"{800}px" });
+                dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Изменить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", reportTemplateDTO.Id } }, new DialogOptions() { Width = $"{1450}px", Left = $"{150}px"});
             }
 
 

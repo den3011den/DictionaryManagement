@@ -89,13 +89,21 @@ namespace DictionaryManagement_Business.Mapper
                 .ForMember(dest => dest.AddUserDTOFK, opt => opt.MapFrom(src => src.AddUserFK))
                 .ForMember(dest => dest.ReportTemplateTypeDTOFK, opt => opt.MapFrom(src => src.ReportTemplateTypeFK))
                 .ForMember(dest => dest.DestDataTypeDTOFK, opt => opt.MapFrom(src => src.DestDataTypeFK))
-                .ForMember(dest => dest.MesDepartmentDTOFK, opt => opt.MapFrom(src => src.MesDepartmentFK));
+                .ForMember(dest => dest.MesDepartmentDTOFK, opt => opt.MapFrom(src => src.MesDepartmentFK))
+                .ForMember(dest => dest.NeedAutoCalc, opt => opt.MapFrom(src => src.NeedAutoCalc == null ? false : src.NeedAutoCalc))
+                .ForMember(dest => dest.AutoCalcOrder, opt => opt.MapFrom(src => src.AutoCalcOrder == null ? 1 : src.AutoCalcOrder))
+                .ForMember(dest => dest.AutoCalcNumber, opt => opt.MapFrom(src => src.AutoCalcNumber == null ? 1 : src.AutoCalcNumber));
 
             CreateMap<ReportTemplateDTO, ReportTemplate>()
                     .ForMember(dest => dest.AddUserFK, opt => opt.MapFrom(src => src.AddUserDTOFK))
                     .ForMember(dest => dest.ReportTemplateTypeFK, opt => opt.MapFrom(src => src.ReportTemplateTypeDTOFK))
                     .ForMember(dest => dest.DestDataTypeFK, opt => opt.MapFrom(src => src.DestDataTypeDTOFK))
-                    .ForMember(dest => dest.MesDepartmentFK, opt => opt.MapFrom(src => src.MesDepartmentDTOFK));
+                    .ForMember(dest => dest.MesDepartmentFK, opt => opt.MapFrom(src => src.MesDepartmentDTOFK))
+                    .ForMember(dest => dest.NeedAutoCalc, opt => opt.MapFrom(src => src.NeedAutoCalc == null ? false : src.NeedAutoCalc))
+                    .ForMember(dest => dest.NeedAutoCalc, opt => opt.MapFrom(src => src.NeedAutoCalc == null ? false : src.NeedAutoCalc))
+                    .ForMember(dest => dest.AutoCalcOrder, opt => opt.MapFrom(src => src.AutoCalcOrder == null ? 1 : src.AutoCalcOrder))
+                    .ForMember(dest => dest.AutoCalcNumber, opt => opt.MapFrom(src => src.AutoCalcNumber == null ? 1 : src.AutoCalcNumber));
+
 
             CreateMap<ReportTemplateTypeTоRole, ReportTemplateTypeTоRoleDTO>()
                     .ForMember(dest => dest.ReportTemplateTypeDTOFK, opt => opt.MapFrom(src => src.ReportTemplateTypeFK))

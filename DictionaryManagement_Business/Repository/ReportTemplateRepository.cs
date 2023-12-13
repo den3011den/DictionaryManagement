@@ -42,6 +42,10 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.DestDataTypeId = objectToAddDTO.DestDataTypeId;
             objectToAdd.DepartmentId = objectToAddDTO.DepartmentId;
             objectToAdd.TemplateFileName = objectToAddDTO.TemplateFileName;
+            objectToAdd.NeedAutoCalc = objectToAddDTO.NeedAutoCalc;
+            objectToAdd.AutoCalcOrder = objectToAddDTO.AutoCalcOrder;
+            objectToAdd.AutoCalcNumber = objectToAddDTO.AutoCalcNumber;
+                               
             objectToAdd.IsArchive = objectToAddDTO.IsArchive;
 
             var addedReportTemplate = _db.ReportTemplate.Add(objectToAdd);
@@ -246,9 +250,14 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.Description = objectToUpdateDTO.Description;
                 if (objectToUpdateDTO.TemplateFileName != objectToUpdate.TemplateFileName)
                     objectToUpdate.TemplateFileName = objectToUpdateDTO.TemplateFileName;
+                if (objectToUpdateDTO.NeedAutoCalc != objectToUpdate.NeedAutoCalc)
+                    objectToUpdate.NeedAutoCalc = objectToUpdateDTO.NeedAutoCalc;
+                if (objectToUpdateDTO.AutoCalcOrder != objectToUpdate.AutoCalcOrder)
+                    objectToUpdate.AutoCalcOrder = objectToUpdateDTO.AutoCalcOrder;
+                if (objectToUpdateDTO.AutoCalcNumber != objectToUpdate.AutoCalcNumber)
+                    objectToUpdate.AutoCalcNumber = objectToUpdateDTO.AutoCalcNumber;
                 if (objectToUpdateDTO.IsArchive != objectToUpdate.IsArchive)
                     objectToUpdate.IsArchive = objectToUpdateDTO.IsArchive;
-
 
                 _db.ReportTemplate.Update(objectToUpdate);
                 _db.SaveChanges();

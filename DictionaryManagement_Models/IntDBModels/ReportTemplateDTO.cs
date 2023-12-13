@@ -56,6 +56,17 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 
+        [Display(Name = "Авторасчёт")]
+        public bool? NeedAutoCalc { get; set; }        
+        [Display(Name = "Порядок авторасчёта")]
+        [Range (1, 1000000, ErrorMessage = "Порядок авторасчёта должен быть числом от {1} до {2}")]
+        public int? AutoCalcOrder { get; set; }        
+        [Display(Name = "Кол-во прогонов авторасчёта")]
+        [Range(1, 5, ErrorMessage = "Кол-во прогонов авторасчёта должно быть от {1} до {2}")]        
+        public int? AutoCalcNumber { get; set; }
+
+
+
         [NotMapped]
         [Display(Name = "Ид записи")]
         public string ToStringId
