@@ -20,6 +20,9 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Требуется авторасчёт")]
         public bool? NeedAutoCalc { get; set; }
 
+        [Display(Name = "Доступен для настройки авторасчёта")]
+        public bool? CanAutoCalc { get; set; }
+
         [NotMapped]
         [Display(Name = "Чтение")]
         public bool CanDownload { get; set; }
@@ -41,6 +44,5 @@ namespace DictionaryManagement_Models.IntDBModels
                 ToStringId = value;
             }
         }
-
     }
 }

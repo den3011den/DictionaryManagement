@@ -49,14 +49,14 @@
                     </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="NeedAutoCalc" Title="Требуется авторасчёт" Width="150px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="CanAutoCalc" Title="Доступен для настройки авторасчёта" Width="150px" TextAlign="TextAlign.Center">
                         <Template Context="data">
-                            <RadzenCheckBox @bind-Value=data.NeedAutoCalc ReadOnly="true" TriState="false" TValue="bool?" />
+                            <RadzenCheckBox @bind-Value=data.CanAutoCalc ReadOnly="true" TriState="false" TValue="bool?" />
                         </Template>
                         <EditTemplate Context="data">
                             <strong>
                                 |
-                                <RadzenCheckBox @bind-Value=data.NeedAutoCalc TriState="false" TValue="bool?" />
+                                <RadzenCheckBox @bind-Value=data.CanAutoCalc TriState="false" TValue="bool?" Change="@(args => CanAutoCalcWarning(data.CanAutoCalc))"/>
                                 |
                             </strong>
                         </EditTemplate>
@@ -65,7 +65,7 @@
 
                     <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
                         <Template Context="data">
-                            <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
+                            <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool"/>
                         </Template>
                     </RadzenDataGridColumnApp>
                     <RadzenDataGridColumnApp TItem="ReportTemplateTypeDTO" Context="reportTemplateTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
@@ -222,6 +222,7 @@
                     var objectForRestore = await _reportTemplateTypeRepository.Get(reportTemplateTypeDTO.Id);
                     reportTemplateTypeDTO.Name = objectForRestore.Name;
                     reportTemplateTypeDTO.NeedAutoCalc = objectForRestore.NeedAutoCalc;
+                    reportTemplateTypeDTO.CanAutoCalc = objectForRestore.CanAutoCalc;                   
                     await reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTO);
                     await reportTemplateTypeDTOGrid.Reload();
                     await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись типа шаблона отчётов с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
@@ -255,12 +256,11 @@
         {
             reportTemplateTypeDTO.Name = objectForRestore.Name;
             reportTemplateTypeDTO.NeedAutoCalc = objectForRestore.NeedAutoCalc;
+            reportTemplateTypeDTO.CanAutoCalc = objectForRestore.CanAutoCalc;
             reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTO);
         }
         reportTemplateTypeDTOGrid.Reload();
-
         reportTemplateTypeDTOGrid.CancelEditRow(reportTemplateTypeDTO);
-
     }
 
     async Task DeleteRow(ReportTemplateTypeDTO reportTemplateTypeDTO)
@@ -330,6 +330,7 @@
         {
             reportTemplateTypeDTOToInsert = new ReportTemplateTypeDTO();
             reportTemplateTypeDTOToInsert.NeedAutoCalc = false;
+            reportTemplateTypeDTOToInsert.CanAutoCalc = false;
             await reportTemplateTypeDTOGrid.InsertRow(reportTemplateTypeDTOToInsert);
         }
     }
@@ -374,6 +375,17 @@
         await Task.Delay(200);
         await InvokeAsync(StateHasChanged);
     }
+
+    async Task CanAutoCalcWarning(bool? CanAutoCalcVar)
+    {
+        if (CanAutoCalcVar == true)
+        {
+            await _jsRuntime.InvokeVoidAsync("ShowSwal", "warning", "Данная настройка не будет иметь эффекта, если в AutoCalc не предусмотрен авторасчёт "+
+                "для данного типа шаблона отчёта, а так же если в \"Отчёты - Шаблоны отчётов\" не включен авторасчёт для конкретных шаблонов отчётов.");
+        }
+    }
+
+
 }
 
 

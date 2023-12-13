@@ -61,6 +61,8 @@ namespace DictionaryManagement_Business.Repository
                         objectToUpdate.Name = objectToUpdateDTO.Name;
                     if (objectToUpdate.NeedAutoCalc != objectToUpdateDTO.NeedAutoCalc)
                         objectToUpdate.NeedAutoCalc = objectToUpdateDTO.NeedAutoCalc;
+                    if (objectToUpdate.CanAutoCalc != objectToUpdateDTO.CanAutoCalc)
+                        objectToUpdate.CanAutoCalc = objectToUpdateDTO.CanAutoCalc;
                 }
                 if (updateMode == SD.UpdateMode.MoveToArchive)
                 {

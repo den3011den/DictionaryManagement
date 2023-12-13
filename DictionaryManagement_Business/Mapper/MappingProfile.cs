@@ -24,9 +24,11 @@ namespace DictionaryManagement_Business.Mapper
             CreateMap<DataSource, DataSourceDTO>().ReverseMap();
 
             CreateMap<ReportTemplateType, ReportTemplateTypeDTO>()
-                .ForMember(dest => dest.NeedAutoCalc, opt => opt.MapFrom(src => src.NeedAutoCalc == null ? false : src.NeedAutoCalc));
+                .ForMember(dest => dest.NeedAutoCalc, opt => opt.MapFrom(src => src.NeedAutoCalc == null ? false : src.NeedAutoCalc))
+                .ForMember(dest => dest.CanAutoCalc, opt => opt.MapFrom(src => src.CanAutoCalc == null ? false : src.CanAutoCalc));
             CreateMap<ReportTemplateTypeDTO, ReportTemplateType>()
-                .ForMember(dest => dest.NeedAutoCalc, opt => opt.MapFrom(src => src.NeedAutoCalc == null ? false : src.NeedAutoCalc));
+                .ForMember(dest => dest.NeedAutoCalc, opt => opt.MapFrom(src => src.NeedAutoCalc == null ? false : src.NeedAutoCalc))
+                .ForMember(dest => dest.CanAutoCalc, opt => opt.MapFrom(src => src.CanAutoCalc == null ? false : src.CanAutoCalc));
 
             CreateMap<LogEventType, LogEventTypeDTO>().ReverseMap();
             CreateMap<Settings, SettingsDTO>().ReverseMap();
