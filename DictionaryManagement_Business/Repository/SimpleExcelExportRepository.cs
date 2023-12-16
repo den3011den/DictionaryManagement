@@ -2646,8 +2646,10 @@ namespace DictionaryManagement_Business.Repository
 
                 var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
 
-                bool notImplementedThirdColumnForEmbReport = (reportEntityDTO.ReportTemplateDTOFK.ReportTemplateTypeDTOFK.Name.Trim().ToUpper() == "ОТЧЁТ ЭМБ"
-                    && sheetSettingName == SD.ReportOutputSheetSettingName);
+                //bool notImplementedThirdColumnForEmbReport = (reportEntityDTO.ReportTemplateDTOFK.ReportTemplateTypeDTOFK.Name.Trim().ToUpper() == "ОТЧЁТ ЭМБ"
+                //    && sheetSettingName == SD.ReportOutputSheetSettingName);
+
+                bool notImplementedThirdColumnForEmbReport = false;
 
                 foreach (var row in rows)
                 {
