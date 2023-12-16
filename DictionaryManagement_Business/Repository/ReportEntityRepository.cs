@@ -63,7 +63,7 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportDepartmentFK")
                             .Include("ReportDepartmentFK.DepartmentParent")
                             .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent")
-                            .Include("ReportDepartmentFKDepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Include("ReportDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Include("DownloadUserFK")

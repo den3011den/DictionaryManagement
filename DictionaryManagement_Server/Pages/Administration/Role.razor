@@ -42,19 +42,19 @@
             </RadzenRow>
 
             <RadzenDataGridApp @bind-Settings="@RoleGridSettings" SettingsName="RoleGridSettings" @ref="roleVMDTOGrid" AllowAlternatingRows="true"
-                            AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
-                            Data="@roleVMDTOs" TItem="RoleVMDTO"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            FilterMode="FilterMode.Advanced" 
-                            AllowColumnResize="false"
-                            Density=Density.Compact
-                            ShowPagingSummary="true"
-                            EmptyText="Нет записей для отображения"
-                            AllowVirtualization="true"
-                            Style="height:calc(100vh - 170px)">
+                               AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
+                               Data="@roleVMDTOs" TItem="RoleVMDTO"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                               FilterMode="FilterMode.Advanced"
+                               AllowColumnResize="false"
+                               Density=Density.Compact
+                               ShowPagingSummary="true"
+                               EmptyText="Нет записей для отображения"
+                               AllowVirtualization="true"
+                               Style="height:calc(100vh - 170px)">
                 <Columns>
                     <RadzenDataGridColumnApp TItem="RoleVMDTO" Property="ToStringId" Title="Ид роли" Width="10px"
-                                          FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
+                                             FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 10px">
                                 @data1.ToStringId
@@ -77,29 +77,6 @@
                             <div style="white-space:pre-wrap; font-size: 10px">
                                 @data3.Description
                             </div>
-                        </Template>
-                    </RadzenDataGridColumnApp>
-
-                    <RadzenDataGridColumnApp TItem="RoleVMDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="8px" TextAlign="TextAlign.Center">
-                        <Template Context="data">
-                            <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
-                        </Template>
-                    </RadzenDataGridColumnApp>
-
-                    <RadzenDataGridColumnApp Title="Действия" TItem="RoleVMDTO" Context="roleVMDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="20px">
-                        <Template Context="roleVMDTO">
-                            <RadzenButton title="Редактировать роль" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(roleVMDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                            @if (!roleVMDTO.IsArchive)
-                            {
-                                <RadzenButton title="Удалить роль в архив" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(roleVMDTO))" @onclick:stopPropagation="true">
-                                </RadzenButton>
-                            }
-                            else
-                            {
-                                <RadzenButton title="Восстановить роль из архива" ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(roleVMDTO))" @onclick:stopPropagation="true">
-                                </RadzenButton>
-                            }
                         </Template>
                     </RadzenDataGridColumnApp>
 
@@ -232,6 +209,29 @@
                                     </RadzenCard>
                                 </Template>
                             </RadzenDataList>
+                        </Template>
+                    </RadzenDataGridColumnApp>
+
+                    <RadzenDataGridColumnApp TItem="RoleVMDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="8px" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
+                        </Template>
+                    </RadzenDataGridColumnApp>
+
+                    <RadzenDataGridColumnApp Title="Действия" TItem="RoleVMDTO" Context="roleVMDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="20px">
+                        <Template Context="roleVMDTO">
+                            <RadzenButton title="Редактировать роль" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(roleVMDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            @if (!roleVMDTO.IsArchive)
+                            {
+                                <RadzenButton title="Удалить роль в архив" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(roleVMDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                            else
+                            {
+                                <RadzenButton title="Восстановить роль из архива" ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(roleVMDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
                         </Template>
                     </RadzenDataGridColumnApp>
 

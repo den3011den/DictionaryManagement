@@ -45,7 +45,7 @@
                                Data="@mesParamDTOs" TItem="MesParamDTO"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                FilterMode="FilterMode.SimpleWithMenu"
-                               Density=Density.Compact                               
+                               Density=Density.Compact
                                AllowColumnReorder="true"
                                AllowColumnResize="true"
                                AllowVirtualization="true"
@@ -69,25 +69,6 @@
                     </RadzenButton>
                 </HeaderTemplate>
                 <Columns>
-                    <RadzenDataGridColumnApp Title="Действия" Frozen="true" TItem="MesParamDTO" Context="mesParamDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Left" Width="130px">
-                        <Template Context="mesParamDTO">
-                            <RadzenButton title="Создать на основании" Icon="add_box" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO, SD.EditMode.CreateBasedOnRow))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                            <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO, SD.EditMode.Edit))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                            @if (!mesParamDTO.IsArchive)
-                            {
-                                <RadzenButton title="Удалить в архив" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesParamDTO))" @onclick:stopPropagation="true">
-                                </RadzenButton>
-                            }
-                            else
-                            {
-                                <RadzenButton title="Восстановить из архива" ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesParamDTO))" @onclick:stopPropagation="true">
-                                </RadzenButton>
-                            }
-                        </Template>
-                    </RadzenDataGridColumnApp>
-
 
                     <RadzenDataGridColumnApp TItem="MesParamDTO" Property="Id" Title="Ид записи">
                     </RadzenDataGridColumnApp>
@@ -229,6 +210,27 @@
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumnApp>
+
+                    <RadzenDataGridColumnApp Title="Действия" Frozen="true" FrozenPosition="FrozenColumnPosition.Right" TItem="MesParamDTO" Context="mesParamDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="130px">
+                        <Template Context="mesParamDTO">
+                            <RadzenButton title="Создать на основании" Icon="add_box" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO, SD.EditMode.CreateBasedOnRow))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamDTO, SD.EditMode.Edit))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            @if (!mesParamDTO.IsArchive)
+                            {
+                                <RadzenButton title="Удалить в архив" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesParamDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                            else
+                            {
+                                <RadzenButton title="Восстановить из архива" ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesParamDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                        </Template>
+                    </RadzenDataGridColumnApp>
+
+
                 </Columns>
             </RadzenDataGridApp>
             @*   </div>*@
@@ -298,7 +300,7 @@
                 await LoadStateAsync();
                 StateHasChanged();
                 mesParamDTOs = await _mesParamRepository.GetAll(SD.SelectDictionaryScope.All);
-                
+
                 await GetDistincts();
 
                 IsLoading = false;

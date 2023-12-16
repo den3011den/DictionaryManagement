@@ -67,24 +67,6 @@
                     </RadzenButton>
                 </HeaderTemplate>
                 <Columns>
-                    <RadzenDataGridColumnApp Title="Действия" TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="130px" Frozen="true">
-                        <Template Context="reportTemplateDTO">
-                            <RadzenButton title="Скачать файл шаблона" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadTemplate(reportTemplateDTO.Id))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                            <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(reportTemplateDTO))" @onclick:stopPropagation="true">
-                            </RadzenButton>
-                            @if (!reportTemplateDTO.IsArchive)
-                            {
-                                <RadzenButton title="Удалить в архив" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
-                                </RadzenButton>
-                            }
-                            else
-                            {
-                                <RadzenButton title="Восстановить из архива" ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
-                                </RadzenButton>
-                            }
-                        </Template>
-                    </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="ToStringId" Title="Ид шаблона отчёта"
                                      FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
@@ -201,13 +183,31 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-
-
                     <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
                     </RadzenDataGridColumnApp>
+
+                    <RadzenDataGridColumnApp Title="Действия" TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="130px" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                        <Template Context="reportTemplateDTO">
+                            <RadzenButton title="Скачать файл шаблона" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadTemplate(reportTemplateDTO.Id))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(reportTemplateDTO))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                            @if (!reportTemplateDTO.IsArchive)
+                            {
+                                <RadzenButton title="Удалить в архив" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                            else
+                            {
+                                <RadzenButton title="Восстановить из архива" ButtonStyle="ButtonStyle.Info" Icon="restore_from_trash" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(reportTemplateDTO))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            }
+                        </Template>
+                    </RadzenDataGridColumnApp>
+
                 </Columns>
             </RadzenDataGridApp>
             @*   </div>*@
