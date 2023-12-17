@@ -9,6 +9,7 @@
 
 @inject IJSRuntime _jsRuntime
 @inject IReportTemplateTypeRepository _reportTemplateTypeRepository
+@inject IReportTemplateRepository _reportTemplateRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
 
 @if (IsAdmin == true)
@@ -25,7 +26,7 @@
         {
             <RadzenRow AlignItems="AlignItems.Start">
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый тип шаблонов отчётов" Click="@InsertRow" Disabled=@(reportTemplateTypeDTOToInsert != null || reportTemplateTypeDTOToUpdate != null) />
-                <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
+                <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." Disabled=@(reportTemplateTypeDTOToInsert != null || reportTemplateTypeDTOToUpdate != null) />
             </RadzenRow>
 
 
@@ -213,13 +214,14 @@
 
             reportTemplateTypeDTOToUpdate = null;
 
+            var objectForRestore = await _reportTemplateTypeRepository.Get(reportTemplateTypeDTO.Id);
 
             var objectForCheckName = await _reportTemplateTypeRepository.GetByName(reportTemplateTypeDTO.Name);
             if (objectForCheckName != null)
             {
                 if (objectForCheckName.Id != reportTemplateTypeDTO.Id)
                 {
-                    var objectForRestore = await _reportTemplateTypeRepository.Get(reportTemplateTypeDTO.Id);
+
                     reportTemplateTypeDTO.Name = objectForRestore.Name;
                     reportTemplateTypeDTO.NeedAutoCalc = objectForRestore.NeedAutoCalc;
                     reportTemplateTypeDTO.CanAutoCalc = objectForRestore.CanAutoCalc;                   
@@ -230,6 +232,65 @@
                 }
             }
 
+            if (reportTemplateTypeDTO.CanAutoCalc != objectForRestore.CanAutoCalc)
+            {
+                IEnumerable<ReportTemplateDTO> reportTemplateListForCheck = (await _reportTemplateRepository.GetAll(SD.SelectDictionaryScope.All))
+                    .Where(u => u.ReportTemplateTypeId == reportTemplateTypeDTO.Id && u.NeedAutoCalc != reportTemplateTypeDTO.CanAutoCalc);
+
+                if (reportTemplateListForCheck != null)
+                {
+                    if (reportTemplateListForCheck.Count() > 0)
+                    {
+                        bool needChangeReportTemplates = false;
+                        if (reportTemplateTypeDTO.CanAutoCalc == true)
+                        {
+                            bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Изменение доступности для авторасчёта", 
+                                "Вы устанавливаете доступность авторасчёта для типа шаблона отчёта \""+reportTemplateTypeDTO.Name+
+                                "\". Есть шаблоны отчётов, для которых не включен признак необходимости авторасчётов в количестве " + 
+                                reportTemplateListForCheck.Count().ToString() +". Включить для них необходимость авторасчётов ?" ,
+                                "Включить", "Не включать");
+                            if (selectionResult == true)
+                            {
+                                needChangeReportTemplates = true;
+                            }
+                        }
+
+                        if (reportTemplateTypeDTO.CanAutoCalc == false)
+                        {
+                            bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Изменение доступности для авторасчёта",
+                                "Вы отключаете доступность авторасчёта для типа шаблона отчёта \"" + reportTemplateTypeDTO.Name +
+                                "\". Есть шаблоны отчётов, для которых включен признак необходимости авторасчётов в количестве " +
+                                reportTemplateListForCheck.Count().ToString() + ". Выключить для них необходимость авторасчётов ?",
+                                "Выключить", "Не выключать");
+                            if (selectionResult == true)
+                            {
+                                needChangeReportTemplates = true;
+                            }
+                        }
+
+                        if (needChangeReportTemplates == true)
+                        {
+                            foreach (var item in reportTemplateListForCheck)
+                            {
+                                item.NeedAutoCalc = reportTemplateTypeDTO.CanAutoCalc;
+                                if (reportTemplateTypeDTO.CanAutoCalc == true)
+                                {
+                                    if (item.AutoCalcNumber == null || item.AutoCalcNumber <= 0)
+                                    {
+                                        item.AutoCalcNumber = 1;
+                                    }
+                                    if (item.AutoCalcOrder == null || item.AutoCalcOrder <= 0)
+                                    {
+                                        item.AutoCalcOrder = 1;
+                                    }
+                                }
+                                await _reportTemplateRepository.Update(item);
+                            }
+                        }
+                    }
+                }
+            }
+           
             await _reportTemplateTypeRepository.Update(reportTemplateTypeDTO, SD.UpdateMode.Update);
         }
     }
