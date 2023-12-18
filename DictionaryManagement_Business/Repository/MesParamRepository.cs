@@ -5,6 +5,7 @@ using DictionaryManagement_DataAccess.Data.IntDB;
 using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
+//using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.IdentityModel.Tokens;
 using static DictionaryManagement_Common.SD;
 
@@ -64,7 +65,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<MesParamDTO> GetById(int id)
         {
             var objToGet = _db.MesParam
-                            .Include("MesParamSourceTypeFK")                            
+                            .Include("MesParamSourceTypeFK")
                             .Include("SapEquipmentSourceFK")
                             .Include("SapEquipmentDestFK")
                             .Include("MesMaterialFK")
@@ -88,7 +89,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<MesParamDTO> GetByCode(string code = "")
         {
             var objToGet = _db.MesParam
-                            .Include("MesParamSourceTypeFK")                            
+                            .Include("MesParamSourceTypeFK")
                             .Include("SapEquipmentSourceFK")
                             .Include("SapEquipmentDestFK")
                             .Include("MesMaterialFK")
@@ -111,7 +112,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<MesParamDTO> GetByName(string name = "")
         {
             var objToGet = _db.MesParam
-                            .Include("MesParamSourceTypeFK")                            
+                            .Include("MesParamSourceTypeFK")
                             .Include("SapEquipmentSourceFK")
                             .Include("SapEquipmentDestFK")
                             .Include("MesMaterialFK")
@@ -135,7 +136,7 @@ namespace DictionaryManagement_Business.Repository
             if (!mesParamSourceLink.IsNullOrEmpty())
             {
                 var objToGet = _db.MesParam
-                            .Include("MesParamSourceTypeFK")                            
+                            .Include("MesParamSourceTypeFK")
                             .Include("SapEquipmentSourceFK")
                             .Include("SapEquipmentDestFK")
                             .Include("MesMaterialFK")
@@ -163,7 +164,7 @@ namespace DictionaryManagement_Business.Repository
             if (selectDictionaryScope == SD.SelectDictionaryScope.ArchiveOnly)
             {
                 var hhh2 = _db.MesParam
-                            .Include("MesParamSourceTypeFK").AsNoTracking()                            
+                            .Include("MesParamSourceTypeFK").AsNoTracking()
                             .Include("SapEquipmentSourceFK").AsNoTracking()
                             .Include("SapEquipmentDestFK").AsNoTracking()
                             .Include("MesMaterialFK").AsNoTracking()
@@ -230,7 +231,7 @@ namespace DictionaryManagement_Business.Repository
         public async Task<MesParamDTO> Update(MesParamDTO objectToUpdateDTO)
         {
             var objectToUpdate = _db.MesParam
-                        .Include("MesParamSourceTypeFK")                        
+                        .Include("MesParamSourceTypeFK")
                         .Include("SapEquipmentSourceFK")
                         .Include("SapEquipmentDestFK")
                         .Include("MesMaterialFK")
@@ -411,8 +412,18 @@ namespace DictionaryManagement_Business.Repository
                 if (objectToUpdateDTO.IsArchive != objectToUpdate.IsArchive)
                     objectToUpdate.IsArchive = objectToUpdateDTO.IsArchive;
 
-
                 _db.MesParam.Update(objectToUpdate);
+
+                //var modifiedEntries = _db.ChangeTracker.Entries().Where(e => e.State == EntityState.Modified);
+                //foreach (EntityEntry entity in modifiedEntries)
+                //{
+                //    foreach (var propName in entity.CurrentValues.Properties)
+                //    {
+                //        var current = entity.CurrentValues[propName];
+                //        var original = entity.OriginalValues[propName];
+                //    }
+                //}
+
                 _db.SaveChanges();
                 return _mapper.Map<MesParam, MesParamDTO>(objectToUpdate);
             }
@@ -445,7 +456,7 @@ namespace DictionaryManagement_Business.Repository
                 if (sapEquipmentIdSource > 0 && sapEquipmentIdDest > 0 && sapMaterialId > 0)
                 {
                     var objToGet = _db.MesParam
-                                    .Include("MesParamSourceTypeFK")                                    
+                                    .Include("MesParamSourceTypeFK")
                                     .Include("SapEquipmentSourceFK")
                                     .Include("SapEquipmentDestFK")
                                     .Include("MesMaterialFK")
