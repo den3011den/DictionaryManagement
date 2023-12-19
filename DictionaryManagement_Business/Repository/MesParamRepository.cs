@@ -15,11 +15,15 @@ namespace DictionaryManagement_Business.Repository
     {
         private readonly IntDBApplicationDbContext _db;
         private readonly IMapper _mapper;
+        private readonly ILogEventRepository _logEventRepository;
+        private readonly IAuthorizationRepository _authorizationRepository;
 
-        public MesParamRepository(IntDBApplicationDbContext db, IMapper mapper)
+        public MesParamRepository(IntDBApplicationDbContext db, IMapper mapper, ILogEventRepository logEventRepository, IAuthorizationRepository authorizationRepository)
         {
             _db = db;
             _mapper = mapper;
+            _logEventRepository = logEventRepository;
+            _authorizationRepository = authorizationRepository;
         }
 
         public async Task<MesParamDTO> Create(MesParamDTO objectToAddDTO)
@@ -58,7 +62,8 @@ namespace DictionaryManagement_Business.Repository
 
             var addedMesParam = _db.MesParam.Add(objectToAdd);
             _db.SaveChanges();
-            return _mapper.Map<MesParam, MesParamDTO>(addedMesParam.Entity);
+
+            return (await GetById(addedMesParam.Entity.Id));
         }
 
 
@@ -442,6 +447,53 @@ namespace DictionaryManagement_Business.Repository
                         objectToDelete.IsArchive = true;
                     if (updateMode == SD.UpdateMode.RestoreFromArchive)
                         objectToDelete.IsArchive = false;
+
+                    ////typeof(T).GetProperties().Select(property => ((DisplayAttribute)property.GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault())?.Name).ToArray();
+
+                    ////foreach (var propertyEntry in _db.Entry(objectToDelete).Properties.Select(property => ((DisplayAttribute)property..GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault())?.Name))
+
+                    //foreach (var propertyEntry in _db.Entry(objectToDelete).Properties)
+                    //{
+
+                    //    //if (propertyEntry.Metadata.ClrType == typeof(bool))
+                    //    if (propertyEntry.Metadata.Name == "IsArchive")
+                    //    {
+                    //        var sss = propertyEntry.Metadata.PropertyInfo.GetCustomAttributesData().Select(t => t.AttributeType == typeof(DisplayAttribute));
+
+                    //        string? annotationName = null;
+
+                    //        foreach (var attribute in propertyEntry.Metadata.PropertyInfo.GetCustomAttributes(false))
+                    //        {
+                    //            var test = attribute as DisplayAttribute;
+                    //            if (test != null)
+                    //            {
+                    //                annotationName = test.Name;
+                    //                break;
+                    //            }
+                    //        }
+
+
+
+                    //        var ddd = 1;
+                    //        //object[] attributes = propertyEntry.Metadata.PropertyInfo.GetCustomAttributes(true).Select(t => t.GetType().Name == "DisplayAttribute");
+                    //        //object[] attributes = propertyEntry.Metadata.PropertyInfo.GetCustomAttributes(true).Select(t => t.GetType().Name == "DisplayAttribute");
+                    //        //foreach (object item in attributes)
+                    //        //{
+                    //        //    if (item.GetType().FullName == fullName)
+                    //        //        return true;
+                    //        //}
+
+                    //        //.GetCustomAttributesData().Select(t => t.AttributeType == typeof(DisplayAttribute));
+
+
+                    //        //var yyy = typeof(MesParam).GetProperties().Select(property => ((DisplayAttribute)property.GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault())?.Name).ToList();
+                    //        //var jjj = propertyEntry.Metadata.GetAnnotations();
+                    //        //string fff = propertyEntry.Metadata.FindAnnotation("Display").Name;
+                    //        //propertyEntry.CurrentValue = DateTime.Now;
+
+                    //    }
+                    //}
+
                     _db.MesParam.Update(objectToDelete);
                     return _db.SaveChanges();
                 }
@@ -478,6 +530,86 @@ namespace DictionaryManagement_Business.Repository
 
                 }
             return null;
+        }
+        public async Task ToLog(MesParamDTO? oldObject, MesParamDTO newObject, string logEventTypeName)
+        {
+
+            Guid userId = (await _authorizationRepository.GetCurrentUserDTO()).Id;
+
+            string namestr = "Тэг: " + newObject.ToString().Trim();
+            if (oldObject != null)
+                if (!((oldObject.ToString()).Trim().ToUpper().Equals(newObject.ToString().Trim().ToUpper())))
+                    namestr = namestr + " (" + oldObject.ToString().Trim() + ")";
+
+            string description = logEventTypeName + ": ";
+
+            var propertiesList = typeof(MesParamDTO).GetProperties();
+
+            foreach (var property in propertiesList)
+            {
+                bool needSkip = true;
+                foreach (var customAttribute in property.CustomAttributes)
+                {
+                    if (customAttribute.AttributeType == typeof(ForLogAttribute))
+                    {
+                        needSkip = false;
+                        break;
+                    }
+                }
+
+                if (needSkip)
+                {
+                    continue;
+                }
+
+                var propertyAttribute = property.GetCustomAttributes(typeof(ForLogAttribute), false);
+                string? namePropertyAttribute = (propertyAttribute[0] as ForLogAttribute) == null ? "" : (propertyAttribute[0] as ForLogAttribute).NameProperty;
+
+                object? oldValue = null;
+
+                if (oldObject != null)
+                {
+                    oldValue = property.GetValue(oldObject);
+                }
+
+                var newValue = property.GetValue(newObject);
+
+                string oldValueString = "";
+                string newValueString = "";
+
+                if (oldValue == null)
+                {
+                    oldValueString = "<Пусто>";
+                }
+                if (newValue == null)
+                {
+                    newValueString = "<Пусто>";
+                }
+                if (oldValue != null)
+                {
+                    if (oldValue.GetType() == typeof(string))
+                        oldValueString = (string)oldValue;
+                    else
+                        oldValueString = oldValue.ToString();
+                }
+                if (newValue != null)
+                {
+                    if (newValue.GetType() == typeof(string))
+                        newValueString = (string)newValue;
+                    else
+                        newValueString = newValue.ToString();
+                }
+
+                newValueString = newValueString.ToLower() == "true" ? "Да" : (newValueString.ToLower() == "false" ? "Нет" : newValueString);
+                oldValueString = oldValueString.ToLower() == "true" ? "Да" : (oldValueString.ToLower() == "false" ? "Нет" : oldValueString);
+
+                if (!newValueString.Equals(oldValueString))
+                {
+                    description = namestr + " " + (namePropertyAttribute == null ? "" : namePropertyAttribute);
+                    await _logEventRepository.AddRecord(logEventTypeName: logEventTypeName, userId: userId, oldValue: oldValueString, newValue: newValueString, isError: false, description: description);
+                }
+            }
+
         }
     }
 }

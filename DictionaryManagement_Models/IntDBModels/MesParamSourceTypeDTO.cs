@@ -32,9 +32,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         public override string ToString()
         {
-            ToStringValue = $"{Name}";
-            return ToStringValue;
+            return Name;
         }
-
     }
 }

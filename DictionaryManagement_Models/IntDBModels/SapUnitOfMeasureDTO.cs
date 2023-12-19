@@ -22,12 +22,9 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 
-
-
         public override string ToString()
         {
             return $"{ShortName}";
         }
-
     }
 }

@@ -430,8 +430,9 @@
                     return;
                 }
 
+                var addedDTO = await _mesParamRepository.Create(ActiveMesParamDTO);                
 
-                await _mesParamRepository.Create(ActiveMesParamDTO);
+                await _mesParamRepository.ToLog(oldObject: null, newObject: addedDTO, "Добавление тэга СИР");
 
                 await _jsRuntime.ToastrSuccess("Тэг СИР \"" + ActiveMesParamDTO.Name + "\" создан");
                 _dialogService.Close(ActiveMesParamDTO);
@@ -492,54 +493,67 @@
                 if (ActiveMesParamDTO.Name == null)
                     ActiveMesParamDTO.Name = "";
 
-                await _mesParamRepository.Update(ActiveMesParamDTO);
+                MesParamDTO oldMesParamDTO = await _mesParamRepository.GetById(ActiveMesParamDTO.Id);
+
+                MesParamDTO newMesParamDTO = await _mesParamRepository.Update(ActiveMesParamDTO);
 
                 await _jsRuntime.ToastrSuccess("Тэг СИР \"" + ActiveMesParamDTO.Name + "\" изменён");
 
-                if (ActiveMesParamDTO.MesParamSourceType != null)
-                    ActiveMesParamDTO.MesParamSourceTypeDTOFK = await _mesParamSourceTypeRepository.Get((int)ActiveMesParamDTO.MesParamSourceType);
-                else
-                    ActiveMesParamDTO.MesParamSourceTypeDTOFK = null;
+                await GetFKForActiveMesParamDTO();
 
-                if (ActiveMesParamDTO.DepartmentId != null)
-                    ActiveMesParamDTO.MesDepartmentDTOFK = await _mesDepartmentRepository.GetById((int)ActiveMesParamDTO.DepartmentId);
-                else
-                    ActiveMesParamDTO.MesDepartmentDTOFK = null;
+                await _mesParamRepository.ToLog(oldObject: oldMesParamDTO, newObject: newMesParamDTO, "Изменение тэга СИР");
 
-                if (ActiveMesParamDTO.SapEquipmentIdSource != null)
-                    ActiveMesParamDTO.SapEquipmentSourceDTOFK = await _sapEquipmentRepository.Get((int)ActiveMesParamDTO.SapEquipmentIdSource);
-                else
-                    ActiveMesParamDTO.SapEquipmentSourceDTOFK = null;
 
-                if (ActiveMesParamDTO.SapEquipmentIdDest != null)
-                    ActiveMesParamDTO.SapEquipmentDestDTOFK = await _sapEquipmentRepository.Get((int)ActiveMesParamDTO.SapEquipmentIdDest);
-                else
-                    ActiveMesParamDTO.SapEquipmentDestDTOFK = null;
-
-                if (ActiveMesParamDTO.MesMaterialId != null)
-                    ActiveMesParamDTO.MesMaterialDTOFK = await _mesMaterialRepository.Get((int)ActiveMesParamDTO.MesMaterialId);
-                else
-                    ActiveMesParamDTO.MesMaterialDTOFK = null;
-
-                if (ActiveMesParamDTO.SapMaterialId != null)
-                    ActiveMesParamDTO.SapMaterialDTOFK = await _sapMaterialRepository.Get((int)ActiveMesParamDTO.SapMaterialId);
-                else
-                    ActiveMesParamDTO.SapMaterialDTOFK = null;
-
-                if (ActiveMesParamDTO.MesUnitOfMeasureId != null)
-                    ActiveMesParamDTO.MesUnitOfMeasureDTOFK = await _mesUnitOfMeasureRepository.Get((int)ActiveMesParamDTO.MesUnitOfMeasureId);
-                else
-                    ActiveMesParamDTO.MesUnitOfMeasureDTOFK = null;
-
-                if (ActiveMesParamDTO.SapUnitOfMeasureId != null)
-                    ActiveMesParamDTO.SapUnitOfMeasureDTOFK = await _sapUnitOfMeasureRepository.Get((int)ActiveMesParamDTO.SapUnitOfMeasureId);
-                else
-                    ActiveMesParamDTO.SapUnitOfMeasureDTOFK = null;
                 _dialogService.Close(ActiveMesParamDTO);
             }
         }
     }
 
+
+    private async Task GetFKForActiveMesParamDTO()
+    {
+
+        if (ActiveMesParamDTO.MesParamSourceType != null)
+            ActiveMesParamDTO.MesParamSourceTypeDTOFK = await _mesParamSourceTypeRepository.Get((int)ActiveMesParamDTO.MesParamSourceType);
+        else
+            ActiveMesParamDTO.MesParamSourceTypeDTOFK = null;
+
+        if (ActiveMesParamDTO.DepartmentId != null)
+            ActiveMesParamDTO.MesDepartmentDTOFK = await _mesDepartmentRepository.GetById((int)ActiveMesParamDTO.DepartmentId);
+        else
+            ActiveMesParamDTO.MesDepartmentDTOFK = null;
+
+        if (ActiveMesParamDTO.SapEquipmentIdSource != null)
+            ActiveMesParamDTO.SapEquipmentSourceDTOFK = await _sapEquipmentRepository.Get((int)ActiveMesParamDTO.SapEquipmentIdSource);
+        else
+            ActiveMesParamDTO.SapEquipmentSourceDTOFK = null;
+
+        if (ActiveMesParamDTO.SapEquipmentIdDest != null)
+            ActiveMesParamDTO.SapEquipmentDestDTOFK = await _sapEquipmentRepository.Get((int)ActiveMesParamDTO.SapEquipmentIdDest);
+        else
+            ActiveMesParamDTO.SapEquipmentDestDTOFK = null;
+
+        if (ActiveMesParamDTO.MesMaterialId != null)
+            ActiveMesParamDTO.MesMaterialDTOFK = await _mesMaterialRepository.Get((int)ActiveMesParamDTO.MesMaterialId);
+        else
+            ActiveMesParamDTO.MesMaterialDTOFK = null;
+
+        if (ActiveMesParamDTO.SapMaterialId != null)
+            ActiveMesParamDTO.SapMaterialDTOFK = await _sapMaterialRepository.Get((int)ActiveMesParamDTO.SapMaterialId);
+        else
+            ActiveMesParamDTO.SapMaterialDTOFK = null;
+
+        if (ActiveMesParamDTO.MesUnitOfMeasureId != null)
+            ActiveMesParamDTO.MesUnitOfMeasureDTOFK = await _mesUnitOfMeasureRepository.Get((int)ActiveMesParamDTO.MesUnitOfMeasureId);
+        else
+            ActiveMesParamDTO.MesUnitOfMeasureDTOFK = null;
+
+        if (ActiveMesParamDTO.SapUnitOfMeasureId != null)
+            ActiveMesParamDTO.SapUnitOfMeasureDTOFK = await _sapUnitOfMeasureRepository.Get((int)ActiveMesParamDTO.SapUnitOfMeasureId);
+        else
+            ActiveMesParamDTO.SapUnitOfMeasureDTOFK = null;
+
+    }
 
     private async Task OnClickCancel()
     {

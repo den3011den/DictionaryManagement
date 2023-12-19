@@ -50,5 +50,6 @@ namespace DictionaryManagement_Models.IntDBModels
                 ToStringCodeName = value;
             }
         }
+
     }
 }

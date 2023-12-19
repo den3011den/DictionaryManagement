@@ -62,5 +62,9 @@ namespace DictionaryManagement_Models.IntDBModels
             }
         }
 
+        public string ToStringForLog()
+        {
+            return $"{ToStringErpPlantIdErpIdName}";
+        }
     }
 }

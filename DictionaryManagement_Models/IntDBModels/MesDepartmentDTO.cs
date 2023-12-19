@@ -118,13 +118,13 @@ namespace DictionaryManagement_Models.IntDBModels
                     if (string.IsNullOrEmpty(ret_var))
                         ret_var = mesDepartmentDTO.ShortName;
                     else
-                        ret_var = mesDepartmentDTO.ShortName + " - " + ret_var;                    
+                        ret_var = mesDepartmentDTO.ShortName + " - " + ret_var;
                     mesDepartmentDTO = mesDepartmentDTO.DepartmentParentDTO;
                 }
                 if (string.IsNullOrEmpty(ret_var))
                     ret_var = mesDepartmentDTO.ShortName;
                 else
-                    ret_var = mesDepartmentDTO.ShortName + " - " + ret_var;                
+                    ret_var = mesDepartmentDTO.ShortName + " - " + ret_var;
                 return ret_var;
             }
             set
@@ -133,6 +133,13 @@ namespace DictionaryManagement_Models.IntDBModels
             }
 
         }
+        public override string ToString()
+        {
+            return $"{ToStringHierarchyShortName}";
+        }
+
+
+
     }
 }
 
