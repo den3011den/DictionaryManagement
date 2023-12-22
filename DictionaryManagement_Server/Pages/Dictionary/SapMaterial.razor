@@ -10,7 +10,7 @@
 @inject IJSRuntime _jsRuntime
 @inject ISapMaterialRepository _sapMaterialRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
-
+@inject ILogEventRepository _logEventRepository
 
 
 @if (IsAdmin == true)
@@ -276,7 +276,10 @@
                 await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
                 return;
             }
-            await _sapMaterialRepository.Update(sapMaterialDTO, SD.UpdateMode.Update);
+
+            SapMaterialDTO oldSapMaterialDTO = await _sapMaterialRepository.Get(sapMaterialDTO.Id);
+            SapMaterialDTO newSapMaterialDTO = await _sapMaterialRepository.Update(sapMaterialDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<SapMaterialDTO>(oldObject: oldSapMaterialDTO, newObject: newSapMaterialDTO, "Изменение материала SAP", "Материал SAP: ");
         }
     }
 
@@ -346,18 +349,24 @@
 
             if (sapMaterialDTOs.Contains(sapMaterialDTO))
             {
+                SapMaterialDTO oldSapMaterialDTO = await _sapMaterialRepository.Get(sapMaterialDTO.Id);
+                SapMaterialDTO newSapMaterialDTO = new SapMaterialDTO();
+                string logEventTypeName = "";
                 if (sapMaterialDTO.IsArchive)
                 {
-                    await _sapMaterialRepository.Update(sapMaterialDTO, SD.UpdateMode.RestoreFromArchive);
+                    newSapMaterialDTO = await _sapMaterialRepository.Update(sapMaterialDTO, SD.UpdateMode.RestoreFromArchive);
                     sapMaterialDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Материал \"" + sapMaterialDTO.Name + "\" восстановлен из архива");
+                    logEventTypeName = "Восстановление из архива материала SAP";
                 }
                 else
                 {
-                    await _sapMaterialRepository.Update(sapMaterialDTO, SD.UpdateMode.MoveToArchive);
+                    newSapMaterialDTO = await _sapMaterialRepository.Update(sapMaterialDTO, SD.UpdateMode.MoveToArchive);
                     sapMaterialDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Материал \"" + sapMaterialDTO.Name + "\" удалён в архив");
+                    logEventTypeName = "Удаление в архив материала SAP";
                 }
+                await _logEventRepository.ToLog<SapMaterialDTO>(oldObject: oldSapMaterialDTO, newObject: newSapMaterialDTO, logEventTypeName, "Материал SAP: ");
                 await sapMaterialDTOGrid.UpdateRow(sapMaterialDTO);
             }
             else
@@ -423,6 +432,9 @@
             }
 
             var newDTO = await _sapMaterialRepository.Create(sapMaterialDTO);
+
+            await _logEventRepository.ToLog<SapMaterialDTO>(oldObject: null, newObject: newDTO, "Добавление материала SAP", "Материал SAP: ");
+
             await OnAfterRenderAsync(true);
         }
     }

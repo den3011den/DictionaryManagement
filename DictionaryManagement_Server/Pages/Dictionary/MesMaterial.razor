@@ -12,6 +12,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IMesMaterialRepository _mesMaterialRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 
 @if (IsAdmin == true)
@@ -283,7 +284,10 @@
                 await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
                 return;
             }
-            await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.Update);
+
+            MesMaterialDTO oldMesMaterialDTO = await _mesMaterialRepository.Get(mesMaterialDTO.Id);
+            MesMaterialDTO newMesMaterialDTO = await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<MesMaterialDTO>(oldObject: oldMesMaterialDTO, newObject: newMesMaterialDTO, "Изменение материала MES", "Материал MES: ");
         }
     }
 
@@ -358,18 +362,25 @@
 
             if (mesMaterialDTOs.Contains(mesMaterialDTO))
             {
+                MesMaterialDTO oldMesMaterialDTO = await _mesMaterialRepository.Get(mesMaterialDTO.Id);
+                MesMaterialDTO newMesMaterialDTO = new MesMaterialDTO();
+                string logEventTypeName = "";
+
                 if (mesMaterialDTO.IsArchive)
                 {
-                    await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.RestoreFromArchive);
+                    newMesMaterialDTO = await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.RestoreFromArchive);
                     mesMaterialDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Материал \"" + mesMaterialDTO.Name + "\" восстановлен из архива");
+                    logEventTypeName = "Восстановление из архива материала MES";
                 }
                 else
                 {
-                    await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.MoveToArchive);
+                    newMesMaterialDTO = await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.MoveToArchive);
                     mesMaterialDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Материал \"" + mesMaterialDTO.Name + "\" удалён в архив");
+                    logEventTypeName = "Удаление в архив материала MES";
                 }
+                await _logEventRepository.ToLog<MesMaterialDTO>(oldObject: oldMesMaterialDTO, newObject: newMesMaterialDTO, logEventTypeName, "Материал MES: ");
                 await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
             }
             else
@@ -438,6 +449,7 @@
             }
 
             var newDTO = await _mesMaterialRepository.Create(mesMaterialDTO);
+            await _logEventRepository.ToLog<MesMaterialDTO>(oldObject: null, newObject: newDTO, "Добавление материала MES", "Материал MES: ");
             await OnAfterRenderAsync(true);
         }
     }
