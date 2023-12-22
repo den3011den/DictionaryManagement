@@ -12,6 +12,7 @@
 @inject IJSRuntime _jsRuntime
 @inject ICorrectionReasonRepository _correctionReasonRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 
 @if (IsAdmin == true)
@@ -219,8 +220,9 @@
                     return;
                 }
             }
-
-            await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.Update);
+            CorrectionReasonDTO oldCorrectionReasonDTO = await _correctionReasonRepository.Get(correctionReasonDTO.Id);
+            CorrectionReasonDTO newCorrectionReasonDTO = await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<CorrectionReasonDTO>(oldObject: oldCorrectionReasonDTO, newObject: newCorrectionReasonDTO, "Изменение причины корректировки", "Причина корректировки: ");
         }
     }
 
@@ -291,18 +293,26 @@
 
             if (correctionReasonDTOs.Contains(correctionReasonDTO))
             {
+
+                CorrectionReasonDTO oldCorrectionReasonDTO = await _correctionReasonRepository.Get(correctionReasonDTO.Id);
+                CorrectionReasonDTO newCorrectionReasonDTO = new CorrectionReasonDTO();
+                string logEventTypeName = "";
+
                 if (correctionReasonDTO.IsArchive)
                 {
-                    await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.RestoreFromArchive);
+                    newCorrectionReasonDTO = await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.RestoreFromArchive);
                     correctionReasonDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Причина корректировки " + correctionReasonDTO.Name + " восстановлена из архива");
+                    logEventTypeName = "Восстановление из архива причины корректировки";
                 }
                 else
                 {
-                    await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.MoveToArchive);
+                    newCorrectionReasonDTO = await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.MoveToArchive);
                     correctionReasonDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Причина корректировки " + correctionReasonDTO.Name + " удалена в архив");
+                    logEventTypeName = "Удаление в архив причины корректировки";
                 }
+                await _logEventRepository.ToLog<CorrectionReasonDTO>(oldObject: oldCorrectionReasonDTO, newObject: newCorrectionReasonDTO, logEventTypeName, "Причина корректировки: ");
                 await correctionReasonDTOGrid.UpdateRow(correctionReasonDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -340,6 +350,7 @@
             }
 
             var newDTO = await _correctionReasonRepository.Create(correctionReasonDTO);
+            await _logEventRepository.ToLog<CorrectionReasonDTO>(oldObject: null, newObject: newDTO, "Добавление причины корректировки", "Причина корректировки: ");
 
             //correctionReasonDTOToInsert.Id = newDTO.Id;
             //await correctionReasonDTOGrid.UpdateRow(correctionReasonDTOToInsert);

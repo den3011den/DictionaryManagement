@@ -11,6 +11,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IMesUnitOfMeasureRepository _mesUnitOfMeasureRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 <_Dialogs @ref="_dialogs"></_Dialogs>
 
@@ -237,7 +238,9 @@
                 }
             }
 
-            await _mesUnitOfMeasureRepository.Update(mesUnitOfMeasureDTO, SD.UpdateMode.Update);
+            MesUnitOfMeasureDTO oldMesUnitOfMeasureDTO = await _mesUnitOfMeasureRepository.Get(mesUnitOfMeasureDTO.Id);
+            MesUnitOfMeasureDTO newMesUnitOfMeasureDTO = await _mesUnitOfMeasureRepository.Update(mesUnitOfMeasureDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<MesUnitOfMeasureDTO>(oldObject: oldMesUnitOfMeasureDTO, newObject: newMesUnitOfMeasureDTO, "Изменение ед.изм. MES", "Ед.изм. MES: ");
         }
     }
 
@@ -310,18 +313,26 @@
 
             if (mesUnitOfMeasureDTOs.Contains(mesUnitOfMeasureDTO))
             {
+
+                MesUnitOfMeasureDTO oldMesUnitOfMeasureDTO = await _mesUnitOfMeasureRepository.Get(mesUnitOfMeasureDTO.Id);
+                MesUnitOfMeasureDTO newMesUnitOfMeasureDTO = new MesUnitOfMeasureDTO();
+                string logEventTypeName = "";
+
                 if (mesUnitOfMeasureDTO.IsArchive)
                 {
-                    await _mesUnitOfMeasureRepository.Update(mesUnitOfMeasureDTO, SD.UpdateMode.RestoreFromArchive);
+                    newMesUnitOfMeasureDTO = await _mesUnitOfMeasureRepository.Update(mesUnitOfMeasureDTO, SD.UpdateMode.RestoreFromArchive);
                     mesUnitOfMeasureDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Ед. изм. " + mesUnitOfMeasureDTO.Name + " восстановлена из архива");
+                    logEventTypeName = "Восстановление из архива ед.изм. MES";
                 }
                 else
                 {
-                    await _mesUnitOfMeasureRepository.Update(mesUnitOfMeasureDTO, SD.UpdateMode.MoveToArchive);
+                    newMesUnitOfMeasureDTO = await _mesUnitOfMeasureRepository.Update(mesUnitOfMeasureDTO, SD.UpdateMode.MoveToArchive);
                     mesUnitOfMeasureDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Ед. изм. " + mesUnitOfMeasureDTO.Name + " удалена в архив");
+                    logEventTypeName = "Удаление в архив ед.изм. MES";
                 }
+                await _logEventRepository.ToLog<MesUnitOfMeasureDTO>(oldObject: oldMesUnitOfMeasureDTO, newObject: newMesUnitOfMeasureDTO, logEventTypeName, "Ед.изм. MES: ");
                 await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -375,6 +386,7 @@
             //mesUnitOfMeasureDTOToInsert.Id = newDTO.Id;
             //await mesUnitOfMeasureDTOGrid.UpdateRow(mesUnitOfMeasureDTOToInsert);
 
+            await _logEventRepository.ToLog<MesUnitOfMeasureDTO>(oldObject: null, newObject: newDTO, "Добавление ед.изм. MES", "Ед.изм. MES: ");
             await OnAfterRenderAsync(true);
 
         }

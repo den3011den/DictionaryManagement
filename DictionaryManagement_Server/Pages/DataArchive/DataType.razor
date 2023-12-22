@@ -12,7 +12,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IDataTypeRepository _dataTypeRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
-
+@inject ILogEventRepository _logEventRepository
 
 @if (IsAdmin == true)
 {
@@ -250,13 +250,15 @@
                     dataTypeDTO.IsAutoCalcDestDataType = objectForRestore.IsAutoCalcDestDataType;
                     await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
                     await dataTypeDTOGrid.Reload();
-                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с приоритетеом передачи в SAP равным " + objectForCheckPriority.Priority.ToString() +
+                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с приоритетом передачи в SAP равным " + objectForCheckPriority.Priority.ToString() +
                         " Наименование: \"" + objectForCheckPriority.Name + "\" ИД записи = " + objectForCheckPriority.Id.ToString());
                     return;
                 }
             }
 
-            await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.Update);
+            DataTypeDTO oldDataTypeDTO = await _dataTypeRepository.Get(dataTypeDTO.Id);
+            DataTypeDTO newDataTypeDTO = await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, "Изменение вида данных", "Вид данных: ");
             if (dataTypeDTO.IsAutoCalcDestDataType == true)
             {
                 var tmpList = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
@@ -265,8 +267,10 @@
                     if (dataTypeDTO.Id != item.Id)
                         if (item.IsAutoCalcDestDataType == true)
                         {
-                            item.IsAutoCalcDestDataType = false;
-                            await _dataTypeRepository.Update(item, SD.UpdateMode.Update);
+                            oldDataTypeDTO = await _dataTypeRepository.Get(item.Id);
+                            item.IsAutoCalcDestDataType = false;                            
+                            newDataTypeDTO = await _dataTypeRepository.Update(item, SD.UpdateMode.Update);
+                            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, "Изменение вида данных", "Вид данных: ");
                         }
                 }
                 IsLoading = true;
@@ -345,18 +349,24 @@
 
             if (dataTypeDTOs.Contains(dataTypeDTO))
             {
+                DataTypeDTO oldDataTypeDTO = await _dataTypeRepository.Get(dataTypeDTO.Id);
+                DataTypeDTO newDataTypeDTO = new DataTypeDTO();
+                string logEventTypeName = "";
                 if (dataTypeDTO.IsArchive)
                 {
-                    await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.RestoreFromArchive);
+                    newDataTypeDTO = await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.RestoreFromArchive);
                     dataTypeDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Вид данных " + dataTypeDTO.Name + " восстановлен из архива");
+                    logEventTypeName = "Восстановление из архива вида данных";
                 }
                 else
                 {
-                    await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.MoveToArchive);
+                    newDataTypeDTO = await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.MoveToArchive);
                     dataTypeDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Вид данных " + dataTypeDTO.Name + " удален в архив");
+                    logEventTypeName = "Удаление в архив вида данных";
                 }
+                await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, logEventTypeName, "Вид данных: ");
                 await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -398,7 +408,7 @@
             {
                 if (objectForCheckPriority.Id != dataTypeDTO.Id)
                 {
-                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с приоритетеом передачи в SAP равным " + objectForCheckPriority.Priority.ToString() +
+                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с приоритетом передачи в SAP равным " + objectForCheckPriority.Priority.ToString() +
                         " Наименование: \"" + objectForCheckPriority.Name + "\" ИД записи = " + objectForCheckPriority.Id.ToString());
                     dataTypeDTOGrid.CancelEditRow(dataTypeDTO);
                     await dataTypeDTOGrid.Reload();
@@ -407,17 +417,23 @@
             }
 
             var newDTO = await _dataTypeRepository.Create(dataTypeDTO);
+            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: null, newObject: newDTO, "Добавление вида данных", "Вид данных: ");
 
-            if (newDTO.IsAutoCalcDestDataType == true)
+            if (newDTO.IsAutoCalcDestDataType == true)                        
             {
+
+                DataTypeDTO oldDataTypeDTO = new DataTypeDTO();
+                DataTypeDTO newDataTypeDTO = new DataTypeDTO();
                 var tmpList = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
                 foreach (var item in tmpList)
                 {
                     if (newDTO.Id != item.Id)
                         if (item.IsAutoCalcDestDataType == true)
                         {
+                            oldDataTypeDTO = await _dataTypeRepository.Get(item.Id);
                             item.IsAutoCalcDestDataType = false;
-                            await _dataTypeRepository.Update(item, SD.UpdateMode.Update);
+                            newDataTypeDTO = await _dataTypeRepository.Update(item, SD.UpdateMode.Update);
+                            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, "Изменение вида данных", "Вид данных: ");
                         }
                 }
                 IsLoading = true;

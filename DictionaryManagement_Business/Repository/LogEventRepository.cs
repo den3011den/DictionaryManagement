@@ -33,7 +33,7 @@ namespace DictionaryManagement_Business.Repository
             var hhh2 = _db.LogEvent
                         .Include("LogEventTypeFK")
                         .Include("UserFK")
-                        .Where(u => u.EventTime >= startTime && u.EventTime <= endTime).ToListWithNoLock();
+                        .Where(u => u.EventTime >= startTime && u.EventTime <= endTime).AsNoTracking().ToListWithNoLock();
             return _mapper.Map<IEnumerable<LogEvent>, IEnumerable<LogEventDTO>>(hhh2);
         }
 

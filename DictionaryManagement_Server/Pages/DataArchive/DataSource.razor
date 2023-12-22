@@ -13,6 +13,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IDataSourceRepository _dataSourceRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @if (IsAdmin == true)
 {
@@ -214,8 +215,9 @@
                     return;
                 }
             }
-
-            await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.Update);
+            DataSourceDTO oldDataSourceDTO = await _dataSourceRepository.Get(dataSourceDTO.Id);
+            DataSourceDTO newDataSourceDTO = await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<DataSourceDTO>(oldObject: oldDataSourceDTO, newObject: newDataSourceDTO, "Изменение источника данных", "Источник данных: ");
         }
     }
 
@@ -283,18 +285,24 @@
 
             if (dataSourceDTOs.Contains(dataSourceDTO))
             {
+                DataSourceDTO oldDataSourceDTO = await _dataSourceRepository.Get(dataSourceDTO.Id);
+                DataSourceDTO newDataSourceDTO = new DataSourceDTO();
+                string logEventTypeName = "";
                 if (dataSourceDTO.IsArchive)
                 {
-                    await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.RestoreFromArchive);
+                    newDataSourceDTO = await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.RestoreFromArchive);
                     dataSourceDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Источник данных " + dataSourceDTO.Name + " восстановлен из архива");
+                    logEventTypeName = "Восстановление из архива источника данных";
                 }
                 else
                 {
-                    await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.MoveToArchive);
+                    newDataSourceDTO = await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.MoveToArchive);
                     dataSourceDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Источник данных " + dataSourceDTO.Name + " удален в архив");
+                    logEventTypeName = "Удаление в архив источника данных";
                 }
+                await _logEventRepository.ToLog<DataSourceDTO>(oldObject: oldDataSourceDTO, newObject: newDataSourceDTO, logEventTypeName, "Источник данных: ");
                 await dataSourceDTOGrid.UpdateRow(dataSourceDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -331,7 +339,7 @@
             }
 
             var newDTO = await _dataSourceRepository.Create(dataSourceDTO);
-
+            await _logEventRepository.ToLog<DataSourceDTO>(oldObject: null, newObject: newDTO, "Добавление источника данных", "Источник данных: ");
             await OnAfterRenderAsync(true);
         }
     }
