@@ -5,7 +5,7 @@ namespace DictionaryManagement_Models.IntDBModels
 {
     public class MesParamDTO
     {
-        [ForLogAttribute(NameProperty = "поле \"Id\"")]
+        [ForLogAttribute(NameProperty = "поле \"ИД тэга СИР\"")]
         [Display(Name = "Ид записи")]
         [Required(ErrorMessage = "ИД обязателен")]
         public int Id { get; set; }
@@ -18,7 +18,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         //[Required(ErrorMessage = "Наименование тэга СИР обязательно для заполнения")]
         //[StringLength(250, MinimumLength = 3, ErrorMessage = "Наименование может быть от 3 до 250 символов")]
-        [ForLogAttribute(NameProperty = "поле \"Наименование\"")]
+        [ForLogAttribute(NameProperty = "поле \"Наименование тэга СИР\"")]
         [Display(Name = "Наименование")]
         public string? Name { get; set; }
 
@@ -34,7 +34,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Источник")]
         public MesParamSourceTypeDTO? MesParamSourceTypeDTOFK { get; set; }
 
-        [ForLogAttribute(NameProperty = "поле \"Тэг источника\"")]
+        [ForLogAttribute(NameProperty = "поле \"Тэг/ИД источника\"")]
         [Display(Name = "Тэг источника")]
         [StringLength(300, ErrorMessage = "Тэг источника может быть до 300 символов")]
         public string? MesParamSourceLink { get; set; } = "";
@@ -136,7 +136,7 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Параметр НДО")]
         public bool? IsNdo { get; set; }
 
-        [ForLogAttribute(NameProperty = "поле \"В архиве\"")]
+        [ForLogAttribute(NameProperty = "поле \"Архив\"")]
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 

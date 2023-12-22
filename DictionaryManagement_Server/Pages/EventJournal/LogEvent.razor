@@ -104,7 +104,7 @@
                     </RadzenDataGridColumnApp>
 
                     <RadzenDataGridColumnApp TItem="LogEventDTO" Title="Пользователь" Property="UserDTOFK.UserName" Type="typeof(IEnumerable<string>)" Width="70px"
-                                             FilterValue="@selectedUsers" LogicalFilterOperator="LogicalFilterOperator.Or">
+                                             FilterValue="@selectedUsers" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
                         <FilterTemplate>
                             <RadzenDropDown @bind-Value=@selectedUsers
                                             Change=OnSelectedUsersChange Data="@(distinctUsersInList)" AllowClear="true" Multiple="true" Style="width: 500px; font-size:0.75rem"
@@ -217,7 +217,7 @@
     List<string> distinctLogEventTypesInList = new List<string>();
     List<string> distinctUsersInList = new List<string>();
 
-    DateTime startDate = DateTime.Today.AddDays(-2);
+    DateTime startDate = DateTime.Today.AddDays(-1);
     DateTime endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
     DateTime maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
     DateTime minEndDate = DateTime.Today.AddDays(-3);
@@ -247,7 +247,7 @@
                 applyRadioGroupValue = 1;
                 ApplyButtonDisabled = false;
 
-                startDate = DateTime.Today.AddDays(-2);
+                startDate = DateTime.Today.AddDays(-1);
                 endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
                 maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
                 minEndDate = DateTime.Today.AddDays(-3);

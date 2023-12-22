@@ -14,6 +14,7 @@
 @inject ISapMaterialRepository _sapMaterialRepository
 @inject ISapUnitOfMeasureRepository _sapUnitOfMeasureRepository
 @inject IMesUnitOfMeasureRepository _mesUnitOfMeasureRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -432,7 +433,7 @@
 
                 var addedDTO = await _mesParamRepository.Create(ActiveMesParamDTO);                
 
-                await _mesParamRepository.ToLog(oldObject: null, newObject: addedDTO, "Добавление тэга СИР");
+                await _logEventRepository.ToLog<MesParamDTO>(oldObject: null, newObject: addedDTO, "Добавление тэга СИР", "Тэг: ");
 
                 await _jsRuntime.ToastrSuccess("Тэг СИР \"" + ActiveMesParamDTO.Name + "\" создан");
                 _dialogService.Close(ActiveMesParamDTO);
@@ -501,7 +502,7 @@
 
                 await GetFKForActiveMesParamDTO();
 
-                await _mesParamRepository.ToLog(oldObject: oldMesParamDTO, newObject: newMesParamDTO, "Изменение тэга СИР");
+                await _logEventRepository.ToLog<MesParamDTO>(oldObject: oldMesParamDTO, newObject: newMesParamDTO, "Изменение тэга СИР", "Тэг: ");
 
 
                 _dialogService.Close(ActiveMesParamDTO);

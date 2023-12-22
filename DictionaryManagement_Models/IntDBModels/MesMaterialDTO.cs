@@ -36,9 +36,9 @@ namespace DictionaryManagement_Models.IntDBModels
             ToStringValue = $"{Code} {ShortName}";
             return ToStringValue;
         }
-        public string ToStringForLog()
-        {
-            return $"{Code} {ShortName}";
-        }
+        //public string ToStringForLog()
+        //{
+        //    return $"{Code} {ShortName}";
+        //}
     }
 }

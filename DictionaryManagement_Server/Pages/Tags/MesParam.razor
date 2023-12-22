@@ -15,6 +15,7 @@
 
 @inject IJSRuntime _jsRuntime
 @inject IMesParamRepository _mesParamRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -487,14 +488,14 @@
 
                 await _mesParamRepository.Delete(mesParamDTO.Id, SD.UpdateMode.RestoreFromArchive);
                 mesParamDTO.IsArchive = false;
-                await _mesParamRepository.ToLog(oldMesParamDTO, mesParamDTO, "Восстановление из архива тэга СИР");
+                await _logEventRepository.ToLog<MesParamDTO>(oldMesParamDTO, mesParamDTO, "Восстановление из архива тэга СИР", "Тэг: ");
                 await _jsRuntime.ToastrSuccess("Тэг СИР \"" + mesParamDTO.Name + "\" восстановлен из архива");
             }
             else
             {
                 await _mesParamRepository.Delete(mesParamDTO.Id, SD.UpdateMode.MoveToArchive);
                 mesParamDTO.IsArchive = true;
-                await _mesParamRepository.ToLog(oldMesParamDTO, mesParamDTO, "Удаление в архив тэга СИР");
+                await _logEventRepository.ToLog<MesParamDTO>(oldMesParamDTO, mesParamDTO, "Удаление в архив тэга СИР", "Тэг: ");
                 await _jsRuntime.ToastrSuccess("Тэг СИР \"" + mesParamDTO.Name + "\" удалён в архив");
             }
             await mesParamDTOGrid.UpdateRow(mesParamDTO);
