@@ -8,7 +8,6 @@ namespace DictionaryManagement_Business.Repository
 {
     public class AuthorizationControllersRepository : IAuthorizationControllersRepository
     {
-
         private readonly IUserToRoleRepository _userToRoleRepository;
         private readonly IUserRepository _userRepository;
         private readonly IJSRuntime _jsRuntime;
