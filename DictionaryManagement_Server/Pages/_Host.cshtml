@@ -9,7 +9,9 @@
 *@
 
 @page "/"
+@using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
+@inject NavigationManager _navigationManager
 @namespace DictionaryManagement_Server.Pages
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
@@ -35,8 +37,7 @@
 
 
     <component type="typeof(App)" render-mode="ServerPrerendered" />
-
-    <div id="blazor-error-ui">
+@*     <div id="blazor-error-ui">        
         <environment include="Staging,Production">
             Произошла ошибка. Это приложение больше не будет отвечать пока не будет перезагружено.
         </environment>
@@ -45,6 +46,14 @@
         </environment>
         <a href="" class="reload">Перезагрузить</a>
         <a class="dismiss">🗙</a>
+    </div> *@
+
+    <div id="blazor-error-ui">
+        <p>
+            Возникла проблема в работе приложения. Нажмите <a href="" class="reload" style="color: dodgerblue;">ЗДЕСЬ</a> для обновления страницы.<br />
+            <span style="font-size: 0.7em;">Если данное окно продолжит появляться обратитесь в техподдержку.</span>
+        </p>
+        <a class="dismiss" style="color: white;">🗙</a>
     </div>
 
     <script src="_framework/blazor.server.js"></script>
