@@ -226,24 +226,15 @@
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
 
+            bool needAskUser = false;
+
             if (mesMaterialDTO == mesMaterialDTOToInsert)
             {
                 mesMaterialDTOToInsert = null;
             }
 
             mesMaterialDTOToUpdate = null;
-
             string errorMessage = string.Empty;
-
-            var objectForCheckCode = _mesMaterialRepository.GetByCode(mesMaterialDTO.Code).Result;
-
-            if (objectForCheckCode != null)
-            {
-                if (objectForCheckCode.Id != mesMaterialDTO.Id)
-                {
-                    errorMessage = "Уже есть запись с кодом материала MES \"" + objectForCheckCode.Code + "\" (ИД записи: " + objectForCheckCode.Id.ToString() + ")";
-                }
-            }
 
             var objectForCheckName = _mesMaterialRepository.GetByName(mesMaterialDTO.Name).Result;
 
@@ -256,6 +247,7 @@
                         errorMessage = errorMessage + "\n";
                     }
                     errorMessage = errorMessage + "Уже есть запись с наименованием материала MES \"" + objectForCheckName.Name + "\" (ИД записи: " + objectForCheckName.Id.ToString() + ")";
+                    needAskUser = true;
                 }
             }
 
@@ -270,19 +262,51 @@
                         errorMessage = errorMessage + "\n";
                     }
                     errorMessage = errorMessage + "Уже есть запись с сокр. наименованием материала MES \"" + objectForCheckShortName.ShortName + "\" (ИД записи: " + objectForCheckShortName.Id.ToString() + ")";
+                    needAskUser = true;
                 }
             }
 
+            var objectForCheckCode = _mesMaterialRepository.GetByCode(mesMaterialDTO.Code).Result;
+            if (objectForCheckCode != null)
+            {
+                if (objectForCheckCode.Id != mesMaterialDTO.Id)
+                {
+                    errorMessage = "Уже есть запись с кодом материала MES \"" + objectForCheckCode.Code + "\" (ИД записи: " + objectForCheckCode.Id.ToString() + ")";
+                    needAskUser = true;
+                }
+            }
+
+
             if (errorMessage != string.Empty)
             {
-                var objectForRestore = await _mesMaterialRepository.Get(mesMaterialDTO.Id);
-                mesMaterialDTO.Code = objectForRestore.Code;
-                mesMaterialDTO.Name = objectForRestore.Name;
-                mesMaterialDTO.ShortName = objectForRestore.ShortName;
-                await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
-                await mesMaterialDTOGrid.Reload();
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
-                return;
+                bool returnFlag = false;
+                if (needAskUser)
+                {
+                    bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Изменение материала MES", errorMessage + " Всё равно сохранить изменения ?", "Сохранить", "Отмена");
+                    if (selectionResult == false)
+                    {
+                        returnFlag = true;
+                    }
+                }
+                else
+                {
+                    returnFlag = true;
+                }
+
+                if (returnFlag == true)
+                {
+                    var objectForRestore = await _mesMaterialRepository.Get(mesMaterialDTO.Id);
+                    mesMaterialDTO.Code = objectForRestore.Code;
+                    mesMaterialDTO.Name = objectForRestore.Name;
+                    mesMaterialDTO.ShortName = objectForRestore.ShortName;
+                    await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
+                    await mesMaterialDTOGrid.Reload();
+                    if (needAskUser == false)
+                    {
+                        await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
+                    }
+                    return;
+                }
             }
 
             MesMaterialDTO oldMesMaterialDTO = await _mesMaterialRepository.Get(mesMaterialDTO.Id);
@@ -409,13 +433,8 @@
 
             mesMaterialDTOToInsert = null;
 
+            bool needAskUser = false;
             string errorMessage = string.Empty;
-            var objectForCheckCode = _mesMaterialRepository.GetByCode(mesMaterialDTO.Code).Result;
-
-            if (objectForCheckCode != null)
-            {
-                errorMessage = "Уже есть запись с кодом материала MES \"" + objectForCheckCode.Code + "\" (ИД записи: " + objectForCheckCode.Id.ToString() + ")";
-            }
 
             var objectForCheckName = _mesMaterialRepository.GetByName(mesMaterialDTO.Name).Result;
 
@@ -426,6 +445,7 @@
                     errorMessage = errorMessage + "\n";
                 }
                 errorMessage = errorMessage + "Уже есть запись с наименованием материала MES \"" + objectForCheckName.Name + "\" (ИД записи: " + objectForCheckName.Id.ToString() + ")";
+                needAskUser = true;
             }
 
             var objectForCheckShortName = _mesMaterialRepository.GetByName(mesMaterialDTO.ShortName).Result;
@@ -437,17 +457,44 @@
                     errorMessage = errorMessage + "\n";
                 }
                 errorMessage = errorMessage + "Уже есть запись с сокр. наименованием материала MES \"" + objectForCheckShortName.ShortName + "\" (ИД записи: " + objectForCheckShortName.Id.ToString() + ")";
+                needAskUser = true;
+            }
+
+            var objectForCheckCode = _mesMaterialRepository.GetByCode(mesMaterialDTO.Code).Result;
+            if (objectForCheckCode != null)
+            {
+                errorMessage = "Уже есть запись с кодом материала MES \"" + objectForCheckCode.Code + "\" (ИД записи: " + objectForCheckCode.Id.ToString() + ")";
+                needAskUser = false;
             }
 
 
             if (errorMessage != string.Empty)
             {
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
-                mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
-                await mesMaterialDTOGrid.Reload();
-                return;
-            }
+                bool returnFlag = false;
+                if (needAskUser)
+                {
+                    bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Добавление материала MES", errorMessage + " Всё равно добавить ?", "Добавить", "Отмена");
+                    if (selectionResult == false)
+                    {
+                        returnFlag = true;
+                    }
+                }
+                else
+                {
+                    returnFlag = true;
+                }
 
+                if (returnFlag == true)
+                {
+                    if (needAskUser == false)
+                    {
+                        await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", errorMessage);
+                    }
+                    mesMaterialDTOGrid.CancelEditRow(mesMaterialDTO);
+                    await mesMaterialDTOGrid.Reload();
+                    return;
+                }
+            }
             var newDTO = await _mesMaterialRepository.Create(mesMaterialDTO);
             await _logEventRepository.ToLog<MesMaterialDTO>(oldObject: null, newObject: newDTO, "Добавление материала MES", "Материал MES: ");
             await OnAfterRenderAsync(true);

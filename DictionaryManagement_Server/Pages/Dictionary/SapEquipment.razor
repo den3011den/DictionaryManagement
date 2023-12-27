@@ -24,14 +24,14 @@
 
         @if (IsLoading != true)
         {
-             <RadzenRow AlignItems="AlignItems.Start">
+            <RadzenRow AlignItems="AlignItems.Start">
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новый ресурс" Click="@InsertRow" Disabled=@(sapEquipmentDTOToInsert != null || sapEquipmentDTOToUpdate != null) />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
             </RadzenRow>
 
             <RadzenDataGridApp @bind-Settings="@SapEquipmentGridSettings" SettingsName="SapEquipmentGridSettings" @ref="sapEquipmentDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@sapEquipmentDTOs" TItem="SapEquipmentDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
-                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"                               
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                AllowColumnResize="false"
                                FilterMode="FilterMode.SimpleWithMenu"
                                GridLines="DataGridGridLines.Both"
@@ -251,15 +251,21 @@
             {
                 if (objectForCheckName.Id != sapEquipmentDTO.Id)
                 {
-                    var objectForRestore = await _sapEquipmentRepository.Get(sapEquipmentDTO.Id);
-                    sapEquipmentDTO.Name = objectForRestore.Name;
-                    sapEquipmentDTO.ErpPlantId = objectForRestore.ErpPlantId;
-                    sapEquipmentDTO.ErpId = objectForRestore.ErpId;
-                    sapEquipmentDTO.IsWarehouse = objectForRestore.IsWarehouse;
-                    await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
-                    await sapEquipmentDTOGrid.Reload();
-                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименование ресурса " + objectForCheckName.Name + " (ИД записи: " + objectForCheckName.Id.ToString() + ")");
-                    return;
+                    bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Редактирование ресурса SAP",
+                        "Уже есть запись с наименование ресурса " + objectForCheckName.Name + " (ИД записи: " + objectForCheckName.Id.ToString() + ")" +
+                        " Всё равно сохранить изменения ?", "Сохранить", "Отмена");
+                    if (selectionResult == false)
+                    {
+                        var objectForRestore = await _sapEquipmentRepository.Get(sapEquipmentDTO.Id);
+                        sapEquipmentDTO.Name = objectForRestore.Name;
+                        sapEquipmentDTO.ErpPlantId = objectForRestore.ErpPlantId;
+                        sapEquipmentDTO.ErpId = objectForRestore.ErpId;
+                        sapEquipmentDTO.IsWarehouse = objectForRestore.IsWarehouse;
+                        await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
+                        await sapEquipmentDTOGrid.Reload();
+                        //await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименование ресурса " + objectForCheckName.Name + " (ИД записи: " + objectForCheckName.Id.ToString() + ")");
+                        return;
+                    }
                 }
             }
 
@@ -369,7 +375,7 @@
 
                 await _logEventRepository.ToLog<SapEquipmentDTO>(oldObject: oldSapEquipmentDTO, newObject: newSapEquipmentDTO, logEventTypeName, "Ресурс SAP: ");
                 await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
-                
+
                 //await sapEquipmentDTOGrid.Reload();
             }
             else
@@ -410,11 +416,16 @@
             var objectForCheckName = await _sapEquipmentRepository.GetByName(sapEquipmentDTO.Name);
             if (objectForCheckName != null)
             {
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименование ресурса " + objectForCheckName.Name + " (ИД записи: " + objectForCheckName.Id.ToString() + ")");
-                sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
-                await sapEquipmentDTOGrid.Reload();
-
-                return;
+                bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Редактирование ресурса SAP",
+                        "Уже есть запись с наименование ресурса " + objectForCheckName.Name + " (ИД записи: " + objectForCheckName.Id.ToString() + ")" +
+                        " Всё равно добавить ресурс ?", "Добавить", "Отмена");
+                if (selectionResult == false)
+                {
+                    //await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с наименование ресурса " + objectForCheckName.Name + " (ИД записи: " + objectForCheckName.Id.ToString() + ")");
+                    sapEquipmentDTOGrid.CancelEditRow(sapEquipmentDTO);
+                    await sapEquipmentDTOGrid.Reload();
+                    return;
+                }
             }
 
             var newDTO = await _sapEquipmentRepository.Create(sapEquipmentDTO);
