@@ -10,6 +10,7 @@
 @inject IJSRuntime _jsRuntime
 @inject ISchedulerRepository _schedulerRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -209,6 +210,8 @@
                     return;
                 }
             }
+            Guid addedUserId = (await _authorizationRepository.GetCurrentUserDTO()).Id;
+            await _logEventRepository.AddRecord("Удаление расписания", addedUserId, "", "", false, "Расписание: " + schedulerDTO.ToString());
 
             await _schedulerRepository.Delete(schedulerDTO.Id);
             schedulerDTOs = await _schedulerRepository.GetAll();

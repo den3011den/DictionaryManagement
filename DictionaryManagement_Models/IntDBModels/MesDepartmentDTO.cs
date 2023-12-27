@@ -6,20 +6,24 @@ namespace DictionaryManagement_Models.IntDBModels
     public class MesDepartmentDTO
     {
 
+        [ForLogAttribute(NameProperty = "поле \"ИД\"")]
         [Display(Name = "Ид записи")]
         [Required(ErrorMessage = "ИД обязателен")]
         public int Id { get; set; }
 
         //[Required(ErrorMessage = "Код обязателен для заполнения")]
         //[Range(1, int.MaxValue, ErrorMessage = "Код может быть от {1} до {2}")]
+        [ForLogAttribute(NameProperty = "поле \"Код\"")]
         [Display(Name = "Код")]
         public int? MesCode { get; set; }
 
+        [ForLogAttribute(NameProperty = "поле \"Наименование\"")]
         [Required(ErrorMessage = "Наименование обязательно для заполнения")]
         [Display(Name = "Наименование")]
         [MaxLength(500, ErrorMessage = "Длина наименования не может быть больше 500 символов")]
         public string Name { get; set; } = string.Empty;
 
+        [ForLogAttribute(NameProperty = "поле \"Сокр. наименование\"")]
         [Required(ErrorMessage = "Сокр. Наименование обязательно для заполнения")]
         [Display(Name = "Сокр. наименование")]
         [MaxLength(500, ErrorMessage = "Длина сокр. наименование не может быть больше 500 символов")]
@@ -28,9 +32,11 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Ид родителя")]
         public int? ParentDepartmentId { get; set; }
 
+        [ForLogAttribute(NameProperty = "поле \"Родитель\"")]
         [Display(Name = "Родитель")]
         public MesDepartmentDTO? DepartmentParentDTO { get; set; }
 
+        [ForLogAttribute(NameProperty = "поле \"Архив\"")]
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; }
 

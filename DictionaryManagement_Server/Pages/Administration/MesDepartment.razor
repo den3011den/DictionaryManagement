@@ -12,6 +12,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IMesDepartmentRepository _mesDepartmentRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -256,7 +257,7 @@
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
             if (_dialogs != null)
-            {
+            {                
                 if (mesDepartmentDTO.IsArchive != true)
                 {
                     bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление производства", "Удалить производство \"" + mesDepartmentDTO.ShortName + "\" в архив ?", "Удалить", "Отмена");
@@ -281,17 +282,20 @@
 
             //if (mesDepartmentDTOs.Contains(mesDepartmentDTO))
             //{
+            MesDepartmentDTO oldMesDepartmentDTO = await _mesDepartmentRepository.GetById(mesDepartmentDTO.Id);
             if (mesDepartmentDTO.IsArchive)
             {
                 await _mesDepartmentRepository.Delete(mesDepartmentDTO.Id, SD.UpdateMode.RestoreFromArchive);
                 mesDepartmentDTO.IsArchive = false;
+                await _logEventRepository.ToLog<MesDepartmentDTO>(oldMesDepartmentDTO, mesDepartmentDTO, "Восстановление из архива производства", "Производство: ");
                 await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" восстановлено из архива");
             }
             else
             {
                 await _mesDepartmentRepository.Delete(mesDepartmentDTO.Id, SD.UpdateMode.MoveToArchive);
                 mesDepartmentDTO.IsArchive = true;
-                await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" удалёно в архив");
+                await _logEventRepository.ToLog<MesDepartmentDTO>(oldMesDepartmentDTO, mesDepartmentDTO, "Удаление в архив производства", "Производство: ");
+                await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" удалено в архив");
             }
             await mesDepartmentDTOGrid.UpdateRow(mesDepartmentDTO);
             //}

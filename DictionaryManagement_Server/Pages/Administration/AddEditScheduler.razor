@@ -7,6 +7,7 @@
 @inject IJSRuntime _jsRuntime
 
 @inject ISchedulerRepository _schedulerRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -147,16 +148,16 @@
             if (SchedulerId == null || SchedulerId == 0)
             { // создание
                 SchedulerDTO createdSchedulerDTO = await _schedulerRepository.Create(ActiveSchedulerDTO);
-
+                await _logEventRepository.ToLog<SchedulerDTO>(oldObject: null, newObject: createdSchedulerDTO, "Добавление расписания", "Расписание: ");
                 await _jsRuntime.ToastrSuccess("Задание для модуля \"" + ActiveSchedulerDTO.ModuleName + "\" создано");
                 _dialogService.Close(ActiveSchedulerDTO);
 
             }
             else
             { // изменение
-
-                await _schedulerRepository.Update(ActiveSchedulerDTO);
-
+                SchedulerDTO oldSchedulerDTO = await _schedulerRepository.GetById(ActiveSchedulerDTO.Id);
+                SchedulerDTO newSchedulerDTO = await _schedulerRepository.Update(ActiveSchedulerDTO);
+                await _logEventRepository.ToLog<SchedulerDTO>(oldObject: oldSchedulerDTO, newObject: newSchedulerDTO, "Добавление расписания", "Расписание: ");
                 await _jsRuntime.ToastrSuccess("Задание для модуля \"" + ActiveSchedulerDTO.ModuleName + "\" изменено");
 
                 _dialogService.Close(ActiveSchedulerDTO);

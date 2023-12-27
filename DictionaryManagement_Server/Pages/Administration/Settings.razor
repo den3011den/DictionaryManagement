@@ -11,6 +11,7 @@
 @inject IJSRuntime _jsRuntime
 @inject ISettingsRepository _settingsRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @if (IsAdmin == true)
 {
@@ -75,7 +76,7 @@
                         <Template Context="SettingsDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(SettingsDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
-                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SettingsDTO))" @onclick:stopPropagation="true">
+                            <RadzenButton Tooltip="Удалить" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SettingsDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                         </Template>
                         <EditTemplate Context="SettingsDTO">
@@ -237,7 +238,9 @@
                     return;
                 }
             }
-            await _settingsRepository.Update(settingsDTO);
+            SettingsDTO oldSettingsDTO = await _settingsRepository.Get(settingsDTO.Id);
+            SettingsDTO newSettingsDTO = await _settingsRepository.Update(settingsDTO);
+            await _logEventRepository.ToLog<SettingsDTO>(oldObject: oldSettingsDTO, newObject: newSettingsDTO, "Изменение настройки", "Настройка: ");
         }
     }
 
@@ -298,6 +301,9 @@
 
             if (settingsDTOs.Contains(settingsDTO))
             {
+                Guid addedUserId = (await _authorizationRepository.GetCurrentUserDTO()).Id;
+                await _logEventRepository.AddRecord("Удаление настройки", addedUserId, "", "", false, "Удаление настройки: " + settingsDTO.ToString());
+
                 await _settingsRepository.Delete(settingsDTO.Id);
 
                 settingsDTOs = settingsDTOs.Where(u => u.Id != settingsDTO.Id);
@@ -344,6 +350,7 @@
             }
 
             var newDTO = await _settingsRepository.Create(settingsDTO);
+            await _logEventRepository.ToLog<SettingsDTO>(oldObject: null, newObject: newDTO, "Добавление настройки", "Нвстройка: ");
             await OnAfterRenderAsync(true);
 
         }

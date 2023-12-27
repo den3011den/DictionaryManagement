@@ -8,6 +8,7 @@
 
 @inject IMesDepartmentRepository _mesDepartmentRepository
 @inject DialogService _dialogService
+@inject ILogEventRepository _logEventRepository
 
 @*@inject NavigationManager _navigationManager*@
 
@@ -176,10 +177,9 @@
                     await _jsRuntime.ToastrError("Уже есть производcтво с сокр. наименованием внутри родительского производства " + foundByShortName.ShortName + " (Код: " + foundByShortName.MesCode.ToString() + " ИД: " + foundByShortName.Id.ToString() + ")");
                     return;
                 }
-            }
-
-            await _mesDepartmentRepository.Create(ActiveMesDepartmentDTO);
-
+            }            
+            MesDepartmentDTO addedMesDepartmentDTO = await _mesDepartmentRepository.Create(ActiveMesDepartmentDTO);
+            await _logEventRepository.ToLog<MesDepartmentDTO>(oldObject: null, newObject: addedMesDepartmentDTO, "Добавление производства", "Производство: ");
             await _jsRuntime.ToastrSuccess("Производство \"" + ActiveMesDepartmentDTO.ShortName + "\" создано");
             _dialogService.Close(ActiveMesDepartmentDTO);
 
@@ -216,8 +216,9 @@
                 }
             }
 
-            await _mesDepartmentRepository.Update(ActiveMesDepartmentDTO);
-
+            MesDepartmentDTO oldMesDepartmentDTO = await _mesDepartmentRepository.GetById(ActiveMesDepartmentDTO.Id);
+            MesDepartmentDTO newMesDepartmentDTO = await _mesDepartmentRepository.Update(ActiveMesDepartmentDTO);
+            await _logEventRepository.ToLog<MesDepartmentDTO>(oldObject: oldMesDepartmentDTO, newObject: newMesDepartmentDTO, "Добавление производства", "Производство: ");
             await _jsRuntime.ToastrSuccess("Производство \"" + ActiveMesDepartmentDTO.ShortName + "\" изменено");
 
             _dialogService.Close(ActiveMesDepartmentDTO);
