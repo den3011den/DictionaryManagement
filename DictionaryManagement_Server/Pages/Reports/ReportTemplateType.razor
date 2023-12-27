@@ -11,6 +11,7 @@
 @inject IReportTemplateTypeRepository _reportTemplateTypeRepository
 @inject IReportTemplateRepository _reportTemplateRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @if (IsAdmin == true)
 {
@@ -289,9 +290,10 @@
                         }
                     }
                 }
-            }
-           
-            await _reportTemplateTypeRepository.Update(reportTemplateTypeDTO, SD.UpdateMode.Update);
+            }           
+            ReportTemplateTypeDTO oldReportTemplateTypeDTO = await _reportTemplateTypeRepository.Get(reportTemplateTypeDTO.Id);            
+            ReportTemplateTypeDTO newReportTemplateTypeDTO = await _reportTemplateTypeRepository.Update(reportTemplateTypeDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<ReportTemplateTypeDTO>(oldObject: oldReportTemplateTypeDTO, newObject: newReportTemplateTypeDTO, "Изменение типа шаблона отчёта", "Тип шаблона отчёта: ");
         }
     }
 
@@ -362,18 +364,24 @@
 
             if (reportTemplateTypeDTOs.Contains(reportTemplateTypeDTO))
             {
+                ReportTemplateTypeDTO oldReportTemplateTypeDTO = await _reportTemplateTypeRepository.Get(reportTemplateTypeDTO.Id);
+                ReportTemplateTypeDTO newReportTemplateTypeDTO = new ReportTemplateTypeDTO();
+                string logEventTypeName = "";
                 if (reportTemplateTypeDTO.IsArchive)
                 {
                     await _reportTemplateTypeRepository.Update(reportTemplateTypeDTO, SD.UpdateMode.RestoreFromArchive);
                     reportTemplateTypeDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Тип шаблона отчёта " + reportTemplateTypeDTO.Name + " восстановлен из архива");
+                    logEventTypeName = "Восстановление из архива типа шаблона отчёта";
                 }
                 else
                 {
                     await _reportTemplateTypeRepository.Update(reportTemplateTypeDTO, SD.UpdateMode.MoveToArchive);
                     reportTemplateTypeDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Тип шаблона отчёта " + reportTemplateTypeDTO.Name + " удален в архив");
+                    logEventTypeName = "Удаление в архив типа шаблона отчёта";
                 }
+                await _logEventRepository.ToLog<ReportTemplateTypeDTO>(oldObject: oldReportTemplateTypeDTO, newObject: newReportTemplateTypeDTO, logEventTypeName, "Тип шаблона отчёта: ");
                 await reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -412,7 +420,7 @@
             }
 
             var newDTO = await _reportTemplateTypeRepository.Create(reportTemplateTypeDTO);
-
+            await _logEventRepository.ToLog<ReportTemplateTypeDTO>(oldObject: null, newObject: newDTO, "Добавление типа шаблона отчёта", "Тип шаблона отчёта: ");
             //reportTemplateTypeDTOToInsert.Id = newDTO.Id;
             //await reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTOToInsert);
 

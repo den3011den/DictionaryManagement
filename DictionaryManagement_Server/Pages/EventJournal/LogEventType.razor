@@ -12,6 +12,7 @@
 @inject IJSRuntime _jsRuntime
 @inject ILogEventTypeRepository _logEventTypeRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 
 @if (IsAdmin == true)
@@ -223,7 +224,9 @@
                 }
             }
 
-            await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.Update);
+            LogEventTypeDTO oldLogEventTypeDTO = await _logEventTypeRepository.Get(logEventTypeDTO.Id);                       
+            LogEventTypeDTO newLogEventTypeDTO = await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<LogEventTypeDTO>(oldObject: oldLogEventTypeDTO, newObject: newLogEventTypeDTO, "Изменение типа события", "Тип события: ");
         }
     }
 
@@ -293,18 +296,25 @@
 
             if (logEventTypeDTOs.Contains(logEventTypeDTO))
             {
+                LogEventTypeDTO oldLogEventTypeDTO = await _logEventTypeRepository.Get(logEventTypeDTO.Id);
+                LogEventTypeDTO newLogEventTypeDTO = new LogEventTypeDTO();
+                string logEventTypeName = "";
+
                 if (logEventTypeDTO.IsArchive)
                 {
                     await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.RestoreFromArchive);
                     logEventTypeDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Тип событий " + logEventTypeDTO.Name + " восстановлен из архива");
+                    logEventTypeName = "Восстановление из архива типа события";
                 }
                 else
                 {
                     await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.MoveToArchive);
                     logEventTypeDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Тип событий " + logEventTypeDTO.Name + " удален в архив");
+                    logEventTypeName = "Удаление в архив типа события";
                 }
+                await _logEventRepository.ToLog<LogEventTypeDTO>(oldObject: oldLogEventTypeDTO, newObject: newLogEventTypeDTO, logEventTypeName, "Тип события: ");
                 await logEventTypeDTOGrid.UpdateRow(logEventTypeDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -341,13 +351,14 @@
             var objectForCheckName = await _logEventTypeRepository.GetByName(logEventTypeDTO.Name);
             if (objectForCheckName != null)
             {
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись типа собыия с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись типа события с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
                 logEventTypeDTOGrid.CancelEditRow(logEventTypeDTO);
                 await logEventTypeDTOGrid.Reload();
                 return;
             }
 
             var newDTO = await _logEventTypeRepository.Create(logEventTypeDTO);
+            await _logEventRepository.ToLog<LogEventTypeDTO>(oldObject: null, newObject: newDTO, "Добавление типа события", "Тип события: ");
 
             //logEventTypeDTOToInsert.Id = newDTO.Id;
             //await logEventTypeDTOGrid.UpdateRow(logEventTypeDTOToInsert);

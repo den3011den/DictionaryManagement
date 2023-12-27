@@ -13,7 +13,6 @@
 @inject ILogEventRepository _logEventRepository
 @inject DialogService _dialogService
 
-
 @if (IsAdmin == true)
 {
     <_Dialogs @ref="_dialogs"></_Dialogs>
@@ -480,7 +479,6 @@
             }
 
             var newDTO = await _sapMaterialRepository.Create(sapMaterialDTO);
-
             await _logEventRepository.ToLog<SapMaterialDTO>(oldObject: null, newObject: newDTO, "Добавление материала SAP", "Материал SAP: ");
 
             await OnAfterRenderAsync(true);
