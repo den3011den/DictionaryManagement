@@ -10,6 +10,7 @@
 @inject IJSRuntime _jsRuntime
 @inject ISmenaRepository _smenaRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -219,6 +220,8 @@
             }
 
             await _smenaRepository.Delete(smenaDTO.Id);
+            Guid addedUserId = (await _authorizationRepository.GetCurrentUserDTO()).Id;            
+            await _logEventRepository.AddRecord("Удаление смены", addedUserId, "", "", false, "Удаление смены: " + smenaDTO.ToString());
             smenaDTOs = await _smenaRepository.GetAll();
             smenaDTOGrid.Reload();
 

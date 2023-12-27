@@ -9,6 +9,7 @@
 
 @inject IUserRepository _userRepository
 @inject DialogService _dialogService
+@inject ILogEventRepository _logEventRepository
 
 @if (IsAdmin == true)
 {
@@ -179,7 +180,8 @@
                 // if (ActiveUserDTO.SyncWithADGroupsLastTime == null)
                 //     ActiveUserDTO.SyncWithADGroupsLastTime = DateTime.MinValue;
 
-                await _userRepository.Create(ActiveUserDTO);
+                UserDTO addedDTO = await _userRepository.Create(ActiveUserDTO);
+                await _logEventRepository.ToLog<UserDTO>(oldObject: null, newObject: addedDTO, "Добавление пользователя", "Пользователь: ");
 
                 await _jsRuntime.ToastrSuccess("Пользователь \"" + ActiveUserDTO.UserName + " (" + ActiveUserDTO.Login +")\" создан");
          
@@ -204,8 +206,9 @@
 
                 }
 
-                await _userRepository.Update(ActiveUserDTO);
-
+                UserDTO oldUserDTO = await _userRepository.Get(ActiveUserDTO.Id);
+                UserDTO newUserDTO = await _userRepository.Update(ActiveUserDTO);
+                await _logEventRepository.ToLog<UserDTO>(oldObject: oldUserDTO, newObject: newUserDTO, "Изменение пользователя", "Пользователь: ");
                 await _jsRuntime.ToastrSuccess("Пользователь \"" + ActiveUserDTO.UserName + " (" + ActiveUserDTO.Login + ") \" изменен");
                 
                 _dialogService.Close(ActiveUserDTO);

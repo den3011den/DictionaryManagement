@@ -12,6 +12,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IUserRepository _userRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -45,7 +46,7 @@
                                AllowVirtualization="true"
                                Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumnApp TItem="UserDTO" Property="ToStringId" Title="Ид роли" Width="30px"
+                    <RadzenDataGridColumnApp TItem="UserDTO" Property="ToStringId" Title="Ид пользователя" Width="30px"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 10px">
@@ -264,7 +265,7 @@
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
             if (_dialogs != null)
-            {
+            {                
                 if (userDTO.IsArchive != true)
                 {
                     bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление пользователя", "Удалить пользователя \"" + userDTO.UserName
@@ -285,16 +286,20 @@
                 }
             }
 
+            UserDTO oldUserDTO = await _userRepository.Get(userDTO.Id);
+
             if (userDTO.IsArchive)
             {
                 await _userRepository.Update(userDTO, SD.UpdateMode.RestoreFromArchive);
                 userDTO.IsArchive = false;
+                await _logEventRepository.ToLog<UserDTO>(oldUserDTO, userDTO, "Восстановление из архива пользователя", "Пользователь: ");
                 await _jsRuntime.ToastrSuccess("Пользователь \"" + userDTO.UserName + " (" + userDTO.Login + ")\" восстановлен из архива");
             }
             else
             {
                 await _userRepository.Update(userDTO, SD.UpdateMode.MoveToArchive);
                 userDTO.IsArchive = true;
+                await _logEventRepository.ToLog<UserDTO>(oldUserDTO, userDTO, "Удаление в архив пользователя", "Пользователь: ");
                 await _jsRuntime.ToastrSuccess("Пользователь \"" + userDTO.UserName + " (" + userDTO.Login + ")\" удалён в архив");
             }
             await userDTOGrid.UpdateRow(userDTO);

@@ -8,6 +8,7 @@
 
 @inject ISmenaRepository _smenaRepository
 @inject IMesDepartmentRepository _mesDepartmentRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -185,12 +186,13 @@
                     if ((ActiveSmenaDTO.StartTime < inerationSmenaTimeSpanEnd) && (activeSmenaTimeSpanEnd > smena.StartTime))
                     {
                         await _jsRuntime.InvokeVoidAsync("ShowSwal", "error",
-                            "Добавляемая смена пересекается по временному интревалу со сменой \"" + smena.Name + "\"" + " данного производства!");
+                            "Добавляемая смена пересекается по временному интервалу со сменой \"" + smena.Name + "\"" + " данного производства!");
                         return;
                     }
                 }
 
                 SmenaDTO createdSmenaDTO = await _smenaRepository.Create(ActiveSmenaDTO);
+                await _logEventRepository.ToLog<SmenaDTO>(oldObject: null, newObject: createdSmenaDTO, "Добавление смены", "Смена: ");
 
                 await _jsRuntime.ToastrSuccess("Смена \"" + ActiveSmenaDTO.Name + "\" создана");
                 _dialogService.Close(ActiveSmenaDTO);
@@ -225,9 +227,11 @@
                         return;
                     }
                 }
-                await _smenaRepository.Update(ActiveSmenaDTO);
 
-                await _jsRuntime.ToastrSuccess("Смена \"" + ActiveSmenaDTO.Id.ToString() + "\" изменёна");
+                SmenaDTO oldSmenaDTO = await _smenaRepository.GetById(ActiveSmenaDTO.Id);
+                SmenaDTO newSmenaDTO = await _smenaRepository.Update(ActiveSmenaDTO);
+                await _logEventRepository.ToLog<SmenaDTO>(oldObject: oldSmenaDTO, newObject: newSmenaDTO, "Добавление смены", "Смена: ");
+                await _jsRuntime.ToastrSuccess("Смена \"" + ActiveSmenaDTO.Id.ToString() + "\" изменена");
 
                 _dialogService.Close(ActiveSmenaDTO);
             }

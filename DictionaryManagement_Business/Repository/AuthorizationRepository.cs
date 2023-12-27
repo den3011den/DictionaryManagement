@@ -20,11 +20,12 @@ namespace DictionaryManagement_Business.Repository
         private readonly IRoleToADGroupRepository _roleToADGroupRepository;
         private readonly ISettingsRepository _settingsRepository;
         private readonly IJSRuntime _jsRuntime;
+        private readonly ILogEventRepository _logEventRepository;
 
         public AuthorizationRepository(AuthenticationStateProvider authenticationStateProvider, IUserToRoleRepository userToRoleRepository,
             IUserRepository userRepository, IJSRuntime jsRuntime,
             IADGroupRepository adGroupRepository, IRoleToADGroupRepository roleToADGroupRepository,
-            ISettingsRepository settingsRepository)
+            ISettingsRepository settingsRepository, ILogEventRepository logEventRepository)
         {
             _authenticationStateProvider = authenticationStateProvider;
             _userToRoleRepository = userToRoleRepository;
@@ -33,6 +34,7 @@ namespace DictionaryManagement_Business.Repository
             _adGroupRepository = adGroupRepository;
             _roleToADGroupRepository = roleToADGroupRepository;
             _settingsRepository = settingsRepository;
+            _logEventRepository = logEventRepository;
         }
 
         public async Task<bool> CurrentUserIsInAdminRole(MessageBoxMode messageBoxModePar = SD.MessageBoxMode.Off)
@@ -303,6 +305,7 @@ namespace DictionaryManagement_Business.Repository
                         IsSyncWithAD = true
                     };
                     userFromDBDTO = await _userRepository.Create(userFromDBDTO);
+                    await _logEventRepository.ToLog<UserDTO>(oldObject: null, newObject: userFromDBDTO, "Добавление пользователя", "Пользователь: ");
                 }
 
                 IEnumerable<RoleToADGroupDTO> RoleToADGroupDTOList = null;
