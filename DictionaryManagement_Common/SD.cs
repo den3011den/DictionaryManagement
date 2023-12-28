@@ -1,5 +1,5 @@
-﻿using System.Text.Json;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
+using System.Text.Json;
 
 namespace DictionaryManagement_Common
 {
@@ -38,6 +38,7 @@ namespace DictionaryManagement_Common
             LoginAndName
         }
 
+        public static string DictionaryManagementUserName = "DictionaryManagement";
         public static string AppVersion = "";
         public static string? AppFactoryMode = "КOC";
         public static string AdminRoleName = "Администратор";
@@ -69,10 +70,10 @@ namespace DictionaryManagement_Common
                 file_name = file_name.Replace(oldValue: invalid_char.ToString(), newValue: "_");
             }
 
-            if(maxFileNameLength!=null)
+            if (maxFileNameLength != null)
             {
                 if ((file_name.Length - (int)maxFileNameLength) > 0)
-                    file_name = file_name.Substring(file_name.Length - (int) maxFileNameLength);
+                    file_name = file_name.Substring(file_name.Length - (int)maxFileNameLength);
             }
 
             return file_name;
@@ -80,9 +81,9 @@ namespace DictionaryManagement_Common
 
         public async static Task<bool> CheckPageSettingsVersion(string settingName, IJSRuntime iJSRuntime)
         {
-            
+
             bool needDeleteSettings = false;
-            
+
             string resultVersion = (await iJSRuntime.InvokeAsync<string>("window.localStorage.getItem", settingName + "Version"));
             if (resultVersion == null)
             {

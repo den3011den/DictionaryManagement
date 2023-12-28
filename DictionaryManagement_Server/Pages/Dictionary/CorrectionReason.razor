@@ -222,7 +222,7 @@
             }
             CorrectionReasonDTO oldCorrectionReasonDTO = await _correctionReasonRepository.Get(correctionReasonDTO.Id);
             CorrectionReasonDTO newCorrectionReasonDTO = await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.Update);
-            await _logEventRepository.ToLog<CorrectionReasonDTO>(oldObject: oldCorrectionReasonDTO, newObject: newCorrectionReasonDTO, "Изменение причины корректировки", "Причина корректировки: ");
+            await _logEventRepository.ToLog<CorrectionReasonDTO>(oldObject: oldCorrectionReasonDTO, newObject: newCorrectionReasonDTO, "Изменение причины корректировки", "Причина корректировки: ", _authorizationRepository);
         }
     }
 
@@ -312,7 +312,7 @@
                     await _jsRuntime.ToastrSuccess("Причина корректировки " + correctionReasonDTO.Name + " удалена в архив");
                     logEventTypeName = "Удаление в архив причины корректировки";
                 }
-                await _logEventRepository.ToLog<CorrectionReasonDTO>(oldObject: oldCorrectionReasonDTO, newObject: newCorrectionReasonDTO, logEventTypeName, "Причина корректировки: ");
+                await _logEventRepository.ToLog<CorrectionReasonDTO>(oldObject: oldCorrectionReasonDTO, newObject: newCorrectionReasonDTO, logEventTypeName, "Причина корректировки: ", _authorizationRepository);
                 await correctionReasonDTOGrid.UpdateRow(correctionReasonDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -350,7 +350,7 @@
             }
 
             var newDTO = await _correctionReasonRepository.Create(correctionReasonDTO);
-            await _logEventRepository.ToLog<CorrectionReasonDTO>(oldObject: null, newObject: newDTO, "Добавление причины корректировки", "Причина корректировки: ");
+            await _logEventRepository.ToLog<CorrectionReasonDTO>(oldObject: null, newObject: newDTO, "Добавление причины корректировки", "Причина корректировки: ", _authorizationRepository);
 
             //correctionReasonDTOToInsert.Id = newDTO.Id;
             //await correctionReasonDTOGrid.UpdateRow(correctionReasonDTOToInsert);

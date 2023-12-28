@@ -41,6 +41,11 @@ namespace DictionaryManagement_Models.IntDBModels
         [Display(Name = "Время последней синхронизации с группами AD")]
         public DateTime SyncWithADGroupsLastTime { get; set; } = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
 
+        [ForLogAttribute(NameProperty = "поле \"Сервисный пользователь\"")]
+        [Display(Name = "Сервисный пользователь")]
+        public bool IsServiceUser { get; set; } = false;
+
+
         [NotMapped]
         [Display(Name = " ")]
         public bool Checked { get; set; } = false;

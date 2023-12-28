@@ -179,7 +179,7 @@
                 }
             }            
             MesDepartmentDTO addedMesDepartmentDTO = await _mesDepartmentRepository.Create(ActiveMesDepartmentDTO);
-            await _logEventRepository.ToLog<MesDepartmentDTO>(oldObject: null, newObject: addedMesDepartmentDTO, "Добавление производства", "Производство: ");
+            await _logEventRepository.ToLog<MesDepartmentDTO>(oldObject: null, newObject: addedMesDepartmentDTO, "Добавление производства", "Производство: ", _authorizationRepository);
             await _jsRuntime.ToastrSuccess("Производство \"" + ActiveMesDepartmentDTO.ShortName + "\" создано");
             _dialogService.Close(ActiveMesDepartmentDTO);
 
@@ -218,7 +218,7 @@
 
             MesDepartmentDTO oldMesDepartmentDTO = await _mesDepartmentRepository.GetById(ActiveMesDepartmentDTO.Id);
             MesDepartmentDTO newMesDepartmentDTO = await _mesDepartmentRepository.Update(ActiveMesDepartmentDTO);
-            await _logEventRepository.ToLog<MesDepartmentDTO>(oldObject: oldMesDepartmentDTO, newObject: newMesDepartmentDTO, "Добавление производства", "Производство: ");
+            await _logEventRepository.ToLog<MesDepartmentDTO>(oldObject: oldMesDepartmentDTO, newObject: newMesDepartmentDTO, "Изменение производства", "Производство: ", _authorizationRepository);
             await _jsRuntime.ToastrSuccess("Производство \"" + ActiveMesDepartmentDTO.ShortName + "\" изменено");
 
             _dialogService.Close(ActiveMesDepartmentDTO);

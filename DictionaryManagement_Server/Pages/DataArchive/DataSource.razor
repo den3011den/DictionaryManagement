@@ -217,7 +217,7 @@
             }
             DataSourceDTO oldDataSourceDTO = await _dataSourceRepository.Get(dataSourceDTO.Id);
             DataSourceDTO newDataSourceDTO = await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.Update);
-            await _logEventRepository.ToLog<DataSourceDTO>(oldObject: oldDataSourceDTO, newObject: newDataSourceDTO, "Изменение источника данных", "Источник данных: ");
+            await _logEventRepository.ToLog<DataSourceDTO>(oldObject: oldDataSourceDTO, newObject: newDataSourceDTO, "Изменение источника данных", "Источник данных: ", _authorizationRepository);
         }
     }
 
@@ -302,7 +302,7 @@
                     await _jsRuntime.ToastrSuccess("Источник данных " + dataSourceDTO.Name + " удален в архив");
                     logEventTypeName = "Удаление в архив источника данных";
                 }
-                await _logEventRepository.ToLog<DataSourceDTO>(oldObject: oldDataSourceDTO, newObject: newDataSourceDTO, logEventTypeName, "Источник данных: ");
+                await _logEventRepository.ToLog<DataSourceDTO>(oldObject: oldDataSourceDTO, newObject: newDataSourceDTO, logEventTypeName, "Источник данных: ", _authorizationRepository);
                 await dataSourceDTOGrid.UpdateRow(dataSourceDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -339,7 +339,7 @@
             }
 
             var newDTO = await _dataSourceRepository.Create(dataSourceDTO);
-            await _logEventRepository.ToLog<DataSourceDTO>(oldObject: null, newObject: newDTO, "Добавление источника данных", "Источник данных: ");
+            await _logEventRepository.ToLog<DataSourceDTO>(oldObject: null, newObject: newDTO, "Добавление источника данных", "Источник данных: ", _authorizationRepository);
             await OnAfterRenderAsync(true);
         }
     }

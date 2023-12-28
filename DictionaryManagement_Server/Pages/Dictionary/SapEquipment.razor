@@ -273,7 +273,7 @@
 
             SapEquipmentDTO newSapEquipmentDTO = await _sapEquipmentRepository.Update(sapEquipmentDTO, SD.UpdateMode.Update);
 
-            await _logEventRepository.ToLog<SapEquipmentDTO>(oldObject: oldSapEquipmentDTO, newObject: newSapEquipmentDTO, "Изменение ресурса SAP", "Ресурс SAP: ");
+            await _logEventRepository.ToLog<SapEquipmentDTO>(oldObject: oldSapEquipmentDTO, newObject: newSapEquipmentDTO, "Изменение ресурса SAP", "Ресурс SAP: ", _authorizationRepository);
         }
     }
 
@@ -373,7 +373,7 @@
                     logEventTypeName = "Удаление в архив ресурса SAP";
                 }
 
-                await _logEventRepository.ToLog<SapEquipmentDTO>(oldObject: oldSapEquipmentDTO, newObject: newSapEquipmentDTO, logEventTypeName, "Ресурс SAP: ");
+                await _logEventRepository.ToLog<SapEquipmentDTO>(oldObject: oldSapEquipmentDTO, newObject: newSapEquipmentDTO, logEventTypeName, "Ресурс SAP: ", _authorizationRepository);
                 await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTO);
 
                 //await sapEquipmentDTOGrid.Reload();
@@ -430,7 +430,7 @@
 
             var newDTO = await _sapEquipmentRepository.Create(sapEquipmentDTO);
 
-            await _logEventRepository.ToLog<SapEquipmentDTO>(oldObject: null, newObject: newDTO, "Добавление ресурса SAP", "Ресурс SAP: ");
+            await _logEventRepository.ToLog<SapEquipmentDTO>(oldObject: null, newObject: newDTO, "Добавление ресурса SAP", "Ресурс SAP: ", _authorizationRepository);
 
             //sapEquipmentDTOToInsert.Id = newDTO.Id;
             //await sapEquipmentDTOGrid.UpdateRow(sapEquipmentDTOToInsert);

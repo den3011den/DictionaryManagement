@@ -303,7 +303,7 @@
 
                 SapMaterialDTO oldSapMaterialDTO = await _sapMaterialRepository.Get(sapMaterialDTO.Id);
                 SapMaterialDTO newSapMaterialDTO = await _sapMaterialRepository.Update(sapMaterialDTO, SD.UpdateMode.Update);
-                await _logEventRepository.ToLog<SapMaterialDTO>(oldObject: oldSapMaterialDTO, newObject: newSapMaterialDTO, "Изменение материала SAP", "Материал SAP: ");
+                await _logEventRepository.ToLog<SapMaterialDTO>(oldObject: oldSapMaterialDTO, newObject: newSapMaterialDTO, "Изменение материала SAP", "Материал SAP: ", _authorizationRepository);
             }
         }
     }
@@ -390,7 +390,7 @@
                     await _jsRuntime.ToastrSuccess("Материал \"" + sapMaterialDTO.Name + "\" удалён в архив");
                     logEventTypeName = "Удаление в архив материала SAP";
                 }
-                await _logEventRepository.ToLog<SapMaterialDTO>(oldObject: oldSapMaterialDTO, newObject: newSapMaterialDTO, logEventTypeName, "Материал SAP: ");
+                await _logEventRepository.ToLog<SapMaterialDTO>(oldObject: oldSapMaterialDTO, newObject: newSapMaterialDTO, logEventTypeName, "Материал SAP: ", _authorizationRepository);
                 await sapMaterialDTOGrid.UpdateRow(sapMaterialDTO);
             }
             else
@@ -479,7 +479,7 @@
             }
 
             var newDTO = await _sapMaterialRepository.Create(sapMaterialDTO);
-            await _logEventRepository.ToLog<SapMaterialDTO>(oldObject: null, newObject: newDTO, "Добавление материала SAP", "Материал SAP: ");
+            await _logEventRepository.ToLog<SapMaterialDTO>(oldObject: null, newObject: newDTO, "Добавление материала SAP", "Материал SAP: ", _authorizationRepository);
 
             await OnAfterRenderAsync(true);
         }

@@ -240,7 +240,7 @@
             }
             SettingsDTO oldSettingsDTO = await _settingsRepository.Get(settingsDTO.Id);
             SettingsDTO newSettingsDTO = await _settingsRepository.Update(settingsDTO);
-            await _logEventRepository.ToLog<SettingsDTO>(oldObject: oldSettingsDTO, newObject: newSettingsDTO, "Изменение настройки", "Настройка: ");
+            await _logEventRepository.ToLog<SettingsDTO>(oldObject: oldSettingsDTO, newObject: newSettingsDTO, "Изменение настройки", "Настройка: ", _authorizationRepository);
         }
     }
 
@@ -350,7 +350,7 @@
             }
 
             var newDTO = await _settingsRepository.Create(settingsDTO);
-            await _logEventRepository.ToLog<SettingsDTO>(oldObject: null, newObject: newDTO, "Добавление настройки", "Нвстройка: ");
+            await _logEventRepository.ToLog<SettingsDTO>(oldObject: null, newObject: newDTO, "Добавление настройки", "Настройка: ", _authorizationRepository);
             await OnAfterRenderAsync(true);
 
         }

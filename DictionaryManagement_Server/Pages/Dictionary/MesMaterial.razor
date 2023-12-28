@@ -311,7 +311,7 @@
 
             MesMaterialDTO oldMesMaterialDTO = await _mesMaterialRepository.Get(mesMaterialDTO.Id);
             MesMaterialDTO newMesMaterialDTO = await _mesMaterialRepository.Update(mesMaterialDTO, SD.UpdateMode.Update);
-            await _logEventRepository.ToLog<MesMaterialDTO>(oldObject: oldMesMaterialDTO, newObject: newMesMaterialDTO, "Изменение материала MES", "Материал MES: ");
+            await _logEventRepository.ToLog<MesMaterialDTO>(oldObject: oldMesMaterialDTO, newObject: newMesMaterialDTO, "Изменение материала MES", "Материал MES: ", _authorizationRepository);
         }
     }
 
@@ -404,7 +404,7 @@
                     await _jsRuntime.ToastrSuccess("Материал \"" + mesMaterialDTO.Name + "\" удалён в архив");
                     logEventTypeName = "Удаление в архив материала MES";
                 }
-                await _logEventRepository.ToLog<MesMaterialDTO>(oldObject: oldMesMaterialDTO, newObject: newMesMaterialDTO, logEventTypeName, "Материал MES: ");
+                await _logEventRepository.ToLog<MesMaterialDTO>(oldObject: oldMesMaterialDTO, newObject: newMesMaterialDTO, logEventTypeName, "Материал MES: ", _authorizationRepository);
                 await mesMaterialDTOGrid.UpdateRow(mesMaterialDTO);
             }
             else
@@ -496,7 +496,7 @@
                 }
             }
             var newDTO = await _mesMaterialRepository.Create(mesMaterialDTO);
-            await _logEventRepository.ToLog<MesMaterialDTO>(oldObject: null, newObject: newDTO, "Добавление материала MES", "Материал MES: ");
+            await _logEventRepository.ToLog<MesMaterialDTO>(oldObject: null, newObject: newDTO, "Добавление материала MES", "Материал MES: ", _authorizationRepository);
             await OnAfterRenderAsync(true);
         }
     }

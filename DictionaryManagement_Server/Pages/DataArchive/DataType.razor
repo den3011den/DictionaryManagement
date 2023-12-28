@@ -258,7 +258,7 @@
 
             DataTypeDTO oldDataTypeDTO = await _dataTypeRepository.Get(dataTypeDTO.Id);
             DataTypeDTO newDataTypeDTO = await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.Update);
-            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, "Изменение вида данных", "Вид данных: ");
+            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, "Изменение вида данных", "Вид данных: ", _authorizationRepository);
             if (dataTypeDTO.IsAutoCalcDestDataType == true)
             {
                 var tmpList = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
@@ -270,7 +270,7 @@
                             oldDataTypeDTO = await _dataTypeRepository.Get(item.Id);
                             item.IsAutoCalcDestDataType = false;                            
                             newDataTypeDTO = await _dataTypeRepository.Update(item, SD.UpdateMode.Update);
-                            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, "Изменение вида данных", "Вид данных: ");
+                            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, "Изменение вида данных", "Вид данных: ", _authorizationRepository);
                         }
                 }
                 IsLoading = true;
@@ -366,7 +366,7 @@
                     await _jsRuntime.ToastrSuccess("Вид данных " + dataTypeDTO.Name + " удален в архив");
                     logEventTypeName = "Удаление в архив вида данных";
                 }
-                await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, logEventTypeName, "Вид данных: ");
+                await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, logEventTypeName, "Вид данных: ", _authorizationRepository);
                 await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -417,7 +417,7 @@
             }
 
             var newDTO = await _dataTypeRepository.Create(dataTypeDTO);
-            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: null, newObject: newDTO, "Добавление вида данных", "Вид данных: ");
+            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: null, newObject: newDTO, "Добавление вида данных", "Вид данных: ", _authorizationRepository);
 
             if (newDTO.IsAutoCalcDestDataType == true)                        
             {
@@ -433,7 +433,7 @@
                             oldDataTypeDTO = await _dataTypeRepository.Get(item.Id);
                             item.IsAutoCalcDestDataType = false;
                             newDataTypeDTO = await _dataTypeRepository.Update(item, SD.UpdateMode.Update);
-                            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, "Изменение вида данных", "Вид данных: ");
+                            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, "Изменение вида данных", "Вид данных: ", _authorizationRepository);
                         }
                 }
                 IsLoading = true;

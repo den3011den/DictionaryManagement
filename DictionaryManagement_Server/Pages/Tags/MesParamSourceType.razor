@@ -219,7 +219,7 @@
             }
             MesParamSourceTypeDTO oldMesParamSourceTypeDTO = await _mesParamSourceTypeRepository.Get(mesParamSourceTypeDTO.Id);
             MesParamSourceTypeDTO newMesParamSourceTypeDTO = await _mesParamSourceTypeRepository.Update(mesParamSourceTypeDTO, SD.UpdateMode.Update);
-            await _logEventRepository.ToLog<MesParamSourceTypeDTO>(oldObject: oldMesParamSourceTypeDTO, newObject: newMesParamSourceTypeDTO, "Изменение типа тэга СИР", "Тип тэга СИР: ");
+            await _logEventRepository.ToLog<MesParamSourceTypeDTO>(oldObject: oldMesParamSourceTypeDTO, newObject: newMesParamSourceTypeDTO, "Изменение типа тэга СИР", "Тип тэга СИР: ", _authorizationRepository);
         }
     }
 
@@ -308,7 +308,7 @@
                     await _jsRuntime.ToastrSuccess("Тип тэгов " + mesParamSourceTypeDTO.Name + " удалена в архив");
                     logEventTypeName = "Удаление в архив типа тэга СИР";
                 }
-                await _logEventRepository.ToLog<MesParamSourceTypeDTO>(oldObject: oldMesParamSourceTypeDTO, newObject: newMesParamSourceTypeDTO, logEventTypeName, "Тип тэга СИР: ");
+                await _logEventRepository.ToLog<MesParamSourceTypeDTO>(oldObject: oldMesParamSourceTypeDTO, newObject: newMesParamSourceTypeDTO, logEventTypeName, "Тип тэга СИР: ", _authorizationRepository);
                 await mesParamSourceTypeDTOGrid.UpdateRow(mesParamSourceTypeDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -346,7 +346,7 @@
             }
 
             var newDTO = await _mesParamSourceTypeRepository.Create(mesParamSourceTypeDTO);
-            await _logEventRepository.ToLog<MesParamSourceTypeDTO>(oldObject: null, newObject: newDTO, "Добавление типа тэга СИР", "Тип тэга СИР: ");
+            await _logEventRepository.ToLog<MesParamSourceTypeDTO>(oldObject: null, newObject: newDTO, "Добавление типа тэга СИР", "Тип тэга СИР: ", _authorizationRepository);
             //mesParamSourceTypeDTOToInsert.Id = newDTO.Id;
             //await mesParamSourceTypeDTOGrid.UpdateRow(mesParamSourceTypeDTOToInsert);
 

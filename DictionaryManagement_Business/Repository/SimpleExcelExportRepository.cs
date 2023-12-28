@@ -471,6 +471,8 @@ namespace DictionaryManagement_Business.Repository
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Синхронизируется с AD (IsSyncWithAD)";
                 excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Сервисный пользователь (IsServiceUser)";
+                excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Время последней синхронизации с AD (SyncWithADGroupsLastTime)";
@@ -494,6 +496,8 @@ namespace DictionaryManagement_Business.Repository
                     ws.Cell(excelRowNum, excelColNum).Value = userDTO.Description == null ? "" : userDTO.Description;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = userDTO.IsSyncWithAD == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = userDTO.IsServiceUser == true ? "Да" : "";
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = userDTO.IsArchive == true ? "Да" : "";
                     excelColNum++;
@@ -626,6 +630,8 @@ namespace DictionaryManagement_Business.Repository
                 wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Описание пользователя (User.Description)";
                 excelColNum++;
                 wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Синхронизируется с AD (User.IsSyncWithAD)";
+                excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Сервисный пользователь (User.IsServiceUser)";
                 excelColNum++;
                 wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Время последней синхронизации с AD (User.SyncWithADGroupsLastTime)";
                 excelColNum++;
@@ -780,6 +786,8 @@ namespace DictionaryManagement_Business.Repository
                             wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.Description == null ? "" : userToRoleDTO.UserDTOFK.Description;
                             wsUserToRoleColNum++;
                             wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.IsSyncWithAD == true ? "Да" : "";
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.IsServiceUser == true ? "Да" : "";
                             wsUserToRoleColNum++;
                             wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.SyncWithADGroupsLastTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                             wsUserToRoleColNum++;

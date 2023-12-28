@@ -146,7 +146,7 @@
                 }
 
                 ADGroupDTO addedDTO = await _adGroupRepository.Create(ActiveADGroupDTO);
-                await _logEventRepository.ToLog<ADGroupDTO>(oldObject: null, newObject: addedDTO, "Добавление группы AD", "Группа AD: ");
+                await _logEventRepository.ToLog<ADGroupDTO>(oldObject: null, newObject: addedDTO, "Добавление группы AD", "Группа AD: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Группа AD \"" + ActiveADGroupDTO.Name + "\" создана");
          
                 _dialogService.Close(ActiveADGroupDTO);
@@ -163,7 +163,7 @@
                 }
                 ADGroupDTO oldADGroupDTO = await _adGroupRepository.Get(ActiveADGroupDTO.Id);
                 ADGroupDTO newADGroupDTO = await _adGroupRepository.Update(ActiveADGroupDTO);
-                await _logEventRepository.ToLog<ADGroupDTO>(oldObject: oldADGroupDTO, newObject: newADGroupDTO, "Добавление группы AD", "Группа AD: ");
+                await _logEventRepository.ToLog<ADGroupDTO>(oldObject: oldADGroupDTO, newObject: newADGroupDTO, "Изменение группы AD", "Группа AD: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Группа AD \"" + ActiveADGroupDTO.Name +  " \" изменена");
                 
                 _dialogService.Close(ActiveADGroupDTO);

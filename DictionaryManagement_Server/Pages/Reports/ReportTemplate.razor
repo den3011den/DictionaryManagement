@@ -428,14 +428,14 @@
             {
                 await _reportTemplateRepository.Delete(reportTemplateDTO.Id, SD.UpdateMode.RestoreFromArchive);
                 reportTemplateDTO.IsArchive = false;
-                await _logEventRepository.ToLog<ReportTemplateDTO>(oldReportTemplateDTO, reportTemplateDTO, "Восстановление из архива шаблона отчёта", "Шаблон отчёта: ");
+                await _logEventRepository.ToLog<ReportTemplateDTO>(oldReportTemplateDTO, reportTemplateDTO, "Восстановление из архива шаблона отчёта", "Шаблон отчёта: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + reportTemplateDTO.Description + "\" восстановлен из архива");
             }
             else
             {
                 await _reportTemplateRepository.Delete(reportTemplateDTO.Id, SD.UpdateMode.MoveToArchive);
                 reportTemplateDTO.IsArchive = true;
-                await _logEventRepository.ToLog<ReportTemplateDTO>(oldReportTemplateDTO, reportTemplateDTO, "Удаление в архив шаблона отчёта", "Шаблон отчёта: ");
+                await _logEventRepository.ToLog<ReportTemplateDTO>(oldReportTemplateDTO, reportTemplateDTO, "Удаление в архив шаблона отчёта", "Шаблон отчёта: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + reportTemplateDTO.Description + "\" удалён в архив");
             }
             await reportTemplateDTOGrid.UpdateRow(reportTemplateDTO);

@@ -15,15 +15,11 @@ namespace DictionaryManagement_Business.Repository
     {
         private readonly IntDBApplicationDbContext _db;
         private readonly IMapper _mapper;
-        private readonly ILogEventRepository _logEventRepository;
-        private readonly IAuthorizationRepository _authorizationRepository;
 
-        public MesParamRepository(IntDBApplicationDbContext db, IMapper mapper, ILogEventRepository logEventRepository, IAuthorizationRepository authorizationRepository)
+        public MesParamRepository(IntDBApplicationDbContext db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
-            _logEventRepository = logEventRepository;
-            _authorizationRepository = authorizationRepository;
         }
 
         public async Task<MesParamDTO> Create(MesParamDTO objectToAddDTO)

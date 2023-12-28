@@ -302,10 +302,13 @@ namespace DictionaryManagement_Business.Repository
                         Login = userLogin,
                         Description = "Добавлено автоматически " + DateTime.Now.ToString(),
                         IsArchive = false,
-                        IsSyncWithAD = true
+                        IsSyncWithAD = true,
+                        IsServiceUser = false
                     };
                     userFromDBDTO = await _userRepository.Create(userFromDBDTO);
-                    await _logEventRepository.ToLog<UserDTO>(oldObject: null, newObject: userFromDBDTO, "Добавление пользователя", "Пользователь: ");
+
+                    Guid addedUserId = (await _userRepository.GetByUserName(SD.DictionaryManagementUserName)).Id;
+                    await _logEventRepository.AddRecord("Добавление пользователя", addedUserId, "", "", false, "Пользователь: " + userFromDBDTO.ToString());
                 }
 
                 IEnumerable<RoleToADGroupDTO> RoleToADGroupDTOList = null;

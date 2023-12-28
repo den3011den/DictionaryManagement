@@ -293,7 +293,7 @@
             }           
             ReportTemplateTypeDTO oldReportTemplateTypeDTO = await _reportTemplateTypeRepository.Get(reportTemplateTypeDTO.Id);            
             ReportTemplateTypeDTO newReportTemplateTypeDTO = await _reportTemplateTypeRepository.Update(reportTemplateTypeDTO, SD.UpdateMode.Update);
-            await _logEventRepository.ToLog<ReportTemplateTypeDTO>(oldObject: oldReportTemplateTypeDTO, newObject: newReportTemplateTypeDTO, "Изменение типа шаблона отчёта", "Тип шаблона отчёта: ");
+            await _logEventRepository.ToLog<ReportTemplateTypeDTO>(oldObject: oldReportTemplateTypeDTO, newObject: newReportTemplateTypeDTO, "Изменение типа шаблона отчёта", "Тип шаблона отчёта: ", _authorizationRepository);
         }
     }
 
@@ -381,7 +381,7 @@
                     await _jsRuntime.ToastrSuccess("Тип шаблона отчёта " + reportTemplateTypeDTO.Name + " удален в архив");
                     logEventTypeName = "Удаление в архив типа шаблона отчёта";
                 }
-                await _logEventRepository.ToLog<ReportTemplateTypeDTO>(oldObject: oldReportTemplateTypeDTO, newObject: newReportTemplateTypeDTO, logEventTypeName, "Тип шаблона отчёта: ");
+                await _logEventRepository.ToLog<ReportTemplateTypeDTO>(oldObject: oldReportTemplateTypeDTO, newObject: newReportTemplateTypeDTO, logEventTypeName, "Тип шаблона отчёта: ", _authorizationRepository);
                 await reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -420,7 +420,7 @@
             }
 
             var newDTO = await _reportTemplateTypeRepository.Create(reportTemplateTypeDTO);
-            await _logEventRepository.ToLog<ReportTemplateTypeDTO>(oldObject: null, newObject: newDTO, "Добавление типа шаблона отчёта", "Тип шаблона отчёта: ");
+            await _logEventRepository.ToLog<ReportTemplateTypeDTO>(oldObject: null, newObject: newDTO, "Добавление типа шаблона отчёта", "Тип шаблона отчёта: ", _authorizationRepository);
             //reportTemplateTypeDTOToInsert.Id = newDTO.Id;
             //await reportTemplateTypeDTOGrid.UpdateRow(reportTemplateTypeDTOToInsert);
 

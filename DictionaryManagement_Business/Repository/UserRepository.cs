@@ -122,6 +122,8 @@ namespace DictionaryManagement_Business.Repository
                         objectToUpdate.Description = objectToUpdateDTO.Description;
                     if (objectToUpdate.IsSyncWithAD != objectToUpdateDTO.IsSyncWithAD)
                         objectToUpdate.IsSyncWithAD = objectToUpdateDTO.IsSyncWithAD;
+                    if (objectToUpdate.IsServiceUser != objectToUpdateDTO.IsServiceUser)
+                        objectToUpdate.IsServiceUser = objectToUpdateDTO.IsServiceUser;
                     if (objectToUpdate.SyncWithADGroupsLastTime != objectToUpdateDTO.SyncWithADGroupsLastTime)
                         objectToUpdate.SyncWithADGroupsLastTime = objectToUpdateDTO.SyncWithADGroupsLastTime;
                 }

@@ -192,7 +192,7 @@
                 }
 
                 SmenaDTO createdSmenaDTO = await _smenaRepository.Create(ActiveSmenaDTO);
-                await _logEventRepository.ToLog<SmenaDTO>(oldObject: null, newObject: createdSmenaDTO, "Добавление смены", "Смена: ");
+                await _logEventRepository.ToLog<SmenaDTO>(oldObject: null, newObject: createdSmenaDTO, "Добавление смены", "Смена: ", _authorizationRepository);
 
                 await _jsRuntime.ToastrSuccess("Смена \"" + ActiveSmenaDTO.Name + "\" создана");
                 _dialogService.Close(ActiveSmenaDTO);
@@ -230,7 +230,7 @@
 
                 SmenaDTO oldSmenaDTO = await _smenaRepository.GetById(ActiveSmenaDTO.Id);
                 SmenaDTO newSmenaDTO = await _smenaRepository.Update(ActiveSmenaDTO);
-                await _logEventRepository.ToLog<SmenaDTO>(oldObject: oldSmenaDTO, newObject: newSmenaDTO, "Добавление смены", "Смена: ");
+                await _logEventRepository.ToLog<SmenaDTO>(oldObject: oldSmenaDTO, newObject: newSmenaDTO, "Изменение смены", "Смена: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Смена \"" + ActiveSmenaDTO.Id.ToString() + "\" изменена");
 
                 _dialogService.Close(ActiveSmenaDTO);

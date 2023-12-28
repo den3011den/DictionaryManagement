@@ -12,14 +12,12 @@ namespace DictionaryManagement_Business.Repository
         private readonly IntDBApplicationDbContext _db;
         private readonly IMapper _mapper;
         private readonly ILogEventTypeRepository _logEventTypeRepository;
-        private readonly IAuthorizationRepository _authorizationRepository;
 
-        public LogEventRepository(IntDBApplicationDbContext db, IMapper mapper, ILogEventTypeRepository logEventTypeRepository, IAuthorizationRepository authorizationRepository)
+        public LogEventRepository(IntDBApplicationDbContext db, IMapper mapper, ILogEventTypeRepository logEventTypeRepository)
         {
             _db = db;
             _mapper = mapper;
             _logEventTypeRepository = logEventTypeRepository;
-            _authorizationRepository = authorizationRepository;
         }
 
         public async Task<IEnumerable<LogEventDTO>> GetAllByTimeInterval(DateTime? startTime, DateTime? endTime)
@@ -67,7 +65,7 @@ namespace DictionaryManagement_Business.Repository
                 return null;
         }
 
-        public async Task ToLog<T>(T? oldObject, T newObject, string logEventTypeName, string prefixString)
+        public async Task ToLog<T>(T? oldObject, T newObject, string logEventTypeName, string prefixString, IAuthorizationRepository _authorizationRepository)
         {
 
             Guid userId = (await _authorizationRepository.GetCurrentUserDTO()).Id;

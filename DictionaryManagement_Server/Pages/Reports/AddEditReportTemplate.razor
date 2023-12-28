@@ -340,7 +340,7 @@
 
                 var addedDTO =  await _reportTemplateRepository.Update(createdTemplateDTO);
 
-                await _logEventRepository.ToLog<ReportTemplateDTO>(oldObject: null, newObject: addedDTO, "Добавление шаблона отчёта", "Шаблон отчёта: ");
+                await _logEventRepository.ToLog<ReportTemplateDTO>(oldObject: null, newObject: addedDTO, "Добавление шаблона отчёта", "Шаблон отчёта: ", _authorizationRepository);
 
                 upload.Url = @"UploadFileController/UploadReportTemplateFile/" + createdTemplateDTO.Id;
                 await upload.Upload();
@@ -380,7 +380,7 @@
 
                 ReportTemplateDTO newReportTemplateDTO = await _reportTemplateRepository.Update(ActiveReportTemplateDTO);
 
-                await _logEventRepository.ToLog<ReportTemplateDTO>(oldObject: oldReportTemplateDTO, newObject: newReportTemplateDTO, "Изменение шаблона отчёта", "Шаблон отчёта: ");
+                await _logEventRepository.ToLog<ReportTemplateDTO>(oldObject: oldReportTemplateDTO, newObject: newReportTemplateDTO, "Изменение шаблона отчёта", "Шаблон отчёта: ", _authorizationRepository);
 
                 await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + ActiveReportTemplateDTO.Id.ToString() + "\" изменён");
 

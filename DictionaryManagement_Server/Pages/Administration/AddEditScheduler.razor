@@ -148,7 +148,7 @@
             if (SchedulerId == null || SchedulerId == 0)
             { // создание
                 SchedulerDTO createdSchedulerDTO = await _schedulerRepository.Create(ActiveSchedulerDTO);
-                await _logEventRepository.ToLog<SchedulerDTO>(oldObject: null, newObject: createdSchedulerDTO, "Добавление расписания", "Расписание: ");
+                await _logEventRepository.ToLog<SchedulerDTO>(oldObject: null, newObject: createdSchedulerDTO, "Добавление расписания", "Расписание: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Задание для модуля \"" + ActiveSchedulerDTO.ModuleName + "\" создано");
                 _dialogService.Close(ActiveSchedulerDTO);
 
@@ -157,7 +157,7 @@
             { // изменение
                 SchedulerDTO oldSchedulerDTO = await _schedulerRepository.GetById(ActiveSchedulerDTO.Id);
                 SchedulerDTO newSchedulerDTO = await _schedulerRepository.Update(ActiveSchedulerDTO);
-                await _logEventRepository.ToLog<SchedulerDTO>(oldObject: oldSchedulerDTO, newObject: newSchedulerDTO, "Добавление расписания", "Расписание: ");
+                await _logEventRepository.ToLog<SchedulerDTO>(oldObject: oldSchedulerDTO, newObject: newSchedulerDTO, "Изменение расписания", "Расписание: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Задание для модуля \"" + ActiveSchedulerDTO.ModuleName + "\" изменено");
 
                 _dialogService.Close(ActiveSchedulerDTO);

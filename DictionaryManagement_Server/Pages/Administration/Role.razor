@@ -18,7 +18,8 @@
 @inject IRoleToADGroupRepository _roleToADGroupRepository
 @inject IRoleToDepartmentRepository _roleToToDepartmentRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
-@* @inject IRoleRepository _roleRepository *@
+@inject ILogEventRepository _logEventRepository
+@inject IRoleRepository _roleRepository
 
 @inject DialogService _dialogService
 
@@ -412,17 +413,23 @@
                 }
             }
 
+            RoleDTO oldRoleDTO = await _roleRepository.GetById(roleVMDTO.Id);
+
             if (roleVMDTO.IsArchive)
             {
                 await _roleVMRepository.Update(roleVMDTO, SD.UpdateMode.RestoreFromArchive);
+                RoleDTO newRoleDTO = await _roleRepository.GetById(roleVMDTO.Id);
                 roleVMDTO.IsArchive = false;
+                await _logEventRepository.ToLog<RoleDTO>(oldRoleDTO, newRoleDTO, "Восстановление из архива роли", "Роль: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Роль СИР \"" + roleVMDTO.Name + "\" восстановлена из архива");
             }
             else
             {
                 await _roleVMRepository.Update(roleVMDTO, SD.UpdateMode.MoveToArchive);
+                RoleDTO newRoleDTO = await _roleRepository.GetById(roleVMDTO.Id);
                 roleVMDTO.IsArchive = true;
-                await _jsRuntime.ToastrSuccess("Роль СИР \"" + roleVMDTO.Name + "\" удалёна в архив");
+                await _logEventRepository.ToLog<RoleDTO>(oldRoleDTO, newRoleDTO, "Удаление в архив роли", "Роль: ", _authorizationRepository);
+                await _jsRuntime.ToastrSuccess("Роль СИР \"" + roleVMDTO.Name + "\" удалена в архив");
             }
             await roleVMDTOGrid.UpdateRow(roleVMDTO);
         }

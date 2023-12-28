@@ -241,7 +241,7 @@
             }
             SapUnitOfMeasureDTO oldSapUnitOfMeasureDTO = await _sapUnitOfMeasureRepository.Get(sapUnitOfMeasureDTO.Id);
             SapUnitOfMeasureDTO newSapUnitOfMeasureDTO = await _sapUnitOfMeasureRepository.Update(sapUnitOfMeasureDTO, SD.UpdateMode.Update);
-            await _logEventRepository.ToLog<SapUnitOfMeasureDTO>(oldObject: oldSapUnitOfMeasureDTO, newObject: newSapUnitOfMeasureDTO, "Изменение ед.изм. SAP", "Ед.изм. SAP: ");
+            await _logEventRepository.ToLog<SapUnitOfMeasureDTO>(oldObject: oldSapUnitOfMeasureDTO, newObject: newSapUnitOfMeasureDTO, "Изменение ед.изм. SAP", "Ед.изм. SAP: ", _authorizationRepository);
         }
     }
 
@@ -331,7 +331,7 @@
                     await _jsRuntime.ToastrSuccess("Ед. изм. " + sapUnitOfMeasureDTO.Name + " удалена в архив");
                     logEventTypeName = "Удаление в архив ед.изм. SAP";
                 }
-                await _logEventRepository.ToLog<SapUnitOfMeasureDTO>(oldObject: oldSapUnitOfMeasureDTO, newObject: newSapUnitOfMeasureDTO, logEventTypeName, "Ед.изм. SAP: ");
+                await _logEventRepository.ToLog<SapUnitOfMeasureDTO>(oldObject: oldSapUnitOfMeasureDTO, newObject: newSapUnitOfMeasureDTO, logEventTypeName, "Ед.изм. SAP: ", _authorizationRepository);
                 await sapUnitOfMeasureDTOGrid.UpdateRow(sapUnitOfMeasureDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -378,7 +378,7 @@
 
             var newDTO = await _sapUnitOfMeasureRepository.Create(sapUnitOfMeasureDTO);
 
-            await _logEventRepository.ToLog<SapUnitOfMeasureDTO>(oldObject: null, newObject: newDTO, "Добавление ед.изм. SAP", "Ед.изм. SAP: ");
+            await _logEventRepository.ToLog<SapUnitOfMeasureDTO>(oldObject: null, newObject: newDTO, "Добавление ед.изм. SAP", "Ед.изм. SAP: ", _authorizationRepository);
             //sapUnitOfMeasureDTO.Id = newDTO.Id;
             //await sapUnitOfMeasureDTOGrid.UpdateRow(sapUnitOfMeasureDTO);
 

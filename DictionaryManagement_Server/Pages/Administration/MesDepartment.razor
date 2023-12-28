@@ -287,14 +287,14 @@
             {
                 await _mesDepartmentRepository.Delete(mesDepartmentDTO.Id, SD.UpdateMode.RestoreFromArchive);
                 mesDepartmentDTO.IsArchive = false;
-                await _logEventRepository.ToLog<MesDepartmentDTO>(oldMesDepartmentDTO, mesDepartmentDTO, "Восстановление из архива производства", "Производство: ");
+                await _logEventRepository.ToLog<MesDepartmentDTO>(oldMesDepartmentDTO, mesDepartmentDTO, "Восстановление из архива производства", "Производство: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" восстановлено из архива");
             }
             else
             {
                 await _mesDepartmentRepository.Delete(mesDepartmentDTO.Id, SD.UpdateMode.MoveToArchive);
                 mesDepartmentDTO.IsArchive = true;
-                await _logEventRepository.ToLog<MesDepartmentDTO>(oldMesDepartmentDTO, mesDepartmentDTO, "Удаление в архив производства", "Производство: ");
+                await _logEventRepository.ToLog<MesDepartmentDTO>(oldMesDepartmentDTO, mesDepartmentDTO, "Удаление в архив производства", "Производство: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" удалено в архив");
             }
             await mesDepartmentDTOGrid.UpdateRow(mesDepartmentDTO);

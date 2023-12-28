@@ -226,7 +226,7 @@
 
             LogEventTypeDTO oldLogEventTypeDTO = await _logEventTypeRepository.Get(logEventTypeDTO.Id);                       
             LogEventTypeDTO newLogEventTypeDTO = await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.Update);
-            await _logEventRepository.ToLog<LogEventTypeDTO>(oldObject: oldLogEventTypeDTO, newObject: newLogEventTypeDTO, "Изменение типа события", "Тип события: ");
+            await _logEventRepository.ToLog<LogEventTypeDTO>(oldObject: oldLogEventTypeDTO, newObject: newLogEventTypeDTO, "Изменение типа события", "Тип события: ", _authorizationRepository);
         }
     }
 
@@ -314,7 +314,7 @@
                     await _jsRuntime.ToastrSuccess("Тип событий " + logEventTypeDTO.Name + " удален в архив");
                     logEventTypeName = "Удаление в архив типа события";
                 }
-                await _logEventRepository.ToLog<LogEventTypeDTO>(oldObject: oldLogEventTypeDTO, newObject: newLogEventTypeDTO, logEventTypeName, "Тип события: ");
+                await _logEventRepository.ToLog<LogEventTypeDTO>(oldObject: oldLogEventTypeDTO, newObject: newLogEventTypeDTO, logEventTypeName, "Тип события: ", _authorizationRepository);
                 await logEventTypeDTOGrid.UpdateRow(logEventTypeDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -358,7 +358,7 @@
             }
 
             var newDTO = await _logEventTypeRepository.Create(logEventTypeDTO);
-            await _logEventRepository.ToLog<LogEventTypeDTO>(oldObject: null, newObject: newDTO, "Добавление типа события", "Тип события: ");
+            await _logEventRepository.ToLog<LogEventTypeDTO>(oldObject: null, newObject: newDTO, "Добавление типа события", "Тип события: ", _authorizationRepository);
 
             //logEventTypeDTOToInsert.Id = newDTO.Id;
             //await logEventTypeDTOGrid.UpdateRow(logEventTypeDTOToInsert);

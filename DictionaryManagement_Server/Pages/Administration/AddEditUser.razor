@@ -62,7 +62,15 @@
                                     </Items>
                                 </RadzenSelectBar>
 
-                                <RadzenLabel Text="Время поледней синхронизации ролей с группами AD:"Style="margin-left: 8px; margin-top: 8px;" />
+                                <RadzenLabel Text="Сервисный пользователь:" Component="CheckBox5" Style="margin-left: 8px; margin-top: 8px;" />
+                                <RadzenSelectBar @bind-Value="@ActiveUserDTO.IsServiceUser" TValue="bool" class="mb-4" Name="CheckBox5">
+                                    <Items>
+                                        <RadzenSelectBarItem Text="Да" Value="true" />
+                                        <RadzenSelectBarItem Text="Нет" Value="false" />
+                                    </Items>
+                                </RadzenSelectBar>
+
+                                <RadzenLabel Text="Время последней синхронизации ролей с группами AD:"Style="margin-left: 8px; margin-top: 8px;" />
                                 <RadzenDatePicker TValue = "DateTime" @bind-Value=@ActiveUserDTO.SyncWithADGroupsLastTime ShowSeconds="true" ShowTime="true" HourFormat="24" DateFormat="dd.MM.yyyy hh:mm:ss" />
 
                             </RadzenStack>
@@ -181,7 +189,7 @@
                 //     ActiveUserDTO.SyncWithADGroupsLastTime = DateTime.MinValue;
 
                 UserDTO addedDTO = await _userRepository.Create(ActiveUserDTO);
-                await _logEventRepository.ToLog<UserDTO>(oldObject: null, newObject: addedDTO, "Добавление пользователя", "Пользователь: ");
+                await _logEventRepository.ToLog<UserDTO>(oldObject: null, newObject: addedDTO, "Добавление пользователя", "Пользователь: ", _authorizationRepository);
 
                 await _jsRuntime.ToastrSuccess("Пользователь \"" + ActiveUserDTO.UserName + " (" + ActiveUserDTO.Login +")\" создан");
          
@@ -208,7 +216,7 @@
 
                 UserDTO oldUserDTO = await _userRepository.Get(ActiveUserDTO.Id);
                 UserDTO newUserDTO = await _userRepository.Update(ActiveUserDTO);
-                await _logEventRepository.ToLog<UserDTO>(oldObject: oldUserDTO, newObject: newUserDTO, "Изменение пользователя", "Пользователь: ");
+                await _logEventRepository.ToLog<UserDTO>(oldObject: oldUserDTO, newObject: newUserDTO, "Изменение пользователя", "Пользователь: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Пользователь \"" + ActiveUserDTO.UserName + " (" + ActiveUserDTO.Login + ") \" изменен");
                 
                 _dialogService.Close(ActiveUserDTO);
