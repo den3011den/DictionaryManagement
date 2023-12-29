@@ -2652,7 +2652,17 @@ namespace DictionaryManagement_Business.Repository
                 reportList.Column11Name = headerRows.Cell(11).CachedValue.ToString();
                 reportList.Column12Name = headerRows.Cell(12).CachedValue.ToString();
 
-                var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
+                IEnumerable<IXLRangeRow>? rows = null;
+
+                try
+                {
+                    rows = worksheet.RangeUsed().RowsUsed().Skip(1);
+                }
+                catch (Exception ex2)
+                {
+                    return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "Не удалось получить строки листа: " + sheetName, workbook);
+                }
+
 
                 //bool notImplementedThirdColumnForEmbReport = (reportEntityDTO.ReportTemplateDTOFK.ReportTemplateTypeDTOFK.Name.Trim().ToUpper() == "ОТЧЁТ ЭМБ"
                 //    && sheetSettingName == SD.ReportOutputSheetSettingName);

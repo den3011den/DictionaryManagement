@@ -288,7 +288,13 @@
                         </Template>
                     </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="MesGoneTime" Title="СИР забрал" TextAlign="TextAlign.Center"
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="MesGone" Title="СИР забрал" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.MesGone ReadOnly="true" TriState="false" TValue="bool?" />
+                        </Template>
+                    </RadzenDataGridColumnApp>
+
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="MesGoneTime" Title="СИР забрал время" TextAlign="TextAlign.Center"
                                              FilterProperty="MesGoneTime" FilterOperator="FilterOperator.Equals" SortProperty="MesGoneTime">
                         <Template Context="data1">
                             @if (data1.MesGoneTime != null)
