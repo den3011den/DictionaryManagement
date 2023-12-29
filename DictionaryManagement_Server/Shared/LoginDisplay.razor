@@ -47,6 +47,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        UserLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginAndName);
+        UserLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginAndName);        
     }
 }

@@ -9,6 +9,7 @@
 
 @inject IRoleVMRepository _roleVMRepository
 @inject DialogService _dialogService
+@inject ILogEventRepository _logEventRepository;
 
 @if (IsAdmin == true)
 {
@@ -163,7 +164,6 @@
             foreach (var checkedADGroupDTOItem in checkedADGroupDTOList)
             {
                 addedRoleToADGroupDTOItem = await _roleVMRepository.AddRoleToADGroup(ActiveRoleVMDTO, checkedADGroupDTOItem);
-
                 if (addedRoleToADGroupDTOItem == null)
                 {
                     await _jsRuntime.ToastrError("Не удалось добавить группу AD \"" + checkedADGroupDTOItem.Name + "\"!");
@@ -171,6 +171,10 @@
                 else
                 {
                     addedCount = addedCount + 1;
+                    Guid userId = (await _authorizationRepository.GetCurrentUserDTO()).Id;
+                    await _logEventRepository.AddRecord("Добавление связки группы AD с ролью", userId, "<Пусто>",
+                        ActiveRoleVMDTO.Name + " --> " + checkedADGroupDTOItem.ToString(), false,
+                        "Роль: " + ActiveRoleVMDTO.Name + " Группа AD: " + checkedADGroupDTOItem.ToString());
                 }
             }
 

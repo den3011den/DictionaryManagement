@@ -9,6 +9,7 @@
 
 @inject IRoleVMRepository _roleVMRepository
 @inject DialogService _dialogService
+@inject ILogEventRepository _logEventRepository;
 
 @if (IsAdmin == true)
 {
@@ -170,6 +171,12 @@
                 else
                 {
                     addedCount = addedCount + 1;
+                    Guid userId = (await _authorizationRepository.GetCurrentUserDTO()).Id;
+                    await _logEventRepository.AddRecord("Добавление связки типа шаблона отчёта с ролью", userId, "<Пусто>",
+                        ActiveRoleVMDTO.Name + " --> " + checkedReportTemplateTypeDTOItem.ToString(), false,
+                        "Роль: " + ActiveRoleVMDTO.Name + " Тип шаблона отчёта: " + checkedReportTemplateTypeDTOItem.ToString() +
+                        " Чтение: " + (checkedReportTemplateTypeDTOItem.CanDownload == true ? "Да": "Нет") +
+                        " Запись: " + (checkedReportTemplateTypeDTOItem.CanUpload == true ? "Да" : "Нет"));
                 }
             }
 

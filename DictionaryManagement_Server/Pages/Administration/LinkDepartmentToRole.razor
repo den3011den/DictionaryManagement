@@ -10,6 +10,7 @@
 @inject IMesDepartmentRepository _mesDepartmentRepository
 @inject IRoleToDepartmentRepository _roleToDepartmentRepository
 @inject DialogService _dialogService
+@inject ILogEventRepository _logEventRepository;
 
 @if (IsAdmin == true)
 {
@@ -162,6 +163,10 @@
                 else
                 {
                     addedCount = addedCount + 1;
+                    Guid userId = (await _authorizationRepository.GetCurrentUserDTO()).Id;
+                    await _logEventRepository.AddRecord("Добавление связки производства с ролью", userId, "<Пусто>",
+                        ActiveRoleVMDTO.Name + " --> " + checkedMesDepartmentDTOItem.ShortName, false,
+                        "Роль: " + ActiveRoleVMDTO.Name + " Производство: " + checkedMesDepartmentDTOItem.ToStringHierarchyShortName);
                 }
             }
 

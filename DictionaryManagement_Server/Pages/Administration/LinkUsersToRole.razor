@@ -9,6 +9,7 @@
 
 @inject IRoleVMRepository _roleVMRepository
 @inject DialogService _dialogService
+@inject ILogEventRepository _logEventRepository;
 
 @if (IsAdmin == true)
 {
@@ -169,6 +170,10 @@
                 else
                 {
                     addedCount = addedCount + 1;
+                    Guid userId = (await _authorizationRepository.GetCurrentUserDTO()).Id;
+                    await _logEventRepository.AddRecord("Добавление связки пользователя с ролью", userId, "<Пусто>",
+                        ActiveRoleVMDTO.Name + " --> " + checkedUserDTOItem.ToString(), false,
+                        "Роль: " + ActiveRoleVMDTO.Name + " Пользователь: " + checkedUserDTOItem.ToString());
                 }
             }
 
