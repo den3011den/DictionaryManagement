@@ -337,7 +337,8 @@ namespace DictionaryManagement_Business.Repository
                                             RoleDTOFK = item.RoleDTOFK
                                         };
                                         _userToRoleRepository.Create(userToRoleAddDTO);
-                                        await _logEventRepository.AddRecord("Добавление связки пользователя с ролью", dictionaryManagementUserGuid, "", "", false,
+                                        await _logEventRepository.AddRecord("Добавление связки пользователя с ролью", dictionaryManagementUserGuid,
+                                            "<Пусто>", userToRoleAddDTO.RoleDTOFK.ToString() + " --> " + userToRoleAddDTO.UserDTOFK.ToString(), false,
                                             "Пользователь: " + userToRoleAddDTO.UserDTOFK.ToString() + " Роль: " + userToRoleAddDTO.RoleDTOFK.ToString());
                                     }
                                 }

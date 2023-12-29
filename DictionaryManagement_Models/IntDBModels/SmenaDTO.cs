@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 
 namespace DictionaryManagement_Models.IntDBModels
 {
@@ -46,7 +45,9 @@ namespace DictionaryManagement_Models.IntDBModels
 
         public override string ToString()
         {
-            return $"{Name} по пр-ву {DepartmentDTOFK.ToString()} Начало: {StartTime.ToString("HH:mm:ss", CultureInfo.InvariantCulture)} Продолжительность: {HoursDuration.ToString()}";
+            string ret_var = Name + " по пр-ву " + DepartmentDTOFK.ToString() + " Начало: " + StartTime.ToString() +
+                " Продолжительность: " + HoursDuration.ToString();
+            return ret_var;
         }
     }
 }

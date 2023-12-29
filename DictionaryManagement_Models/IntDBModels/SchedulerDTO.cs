@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
 
 
 namespace DictionaryManagement_Models.IntDBModels
@@ -33,7 +32,7 @@ namespace DictionaryManagement_Models.IntDBModels
 
         public override string ToString()
         {
-            return $"Модуль: {ModuleName} Старт: {StartTime.ToString("HH:mm:ss", CultureInfo.InvariantCulture)}";
+            return $"Модуль: {ModuleName} Старт: {StartTime.ToString()}";
         }
     }
 }
