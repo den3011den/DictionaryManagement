@@ -1275,9 +1275,12 @@ namespace DictionaryManagement_Business.Repository
                 ws.Cell(excelRowNum, excelColNum).Value = "Ушло из СИР в MES (MesGoneTime)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "ИД пред. записи (PreviousRecordId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Передавать в Sap (NeedWriteToSap)";
+
 
                 excelColNum++;
-                ws.Cell(excelRowNum, excelColNum).Value = "Причина корректировки (CorrectionReason.Nmae)";
+                ws.Cell(excelRowNum, excelColNum).Value = "Причина корректировки (CorrectionReason.Name)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Комментарий корректировки (MesMovementsComment.CorrectionComment)";
 
@@ -1326,6 +1329,9 @@ namespace DictionaryManagement_Business.Repository
                     ws.Cell(excelRowNum, excelColNum).Value = ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.MesGoneTime == null ? "" : ((DateTime)mesMovementsDTO.MesGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.PreviousRecordId == null ? "" : mesMovementsDTO.PreviousRecordId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.NeedWriteToSap == true ? "Да" : "Нет";
+
 
                     string correctionNames = "";
                     string correctionComments = "";
@@ -2580,7 +2586,15 @@ namespace DictionaryManagement_Business.Repository
                 else
                     pathVar = (await _settingsRepository.GetByName(SD.ReportDownloadPathSettingName)).Value;
 
-                string fileName = reportEntityDTO.DownloadReportFileName;
+                string fileName = "";
+                if (String.IsNullOrEmpty(reportEntityDTO.DownloadReportFileName))
+                {
+                    fileName = reportEntityDTO.Id.ToString() + ".xlsx";
+                }
+                else
+                {
+                    fileName = reportEntityDTO.DownloadReportFileName;
+                }
                 string file = System.IO.Path.Combine(pathVar, fileName);
                 var extension = Path.GetExtension(fileName);
                 if (System.IO.File.Exists(file))
@@ -2635,6 +2649,10 @@ namespace DictionaryManagement_Business.Repository
                     return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "Не удалось загрузить лист: " + sheetName, workbook);
                 }
 
+                if (worksheet == null)
+                {
+                    return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "Не найден лист: " + sheetName, workbook);
+                }
                 ExcelSheetWithSirTagsDTOList reportList = new ExcelSheetWithSirTagsDTOList();
 
                 var headerRows = worksheet.Row(1);

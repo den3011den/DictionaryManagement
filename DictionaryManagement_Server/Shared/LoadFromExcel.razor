@@ -1,0 +1,772 @@
+﻿@page "/dictionary/LoadFromExcel/{LoadFromExcelReportTemplateTypeNameSettingName}"
+
+@attribute [Authorize]
+
+@using ClosedXML.Report
+@using DictionaryManagement_Business.Repository.IRepository;
+@using DictionaryManagement_Models.IntDBModels
+@using ClosedXML.Excel;
+@using DictionaryManagement_Server.Extensions.Repository.IRepository
+
+@inject IJSRuntime _jsRuntime
+
+@inject IReportEntityRepository _reportEntityRepository
+@inject ILogEventRepository _logEventRepository
+@inject ISettingsRepository _settingsRepository
+@inject IReportTemplateTypeRepository _reportTemplateTypeRepository
+@inject IReportTemplateRepository _reportTemplateRepository
+@inject ISapMaterialRepository _sapMaterialRepository
+@inject ILoadFromExcelRepository _loadFromExcelRepository
+@inject DictionaryManagement_Business.Repository.IAuthorizationRepository _authorizationRepository
+
+@inject DialogService _dialogService
+
+
+@if (IsAdmin == true)
+{
+    <_Dialogs @ref="_dialogs"></_Dialogs>
+
+
+    @if (IsLoading)
+    {
+        <div class="text-center">
+            <img src="/images/loading.gif">
+        </div>
+    }
+    else
+    {
+
+        <RadzenTabs @bind-SelectedIndex=@selectedTabIndex Change="@(args => OnTabChange(args))">
+            <Tabs>
+                <RadzenTabsItem Text="Получение шаблона для заполнения">
+                    <RadzenRow Gap="1rem">
+                        <RadzenStack>
+                            <RadzenFieldset Text="Варианты получения шаблона для заполнения" Style="font-weight: bold;">
+                                <RadzenStack Gap="1rem">
+                                    @if (String.IsNullOrEmpty(reportTemplateTypeName))
+                                    {
+                                        <br />
+                                        <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">
+                                            @("Невозможно получить шаблон, так как в справочнике настроек (таблица Settings) не найдена настройка с наименованием \"" + LoadFromExcelReportTemplateTypeNameSettingName + "\"")
+                                        </RadzenText>
+                                        errorFlag = true;
+                                    }
+                                    @if (errorFlag == false && String.IsNullOrEmpty(reportTemplateTypeName))
+                                    {
+                                        <br />
+                                        <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">
+                                            @("Невозможно получить шаблон, так как в справочнике настроек (таблица Settings) не найдена настройка с наименованием \"" + SD.ReportTemplatePathSettingName + "\"")
+                                        </RadzenText>
+                                        errorFlag = true;
+                                    }
+                                    @if (errorFlag == false && ActiveReportTemplateTypeDTO == null)
+                                    {
+                                        <br />
+                                        <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">
+                                            @("Невозможно получить шаблон, так как не найден тип шаблона отчёта с наименованием \"" + reportTemplateTypeName + "\"")
+                                        </RadzenText>
+                                        errorFlag = true;
+                                    }
+
+                                    @if (errorFlag == false && ActiveReportTemplateTypeDTO != null && ActiveReportTemplateDTO == null)
+                                    {
+                                        <br />
+                                        <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">
+                                            @("Невозможно получить шаблон, так как не найден шаблона отчёта с типом \"" + ActiveReportTemplateTypeDTO.Name + "\"")
+                                        </RadzenText>
+                                        errorFlag = true;
+                                    }
+                                    @if (errorFlag == false && String.IsNullOrEmpty(reportTempPath))
+                                    {
+                                        <br />
+                                        <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">
+                                            @("Невозможно получить шаблон, так как в справочнике настроек (таблица Settings) не найдена настройка с наименованием \"" + SD.TempFilePathSettingName + "\"")
+                                        </RadzenText>
+                                        errorFlag = true;
+                                    }
+
+                                    @if (errorFlag == false && foundActiveReportTemplateFile == false)
+                                    {
+                                        <br />
+                                        <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">
+                                            @("Невозможно получить шаблон, так как не найден файл шаблона отчёта на сервере по пути \"" + fileTemplateFullPath + "\"")
+                                        </RadzenText>
+                                        errorFlag = true;
+                                    }
+
+                                    <div class="rz-text-align-center">
+                                        <RadzenButton Text="Скачать пустой шаблон для заполнения" title="Получить пустой шаблон файла с заголовками и подсказками для заполнения"
+                                                      Icon="download" Disabled="@(!foundActiveReportTemplateFile)" ButtonStyle="ButtonStyle.Info" Style="margin-top: 10px; width: 850px;" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                                      Click="@(args => ReportTemplateDownloadFile(@ActiveReportTemplateDTO.Id))" @onclick:stopPropagation="true"
+                                                      IsBusy=@reportTemplateDownloadFileBusyFlag BusyText="Выполняется ...">
+                                        </RadzenButton>
+                                    </div>
+                                    <div class="rz-text-align-center">
+                                        <RadzenButton Text="Скачать шаблон для заполнения с данными" title="Получить шаблон файла с данными справочника в качестве примера заполнения"
+                                                      Icon="download" Disabled="@(!foundActiveReportTemplateFile)" ButtonStyle="ButtonStyle.Info" Style="margin-top: 10px; width: 850px;" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                                      Click="@(args => ReportTemplateDownloadFileWithData(@ActiveReportTemplateDTO.Id))" @onclick:stopPropagation="true"
+                                                      IsBusy=@reportTemplateDownloadFileWithDataBusyFlag BusyText=@reportTemplateDownloadFileWithDataBusyText>
+                                        </RadzenButton>
+                                    </div>
+                                </RadzenStack>
+                            </RadzenFieldset>
+                        </RadzenStack>
+                    </RadzenRow>
+                </RadzenTabsItem>
+                <RadzenTabsItem Text="Загрузить данные из Excel">
+                    <RadzenRow Gap="1rem">
+                        <RadzenStack>
+                            <RadzenCard Style="width: 100%;">
+                                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Выбрать файл Excel с загружаемыми данными</RadzenText>
+                                <RadzenUpload @ref="upload" Auto="false" ChooseText="Выбрать" Multiple="false" Accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                              Url=@("UploadFileController/UploadReportEntityFile/"+Guid.NewGuid().ToString())
+                                              Change=@(args => OnChangeUploadFile(args)) Progress=@(args => OnProgressUploadFile(args)) Style="width: 850px;" />
+                                @*                                 @if (!String.IsNullOrEmpty(uploadFileWarning))
+                        {
+                        <br />
+                        <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">@uploadFileWarning</RadzenText>
+                        } *@
+                            </RadzenCard>
+                            <RadzenCard Style="width: 100%;">
+                                <RadzenButton Text="Загрузить данные из файла" title="Запуск загрузки данных из выбранного файла"
+                                              Icon="west" Disabled="@(String.IsNullOrEmpty(uploadFileWarning))" ButtonStyle="ButtonStyle.Info" Style="margin-top: 10px; width: 850px;" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                              Click=@(() => LoadExcelFile().GetAwaiter()) @onclick:stopPropagation="true"
+                                              IsBusy=@loadExcelFileBusyFlag BusyText="Выполняется ...">
+                                </RadzenButton>
+                            </RadzenCard>
+                            @if (isClickedLoadExcelFile)
+                            {
+                                <RadzenCard Style="width: 100%; height: 420px;">
+                                    <EventConsole @ref=@console />
+                                </RadzenCard>
+                            }
+                        </RadzenStack>
+                    </RadzenRow>
+                </RadzenTabsItem>
+
+                <RadzenTabsItem Text="Результат загрузки">
+                    <RadzenRow Gap="1rem">
+                        <RadzenStack>
+                            <RadzenFieldset Text="Скачать результат обработки файла" Style="font-weight: bold;">
+                                <RadzenStack Gap="1rem">
+                                    <div class="rz-text-align-center">
+                                        <RadzenButton Text="Скачать результат" title="Получить обработанный файл с сообщениями об ошибках или удачной обработке строк Excel-файла"
+                                                      Icon="download" Disabled="@(ResultFileId == Guid.Empty)" ButtonStyle="ButtonStyle.Info" Style="margin-top: 10px; width: 850px;" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                                      Click="@(() => DownloadResultFile())" @onclick:stopPropagation="true">
+                                        </RadzenButton>
+                                    </div>
+                                </RadzenStack>
+                            </RadzenFieldset>
+                        </RadzenStack>
+                    </RadzenRow>
+                </RadzenTabsItem>
+            </Tabs>
+        </RadzenTabs>
+    }
+}
+
+
+@code {
+
+        int selectedTabIndex = 0;
+
+        _Dialogs? _dialogs { get; set; }
+
+    public EventConsole console;
+
+    [Parameter]
+    public string LoadFromExcelReportTemplateTypeNameSettingName { get; set; }
+
+    RadzenUpload upload;
+
+    XLWorkbook? workbook = null;
+
+    Variant variant = Variant.Outlined;
+
+    public string objectName = "";
+
+    public string reportTemplateTypeName = "";
+
+    public string reportDownloadPath = "";
+    public string reportUploadPath = "";
+    public string reportTemplatePath = "";
+    public string reportTempPath = "";
+
+    public string fileDownloadFullPath = "";
+    public string fileUploadFullPath = "";
+    public string fileTemplateFullPath = "";
+    public string fileReportTempFullPath = "";
+
+    public Guid ResultFileId = Guid.Empty;
+
+    string uploadFileWarning = "";
+
+    public ReportTemplateTypeDTO? ActiveReportTemplateTypeDTO { get; set; }
+    public ReportTemplateDTO? ActiveReportTemplateDTO { get; set; }
+    public SettingsDTO? ActiveSettingDTO { get; set; }
+
+    public bool foundActiveReportTemplateFile = false;
+    public bool errorFlag = false;
+    public bool reportTemplateDownloadFileBusyFlag = false;
+    public bool reportTemplateDownloadFileWithDataBusyFlag = false;
+    public bool loadExcelFileBusyFlag = false;
+    public bool isClickedLoadExcelFile = false;
+    public string reportTemplateDownloadFileWithDataBusyText = "Выполняется ...";
+
+    public bool haveChanges = false;
+
+    public bool IsLoading { get; set; }
+    public bool IsAdmin { get; set; }
+
+    private string Title { get; set; } = "Загрузка данных из Excel";
+
+    public delegate Task DelegateHandler();
+
+    DelegateHandler? delegateHandler;
+    public async Task RegisterHandler(DelegateHandler deleg)
+    {
+        delegateHandler = deleg;        
+    }
+
+    public async Task RefreshSate()
+    {
+        await Task.Delay(1);
+        await InvokeAsync(StateHasChanged);        
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            Title = "Загрузка данных из Excel";
+            if (LoadFromExcelReportTemplateTypeNameSettingName.Equals(SD.SapMaterialLoadFromExcelReportTemplateTypeNameSettingName))
+            {
+                Title = "Загрузка данных из Excel в справочник Материалы SAP";
+                objectName = "SapMaterial";
+            }
+            if (LoadFromExcelReportTemplateTypeNameSettingName.Equals(SD.MesMaterialLoadFromExcelReportTemplateTypeNameSettingName))
+            {
+                Title = "Загрузка данных из Excel в справочник Материалы MES";
+                objectName = "MesMaterial";
+            }
+
+            if (LoadFromExcelReportTemplateTypeNameSettingName.Equals(SD.SapEquipmentLoadFromExcelReportTemplateTypeNameSettingName))
+            {
+                Title = "Загрузка данных из Excel в справочник Ресурсов SAP";
+                objectName = "SapEquipment";
+            }
+
+
+            if (LoadFromExcelReportTemplateTypeNameSettingName.Equals(SD.MesParamLoadFromExcelReportTemplateTypeNameSettingName))
+            {
+                Title = "Загрузка данных из Excel в справочник Тэгов СИР";
+                objectName = "MesParam";
+            }
+
+            foundActiveReportTemplateFile = false;
+
+            ActiveSettingDTO = await _settingsRepository.GetByName(SD.ReportUploadPathSettingName);
+            if (ActiveSettingDTO != null)
+                reportUploadPath = ActiveSettingDTO.Value.Trim();
+            else
+                reportUploadPath = "";
+
+            ActiveSettingDTO = await _settingsRepository.GetByName(SD.ReportDownloadPathSettingName);
+            if (ActiveSettingDTO != null)
+                reportDownloadPath = ActiveSettingDTO.Value.Trim();
+            else
+                reportDownloadPath = "";
+
+            ActiveSettingDTO = await _settingsRepository.GetByName(SD.ReportTemplatePathSettingName);
+            if (ActiveSettingDTO != null)
+                reportTemplatePath = ActiveSettingDTO.Value.Trim();
+            else
+                reportTemplatePath = "";
+
+            ActiveSettingDTO = await _settingsRepository.GetByName(SD.TempFilePathSettingName);
+            if (ActiveSettingDTO != null)
+                reportTempPath = ActiveSettingDTO.Value.Trim();
+            else
+                reportTempPath = "";
+
+            fileDownloadFullPath = "";
+            fileUploadFullPath = "";
+            fileTemplateFullPath = "";
+
+            ActiveSettingDTO = await _settingsRepository.GetByName(LoadFromExcelReportTemplateTypeNameSettingName);
+
+            if (ActiveSettingDTO != null)
+                reportTemplateTypeName = ActiveSettingDTO.Value.Trim();
+            else
+                reportTemplateTypeName = "";
+
+            ActiveReportTemplateTypeDTO = await _reportTemplateTypeRepository.GetByName(reportTemplateTypeName);
+
+            if (ActiveReportTemplateTypeDTO != null)
+            {
+                ActiveReportTemplateDTO = await _reportTemplateRepository.GetByReportTemplateTypeId(ActiveReportTemplateTypeDTO.Id);
+            }
+            else
+            {
+                ActiveReportTemplateDTO = null;
+            }
+
+            if (ActiveReportTemplateDTO != null)
+            {
+                fileTemplateFullPath = reportTemplatePath + ActiveReportTemplateDTO.TemplateFileName;
+            }
+
+            if (System.IO.File.Exists(fileTemplateFullPath))
+                foundActiveReportTemplateFile = true;
+
+            IsLoading = false;
+            IsAdmin = true;
+            StateHasChanged();                        
+        }
+    }
+
+    async Task ReportTemplateDownloadFile(Guid id)
+    {
+        reportTemplateDownloadFileBusyFlag = true;        
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            IsAdmin = true;
+            await _jsRuntime.InvokeVoidAsync("open", "/DownloadFileController/DownloadReportTemplateFile/" + id.ToString(), "_blank");
+        }
+        reportTemplateDownloadFileBusyFlag = false;       
+    }
+
+    async Task ReportTemplateDownloadFileWithData(Guid id)
+    {
+        reportTemplateDownloadFileWithDataBusyFlag = true;
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+
+            IsAdmin = true;
+            reportTemplateDownloadFileWithDataBusyText = "Выполняется ... (получение шаблона файла)";
+
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+
+            await RegisterHandler(RefreshSate);
+
+            try
+            {
+                using var workbook = new XLWorkbook(fileTemplateFullPath);
+                {                    
+                    var worksheet = workbook.Worksheet(objectName);
+
+                    string filename = "";
+
+                    switch(objectName)
+                    {
+                        case "SapMaterial" :
+                            {
+                                filename = await _loadFromExcelRepository.MaterialReportTemplateDownloadFileWithData(this, worksheet);
+                                break; 
+                            }
+                        case "MesMaterial":
+                            {
+                                filename = await _loadFromExcelRepository.MaterialReportTemplateDownloadFileWithData(this, worksheet);
+                                break;
+                            }
+                        case "SapEquipment":
+                            {
+                                filename = await _loadFromExcelRepository.SapEquipmentReportTemplateDownloadFileWithData(this, worksheet);
+                                break;
+                            }
+                        case "MesParam":
+                            {
+                                var worksheet2 = workbook.Worksheet("SapMaterial");
+                                await _loadFromExcelRepository.MaterialReportTemplateDownloadFileWithData(this, worksheet2);
+                                var worksheet3 = workbook.Worksheet("SapEquipment");
+                                await _loadFromExcelRepository.SapEquipmentReportTemplateDownloadFileWithData(this, worksheet3);
+                                filename = await _loadFromExcelRepository.MesParamReportTemplateDownloadFileWithData(this, worksheet);
+                                break;
+                            }
+                        default:
+                            {
+                                await _loadFromExcelRepository.SapEquipmentReportTemplateDownloadFileWithData(this, worksheet);
+                                break;
+                            }
+                    }
+
+
+                    string userLogin = await _authorizationRepository.GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
+                    filename = filename + userLogin.Replace("\\", "_") + "_" + DateTime.Now.ToString().Replace(":", "_") + ".xlsx";
+                    fileReportTempFullPath = System.IO.Path.Combine(reportTempPath, filename);
+
+
+                    workbook.SaveAs(fileReportTempFullPath);
+                    if (workbook != null)
+                        workbook.Dispose();
+
+                    await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");
+                }
+            }
+            catch (Exception ex)
+            {
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "При выполнении операции произошла ошибка. Сообщение ошибки: " + ex.Message);
+            }
+            //await _jsRuntime.InvokeVoidAsync("open", "/DownloadFileController/DownloadReportEntityDownloadFile/" + id.ToString(), "_blank");
+        }
+        reportTemplateDownloadFileWithDataBusyFlag = false;
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+    async Task LoadExcelFile()
+    {
+        ResultFileId = Guid.Empty;
+
+        isClickedLoadExcelFile = true;
+
+        haveChanges = false;
+
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+
+        RegisterHandler(RefreshSate);
+
+        try
+        {
+
+            console.Log($"--> Начало процесса");
+            console.Log($"Определение прав пользователя");
+
+            loadExcelFileBusyFlag = true;
+
+            await Task.Delay(1);
+            await InvokeAsync(StateHasChanged);
+
+            if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+            {
+                IsAdmin = true;
+
+                Guid reportEntityId = Guid.NewGuid();
+                console.Log($"Загрузка файла на сервер");
+                try
+                {
+                    upload.Url = @"UploadFileController/UploadReportEntityFile/" + reportEntityId;
+                    await upload.Upload();
+                    await Task.Delay(2000);
+                }
+                catch (Exception ex1)
+                {
+                    console.Log($"! Загрузка файла на сервер завершилась неудачей. Сообщение ошибки: " + ex1.Message, AlertStyle.Danger);
+                    loadExcelFileBusyFlag = false;
+                    await Task.Delay(1);
+                    await InvokeAsync(StateHasChanged);
+                    return;
+                }
+
+                Guid userId = (await _authorizationRepository.GetCurrentUserDTO()).Id;
+
+                ReportEntityDTO reportEntityForCreateDTO = new ReportEntityDTO();
+                reportEntityForCreateDTO.Id = reportEntityId;
+                reportEntityForCreateDTO.ReportTemplateId = ActiveReportTemplateDTO.Id;
+                reportEntityForCreateDTO.ReportTimeStart = DateTime.Now;
+                reportEntityForCreateDTO.ReportTimeEnd = DateTime.Now;
+                reportEntityForCreateDTO.ReportDepartmentId = ActiveReportTemplateDTO.DepartmentId;
+                reportEntityForCreateDTO.DownloadTime = null;
+                reportEntityForCreateDTO.DownloadUserId = userId;
+                reportEntityForCreateDTO.DownloadReportFileName = null;
+                reportEntityForCreateDTO.DownloadSuccessFlag = false;
+                reportEntityForCreateDTO.UploadTime = DateTime.Now;
+                reportEntityForCreateDTO.UploadUserId = userId;
+                reportEntityForCreateDTO.UploadReportFileName = reportEntityId.ToString() + ".xlsx";
+                reportEntityForCreateDTO.UploadSuccessFlag = true;
+
+                ReportEntityDTO createdReportEntityDTO = _reportEntityRepository.Create(reportEntityForCreateDTO).GetAwaiter().GetResult();
+
+                fileUploadFullPath = reportUploadPath + createdReportEntityDTO.UploadReportFileName;
+
+                // if (!System.IO.File.Exists(fileUploadFullPath))
+                // {
+                //     console.Log($"! Не удалось найти файл: " + fileUploadFullPath, AlertStyle.Danger);
+                //     loadExcelFileBusyFlag = false;
+                //     await Task.Delay(1);
+                //     await InvokeAsync(StateHasChanged);
+                //     return;
+                // }
+
+                console.Log($"Загружен : " + fileUploadFullPath);
+                console.Log($"Загрузка файла в память");
+
+                XLWorkbook workbook = null;
+                try
+                {
+                    workbook = new XLWorkbook(fileUploadFullPath);
+                }
+                catch (Exception ex)
+                {
+                    console.Log($"! Не удалось загрузить в память файл: " + fileUploadFullPath + ". Сообщение ошибки: " + ex.Message, AlertStyle.Danger);
+                    loadExcelFileBusyFlag = false;
+                    await Task.Delay(1);
+                    await InvokeAsync(StateHasChanged);
+                    return;
+                }
+
+                if (workbook == null)
+                {
+                    console.Log($"! Не удалось загрузить в память файл: " + fileUploadFullPath, AlertStyle.Danger);
+                    loadExcelFileBusyFlag = false;
+                    if (workbook != null)
+                        workbook.Dispose();
+                    await Task.Delay(1);
+                    await InvokeAsync(StateHasChanged);
+                    return;
+                }
+
+                console.Log($"Файл загружен в память");
+
+                if (!objectName.Equals("MesParam"))
+                {
+                    if(workbook.Worksheets.Count()>1)
+                    {                        
+                        bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Загрузка из Excel", "В загружаемом Excel-файле есть другие листы помимо " + objectName + ". " +
+                        "Возможно вы загружаете файл, выгруженный для другого справочника (например Тэги СИР). Всё равно продолжить загрузку ?", "Продолжить", "Отмена");
+                        if (selectionResult == false)
+                        {
+                            console.Log($"Отмена загрузки пользователем", AlertStyle.Warning);
+                            loadExcelFileBusyFlag = false;
+                            if (workbook != null)
+                                workbook.Dispose();
+                            await Task.Delay(1);
+                            await InvokeAsync(StateHasChanged);
+                            return;                            
+                        }                    
+                    }
+                }
+
+                ResultFileId = createdReportEntityDTO.Id;
+
+                IXLWorksheet worksheet = null;
+                IXLWorksheet worksheetSapEquipment = null;
+                IXLWorksheet worksheetSapMaterial = null;
+                try
+                {
+                    console.Log($"Загрузка листа " + objectName);
+                    worksheet = workbook.Worksheet(objectName);
+                }
+                catch (Exception ex)
+                {
+                    console.Log($"! Не удалось загрузить лист: " + objectName + ". Сообщение ошибки: " + ex.Message, AlertStyle.Danger);
+                    loadExcelFileBusyFlag = false;
+                    if (workbook != null)
+                        workbook.Dispose();
+                    await Task.Delay(1);
+                    await InvokeAsync(StateHasChanged);
+                    return;
+                }
+                if (worksheet == null)
+                {
+                    console.Log($"! Не удалось загрузить лист: " + objectName, AlertStyle.Danger);
+                    loadExcelFileBusyFlag = false;
+                    if (workbook != null)
+                        workbook.Dispose();
+                    await Task.Delay(1);
+                    await InvokeAsync(StateHasChanged);
+                    return;
+                }
+
+                if (objectName.Equals("MesParam"))
+                {
+                    try
+                    {
+                        console.Log($"Загрузка листа SapMaterial");
+                        worksheetSapMaterial = workbook.Worksheet("SapMaterial");
+                    }
+                    catch (Exception ex)
+                    {                        
+                        console.Log($"! Не удалось загрузить лист: SapMaterial. Сообщение ошибки: " + ex.Message, AlertStyle.Warning);
+                        await Task.Delay(1);
+                        await InvokeAsync(StateHasChanged);
+                        worksheetSapMaterial = null;
+                    }
+                    try
+                    {
+                        console.Log($"Загрузка листа SapEquipment");
+                        worksheetSapEquipment = workbook.Worksheet("SapEquipment");
+                    }
+                    catch (Exception ex)
+                    {
+                        console.Log($"! Не удалось загрузить лист: SapEquipment. Сообщение ошибки: " + ex.Message, AlertStyle.Danger);
+                        await Task.Delay(1);
+                        await InvokeAsync(StateHasChanged);
+                        worksheetSapEquipment = null;
+                    }
+                }
+
+                bool haveErrors = false;
+                switch (objectName)
+                {
+                    case "SapMaterial" :
+                        {
+                            haveErrors = await _loadFromExcelRepository.MaterialExcelFileLoad(this, worksheet, _authorizationRepository);
+                            break;
+                        }
+                    case "MesMaterial":
+                        {
+                            haveErrors = await _loadFromExcelRepository.MaterialExcelFileLoad(this, worksheet, _authorizationRepository);
+                            break;
+                        }
+                    case "SapEquipment":
+                        {
+                            haveErrors = await _loadFromExcelRepository.SapEquipmentExcelFileLoad(this, worksheet, _authorizationRepository);
+                            break;
+                        }
+                    case "MesParam":
+                        {
+                            bool haveErrorsSapMaterial = false;
+                            bool haveErrorsSapEquipment = false;
+                            bool haveErrorsMesParam = false;
+                            if (worksheetSapMaterial != null)
+                            {
+                                haveErrorsSapMaterial = await _loadFromExcelRepository.MaterialExcelFileLoad(this, worksheetSapMaterial, _authorizationRepository);
+                            }
+                            if (worksheetSapEquipment != null)
+                            {
+                                haveErrorsSapEquipment = await _loadFromExcelRepository.SapEquipmentExcelFileLoad(this, worksheetSapEquipment, _authorizationRepository);
+                            }
+
+                            haveErrorsMesParam = await _loadFromExcelRepository.MesParamExcelFileLoad(this, worksheet, _authorizationRepository);
+
+                            if (haveErrorsSapMaterial || haveErrorsSapEquipment || haveErrorsMesParam)
+                                haveErrors = true;
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+           
+                console.Log($"Сохранение файла результата");
+
+                workbook.SaveAs(fileUploadFullPath);
+
+                if (workbook != null)
+                    workbook.Dispose();
+
+                if (haveErrors)
+                {
+                    await _jsRuntime.ToastrWarning("Загрузка выполнена. Есть ошибки! (см. лог или файл результата)");
+                }
+                else
+                {
+                    await _jsRuntime.ToastrSuccess("Загрузка выполнена успешно");
+                }
+            }
+            else
+            {
+                console.Log($" : ! Пользователь не обладает правами администратора", AlertStyle.Warning);
+                console.Log($" : ! Процесс загрузки остановлен <--", AlertStyle.Warning);
+            }
+
+            if (workbook != null)
+                workbook.Dispose();
+
+            console.Log($"<-- Окончание процесса");
+
+            console.Log("Скачать результат обработки файла", AlertStyle.Success, "/DownloadFileController/DownloadReportEntityUploadFile/" + ResultFileId.ToString());
+
+        }
+        catch (Exception exAll)
+        {
+            console.Log($"!!! Произошла ошибка! Сообщение ошибки: " + exAll.Message, AlertStyle.Danger);
+        }
+        loadExcelFileBusyFlag = false;
+        await Task.Delay(1);
+        await InvokeAsync(StateHasChanged);
+    }
+
+
+
+    void OnChangeUploadFile(UploadChangeEventArgs args)
+    {
+        //console.Log($"{args.Progress}% '{name}' / {args.Loaded} of {args.Total} bytes.");
+
+        uploadFileWarning = "";
+        isClickedLoadExcelFile = false;
+        if (console != null)
+            console.Clear();
+        if (args.Files.Count() > 0)
+        {
+
+            if (args.Files.ToList()[0].Size > 31457280)
+            {
+                upload.ClearFiles();
+                _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Файл не может быть больше 30 МБ");
+            }
+            else
+            {
+                if (Path.GetExtension(args.Files.ToList()[0].Name).ToUpper() != ".XLSX")
+                {
+                    upload.ClearFiles();
+                    _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Файл должен быть формата xlsx");
+                }
+            }
+            uploadFileWarning = "Для загрузки данных из файла нажмите  \"Загрузить данные из файла\"";
+        }
+    }
+
+
+    void OnProgressUploadFile(UploadProgressArgs args)
+    {
+        var loadedFileName = "";
+        if (args.Progress == 100)
+        {
+            foreach (var file in args.Files)
+            {
+                loadedFileName = file.Name;
+            }
+        }
+    }
+
+
+    async Task OnTabChange(int value)
+    {
+        selectedTabIndex = value;
+
+        switch (selectedTabIndex)
+        {
+            case 0:
+                {
+                    break;
+                }
+
+            case 1:
+                {
+                    break;
+                }
+            case 2:
+                {
+                    break;
+                }
+
+            default:
+                {
+                    break;
+                }
+        }
+        StateHasChanged();
+    }
+
+    async Task DownloadResultFile()
+    {
+        if (ResultFileId != Guid.Empty)
+        {
+            if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+            {                
+                await _jsRuntime.InvokeVoidAsync("open", "/DownloadFileController/DownloadReportEntityUploadFile/" + ResultFileId.ToString(), "_blank");
+            }
+        }
+    }
+}

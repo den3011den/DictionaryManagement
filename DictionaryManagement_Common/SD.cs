@@ -62,6 +62,17 @@ namespace DictionaryManagement_Common
         public static string ReportTagLibrarySheetSettingName = "ReportTagLibrary";
         public static string ReportTemplatePathSettingName = "ReportTemplatePath";
         public static string ExcelWorkBookProtectionPassword = "sirreport";
+        public static string TempFilePathSettingName = "TempFilePath";
+
+        public static string SapMaterialLoadFromExcelReportTemplateTypeNameSettingName = "SapMaterialLoadFromExcelReportTemplateTypeName";
+        public static string MesMaterialLoadFromExcelReportTemplateTypeNameSettingName = "MesMaterialLoadFromExcelReportTemplateTypeName";
+        public static string SapEquipmentLoadFromExcelReportTemplateTypeNameSettingName = "SapEquipmentLoadFromExcelReportTemplateTypeName";
+        public static string MesParamLoadFromExcelReportTemplateTypeNameSettingName = "MesParamLoadFromExcelReportTemplateTypeName";
+        public static string MesMovementsLoadFromExcelReportTemplateTypeNameSettingName = "MesMovementsLoadFromExcelReportTemplateTypeName";
+        public static string MesNdoStocksLoadFromExcelReportTemplateTypeNameSettingName = "MesNdoStocksLoadFromExcelReportTemplateTypeNameSettingName";
+        public static string SapMovementsINLoadFromExcelReportTemplateTypeNameSettingName = "SapMovementsINLoadFromExcelReportTemplateTypeNameSettingName";
+        public static string SapMovementsOUTLoadFromExcelReportTemplateTypeNameSettingName = "SapMovementsOUTLoadFromExcelReportTemplateTypeNameSettingName";
+        public static string SapNdoOUTLoadFromExcelReportTemplateTypeNameSettingName = "SapNdoOUTLoadFromExcelReportTemplateTypeNameSettingName";
 
         public static String RemoveInvalidCharsFromFilename(this String file_name, int? maxFileNameLength = 200)
         {
