@@ -69,7 +69,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public bool? NeedReadFromMes { get; set; }
         public bool? NeedWriteToMes { get; set; }
         public bool? IsNdo { get; set; }
-
+        //[Display(Name = "Это аннотация архива")]
         public bool IsArchive { get; set; }
     }
 

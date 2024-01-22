@@ -11,6 +11,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IReportTemplateRepository _reportTemplateRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -39,75 +40,157 @@
             </RadzenRow>
 
             <RadzenDataGridApp @bind-Settings="@ReportTemplateGridSettings" SettingsName="ReportTemplateGridSettings" @ref="reportTemplateDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@reportTemplateDTOs" TItem="ReportTemplateDTO"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            FilterMode="FilterMode.Simple"
-                            Density=Density.Compact
-                            ShowPagingSummary="true"
-                            EmptyText="Нет записей для отображения"
-                            AllowColumnResize="false"
-                            AllowVirtualization="true"
-                            GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)">
+                               Data="@reportTemplateDTOs" TItem="ReportTemplateDTO"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                               FilterMode="FilterMode.SimpleWithMenu"
+                               Density=Density.Compact
+                               ShowPagingSummary="true"
+                               AllowColumnReorder="true"
+                               AllowColumnResize="true"
+                               AllowColumnPicking="true"
+                               ColumnWidth="200px"
+                               AllowVirtualization="true"
+                               GridLines="DataGridGridLines.Both"
+                               Style=@(iconMenuActive ? "height:calc(100vh - 190px); width:1760px" : "height:calc(100vh - 190px); width:1600px")                               
+                               ShowCleanGridSortsHeaderButton="false"
+                               ShowCleanGridFiltersHeaderButton="false"
+                               ShowCleanGridSettingsHeaderButton="false">
+                <HeaderTemplate>
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить настройки интерфейса страницы" Icon="settings"
+                                  ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanPageSettingsCustom()">
+                    </RadzenButton>
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все фильтры" Icon="filter_alt"
+                                  ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanAllFiltersCustom()">
+                    </RadzenButton>
+
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все сортировки" Icon="swap_vert"
+                                  ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanAllOrdersCustom()">
+                    </RadzenButton>
+                </HeaderTemplate>
                 <Columns>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="ToStringId" Title="Ид шаблона отчёта" Width="110px"
-                                          FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="ToStringId" Title="Ид шаблона отчёта"
+                                     FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
+                        <Template Context="data1">
+                            <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
+                                @data1.ToStringId
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" Width="60px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AddTime" Title="Время добавления" FilterOperator="FilterOperator.Equals">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="AddUserDTOFK.UserName" Title="Добавил" Width="55px">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Добавил" Property="AddUserDTOFK.UserName" Type="typeof(IEnumerable<string>)"
+                                             FilterValue="@selectedAddUsers" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
+                        <FilterTemplate>
+                            <RadzenDropDown @bind-Value=@selectedAddUsers
+                                            Change=OnSelectedAddUsersChange Data="@(distinctAddUsersInList)" AllowClear="true" Multiple="true"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Style="width: 300px; font-size:0.75rem"
+                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
+                        </FilterTemplate>
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 @data1.AddUserDTOFK.UserName
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="ReportTemplateTypeDTOFK.Name" Title="Тип отчёта" Width="60px">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Тип отчёта" Property="ReportTemplateTypeDTOFK.Name" Type="typeof(IEnumerable<string>)"
+                                             FilterValue="@selectedReportTemplates" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
+                        <FilterTemplate>
+                            <RadzenDropDown @bind-Value=@selectedReportTemplates
+                                            Change=OnSelectedReportTemplatesChange Data="@(distinctReportTemplatesInList)" AllowClear="true" Multiple="true"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Style="width: 300px; font-size:0.75rem"
+                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
+                        </FilterTemplate>
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 @data1.ReportTemplateTypeDTOFK.Name
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="MesDepartmentDTOFK.ShortName" Title="Производство" Width="100px" FilterProperty="MesDepartmentDTOFK.ShortName" SortProperty="MesDepartmentDTOFK.ShortName">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Производство" Property="MesDepartmentDTOFK.ToStringHierarchyShortName" Type="typeof(IEnumerable<string>)"
+                                             FilterProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" SortProperty="MesDepartmentDTOFK.ToStringHierarchyShortName" FilterValue="@selectedMesDepartments"
+                                             FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
+                        <FilterTemplate>
+                            <RadzenDropDown @bind-Value=@selectedMesDepartments
+                                            Change=OnSelectedMesDepartmentsChange Data="@(distinctMesDepartmentsInList)" AllowClear="true" Multiple="true"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true" Style="width: 500px; font-size:0.75rem"
+                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
+                        </FilterTemplate>
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 <strong>
-                                    @data1.MesDepartmentDTOFK.ShortName
+                                    @data1.MesDepartmentDTOFK.ToStringHierarchyShortName
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="DestDataTypeDTOFK.Name" Title="Тип вых данных" Width="60px">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Title="Тип выходных данных" Property="DestDataTypeDTOFK.Name" Type="typeof(IEnumerable<string>)"
+                                             FilterValue="@selectedDestDataTypes" FilterOperator="FilterOperator.Contains" LogicalFilterOperator="LogicalFilterOperator.Or">
+
+                        <FilterTemplate>
+                            <RadzenDropDown @bind-Value=@selectedDestDataTypes
+                                            Change=OnSelectedDestDataTypesChange Data="@(distinctDestDataTypesInList)" AllowClear="true" Multiple="true" Style="width: 300px"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true"
+                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
+                        </FilterTemplate>
+
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 @data1.DestDataTypeDTOFK.Name
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="TemplateFileName" Title="Имя файла" Width="90px">
-                        <Template Context="data1">
-                            <div style="white-space:pre-wrap">
-                                @data1.TemplateFileName
-                            </div>
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="NeedAutoCalc" Title="Авторасчёт" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.NeedAutoCalc ReadOnly="true" TriState="false" TValue="bool?" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AutoCalcOrder" Title="Порядок авторасчёта" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data1">
+                            @if (data1.NeedAutoCalc == true)
+                            {
+                                <div style="white-space:pre-wrap; font-weight:700">
+                                    @data1.AutoCalcOrder.ToString()                                
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="white-space:pre-wrap; color: #E3E8EB;">
+                                    @data1.AutoCalcOrder.ToString()
+                                </div>
+                            }
+                        </Template>
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="AutoCalcNumber" Title="Кол-во прогонов авторасчёта" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data1">
+                            @if (data1.NeedAutoCalc == true)
+                            {
+                                <div style="white-space:pre-wrap; font-weight:700">
+                                    @data1.AutoCalcNumber.ToString()
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="white-space:pre-wrap; color: #E3E8EB;">
+                                    @data1.AutoCalcNumber.ToString()
+                                </div>
+                            }
+                        </Template>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="25px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="ReportTemplateDTO" Property="IsArchive" Title="Арх" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="65px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="ReportTemplateDTO" Context="reportTemplateDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="130px" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
                         <Template Context="reportTemplateDTO">
                             <RadzenButton title="Скачать файл шаблона" Icon="download" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => DownloadTemplate(reportTemplateDTO.Id))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -124,7 +207,8 @@
                                 </RadzenButton>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
+
                 </Columns>
             </RadzenDataGridApp>
             @*   </div>*@
@@ -144,14 +228,31 @@
 
     </div>
 }
+<style>
+    .rz-dropdown-item, .rz-menuitem, .rz-autocomplete-list-item, .rz-multiselect-item, .rz-dropdown-items li, .rz-autocomplete-items li, .rz-multiselect-items li {
+        font-size: 0.75rem;
+    }
+</style>
 
 @code {
 
+    [CascadingParameter]
+    bool iconMenuActive { get; set; }
     _Dialogs? _dialogs { get; set; }
 
     IEnumerable<ReportTemplateDTO>? reportTemplateDTOs;
 
     RadzenDataGrid<ReportTemplateDTO> reportTemplateDTOGrid;
+
+    IEnumerable<string> selectedReportTemplates;
+    IEnumerable<string> selectedDestDataTypes;
+    IEnumerable<string> selectedMesDepartments;
+    IEnumerable<string> selectedAddUsers;
+
+    List<string> distinctReportTemplatesInList = new List<string>();
+    List<string> distinctDestDataTypesInList = new List<string>();
+    List<string> distinctMesDepartmentsInList = new List<string>();
+    List<string> distinctAddUsersInList = new List<string>();
 
     public bool IsLoading { get; set; }
     public bool IsAdmin { get; set; }
@@ -172,9 +273,10 @@
                 IsAdmin = true;
 
                 IsLoading = true;
-                await LoadStateAsync();
-                StateHasChanged();
                 reportTemplateDTOs = await _reportTemplateRepository.GetAll(SD.SelectDictionaryScope.All);
+                await GetDistincts();
+                await LoadStateAsync();
+
                 IsLoading = false;
                 StateHasChanged();
             }
@@ -206,18 +308,46 @@
     {
         await Task.CompletedTask;
 
-        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "ReportTemplateGridSettings");
+        if (!(await SD.CheckPageSettingsVersion("ReportTemplateGridSettings", _jsRuntime)))
+            return;
+
+        var result = (await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "ReportTemplateGridSettings"));
         if (!string.IsNullOrEmpty(result))
         {
+
             _reportTemplateGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+            if (_reportTemplateGridSettings != null)
+            {
+                var col_var = _reportTemplateGridSettings.Columns.Where(c => c.Property == "ReportTemplateTypeDTOFK.Name").FirstOrDefault();
+                if (col_var.FilterValue != null)
+                {
+                    selectedReportTemplates = JsonSerializer.Deserialize<List<string>>(col_var.FilterValue.ToString());
+                }
+                var col_var2 = _reportTemplateGridSettings.Columns.Where(c => c.Property == "DestDataTypeDTOFK.Name").FirstOrDefault();
+                if (col_var2.FilterValue != null)
+                {
+                    selectedDestDataTypes = JsonSerializer.Deserialize<List<string>>(col_var2.FilterValue.ToString());
+                }
+                var col_var3 = _reportTemplateGridSettings.Columns.Where(c => c.Property == "MesDepartmentDTOFK.ToStringHierarchyShortName").FirstOrDefault();
+                if (col_var3.FilterValue != null)
+                {
+                    selectedMesDepartments = JsonSerializer.Deserialize<List<string>>(col_var3.FilterValue.ToString());
+                }
+                var col_var4 = _reportTemplateGridSettings.Columns.Where(c => c.Property == "AddUserDTOFK.UserName").FirstOrDefault();
+                if (col_var4.FilterValue != null)
+                {
+                    selectedAddUsers = JsonSerializer.Deserialize<List<string>>(col_var4.FilterValue.ToString());
+                }
+            }
         }
     }
 
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
-        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('ReportTemplateGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(ReportTemplateGridSettings)}')");
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('ReportTemplateGridSettings',
+            '{JsonSerializer.Serialize<DataGridSettings>(ReportTemplateGridSettings)}')");
+        await SD.SetPageSettingsVersion("ReportTemplateGridSettings", _jsRuntime);
     }
 
     async Task DownloadTemplate(Guid id)
@@ -240,12 +370,12 @@
             if (reportTemplateDTO == null)
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Добавить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", Guid.Empty } }, new DialogOptions() { Width = $"{800}px" });
+                dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Добавить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", Guid.Empty } }, new DialogOptions() { Width = $"{1450}px", Left = $"{150}px"});
             }
             else
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Изменить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", reportTemplateDTO.Id } }, new DialogOptions() { Width = $"{800}px" });
+                dialogResult = await _dialogService.OpenAsync<AddEditReportTemplate>("Изменить шаблон отчёта", new Dictionary<string, object>() { { "ReportTemplateId", reportTemplateDTO.Id } }, new DialogOptions() { Width = $"{1450}px", Left = $"{150}px"});
             }
 
 
@@ -255,6 +385,7 @@
                 await LoadStateAsync();
                 StateHasChanged();
                 reportTemplateDTOs = await _reportTemplateRepository.GetAll(SD.SelectDictionaryScope.All);
+                await GetDistincts();
                 IsLoading = false;
                 StateHasChanged();
             }
@@ -291,17 +422,20 @@
                 }
             }
 
+            ReportTemplateDTO oldReportTemplateDTO = await _reportTemplateRepository.GetById(reportTemplateDTO.Id);
 
             if (reportTemplateDTO.IsArchive)
             {
                 await _reportTemplateRepository.Delete(reportTemplateDTO.Id, SD.UpdateMode.RestoreFromArchive);
                 reportTemplateDTO.IsArchive = false;
+                await _logEventRepository.ToLog<ReportTemplateDTO>(oldReportTemplateDTO, reportTemplateDTO, "Восстановление из архива шаблона отчёта", "Шаблон отчёта: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + reportTemplateDTO.Description + "\" восстановлен из архива");
             }
             else
             {
                 await _reportTemplateRepository.Delete(reportTemplateDTO.Id, SD.UpdateMode.MoveToArchive);
                 reportTemplateDTO.IsArchive = true;
+                await _logEventRepository.ToLog<ReportTemplateDTO>(oldReportTemplateDTO, reportTemplateDTO, "Удаление в архив шаблона отчёта", "Шаблон отчёта: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + reportTemplateDTO.Description + "\" удалён в архив");
             }
             await reportTemplateDTOGrid.UpdateRow(reportTemplateDTO);
@@ -323,5 +457,143 @@
         excelExportFlag = false;
         await Task.Delay(200);
         await InvokeAsync(StateHasChanged);
+    }
+
+
+    void OnSelectedReportTemplatesChange(object value)
+    {
+        if (selectedReportTemplates != null && !selectedReportTemplates.Any())
+        {
+            selectedReportTemplates = null;
+        }
+    }
+
+    void OnSelectedDestDataTypesChange(object value)
+    {
+        if (selectedDestDataTypes != null && !selectedDestDataTypes.Any())
+        {
+            selectedDestDataTypes = null;
+        }
+    }
+
+    void OnSelectedMesDepartmentsChange(object value)
+    {
+        if (selectedMesDepartments != null && !selectedMesDepartments.Any())
+        {
+            selectedMesDepartments = null;
+        }
+    }
+
+    void OnSelectedAddUsersChange(object value)
+    {
+        if (selectedAddUsers != null && !selectedAddUsers.Any())
+        {
+            selectedAddUsers = null;
+        }
+    }
+
+
+    private async Task CleanPageSettingsCustom()
+    {
+        await Task.CompletedTask;
+        var selectionResult = await _dialogService.Confirm("Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Сбросить настройки интерфейса страницы",
+            new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
+
+        if (selectionResult != true)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.removeItem", "ReportTemplateGridSettings");
+
+        ReportTemplateGridSettings = null;
+
+        selectedReportTemplates = null;
+        selectedDestDataTypes = null;
+        selectedMesDepartments = null;
+        selectedAddUsers = null;
+
+        if (reportTemplateDTOs != null)
+        {
+            await GetDistincts();
+        }
+
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    async Task CleanAllFiltersCustom()
+    {
+        var selectionResult = await _dialogService.Confirm("Будут очищены все фильтры", "Очистить фильтры",
+            new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
+
+        if (selectionResult != true)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        if (ReportTemplateGridSettings != null)
+        {
+            foreach (var c in ReportTemplateGridSettings.Columns)
+            {
+                c.FilterValue = null;
+                c.SecondFilterValue = null;
+            }
+
+        }
+
+        selectedReportTemplates = null;
+        selectedDestDataTypes = null;
+        selectedMesDepartments = null;
+        selectedAddUsers = null;
+
+        if (reportTemplateDTOs != null)
+        {
+        }
+
+        await InvokeAsync(SaveStateAsync);
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    async Task CleanAllOrdersCustom()
+    {
+
+        var selectionResult = await _dialogService.Confirm("Будут очищены все сортировки", "Очистить сортировки",
+            new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
+
+        if (selectionResult != true)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        if (ReportTemplateGridSettings != null)
+        {
+            foreach (var c in ReportTemplateGridSettings.Columns)
+            {
+                c.SortOrder = null;
+            }
+            await InvokeAsync(SaveStateAsync);
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    async Task GetDistincts()
+    {
+        distinctReportTemplatesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.ReportTemplateTypeDTOFK.Name)
+    .Select(u => u.ReportTemplateTypeDTOFK.Name).Distinct().ToList();
+        distinctDestDataTypesInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.DestDataTypeDTOFK.Name)
+            .Select(u => u.DestDataTypeDTOFK.Name).Distinct().ToList();
+        distinctMesDepartmentsInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName)
+            .Select(u => u.MesDepartmentDTOFK.ToStringHierarchyShortName).Distinct().ToList();
+        distinctAddUsersInList = (List<string>)reportTemplateDTOs.OrderBy(u => u.AddUserDTOFK.UserName)
+            .Select(u => u.AddUserDTOFK.UserName).Distinct().ToList();
+
     }
 }

@@ -10,6 +10,7 @@
 @inject IJSRuntime _jsRuntime
 @inject ISchedulerRepository _schedulerRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -33,37 +34,36 @@
             </RadzenRow>
 
             <RadzenDataGridApp @bind-Settings="@SchedulerGridSettings" SettingsName="SchedulerGridSettings" @ref="schedulerDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
-                            Data="@schedulerDTOs" TItem="SchedulerDTO"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            FilterMode="FilterMode.Simple"
-                            Density=Density.Compact
-                            ShowPagingSummary="true"
-                            EmptyText="Нет записей для отображения"
-                            AllowVirtualization="true"
-                            AllowColumnResize="false"
-                            GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)">                
+                               Data="@schedulerDTOs" TItem="SchedulerDTO"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                               FilterMode="FilterMode.SimpleWithMenu"
+                               Density=Density.Compact
+                               ShowPagingSummary="true"
+                               AllowVirtualization="true"
+                               AllowColumnResize="false"
+                               GridLines="DataGridGridLines.Both"
+                               Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="SchedulerDTO" Property="Id" Title="Ид записи" Width="70px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SchedulerDTO" Property="Id" Title="Ид записи" Width="70px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SchedulerDTO" Property="ModuleName" Title="Наименование модуля" Width="100px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SchedulerDTO" Property="ModuleName" Title="Наименование модуля" Width="100px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SchedulerDTO" Property="StartTime" Title="Время начала" Width="60px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SchedulerDTO" Property="StartTime" Title="Время начала" Width="60px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SchedulerDTO" Property="LastExecuted" Title="Время последнего выполнения" Width="120px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SchedulerDTO" Property="LastExecuted" Title="Время последнего выполнения" Width="120px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="SchedulerDTO" Context="SchedulerDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="55px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="SchedulerDTO" Context="SchedulerDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="55px">
                         <Template Context="schedulerDTO">
                             <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(schedulerDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                             <RadzenButton title="Удалить" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(schedulerDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
 
@@ -142,6 +142,9 @@
     {
         await Task.CompletedTask;
 
+        if (!(await SD.CheckPageSettingsVersion("SchedulerGridSettings", _jsRuntime)))
+            return;
+
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SchedulerGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -154,6 +157,7 @@
         await Task.CompletedTask;
 
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SchedulerGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SchedulerGridSettings)}')");
+        await SD.SetPageSettingsVersion("SchedulerGridSettings", _jsRuntime);
     }
 
 
@@ -206,8 +210,10 @@
                     return;
                 }
             }
+            Guid addedUserId = (await _authorizationRepository.GetCurrentUserDTO()).Id;
+            await _logEventRepository.AddRecord("Удаление расписания", addedUserId, "", "", false, "Расписание: " + schedulerDTO.ToString());
 
-            await _schedulerRepository.Delete(schedulerDTO.Id); 
+            await _schedulerRepository.Delete(schedulerDTO.Id);
             schedulerDTOs = await _schedulerRepository.GetAll();
             schedulerDTOGrid.Reload();
 

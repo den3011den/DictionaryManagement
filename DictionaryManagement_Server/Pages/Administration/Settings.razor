@@ -11,6 +11,7 @@
 @inject IJSRuntime _jsRuntime
 @inject ISettingsRepository _settingsRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @if (IsAdmin == true)
 {
@@ -32,23 +33,23 @@
             <RadzenDataGridApp @bind-Settings="@SettingsGridSettings" SettingsName="SettingsGridSettings" @ref="settingsDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@settingsDTOs" TItem="SettingsDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Simple"
+                            FilterMode="FilterMode.SimpleWithMenu"
+                            Density=Density.Compact
                             AllowColumnResize="false"
                             AllowVirtualization="true"
                             GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)">
+                            Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="SettingsDTO" Property="Id" Title="Ид записи" Width="90px" />
-                    <RadzenDataGridColumn TItem="SettingsDTO" Property="Name" Title="Наименование" Width="280px">
+                    <RadzenDataGridColumnApp TItem="SettingsDTO" Property="Id" Title="Ид записи" Width="90px" />
+                    <RadzenDataGridColumnApp TItem="SettingsDTO" Property="Name" Title="Наименование" Width="200px">
                         <EditTemplate Context="settingsDTO">
                             <RadzenTextBox @bind-Value="settingsDTO.Name" Style="width:100%; display: block" Name="Name"/>
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=100 Text="Наименование не может быть больше 100 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SettingsDTO" Property="Description" Title="Описание">
+                    <RadzenDataGridColumnApp TItem="SettingsDTO" Property="Description" Title="Описание" Width="200px">
                         <Template Context="settingsDTO">
                             <div style="white-space:pre-wrap">
                                 @settingsDTO.Description
@@ -58,9 +59,9 @@
                             <RadzenTextBox @bind-Value="settingsDTO.Description" Style="width:100%; display: block" Name="Description" />
                             <RadzenLengthValidator Max=300 Text="Описание не может быть больше 300 символов" Component="Description" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SettingsDTO" Property="Value" Title="Значение настройки" Width="280px">
+                    <RadzenDataGridColumnApp TItem="SettingsDTO" Property="Value" Title="Значение настройки" Width="220px">
                         <Template Context="settingsDTO">
                             <div style="white-space:pre-wrap">
                                 @settingsDTO.Value
@@ -69,13 +70,13 @@
                         <EditTemplate Context="settingsDTO">
                             <RadzenTextBox @bind-Value="settingsDTO.Value" Style="width:100%; display: block" Name="Value" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="SettingsDTO" Context="SettingsDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="SettingsDTO" Context="SettingsDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="SettingsDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(SettingsDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
-                            <RadzenButton Tooltip="Восстановить из архива" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SettingsDTO))" @onclick:stopPropagation="true">
+                            <RadzenButton Tooltip="Удалить" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SettingsDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                         </Template>
                         <EditTemplate Context="SettingsDTO">
@@ -86,7 +87,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SettingsDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
                 </Columns>
             </RadzenDataGridApp>
@@ -153,6 +154,9 @@
     {
         await Task.CompletedTask;
 
+        if (!(await SD.CheckPageSettingsVersion("SettingsGridSettings", _jsRuntime)))
+            return;
+
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SettingsGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -165,6 +169,7 @@
         await Task.CompletedTask;
 
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SettingsGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SettingsGridSettings)}')");
+        await SD.SetPageSettingsVersion("SettingsGridSettings", _jsRuntime);
     }
 
 
@@ -233,7 +238,9 @@
                     return;
                 }
             }
-            await _settingsRepository.Update(settingsDTO);
+            SettingsDTO oldSettingsDTO = await _settingsRepository.Get(settingsDTO.Id);
+            SettingsDTO newSettingsDTO = await _settingsRepository.Update(settingsDTO);
+            await _logEventRepository.ToLog<SettingsDTO>(oldObject: oldSettingsDTO, newObject: newSettingsDTO, "Изменение настройки", "Настройка: ", _authorizationRepository);
         }
     }
 
@@ -294,6 +301,9 @@
 
             if (settingsDTOs.Contains(settingsDTO))
             {
+                Guid addedUserId = (await _authorizationRepository.GetCurrentUserDTO()).Id;
+                await _logEventRepository.AddRecord("Удаление настройки", addedUserId, "", "", false, "Удаление настройки: " + settingsDTO.ToString());
+
                 await _settingsRepository.Delete(settingsDTO.Id);
 
                 settingsDTOs = settingsDTOs.Where(u => u.Id != settingsDTO.Id);
@@ -340,6 +350,7 @@
             }
 
             var newDTO = await _settingsRepository.Create(settingsDTO);
+            await _logEventRepository.ToLog<SettingsDTO>(oldObject: null, newObject: newDTO, "Добавление настройки", "Настройка: ", _authorizationRepository);
             await OnAfterRenderAsync(true);
 
         }

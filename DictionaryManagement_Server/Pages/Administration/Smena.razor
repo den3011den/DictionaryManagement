@@ -10,6 +10,7 @@
 @inject IJSRuntime _jsRuntime
 @inject ISmenaRepository _smenaRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -34,45 +35,44 @@
             <RadzenDataGridApp @bind-Settings="@SmenaGridSettings" SettingsName="SmenaGridSettings" @ref="smenaDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             Data="@smenaDTOs" TItem="SmenaDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            FilterMode="FilterMode.Simple"
+                            FilterMode="FilterMode.SimpleWithMenu"
                             Density=Density.Compact
-                            ShowPagingSummary="true"
-                            EmptyText="Нет записей для отображения"
+                            ShowPagingSummary="true"                            
                             AllowVirtualization="true"
                             AllowColumnResize="false"
                             GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)">                
+                            Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="SmenaDTO" Property="Id" Title="Ид записи" Width="70px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SmenaDTO" Property="Id" Title="Ид записи" Width="70px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SmenaDTO" Property="Name" Title="Наименование" Width="100px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SmenaDTO" Property="Name" Title="Наименование" Width="100px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SmenaDTO" Property="DepartmentDTOFK.ShortName" Title="Производство" Width="100px" FilterProperty="DepartmentDTOFK.ShortName" SortProperty="DepartmentDTOFK.ShortName">
+                    <RadzenDataGridColumnApp TItem="SmenaDTO" Property="DepartmentDTOFK.ToStringHierarchyShortName" Title="Производство" Width="100px" FilterProperty="DepartmentDTOFK.ToStringHierarchyShortName" SortProperty="DepartmentDTOFK.ToStringHierarchyShortName">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap">
                                 <strong>
-                                    @data1.DepartmentDTOFK.ShortName
+                                    @data1.DepartmentDTOFK.ToStringHierarchyShortName
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SmenaDTO" Property="StartTime" Title="Время начала" Width="60px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SmenaDTO" Property="StartTime" Title="Время начала" Width="60px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SmenaDTO" Property="HoursDuration" Title="Продолжительность (в часах)" Width="60px">
-                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumnApp TItem="SmenaDTO" Property="HoursDuration" Title="Продолжительность (в часах)" Width="60px">
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="SmenaDTO" Context="smenaDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="55px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="SmenaDTO" Context="smenaDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="55px">
                         <Template Context="smenaDTO">
                             <RadzenButton title="Редактировать" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(smenaDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                             <RadzenButton title="Удалить" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(smenaDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
             @*   </div>*@
@@ -152,6 +152,8 @@
     {
         await Task.CompletedTask;
 
+        if (!(await SD.CheckPageSettingsVersion("SmenaGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SmenaGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -164,6 +166,7 @@
         await Task.CompletedTask;
 
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SmenaGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SmenaGridSettings)}')");
+        await SD.SetPageSettingsVersion("SmenaGridSettings", _jsRuntime);
     }
 
 
@@ -178,12 +181,12 @@
             if (smenaDTO == null)
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditSmena>("Добавить смену", new Dictionary<string, object>() { { "SmenaId", 0 } }, new DialogOptions() { Width = $"{500}px" });
+                dialogResult = await _dialogService.OpenAsync<AddEditSmena>("Добавить смену", new Dictionary<string, object>() { { "SmenaId", 0 } }, new DialogOptions() { Width = $"{900}px", Left = $"{400}px" });
             }
             else
             {
                 IsLoading = false;
-                dialogResult = await _dialogService.OpenAsync<AddEditSmena>("Изменить смену", new Dictionary<string, object>() { { "SmenaId", smenaDTO.Id } }, new DialogOptions() { Width = $"{500}px" });
+                dialogResult = await _dialogService.OpenAsync<AddEditSmena>("Изменить смену", new Dictionary<string, object>() { { "SmenaId", smenaDTO.Id } }, new DialogOptions() { Width = $"{900}px", Left = $"{400}px" });
             }
 
 
@@ -217,6 +220,8 @@
             }
 
             await _smenaRepository.Delete(smenaDTO.Id);
+            Guid addedUserId = (await _authorizationRepository.GetCurrentUserDTO()).Id;            
+            await _logEventRepository.AddRecord("Удаление смены", addedUserId, "", "", false, "Удаление смены: " + smenaDTO.ToString());
             smenaDTOs = await _smenaRepository.GetAll();
             smenaDTOGrid.Reload();
 

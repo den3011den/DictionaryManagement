@@ -12,6 +12,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IMesDepartmentRepository _mesDepartmentRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -36,52 +37,51 @@
 
         @if (IsLoading != true)
         {
-            <RadzenRow AlignItems="AlignItems.Start">           
+            <RadzenRow AlignItems="AlignItems.Start">
                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" class="mt-2 mb-4" Text="Добавить новое производство" Click="@(args => EditRow(null))" />
                 <RadzenButton class="mt-2 mb-4" title="Простой экспорт в Excel ВСЕХ производств" Text="Экспорт в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
                 <RadzenButton class="mt-2 mb-4" title="@(IsExpandModeOn ? "Свернуть всю иерархию производств" : "Развернуть всю иерархию производств")" Text="@(IsExpandModeOn ? "Свернуть" : "Развернуть")"
-                        Icon="@(IsExpandModeOn ? "unfold_less" : "unfold_more")" Click="@(args => ToggleRowsExpand(!IsExpandModeOn))"
-                        IsBusy=@ExpandInProgressFlag BusyText="Выполняется ..."/>
+                              Icon="@(IsExpandModeOn ? "unfold_less" : "unfold_more")" Click="@(args => ToggleRowsExpand(!IsExpandModeOn))"
+                              IsBusy=@ExpandInProgressFlag BusyText="Выполняется ..." />
                 <div class="mt-2 mb-4 col-6" style="white-space:pre-wrap; font-size: 10px; color:powderblue">
                     <RadzenLabel Text="* фильтр работает только по записям, которые развёрнуты в отображаемом списке" />
                 </div>
             </RadzenRow>
             <RadzenDataGridApp @bind-Settings="@MesDepartmentGridSettings" SettingsName="MesDepartmentGridSettings" @ref="mesDepartmentDTOGrid" ExpandMode="DataGridExpandMode.Multiple"
-                            Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
-                            AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Simple"
-                            Density="Density.Compact"
-                            AllowColumnResize="false"
-                            GridLines="DataGridGridLines.Both"                           
-                            Style="height:calc(100vh - 170px)">
+                               Data="@mesDepartmentDTOs" TItem="MesDepartmentDTO" RowRender="@RowRender" LoadChildData="@LoadChildData"
+                               AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                               EmptyText="Нет записей для отображения"
+                               FilterMode="FilterMode.SimpleWithMenu"
+                               Density="Density.Compact"
+                               AllowColumnResize="false"
+                               GridLines="DataGridGridLines.Both"
+                               Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="Name" Title="Наименование" Frozen="true" Width="200px"
-                                          FilterOperator="FilterOperator.Contains" SortProperty="Name" FilterProperty="Name"
-                                           >
+                    <RadzenDataGridColumnApp TItem="MesDepartmentDTO" Property="Name" Title="Наименование" Frozen="true" Width="200px"
+                                             FilterOperator="FilterOperator.Contains" SortProperty="Name" FilterProperty="Name">
                         <Template Context="data">
                             <div style="white-space:pre-wrap">
                                 <strong>@data.Name</strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ToStringId" Title="ИД" Width="60px" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId" FilterProperty="ToStringId" />
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ToStringMesCode" Title="Код" Width="100px" FilterOperator="FilterOperator.Contains" SortProperty="ToStringMesCode" FilterProperty="ToStringMesCode" />
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="ShortName" Title="Сокр. наименование" FilterOperator="FilterOperator.Contains" Width="200px">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp TItem="MesDepartmentDTO" Property="ToStringId" Title="ИД" Width="60px" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId" FilterProperty="ToStringId" />
+                    <RadzenDataGridColumnApp TItem="MesDepartmentDTO" Property="ToStringMesCode" Title="Код" Width="100px" FilterOperator="FilterOperator.Contains" SortProperty="ToStringMesCode" FilterProperty="ToStringMesCode" />
+                    <RadzenDataGridColumnApp TItem="MesDepartmentDTO" Property="ShortName" Title="Сокр. наименование" FilterOperator="FilterOperator.Contains" Width="200px">
                         <Template Context="data">
                             <div style="white-space:pre-wrap">
                                 @data.ShortName
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="MesDepartmentDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="30px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="MesDepartmentDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="30px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value="data.IsArchive" ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn Title="Действия" TItem="MesDepartmentDTO" Context="mesDepartmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="70px">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp Title="Действия" TItem="MesDepartmentDTO" Context="mesDepartmentDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="70px">
                         <Template Context="mesDepartmentDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesDepartmentDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -97,7 +97,7 @@
                             }
 
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
 
@@ -159,9 +159,9 @@
                 IsLoading = true;
                 await LoadStateAsync();
                 StateHasChanged();
-                mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();                                
-                IsLoading = false;                
-                StateHasChanged();                
+                mesDepartmentDTOs = await _mesDepartmentRepository.GetAllTopLevel();
+                IsLoading = false;
+                StateHasChanged();
                 await ToggleRowsExpand(!IsExpandModeOn);
             }
         }
@@ -190,6 +190,9 @@
     {
         await Task.CompletedTask;
 
+        if (!(await SD.CheckPageSettingsVersion("MesDepartmentGridSettings", _jsRuntime)))
+            return;
+
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "MesDepartmentGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -201,7 +204,8 @@
     {
         await Task.CompletedTask;
 
-        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesDepartmentGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesDepartmentGridSettings)}')");        
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesDepartmentGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesDepartmentGridSettings)}')");
+        await SD.SetPageSettingsVersion("MesDepartmentGridSettings", _jsRuntime);
     }
 
 
@@ -224,11 +228,13 @@
             if (mesDepartmentDTO == null)
             {
 
-                dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Создать производство", new Dictionary<string, object>() { { "MesDepartmentId", 0 } });
+                dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Создать производство", new Dictionary<string, object>() { { "MesDepartmentId", 0 } }
+                    , new DialogOptions() { Width = $"{1100}px", Left = $"{300}px" });
             }
             else
             {
-                dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Изменить производство", new Dictionary<string, object>() { { "MesDepartmentId", mesDepartmentDTO.Id } });
+                dialogResult = await _dialogService.OpenAsync<AddEditMesDepartment>("Изменить производство", new Dictionary<string, object>() { { "MesDepartmentId", mesDepartmentDTO.Id } },
+                new DialogOptions() { Width = $"{1100}px", Left = $"{300}px" });
             }
 
 
@@ -251,7 +257,7 @@
         if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
         {
             if (_dialogs != null)
-            {
+            {                
                 if (mesDepartmentDTO.IsArchive != true)
                 {
                     bool selectionResult = await _dialogs.ShowYesOrNoDialogBox("Удаление производства", "Удалить производство \"" + mesDepartmentDTO.ShortName + "\" в архив ?", "Удалить", "Отмена");
@@ -276,17 +282,20 @@
 
             //if (mesDepartmentDTOs.Contains(mesDepartmentDTO))
             //{
+            MesDepartmentDTO oldMesDepartmentDTO = await _mesDepartmentRepository.GetById(mesDepartmentDTO.Id);
             if (mesDepartmentDTO.IsArchive)
             {
                 await _mesDepartmentRepository.Delete(mesDepartmentDTO.Id, SD.UpdateMode.RestoreFromArchive);
                 mesDepartmentDTO.IsArchive = false;
+                await _logEventRepository.ToLog<MesDepartmentDTO>(oldMesDepartmentDTO, mesDepartmentDTO, "Восстановление из архива производства", "Производство: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" восстановлено из архива");
             }
             else
             {
                 await _mesDepartmentRepository.Delete(mesDepartmentDTO.Id, SD.UpdateMode.MoveToArchive);
                 mesDepartmentDTO.IsArchive = true;
-                await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" удалёно в архив");
+                await _logEventRepository.ToLog<MesDepartmentDTO>(oldMesDepartmentDTO, mesDepartmentDTO, "Удаление в архив производства", "Производство: ", _authorizationRepository);
+                await _jsRuntime.ToastrSuccess("Производство \"" + mesDepartmentDTO.Name + "\" удалено в архив");
             }
             await mesDepartmentDTOGrid.UpdateRow(mesDepartmentDTO);
             //}
@@ -335,7 +344,7 @@
             int maxLevel = 1;
             Tuple<IEnumerable<MesDepartmentVMDTO>, int> tmp = await _mesDepartmentRepository.GetAllDepartmentWithChildren(null, 1, maxLevel, null);
             IEnumerable<MesDepartmentVMDTO> mesDepartmentVMDTOList = tmp.Item1;
-            maxLevel = tmp.Item2;            
+            maxLevel = tmp.Item2;
 
             await _simpleExcelExportRepository.GenerateExcelMesDepartments(filename, mesDepartmentVMDTOList, maxLevel);
             await _jsRuntime.InvokeVoidAsync("open", "DownloadFileController/SimpleExcelExport/" + filename, "_blank");

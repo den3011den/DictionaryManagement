@@ -12,7 +12,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IDataTypeRepository _dataTypeRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
-
+@inject ILogEventRepository _logEventRepository
 
 @if (IsAdmin == true)
 {
@@ -34,30 +34,29 @@
                                @bind-Settings="@DataTypeGridSettings" SettingsName="DataTypeGridSettings"
                                Data="@dataTypeDTOs" TItem="DataTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                               EmptyText="Нет записей для отображения"
-                               FilterMode="FilterMode.Simple"
+                               FilterMode="FilterMode.SimpleWithMenu"
                                AllowColumnResize="false"
                                AllowVirtualization="true"
                                GridLines="DataGridGridLines.Both"
-                               Style="height:calc(100vh - 170px)">
+                               Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Name" Title="Наименование" Width="200px">
+                    <RadzenDataGridColumnApp TItem="DataTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumnApp TItem="DataTypeDTO" Property="Name" Title="Наименование" Width="200px">
                         <EditTemplate Context="dataTypeDTO">
                             <RadzenTextBox @bind-Value="dataTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="Priority" Title="Приоритет передачи в SAP (чем больше число - тем выше приоритет)" Width="150px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="DataTypeDTO" Property="Priority" Title="Приоритет передачи в SAP (чем больше число - тем выше приоритет)" Width="150px" TextAlign="TextAlign.Center">
                         <EditTemplate Context="dataTypeDTO">
                             <RadzenNumeric @bind-Value="dataTypeDTO.Priority" Style="width:100%; display: block" Name="Priority" />
                             @* <RadzenNumericRangeValidator Min=1 Max=@(int.MaxValue) Text="Приоритет передачи в SAP не может быть меньше 1" Component="Priority" Popup="true" /> *@
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="IsAutoCalcDestDataType" Title="Результирующий тип авторасчёта" Width="150px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="DataTypeDTO" Property="IsAutoCalcDestDataType" Title="Результирующий тип авторасчёта" Width="150px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsAutoCalcDestDataType ReadOnly="true" TriState="false" TValue="bool?" />
                         </Template>
@@ -68,17 +67,17 @@
                                 |
                             </strong>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
 
-                    <RadzenDataGridColumn TItem="DataTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="90px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="DataTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="90px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="DataTypeDTO" Context="dataTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="DataTypeDTO" Context="dataTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="dataTypeDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(dataTypeDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -101,7 +100,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataTypeDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }
@@ -156,7 +155,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("DataTypeGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "DataTypeGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -166,8 +166,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('DataTypeGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(DataTypeGridSettings)}')");
+        await SD.SetPageSettingsVersion("DataTypeGridSettings", _jsRuntime);
     }
 
 
@@ -250,13 +250,15 @@
                     dataTypeDTO.IsAutoCalcDestDataType = objectForRestore.IsAutoCalcDestDataType;
                     await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
                     await dataTypeDTOGrid.Reload();
-                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с приоритетеом передачи в SAP равным " + objectForCheckPriority.Priority.ToString() +
+                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с приоритетом передачи в SAP равным " + objectForCheckPriority.Priority.ToString() +
                         " Наименование: \"" + objectForCheckPriority.Name + "\" ИД записи = " + objectForCheckPriority.Id.ToString());
                     return;
                 }
             }
 
-            await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.Update);
+            DataTypeDTO oldDataTypeDTO = await _dataTypeRepository.Get(dataTypeDTO.Id);
+            DataTypeDTO newDataTypeDTO = await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, "Изменение вида данных", "Вид данных: ", _authorizationRepository);
             if (dataTypeDTO.IsAutoCalcDestDataType == true)
             {
                 var tmpList = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
@@ -265,8 +267,10 @@
                     if (dataTypeDTO.Id != item.Id)
                         if (item.IsAutoCalcDestDataType == true)
                         {
-                            item.IsAutoCalcDestDataType = false;
-                            await _dataTypeRepository.Update(item, SD.UpdateMode.Update);
+                            oldDataTypeDTO = await _dataTypeRepository.Get(item.Id);
+                            item.IsAutoCalcDestDataType = false;                            
+                            newDataTypeDTO = await _dataTypeRepository.Update(item, SD.UpdateMode.Update);
+                            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, "Изменение вида данных", "Вид данных: ", _authorizationRepository);
                         }
                 }
                 IsLoading = true;
@@ -345,18 +349,24 @@
 
             if (dataTypeDTOs.Contains(dataTypeDTO))
             {
+                DataTypeDTO oldDataTypeDTO = await _dataTypeRepository.Get(dataTypeDTO.Id);
+                DataTypeDTO newDataTypeDTO = new DataTypeDTO();
+                string logEventTypeName = "";
                 if (dataTypeDTO.IsArchive)
                 {
-                    await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.RestoreFromArchive);
+                    newDataTypeDTO = await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.RestoreFromArchive);
                     dataTypeDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Вид данных " + dataTypeDTO.Name + " восстановлен из архива");
+                    logEventTypeName = "Восстановление из архива вида данных";
                 }
                 else
                 {
-                    await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.MoveToArchive);
+                    newDataTypeDTO = await _dataTypeRepository.Update(dataTypeDTO, SD.UpdateMode.MoveToArchive);
                     dataTypeDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Вид данных " + dataTypeDTO.Name + " удален в архив");
+                    logEventTypeName = "Удаление в архив вида данных";
                 }
+                await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, logEventTypeName, "Вид данных: ", _authorizationRepository);
                 await dataTypeDTOGrid.UpdateRow(dataTypeDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -398,7 +408,7 @@
             {
                 if (objectForCheckPriority.Id != dataTypeDTO.Id)
                 {
-                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с приоритетеом передачи в SAP равным " + objectForCheckPriority.Priority.ToString() +
+                    await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись с приоритетом передачи в SAP равным " + objectForCheckPriority.Priority.ToString() +
                         " Наименование: \"" + objectForCheckPriority.Name + "\" ИД записи = " + objectForCheckPriority.Id.ToString());
                     dataTypeDTOGrid.CancelEditRow(dataTypeDTO);
                     await dataTypeDTOGrid.Reload();
@@ -407,17 +417,23 @@
             }
 
             var newDTO = await _dataTypeRepository.Create(dataTypeDTO);
+            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: null, newObject: newDTO, "Добавление вида данных", "Вид данных: ", _authorizationRepository);
 
-            if (newDTO.IsAutoCalcDestDataType == true)
+            if (newDTO.IsAutoCalcDestDataType == true)                        
             {
+
+                DataTypeDTO oldDataTypeDTO = new DataTypeDTO();
+                DataTypeDTO newDataTypeDTO = new DataTypeDTO();
                 var tmpList = _dataTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly).Result;
                 foreach (var item in tmpList)
                 {
                     if (newDTO.Id != item.Id)
                         if (item.IsAutoCalcDestDataType == true)
                         {
+                            oldDataTypeDTO = await _dataTypeRepository.Get(item.Id);
                             item.IsAutoCalcDestDataType = false;
-                            await _dataTypeRepository.Update(item, SD.UpdateMode.Update);
+                            newDataTypeDTO = await _dataTypeRepository.Update(item, SD.UpdateMode.Update);
+                            await _logEventRepository.ToLog<DataTypeDTO>(oldObject: oldDataTypeDTO, newObject: newDataTypeDTO, "Изменение вида данных", "Вид данных: ", _authorizationRepository);
                         }
                 }
                 IsLoading = true;

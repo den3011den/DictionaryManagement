@@ -20,7 +20,7 @@ namespace DictionaryManagement_Business.Repository.IRepository
         public Task<int> DeleteRoleToADGroup(int roleToAdGroupId);
         public Task<IEnumerable<UserDTO>> GetAllNotArchiveAndNotAutomaticUsersExceptAlreadyInRole(Guid roleId);
         public Task<IEnumerable<ReportTemplateTypeDTO>> GetAllNotArchiveReportTemplateTypesExceptAlreadyInRole(Guid roleId);
-        public Task<IEnumerable<ADGroupDTO>> GetAllNotArchiveADGroupsExceptAlreadyInRole(Guid roleId);
+        public Task<IEnumerable<ADGroupDTO>> GetAllNotArchiveADGroupsExceptAlreadyInRole(Guid roleId);        
 
         public Task<IEnumerable<UserToRoleDTO>?> GetUsersLinkedToRoleByRoleId(Guid roleId);
         public Task<IEnumerable<ReportTemplateTypeTоRoleDTO>?> GetReportTemplateTypesLinkedToRoleByRoleId(Guid roleId);
@@ -34,5 +34,6 @@ namespace DictionaryManagement_Business.Repository.IRepository
 
         public Task DeleteAllLikedDepartmentsToRoleByRoleId(Guid roleId);
         public Task<int> AddDepartmentsToRole(IEnumerable<object> objectList, RoleVMDTO roleVMDTO);
+        public Task<RoleToDepartmentDTO?> AddRoleToDepartment(RoleVMDTO roleVMDTO, MesDepartmentDTO addDepartmentDTO);
     }
 }

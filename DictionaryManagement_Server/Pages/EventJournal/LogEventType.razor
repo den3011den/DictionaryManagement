@@ -5,12 +5,14 @@
 @using DictionaryManagement_Models.IntDBModels
 @using Microsoft.EntityFrameworkCore;
 @using System.Text.Json
+@using DictionaryManagement_Server.Shared
 
 
 
 @inject IJSRuntime _jsRuntime
 @inject ILogEventTypeRepository _logEventTypeRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 
 @if (IsAdmin == true)
@@ -36,15 +38,14 @@
                                @bind-Settings="@LogEventTypeGridSettings" SettingsName="LogEventTypeGridSettings"
                             Data="@logEventTypeDTOs" TItem="LogEventTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Simple"
+                            FilterMode="FilterMode.SimpleWithMenu"
                             AllowColumnResize="false"
                             AllowVirtualization="true"
                             GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)">
+                            Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="Name" Title="Наименование">
+                    <RadzenDataGridColumnApp TItem="LogEventTypeDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumnApp TItem="LogEventTypeDTO" Property="Name" Title="Наименование">
                         <Template Context="logEventTypeDTO">
                             <div style="white-space:pre-wrap">
                                 @logEventTypeDTO.Name
@@ -55,14 +56,14 @@
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=100 Text="Наименование не может быть больше 100 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="LogEventTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="LogEventTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn Title="Действия" TItem="LogEventTypeDTO" Context="logEventTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp Title="Действия" TItem="LogEventTypeDTO" Context="logEventTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="logEventTypeDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(logEventTypeDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -85,7 +86,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(logEventTypeDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }
@@ -142,7 +143,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("LogEventTypeGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "LogEventTypeGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -152,8 +154,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('LogEventTypeGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(LogEventTypeGridSettings)}')");
+        await SD.SetPageSettingsVersion("LogEventTypeGridSettings", _jsRuntime);
     }
 
 
@@ -222,7 +224,9 @@
                 }
             }
 
-            await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.Update);
+            LogEventTypeDTO oldLogEventTypeDTO = await _logEventTypeRepository.Get(logEventTypeDTO.Id);                       
+            LogEventTypeDTO newLogEventTypeDTO = await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<LogEventTypeDTO>(oldObject: oldLogEventTypeDTO, newObject: newLogEventTypeDTO, "Изменение типа события", "Тип события: ", _authorizationRepository);
         }
     }
 
@@ -292,18 +296,25 @@
 
             if (logEventTypeDTOs.Contains(logEventTypeDTO))
             {
+                LogEventTypeDTO oldLogEventTypeDTO = await _logEventTypeRepository.Get(logEventTypeDTO.Id);
+                LogEventTypeDTO newLogEventTypeDTO = new LogEventTypeDTO();
+                string logEventTypeName = "";
+
                 if (logEventTypeDTO.IsArchive)
                 {
                     await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.RestoreFromArchive);
                     logEventTypeDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Тип событий " + logEventTypeDTO.Name + " восстановлен из архива");
+                    logEventTypeName = "Восстановление из архива типа события";
                 }
                 else
                 {
                     await _logEventTypeRepository.Update(logEventTypeDTO, SD.UpdateMode.MoveToArchive);
                     logEventTypeDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Тип событий " + logEventTypeDTO.Name + " удален в архив");
+                    logEventTypeName = "Удаление в архив типа события";
                 }
+                await _logEventRepository.ToLog<LogEventTypeDTO>(oldObject: oldLogEventTypeDTO, newObject: newLogEventTypeDTO, logEventTypeName, "Тип события: ", _authorizationRepository);
                 await logEventTypeDTOGrid.UpdateRow(logEventTypeDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -340,13 +351,14 @@
             var objectForCheckName = await _logEventTypeRepository.GetByName(logEventTypeDTO.Name);
             if (objectForCheckName != null)
             {
-                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись типа собыия с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
+                await _jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Уже есть запись типа события с наименованием \"" + objectForCheckName.Name + "\" с ИД записи = " + objectForCheckName.Id.ToString());
                 logEventTypeDTOGrid.CancelEditRow(logEventTypeDTO);
                 await logEventTypeDTOGrid.Reload();
                 return;
             }
 
             var newDTO = await _logEventTypeRepository.Create(logEventTypeDTO);
+            await _logEventRepository.ToLog<LogEventTypeDTO>(oldObject: null, newObject: newDTO, "Добавление типа события", "Тип события: ", _authorizationRepository);
 
             //logEventTypeDTOToInsert.Id = newDTO.Id;
             //await logEventTypeDTOGrid.UpdateRow(logEventTypeDTOToInsert);

@@ -10,6 +10,7 @@
 @inject IRoleRepository _roleRepository
 @inject IRoleVMRepository _roleVMRepository
 @inject DialogService _dialogService
+@inject ILogEventRepository _logEventRepository
 
 @if (IsAdmin == true)
 {
@@ -149,8 +150,8 @@
                     return;                    
                 }
 
-                await _roleRepository.Create(ActiveRoleDTO);
-
+                RoleDTO addedDTO = await _roleRepository.Create(ActiveRoleDTO);                
+                await _logEventRepository.ToLog<RoleDTO>(oldObject: null, newObject: addedDTO, "Добавление роли", "Роль: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Роль \"" + ActiveRoleDTO.Name + "\" создана");
          
                 _dialogService.Close(ActiveRoleDTO);
@@ -167,7 +168,10 @@
 
                 }
 
-                await _roleRepository.Update(ActiveRoleDTO);
+
+                RoleDTO oldRoleDTO = await _roleRepository.GetById(ActiveRoleDTO.Id);
+                RoleDTO newRoleDTO = await _roleRepository.Update(ActiveRoleDTO);
+                await _logEventRepository.ToLog<RoleDTO>(oldObject: oldRoleDTO, newObject: newRoleDTO, "Изменение роли", "Роль: ", _authorizationRepository);
 
                 await _jsRuntime.ToastrSuccess("Роль \"" + ActiveRoleDTO.Name + "\" изменена");
                 

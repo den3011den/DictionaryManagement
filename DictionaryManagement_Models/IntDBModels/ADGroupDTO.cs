@@ -6,19 +6,23 @@ namespace DictionaryManagement_Models.IntDBModels
     public class ADGroupDTO
     {
 
+        [ForLogAttribute(NameProperty = "поле \"Ид группы\"")]
         [Display(Name = "Ид записи")]
         [Required(ErrorMessage = "ИД обязателен")]
         public Guid Id { get; set; }
 
+        [ForLogAttribute(NameProperty = "поле \"Наименование\"")]
         [Required(ErrorMessage = "Наименование обязательно для заполнения")]
         [StringLength(300, MinimumLength = 1, ErrorMessage = "Наименование может быть от 1 до 300 символов")]
         [Display(Name = "Наименование")]
         public string Name { get; set; }
 
-        [StringLength(300, MinimumLength = 1, ErrorMessage = "Наименование может быть от 1 до 300 символов")]
+        [ForLogAttribute(NameProperty = "поле \"Описание\"")]
+        [StringLength(300, MinimumLength = 1, ErrorMessage = "Описание может быть от 1 до 300 символов")]
         [Display(Description = "Описание")]
         public string? Description { get; set; }
 
+        [ForLogAttribute(NameProperty = "поле \"Архив\"")]
         [Display(Name = "В архиве")]
         public bool IsArchive { get; set; } = false;
 
@@ -39,7 +43,10 @@ namespace DictionaryManagement_Models.IntDBModels
                 ToStringId = value;
             }
         }
-
+        public override string ToString()
+        {
+            return $"{Name}";
+        }
     }
 }
 

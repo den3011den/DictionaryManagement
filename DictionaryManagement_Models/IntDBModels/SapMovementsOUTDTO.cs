@@ -121,7 +121,7 @@ namespace DictionaryManagement_Models.IntDBModels
         {
             get
             {
-                return Value.ToString();
+                return Correction2Previous.ToString();
             }
             set
             {

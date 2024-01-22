@@ -13,6 +13,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IDataSourceRepository _dataSourceRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @if (IsAdmin == true)
 {
@@ -37,27 +38,27 @@
                                Data="@dataSourceDTOs" TItem="DataSourceDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                EmptyText="Нет записей для отображения"
-                               FilterMode="FilterMode.Simple"
+                               FilterMode="FilterMode.SimpleWithMenu"
                                AllowColumnResize="false"
                                AllowVirtualization="true"
                                GridLines="DataGridGridLines.Both"
-                               Style="height:calc(100vh - 170px)">
+                               Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="DataSourceDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="DataSourceDTO" Property="Name" Title="Наименование">
+                    <RadzenDataGridColumnApp TItem="DataSourceDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumnApp TItem="DataSourceDTO" Property="Name" Title="Наименование" Width="320px">
                         <EditTemplate Context="dataSourceDTO">
                             <RadzenTextBox @bind-Value="dataSourceDTO.Name" Style="width:100%; display: block" Name="Name" />
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="DataSourceDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="DataSourceDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn Title="Действия" TItem="DataSourceDTO" Context="dataSourceDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp Title="Действия" TItem="DataSourceDTO" Context="dataSourceDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="dataSourceDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(dataSourceDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -80,7 +81,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(dataSourceDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }
@@ -135,7 +136,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("DataSourceGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "DataSourceGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -145,8 +147,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('DataSourceGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(DataSourceGridSettings)}')");
+        await SD.SetPageSettingsVersion("DataSourceGridSettings", _jsRuntime);
     }
 
     void Reset()
@@ -213,8 +215,9 @@
                     return;
                 }
             }
-
-            await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.Update);
+            DataSourceDTO oldDataSourceDTO = await _dataSourceRepository.Get(dataSourceDTO.Id);
+            DataSourceDTO newDataSourceDTO = await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<DataSourceDTO>(oldObject: oldDataSourceDTO, newObject: newDataSourceDTO, "Изменение источника данных", "Источник данных: ", _authorizationRepository);
         }
     }
 
@@ -282,18 +285,24 @@
 
             if (dataSourceDTOs.Contains(dataSourceDTO))
             {
+                DataSourceDTO oldDataSourceDTO = await _dataSourceRepository.Get(dataSourceDTO.Id);
+                DataSourceDTO newDataSourceDTO = new DataSourceDTO();
+                string logEventTypeName = "";
                 if (dataSourceDTO.IsArchive)
                 {
-                    await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.RestoreFromArchive);
+                    newDataSourceDTO = await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.RestoreFromArchive);
                     dataSourceDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Источник данных " + dataSourceDTO.Name + " восстановлен из архива");
+                    logEventTypeName = "Восстановление из архива источника данных";
                 }
                 else
                 {
-                    await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.MoveToArchive);
+                    newDataSourceDTO = await _dataSourceRepository.Update(dataSourceDTO, SD.UpdateMode.MoveToArchive);
                     dataSourceDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Источник данных " + dataSourceDTO.Name + " удален в архив");
+                    logEventTypeName = "Удаление в архив источника данных";
                 }
+                await _logEventRepository.ToLog<DataSourceDTO>(oldObject: oldDataSourceDTO, newObject: newDataSourceDTO, logEventTypeName, "Источник данных: ", _authorizationRepository);
                 await dataSourceDTOGrid.UpdateRow(dataSourceDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -330,7 +339,7 @@
             }
 
             var newDTO = await _dataSourceRepository.Create(dataSourceDTO);
-
+            await _logEventRepository.ToLog<DataSourceDTO>(oldObject: null, newObject: newDTO, "Добавление источника данных", "Источник данных: ", _authorizationRepository);
             await OnAfterRenderAsync(true);
         }
     }

@@ -20,11 +20,12 @@ namespace DictionaryManagement_Business.Repository
         private readonly IRoleToADGroupRepository _roleToADGroupRepository;
         private readonly ISettingsRepository _settingsRepository;
         private readonly IJSRuntime _jsRuntime;
+        private readonly ILogEventRepository _logEventRepository;
 
         public AuthorizationRepository(AuthenticationStateProvider authenticationStateProvider, IUserToRoleRepository userToRoleRepository,
             IUserRepository userRepository, IJSRuntime jsRuntime,
             IADGroupRepository adGroupRepository, IRoleToADGroupRepository roleToADGroupRepository,
-            ISettingsRepository settingsRepository)
+            ISettingsRepository settingsRepository, ILogEventRepository logEventRepository)
         {
             _authenticationStateProvider = authenticationStateProvider;
             _userToRoleRepository = userToRoleRepository;
@@ -33,6 +34,7 @@ namespace DictionaryManagement_Business.Repository
             _adGroupRepository = adGroupRepository;
             _roleToADGroupRepository = roleToADGroupRepository;
             _settingsRepository = settingsRepository;
+            _logEventRepository = logEventRepository;
         }
 
         public async Task<bool> CurrentUserIsInAdminRole(MessageBoxMode messageBoxModePar = SD.MessageBoxMode.Off)
@@ -222,6 +224,7 @@ namespace DictionaryManagement_Business.Repository
 
         public async Task SyncRolesByLoginWithADGroup(AuthenticationState authStatePar)
         {
+            Guid dictionaryManagementUserGuid = (await _userRepository.GetByUserName(SD.DictionaryManagementUserName)).Id;
             string userLogin = await GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.LoginOnly);
             string userName = await GetCurrentUser(SD.MessageBoxMode.Off, SD.LoginReturnMode.NameOnly);
 
@@ -300,9 +303,11 @@ namespace DictionaryManagement_Business.Repository
                         Login = userLogin,
                         Description = "Добавлено автоматически " + DateTime.Now.ToString(),
                         IsArchive = false,
-                        IsSyncWithAD = true
+                        IsSyncWithAD = true,
+                        IsServiceUser = false
                     };
                     userFromDBDTO = await _userRepository.Create(userFromDBDTO);
+                    await _logEventRepository.AddRecord("Добавление пользователя", dictionaryManagementUserGuid, "", "", false, "Пользователь: " + userFromDBDTO.ToString());
                 }
 
                 IEnumerable<RoleToADGroupDTO> RoleToADGroupDTOList = null;
@@ -332,6 +337,9 @@ namespace DictionaryManagement_Business.Repository
                                             RoleDTOFK = item.RoleDTOFK
                                         };
                                         _userToRoleRepository.Create(userToRoleAddDTO);
+                                        await _logEventRepository.AddRecord("Добавление связки пользователя с ролью", dictionaryManagementUserGuid,
+                                            "<Пусто>", userToRoleAddDTO.RoleDTOFK.ToString() + " --> " + userToRoleAddDTO.UserDTOFK.ToString(), false,
+                                            "Пользователь: " + userToRoleAddDTO.UserDTOFK.ToString() + " Роль: " + userToRoleAddDTO.RoleDTOFK.ToString());
                                     }
                                 }
                             }
@@ -389,6 +397,10 @@ namespace DictionaryManagement_Business.Repository
                         if (needDeleteUserInRoleFlag)
                         {
                             await _userToRoleRepository.DeleteByRoleIdAndUserId(itemRoleDTO.Id, userFromDBDTO.Id);
+                            await _logEventRepository.AddRecord("Удаление связки пользователя с ролью", dictionaryManagementUserGuid,
+                                userFromDBDTO.ToString() + " --> " + itemRoleDTO.ToString(),
+                                "<Пусто>", false,
+                                "Пользователь: " + userFromDBDTO.ToString() + " Роль: " + itemRoleDTO.ToString());
                         }
                     }
                 }
@@ -397,8 +409,12 @@ namespace DictionaryManagement_Business.Repository
                 {
                     if (userFromDBDTO != null)
                     {
+                        string oldSyncTime = userFromDBDTO.SyncWithADGroupsLastTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                         userFromDBDTO.SyncWithADGroupsLastTime = DateTime.Now;
                         await _userRepository.Update(userFromDBDTO, UpdateMode.Update);
+                        await _logEventRepository.AddRecord("Изменение пользователя", dictionaryManagementUserGuid, oldSyncTime,
+                            userFromDBDTO.SyncWithADGroupsLastTime.ToString("dd.MM.yyyy HH:mm:ss.fff"), false,
+                            "Пользователь: " + userFromDBDTO.ToString() + " Поле: Время посл. синх. AD");
                         await _jsRuntime.InvokeVoidAsync("CloseSwal");
                     }
                 }

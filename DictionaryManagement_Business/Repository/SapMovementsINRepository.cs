@@ -168,6 +168,8 @@ namespace DictionaryManagement_Business.Repository
                                                               PreviousErpId = draftDbSapMovementsINSelectionAlias.PreviousErpId,
                                                               PreviousRecordFK = draftDbSapMovementsINSelectionAlias.PreviousRecordFK,
                                                               MoveType = draftDbSapMovementsINSelectionAlias.MoveType,
+                                                              MesGone = draftDbSapMovementsINSelectionAlias.MesGone,
+                                                              MesGoneTime = draftDbSapMovementsINSelectionAlias.MesGoneTime
                                                           }).ToList();
             }
             else

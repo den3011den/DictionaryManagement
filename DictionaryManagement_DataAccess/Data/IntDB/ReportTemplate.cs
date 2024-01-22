@@ -46,6 +46,9 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public string TemplateFileName { get; set; }
 
         public bool IsArchive { get; set; }
+        public bool? NeedAutoCalc { get; set; }
+        public int? AutoCalcOrder { get; set; }
+        public int? AutoCalcNumber { get; set; }
     }
 
 }

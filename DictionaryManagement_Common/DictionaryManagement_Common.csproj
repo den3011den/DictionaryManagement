@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="7.0.14" />
+    <PackageReference Include="Microsoft.JSInterop" Version="7.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DictionaryManagement_Models\DictionaryManagement_Models.csproj" />
   </ItemGroup>
 

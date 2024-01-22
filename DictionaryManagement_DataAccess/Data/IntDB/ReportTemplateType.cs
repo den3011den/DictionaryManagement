@@ -19,5 +19,7 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
 
         public bool IsArchive { get; set; }
 
+        public bool? CanAutoCalc { get; set; }
+        
     }
 }

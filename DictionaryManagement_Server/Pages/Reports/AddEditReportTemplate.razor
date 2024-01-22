@@ -12,6 +12,7 @@
 @inject ISettingsRepository _settingsRepository
 @inject IWebHostEnvironment _environment
 @inject DictionaryManagement_Business.Repository.IAuthorizationRepository _authorizationRepository
+@inject ILogEventRepository _logEventRepository
 
 
 @inject DialogService _dialogService
@@ -34,95 +35,112 @@
             <DataAnnotationsValidator />
 
             <RadzenRow Gap="1rem">
-                <RadzenColumn Size="12">
+                <RadzenColumn Size="12" SizeMD="8">
                     <RadzenStack>
-
-                        @if (ReportTemplateId != null && ReportTemplateId != Guid.Empty)
-                        {
-                            <RadzenFormField Text="ИД шаблона" Variant="@variant" Style="width: 100%; max-width: 700px;">
-                                <RadzenNumeric @bind-Value="@ActiveReportTemplateDTO.Id" ReadOnly="true" />
-                            </RadzenFormField>
-
-                            <RadzenFormField Text="Время добавления" Variant="@variant" Style="width: 100%; max-width: 700px;">
-                                <RadzenNumeric @bind-Value="@ActiveReportTemplateDTO.AddTime" ReadOnly="true" />
-                            </RadzenFormField>
-                            <ValidationMessage For="()=>ActiveReportTemplateDTO.AddTime"></ValidationMessage>
-
-                            <RadzenFormField Text="Кто добавил" Variant="@variant" Style="width: 100%; max-width: 700px;">
-                                <RadzenTextBox @bind-Value="@ActiveReportTemplateDTO.AddUserDTOFK.UserName" ReadOnly="true" />
-                            </RadzenFormField>
-
-                        }
-
-                        <RadzenFormField Text="Тип шаблона отчёта" Variant="@variant" Style="width: 100%; max-width: 700px;">
-                            <RadzenDropDown @ref=@reportTemplateTypeDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
-                                            Data=@ReportTemplateTypeDTOList TextProperty="Name" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.ReportTemplateTypeId" Style="width: 100%; max-width: 700px;"
-                                            Change=@(args => FillDescription()) />
-                            @* Change=@(args => FillDescription()) *@
-                        </RadzenFormField>
-                        <ValidationMessage For="()=>ActiveReportTemplateDTO.ReportTemplateTypeDTOFK"></ValidationMessage>
-
-                        <RadzenFormField Text="Тип выходных данных" Variant="@variant" Style="width: 100%; max-width: 700px;">
-                            <RadzenDropDown @ref=@dataTypeDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
-                                            Data=@DataTypeDTOList TextProperty="Name" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.DestDataTypeId" Style="width: 100%; max-width: 700px;"
-                                            Change=@(args => FillDescription()) />
-                            @* Change=@(args => FillDescription()) *@
-                        </RadzenFormField>
-                        <ValidationMessage For="()=>ActiveReportTemplateDTO.DestDataTypeDTOFK"></ValidationMessage>
-
-                        <RadzenFormField Text="Производство" Variant="@variant" Style="width: 100%; max-width: 700px;">
-                            <RadzenDropDown @ref=@mesDepartmentDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
-                                            Data=@MesDepartmentDTOList TextProperty="ShortName" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.DepartmentId" Style="width: 100%; max-width: 700px;"
-                                            Change=@(args => FillDescription()) />
-                            @* Change=@(args => FillDescription()) *@
-                        </RadzenFormField>
-                        <ValidationMessage For="()=>ActiveReportTemplateDTO.MesDepartmentDTOFK"></ValidationMessage>
-
-                        @if (ReportTemplateId != null && ReportTemplateId != Guid.Empty)
-                        {
-
-                            <RadzenFormField Text="Имя Файла" Variant="@variant" Style="width: 100%; max-width: 700px;">
-                                <RadzenTextBox @bind-Value="@ActiveReportTemplateDTO.TemplateFileName" ReadOnly="true" />
-                            </RadzenFormField>
-                            @*    <div class="rz-p-12 rz-text-align-right">
-                <RadzenLink Path="@downloadLinkPath" Text="Скачать файл шаблона" />
-                </div>*@
-                            <a href="/DownloadFileController/DownloadReportTemplateFile/@ReportTemplateId" target="_blank">Скачать файл шаблона</a>
-                        }
-
-                        <RadzenCard Style="width: 100%; max-width: 700px;">
-                            <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Выбрать файл шаблона отчёта</RadzenText>
-                            <RadzenUpload @ref="upload" Auto="false" ChooseText="Выбрать" Multiple="false" Accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                                          Url="UploadFileController/UploadReportTemplateFile/{customParameter}"
-                                          Change=@(args => OnChange(args)) Progress=@(args => OnProgress(args)) />
-                            @if (!String.IsNullOrEmpty(uploadFileWarning))
-                            {
-                                <br />
-                                <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">@uploadFileWarning</RadzenText>
-                            }
-                        </RadzenCard>
+                        <RadzenFieldset Text="Шаблон отчёта" Style="font-weight: bold;">
+                            <RadzenStack Gap="1rem">
 
 
+                                @if (ReportTemplateId != null && ReportTemplateId != Guid.Empty)
+                                {
+                                    <RadzenFormField Text="ИД шаблона" Variant="@variant" Style="width: 100%;">
+                                        <RadzenNumeric @bind-Value="@ActiveReportTemplateDTO.Id" ReadOnly="true" />
+                                    </RadzenFormField>
 
-                        @*<RadzenButton Text="Upload" Click=@(args => OnDownload(args)) class="d-block mt-4" />*@
+                                    <RadzenFormField Text="Время добавления" Variant="@variant" Style="width: 100%;">
+                                        <RadzenNumeric @bind-Value="@ActiveReportTemplateDTO.AddTime" ReadOnly="true" />
+                                    </RadzenFormField>
+                                    <ValidationMessage For="()=>ActiveReportTemplateDTO.AddTime"></ValidationMessage>
 
-                        @* <div class="col-md-4 p-3">*@
-                        @*                    <RadzenCard Style="width: 100%; max-width: 700px;">
-                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Выбрать файл шаблона отчёта</RadzenText>
-                <RadzenUpload ChooseText="Выбрать" Multiple="false" Accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                Url=@($"UploadReportTemplateFile/{customParameter}")
-                Progress=@(args => OnProgress(args)) />
+                                    <RadzenFormField Text="Кто добавил" Variant="@variant" Style="width: 100%;">
+                                        <RadzenTextBox @bind-Value="@ActiveReportTemplateDTO.AddUserDTOFK.UserName" ReadOnly="true" />
+                                    </RadzenFormField>
 
-                </RadzenCard>
-                *@                    @*</div>*@
+                                }
 
+                                <RadzenFormField Text="Тип шаблона отчёта" Variant="@variant" Style="width: 100%;">
+                                    <RadzenDropDown @ref=@reportTemplateTypeDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                                                    Data=@ReportTemplateTypeDTOList TextProperty="Name" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.ReportTemplateTypeId" Style="width: 100%;"
+                                                    Change=@(args => FillDescription().GetAwaiter().GetResult()) />
+                                    @* Change=@(args => FillDescription()) *@
+                                </RadzenFormField>
+                                <ValidationMessage For="()=>ActiveReportTemplateDTO.ReportTemplateTypeDTOFK"></ValidationMessage>
 
+                                <RadzenFormField Text="Тип выходных данных" Variant="@variant" Style="width: 100%;">
+                                    <RadzenDropDown @ref=@dataTypeDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                                                    Data=@DataTypeDTOList TextProperty="Name" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.DestDataTypeId" Style="width: 100%;"
+                                                    Change=@(args => FillDescription().GetAwaiter().GetResult()) />
+                                    @* Change=@(args => FillDescription()) *@
+                                </RadzenFormField>
+                                <ValidationMessage For="()=>ActiveReportTemplateDTO.DestDataTypeDTOFK"></ValidationMessage>
 
+                                <RadzenFormField Text="Производство" Variant="@variant" Style="width: 100%;">
+                                    <RadzenDropDown @ref=@mesDepartmentDropDown FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterOperator="StringFilterOperator.Contains" AllowFiltering="true"
+                                                    Data=@MesDepartmentDTOList TextProperty="ToStringHierarchyShortName" ValueProperty="Id" AllowClear="true" @bind-Value="ActiveReportTemplateDTO.DepartmentId" Style="width: 100%;"
+                                                    Change=@(args => FillDescription().GetAwaiter().GetResult()) />
+                                    @* Change=@(args => FillDescription()) *@
+                                </RadzenFormField>
+                                <ValidationMessage For="()=>ActiveReportTemplateDTO.MesDepartmentDTOFK"></ValidationMessage>
 
-                        <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Описание (заполняется автоматически)</RadzenText>
-                        <RadzenTextArea Style="width: 100%; max-width: 700px;" @bind-Value="@ActiveReportTemplateDTO.Description" ReadOnly="true" Rows="5" />
-                        <ValidationMessage For="()=>ActiveReportTemplateDTO.Description"></ValidationMessage>
+                                @if (ReportTemplateId != null && ReportTemplateId != Guid.Empty)
+                                {
+                                    <RadzenFormField Text="Имя Файла" Variant="@variant" Style="width: 100%;">
+                                        <RadzenTextBox @bind-Value="@ActiveReportTemplateDTO.TemplateFileName" ReadOnly="true" />
+                                    </RadzenFormField>
+                                    <a href="/DownloadFileController/DownloadReportTemplateFile/@ReportTemplateId" target="_blank">Скачать файл шаблона</a>
+                                }
 
+                                <RadzenCard Style="width: 100%;">
+                                    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Выбрать файл шаблона отчёта</RadzenText>
+                                    <RadzenUpload @ref="upload" Auto="false" ChooseText="Выбрать" Multiple="false" Accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                                  Url="UploadFileController/UploadReportTemplateFile/{customParameter}"
+                                                  Change=@(args => OnChange(args)) Progress=@(args => OnProgress(args)) />
+                                    @if (!String.IsNullOrEmpty(uploadFileWarning))
+                                    {
+                                        <br />
+                                        <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">@uploadFileWarning</RadzenText>
+                                    }
+                                </RadzenCard>
+                            </RadzenStack>
+                        </RadzenFieldset>
+                    </RadzenStack>
+                </RadzenColumn>
+
+                <RadzenColumn Size="12" SizeMD="4">
+                    <RadzenStack>
+                        <RadzenFieldset Text="Авторасчёт шаблона отчёта" Style="font-weight: bold;">
+                            <RadzenStack Gap="1rem">
+                                @if (ActiveReportTemplateDTO.ReportTemplateTypeDTOFK !=null && ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.CanAutoCalc == true)
+                                {       
+                                    <div class="rz-p-12 rz-text-align-center">
+                                    <RadzenCheckBox @bind-Value="@ActiveReportTemplateDTO.NeedAutoCalc" Name="CheckBoxNeedAutoCalc" />
+                                    <RadzenLabel Text="Включить авторасчёт шаблона отчёта" Component="CheckBoxNeedAutoCalc" Style="margin-left: 8px; vertical-align: middle; font-size: 14px" />
+                                    <ValidationMessage For="()=>ActiveReportTemplateDTO.NeedAutoCalc"></ValidationMessage>
+                                    </div>
+                                    <RadzenFormField Text="Порядок авторасчёта" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                                        <RadzenNumeric @bind-Value="@ActiveReportTemplateDTO.AutoCalcOrder" Disabled="@(ActiveReportTemplateDTO.NeedAutoCalc == true ? false : true)" />
+                                    </RadzenFormField>
+                                    <ValidationMessage For="()=>ActiveReportTemplateDTO.AutoCalcOrder"></ValidationMessage>
+                                    <RadzenFormField Text="Количество прогонов шаблона авторасчётом" Variant="@variant" Style="width: 100%; max-width: 700px;">
+                                        <RadzenNumeric @bind-Value="@ActiveReportTemplateDTO.AutoCalcNumber" Disabled="@(ActiveReportTemplateDTO.NeedAutoCalc == true ? false : true)" />
+                                    </RadzenFormField>
+                                    <ValidationMessage For="()=>ActiveReportTemplateDTO.AutoCalcNumber"></ValidationMessage>
+                                }
+                                else
+                                {
+                                    <p style="color: lightgrey; font-size: 14px; text-align: center; margin: 2rem;">
+                                        @if (ActiveReportTemplateDTO.ReportTemplateTypeDTOFK==null)
+                                        {
+                                            @("Тип шаблона отчёта не выбран")
+                                        }
+                                        else
+                                        {
+                                            @("Тип шаблона отчёта \"" + ActiveReportTemplateDTO.ReportTemplateTypeDTOFK.Name + "\" отмечен как не доступный для авторасчёта")
+                                        }
+                                    </p>
+                                }
+                            </RadzenStack>
+                        </RadzenFieldset>
                     </RadzenStack>
                 </RadzenColumn>
             </RadzenRow>
@@ -130,7 +148,7 @@
 
 
             <div class="form-group py-2">
-                <button class="btn btn-primary" @onclick="(() => OnClickSave())" disabled=@IsSubmited>@Title</button>
+                <button class="btn btn-primary" @onclick="(() => OnClickSave().GetAwaiter().GetResult())" disabled=@IsSubmited>@Title</button>
                 <NavLink @onclick="(() => OnClickCancel())" class="btn btn-secondary">Отмена</NavLink>
             </div>
         </EditForm>
@@ -188,7 +206,12 @@
 
         if (ReportTemplateId == null || ReportTemplateId == Guid.Empty)
         {
-            ActiveReportTemplateDTO = new ReportTemplateDTO();
+            ActiveReportTemplateDTO = new ReportTemplateDTO
+            {
+                NeedAutoCalc = false,
+                AutoCalcOrder = 1,
+                AutoCalcNumber = 1
+            };
         }
         else
         {
@@ -214,7 +237,12 @@
 
             if (ReportTemplateId == null || ReportTemplateId == Guid.Empty)
             {
-                ActiveReportTemplateDTO = new ReportTemplateDTO();
+                ActiveReportTemplateDTO = new ReportTemplateDTO
+                    {
+                        NeedAutoCalc = false,
+                        AutoCalcOrder = 1,
+                        AutoCalcNumber = 1
+                    };
             }
             else
             {
@@ -222,7 +250,7 @@
                 Title = "Изменить шаблон отчёта";
             }
 
-            MesDepartmentDTOList = await _mesDepartmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
+            MesDepartmentDTOList = (await _mesDepartmentRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly)).OrderBy(u => u.ToStringHierarchyShortName);
             ReportTemplateTypeDTOList = await _reportTemplateTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
             DataTypeDTOList = await _dataTypeRepository.GetAll(SD.SelectDictionaryScope.NotArchiveOnly);
 
@@ -236,9 +264,7 @@
         }
 
     }
-
-
-    // private async Task AddEditReportTemplateProcedure()
+    
     private async Task AddEditReportTemplateProcedure()
     {
         IsSubmited = true;
@@ -287,7 +313,9 @@
 
                 createdTemplateDTO.TemplateFileName = createdTemplateDTO.Id + ".xlsx";
 
-                await _reportTemplateRepository.Update(createdTemplateDTO);
+                var addedDTO =  await _reportTemplateRepository.Update(createdTemplateDTO);
+
+                await _logEventRepository.ToLog<ReportTemplateDTO>(oldObject: null, newObject: addedDTO, "Добавление шаблона отчёта", "Шаблон отчёта: ", _authorizationRepository);
 
                 upload.Url = @"UploadFileController/UploadReportTemplateFile/" + createdTemplateDTO.Id;
                 await upload.Upload();
@@ -317,11 +345,17 @@
                 if (!String.IsNullOrEmpty(uploadFileWarning))
                 {
                     upload.Url = @"UploadFileController/UploadReportTemplateFile/" + ActiveReportTemplateDTO.Id;
-
                     await upload.Upload();
+
+                    Guid addedUserId = (await _authorizationRepository.GetCurrentUserDTO()).Id;
+                    await _logEventRepository.AddRecord("Изменение шаблона отчёта", addedUserId, "", "", false, "Замена файла шаблона отчёта: " + ActiveReportTemplateDTO.ToString());
                 }
 
-                await _reportTemplateRepository.Update(ActiveReportTemplateDTO);
+                ReportTemplateDTO oldReportTemplateDTO = await _reportTemplateRepository.GetById(ActiveReportTemplateDTO.Id);
+
+                ReportTemplateDTO newReportTemplateDTO = await _reportTemplateRepository.Update(ActiveReportTemplateDTO);
+
+                await _logEventRepository.ToLog<ReportTemplateDTO>(oldObject: oldReportTemplateDTO, newObject: newReportTemplateDTO, "Изменение шаблона отчёта", "Шаблон отчёта: ", _authorizationRepository);
 
                 await _jsRuntime.ToastrSuccess("Шаблон отчёта \"" + ActiveReportTemplateDTO.Id.ToString() + "\" изменён");
 
@@ -394,14 +428,7 @@
         IsSubmited = false;
     }
 
-    // private async Task AddEditReportTemplateProcedure2()
-    // {
-
-
-    //     var ggg = 2;
-
-    // }
-
+    
     void OnProgress(UploadProgressArgs args)
     {
 
@@ -448,12 +475,4 @@
                 uploadFileWarning = "Файл не будет сохранён в базе данных пока не будет нажата кнопка \"Создать шаблон отчёта\"";
         }
     }
-
-    //void OnUpload(MouseEventArgs args)
-    //{
-    //    upload.Url = @"UploadFileController/UploadReportTemplateFile/"+ customParameter;
-    //    var aaa = 2;
-    //    upload.Upload();
-    //}
-
 }

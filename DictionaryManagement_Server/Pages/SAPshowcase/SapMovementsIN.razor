@@ -42,7 +42,8 @@
                                 <RadzenDatePicker @bind-Value=@endDate Change="@(args => ChangeEndDate())" Min=minEndDate Max=@maxEndDate ShowTime="true" ShowSeconds="true" DateFormat="dd.MM.yyyy HH:mm:ss" />
                                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="done" Disabled="@ApplyButtonDisabled" Text="Применить" Click="@(args => GetRows())" />
                                 <RadzenButton title="Простой экспорт в Excel с учётом применённых фильтров и упорядочивания" Text="--> в Excel" Icon="grid_on" Click="@(args => ExcelExport())" IsBusy=@excelExportFlag BusyText="Выполняется ..." />
-                                <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Text="Добавить запись" Click="@(args => EditRow(null))" />
+                                <RadzenButton title="Загрузка данных из Excel в Витрины SAP - Движения - вход" Text="Из Excel <--" Icon="grid_on" Click="@(args => ExcelImport())" />
+@*                                 <RadzenButton ButtonStyle="ButtonStyle.Success" Icon="add_circle_outline" Text="Добавить запись" Click="@(args => EditRow(null))" /> *@
                             </RadzenRow>
                         </RadzenStack>
                     </RadzenStack>
@@ -52,31 +53,44 @@
             <RadzenDataGridApp @bind-Settings="@SapMovementsINGridSettings" SettingsName="SapMovementsINGridSettings" @ref="sapMovementsINDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                Data="@sapMovementsINDTOs" TItem="SapMovementsINDTO"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                               FilterMode="FilterMode.Advanced"
+                               FilterMode="FilterMode.SimpleWithMenu"
                                Density=Density.Compact
                                ShowPagingSummary="true"
                                EmptyText="Нет записей для отображения"
                                AllowVirtualization="true"
                                AllowColumnReorder="true"
                                AllowColumnResize="true"
-                               Style=@(iconMenuActive ? "height:calc(100vh - 170px); width:1760px" : "height:calc(100vh - 170px); width:1600px")
+                               Style=@(iconMenuActive ? "height:calc(100vh - 190px); width:1760px" : "height:calc(100vh - 190px); width:1600px")
                                ColumnWidth="200px"
                                AllowColumnPicking="true"
                                GridLines="DataGridGridLines.Both"
-                               ShowCleanGridSettingsHeaderButton="true"
-                               ShowCleanGridFiltersHeaderButton="true"
-                               ShowCleanGridSortsHeaderButton="true">
+                               ShowCleanGridSettingsHeaderButton="false"
+                               ShowCleanGridFiltersHeaderButton="false"
+                               ShowCleanGridSortsHeaderButton="false">
+                <HeaderTemplate>
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить настройки интерфейса страницы" Icon="settings"
+                                  ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanPageSettingsCustom()">
+                    </RadzenButton>
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все фильтры" Icon="filter_alt"
+                                  ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanAllFiltersCustom()">
+                    </RadzenButton>
+
+                    <RadzenButton Size="ButtonSize.Small" Text="Очистить все сортировки" Icon="swap_vert"
+                                  ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Click="(args) => CleanAllOrdersCustom()">
+                    </RadzenButton>
+                </HeaderTemplate>
                 <Columns>
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="ErpId" Title="Ид записи" TextAlign="TextAlign.Center"
-                                          FilterProperty="ErpId" FilterOperator="FilterOperator.Contains" SortProperty="ErpId">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="ErpId" Title="Ид записи" TextAlign="TextAlign.Center"
+                                             FilterProperty="ErpId" FilterOperator="FilterOperator.Contains" SortProperty="ErpId">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.ErpId
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="AddTime" Title="Время добавления" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
+                                             FilterOperator="FilterOperator.Equals">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -84,9 +98,10 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapMaterialCode" Title="Код материала в SAP" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="SapMaterialCode" Title="Код материала в SAP" TextAlign="TextAlign.Center"
+                                             Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -94,9 +109,10 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapMaterialDTOFK.ToStringCodeName" Title="Материал в СИР" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="SapMaterialDTOFK.ToStringCodeName" Title="Материал в СИР" TextAlign="TextAlign.Center"
+                                             FilterOperator="FilterOperator.Contains" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             @if (data1.SapMaterialDTOFK != null)
                             {
@@ -113,34 +129,37 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="ErpPlantIdSource" Title="Завод-источник SAP" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="ErpPlantIdSource" Title="Завод-источник SAP" TextAlign="TextAlign.Center"
+                                             Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.ErpPlantIdSource
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="ErpIdSource" Title="Ресурс-источник SAP" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="ErpIdSource" Title="Ресурс-источник SAP" TextAlign="TextAlign.Center"
+                                             FilterOperator="FilterOperator.Contains" Filterable="true" Sortable="true">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.ErpIdSource
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    @*                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="IsWarehouseSource" Title="Источник в SAP является складом" Filterable="true" TextAlign="TextAlign.Center">
+                    @*                     <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="IsWarehouseSource" Title="Источник в SAP является складом" Filterable="true" TextAlign="TextAlign.Center">
             <Template Context="data">
             @if (data.IsWarehouseSource != null)
             {
             <RadzenCheckBox @bind-Value=data.IsWarehouseSource ReadOnly="true" TriState="false" TValue="bool?" />
             }
             </Template>
-            </RadzenDataGridColumn>
+            </RadzenDataGridColumnApp>
             *@
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapEquipmentSourceDTOFK.ToStringErpPlantIdErpIdName" Title="Источник в СИР" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="SapEquipmentSourceDTOFK.ToStringErpPlantIdErpIdName" Title="Источник в СИР" TextAlign="TextAlign.Center"
+                                             Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.SapEquipmentSourceDTOFK != null)
                             {
@@ -155,40 +174,43 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapEquipmentSourceDTOFK.IsWarehouse" Title="Источник в СИР является складом" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="SapEquipmentSourceDTOFK.IsWarehouse" Title="Источник в СИР является складом" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             @if (data.SapEquipmentSourceDTOFK != null)
                             {
                                 <RadzenCheckBox @bind-Value=data.SapEquipmentSourceDTOFK.IsWarehouse ReadOnly="true" TriState="false" TValue="bool" />
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="ErpPlantIdDest" Title="Завод-приёмник SAP" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="ErpPlantIdDest" Title="Завод-приёмник SAP" TextAlign="TextAlign.Center"
+                                             Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.ErpPlantIdDest
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="ErpIdDest" Title="Ресурс-приёмник SAP" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="ErpIdDest" Title="Ресурс-приёмник SAP" TextAlign="TextAlign.Center"
+                                             Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.ErpIdDest
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    @*                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="IsWarehouseDest" Title="Приёмник в SAP является складом" Filterable="true" TextAlign="TextAlign.Center">
+                    @*                     <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="IsWarehouseDest" Title="Приёмник в SAP является складом" Filterable="true" TextAlign="TextAlign.Center">
             <Template Context="data">
             <RadzenCheckBox @bind-Value=data.IsWarehouseDest ReadOnly="true" TriState="false" TValue="bool?" />
             </Template>
-            </RadzenDataGridColumn> *@
+            </RadzenDataGridColumnApp> *@
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName" Title="Приёмник в СИР" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="SapEquipmentDestDTOFK.ToStringErpPlantIdErpIdName" Title="Приёмник в СИР" TextAlign="TextAlign.Center"
+                                             Filterable="true" Sortable="true" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.SapEquipmentDestDTOFK != null)
                             {
@@ -203,28 +225,30 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapEquipmentDestDTOFK.IsWarehouse" Title="Приёмник в СИР является складом" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="SapEquipmentDestDTOFK.IsWarehouse" Title="Приёмник в СИР является складом" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             @if (data.SapEquipmentDestDTOFK != null)
                             {
                                 <RadzenCheckBox @bind-Value=data.SapEquipmentDestDTOFK.IsWarehouse ReadOnly="true" TriState="false" TValue="bool" />
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapDocumentEnterTime" Title="Время ввода док-та в SAP" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="SapDocumentEnterTime" Title="Время ввода док-та в SAP" TextAlign="TextAlign.Center"
+                                             Filterable="true" Sortable="true" FilterOperator="FilterOperator.Equals">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.SapDocumentEnterTime.ToString("dd.MM.yyyy HH:mm:ss.fff")
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapDocumentPostTime" Title="Время значения" TextAlign="TextAlign.Center" Filterable="true" Sortable="true">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="SapDocumentPostTime" Title="Время значения" TextAlign="TextAlign.Center"
+                                             Filterable="true" Sortable="true" FilterOperator="FilterOperator.Equals">
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 <strong>
@@ -232,10 +256,10 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="ToStringValue" Title="Значение" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
-                                          FilterProperty="ToStringValue" SortProperty="Value" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="ToStringValue" Title="Значение" TextAlign="TextAlign.Center" Filterable="true" Sortable="true"
+                                             FilterProperty="Value" SortProperty="Value" FilterOperator="FilterOperator.Equals">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
@@ -243,19 +267,36 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="SapUnitOfMeasure" Title="Ед.изм.SAP" TextAlign="TextAlign.Center"
-                                          FilterProperty="SapUnitOfMeasure" FilterOperator="FilterOperator.Contains" SortProperty="SapUnitOfMeasure">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Title="Ед.изм.SAP"
+                                             Property="SapUnitOfMeasure" Type="typeof(IEnumerable<string>)"
+                                             Filterable="true" Sortable="true"
+                                             FilterValue="@selectedSapUnitOfMeasure" FilterOperator="FilterOperator.Contains"
+                                             LogicalFilterOperator="LogicalFilterOperator.Or"
+                                             TextAlign="TextAlign.Center">
+                        <FilterTemplate>
+                            <RadzenDropDown @bind-Value=@selectedSapUnitOfMeasure
+                                            Change=OnSelectedSapUnitOfMeasureChange Data="@(distinctSapUnitOfMeasureInList)" AllowClear="true" Multiple="true"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true"
+                                            Style="font-size:0.75rem;width: 100%;"
+                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
+                        </FilterTemplate>
                         <Template Context="data1">
                             <div style="white-space:pre-line; word-wrap: break-word; font-size: 12px">
                                 @data1.SapUnitOfMeasure
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MesGoneTime" Title="СИР забрал" TextAlign="TextAlign.Center"
-                                          FilterProperty="MesGoneTime" FilterOperator="FilterOperator.Contains" SortProperty="MesGoneTime">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="MesGone" Title="СИР забрал" Filterable="true" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            <RadzenCheckBox @bind-Value=data.MesGone ReadOnly="true" TriState="false" TValue="bool?" />
+                        </Template>
+                    </RadzenDataGridColumnApp>
+
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="MesGoneTime" Title="СИР забрал время" TextAlign="TextAlign.Center"
+                                             FilterProperty="MesGoneTime" FilterOperator="FilterOperator.Equals" SortProperty="MesGoneTime">
                         <Template Context="data1">
                             @if (data1.MesGoneTime != null)
                             {
@@ -266,17 +307,17 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MesError" Title="СИР ошибка" Filterable="true" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="MesError" Title="СИР ошибка" Filterable="true" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.MesError ReadOnly="true" TriState="false" TValue="bool?" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MesErrorMessage" Title="СИР сообщение об ошибке" TextAlign="TextAlign.Center"
-                                          FilterProperty="MesErrorMessage" FilterOperator="FilterOperator.Contains" SortProperty="MesErrorMessage">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="MesErrorMessage" Title="СИР сообщение об ошибке" TextAlign="TextAlign.Center"
+                                             FilterProperty="MesErrorMessage" FilterOperator="FilterOperator.Contains" SortProperty="MesErrorMessage">
                         <Template Context="data1">
                             @if (data1.MesErrorMessage != null)
                             {
@@ -285,10 +326,10 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
 
-                    @*                     <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MesError" Title="СИР ошибка" Filterable="true" Width="25px" TextAlign="TextAlign.Center">
+                    @*                     <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="MesError" Title="СИР ошибка" Filterable="true" Width="25px" TextAlign="TextAlign.Center">
             <Template Context="data">
             @if (data.MesError == true)
             {
@@ -300,9 +341,9 @@
             <RadzenCheckBox @bind-Value=data.MesError ReadOnly="true" TriState="false" TValue="bool?" />
             }
             </Template>
-            </RadzenDataGridColumn> *@
+            </RadzenDataGridColumnApp> *@
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MesMovementDTOFK.MesParamDTOFK.Code" Title="Код тэга СИР" FilterProperty="MesMovementDTOFK.MesParamDTOFK.Code" SortProperty="MesMovementDTOFK.MesParamDTOFK.Code" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="MesMovementDTOFK.MesParamDTOFK.Code" Title="Код тэга СИР" FilterProperty="MesMovementDTOFK.MesParamDTOFK.Code" SortProperty="MesMovementDTOFK.MesParamDTOFK.Code" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.MesMovementDTOFK != null)
                             {
@@ -315,9 +356,9 @@
                                 }
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MesMovementDTOFK.MesParamDTOFK.Name" Title="Наим. тэга СИР" FilterProperty="MesMovementDTOFK.MesParamDTOFK.Name" SortProperty="MesMovementDTOFK.MesParamDTOFK.Name" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="MesMovementDTOFK.MesParamDTOFK.Name" Title="Наим. тэга СИР" FilterProperty="MesMovementDTOFK.MesParamDTOFK.Name" SortProperty="MesMovementDTOFK.MesParamDTOFK.Name" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.MesMovementDTOFK != null)
                             {
@@ -330,11 +371,9 @@
                                 }
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-
-
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="ToStringMesMovementId" Title="ИД в архиве данных" FilterProperty="ToStringMesMovementId" SortProperty="ToStringMesMovementId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="ToStringMesMovementId" Title="ИД в архиве данных" FilterProperty="ToStringMesMovementId" SortProperty="ToStringMesMovementId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.ToStringMesMovementId != null)
                             {
@@ -343,10 +382,9 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="PreviousErpId" Title="ИД пред. записи" FilterProperty="PreviousErpId" SortProperty="PreviousErpId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Property="PreviousErpId" Title="ИД пред. записи" FilterProperty="PreviousErpId" SortProperty="PreviousErpId" TextAlign="TextAlign.Center" FilterOperator="FilterOperator.Contains">
                         <Template Context="data1">
                             @if (data1.PreviousErpId != null)
                             {
@@ -355,10 +393,21 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapMovementsINDTO" Property="MoveType" Title="Тип" TextAlign="TextAlign.Center"
-                                          FilterProperty="MoveType" FilterOperator="FilterOperator.Contains" SortProperty="MoveType">
+                    <RadzenDataGridColumnApp TItem="SapMovementsINDTO" Title="Тип движения в SAP"
+                                             Property="MoveType" Type="typeof(IEnumerable<string>)"
+                                             Filterable="true" Sortable="true"
+                                             FilterValue="@selectedMoveTypes" FilterOperator="FilterOperator.Contains"
+                                             LogicalFilterOperator="LogicalFilterOperator.Or"
+                                             TextAlign="TextAlign.Center">
+                        <FilterTemplate>
+                            <RadzenDropDown @bind-Value=@selectedMoveTypes
+                                            Change=OnSelectedMoveTypesChange Data="@(distinctMoveTypesInList)" AllowClear="true" Multiple="true"
+                                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowFiltering="true"
+                                            Style="font-size:0.75rem;width: 100%;"
+                                            SelectAllText="ВСЕ" SelectedItemsText="элементов выбрано" />
+                        </FilterTemplate>
                         <Template Context="data1">
                             @if (data1.MoveType != null)
                             {
@@ -367,17 +416,17 @@
                                 </div>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="SapMovementsINDTO" Context="sapMovementsINDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
+@*                     <RadzenDataGridColumnApp Title="Действия" TItem="SapMovementsINDTO" Context="sapMovementsINDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right">
                         <Template Context="sapMovementsINDTO">
                             <RadzenButton title="Редактировать запись" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapMovementsINDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                             <RadzenButton title="Удалить запись" ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(sapMovementsINDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
                         </Template>
-                    </RadzenDataGridColumn>
-                </Columns>
+                    </RadzenDataGridColumnApp>
+ *@                </Columns>
             </RadzenDataGridApp>
         }
         else
@@ -395,6 +444,12 @@
     </div>
 }
 
+<style>
+    .rz-dropdown-item, .rz-menuitem, .rz-autocomplete-list-item, .rz-multiselect-item, .rz-dropdown-items li, .rz-autocomplete-items li, .rz-multiselect-items li {
+        font-size: 0.75rem;
+    }
+</style>
+
 @code {
     [CascadingParameter]
     bool iconMenuActive { get; set; }
@@ -402,8 +457,13 @@
     _Dialogs? _dialogs { get; set; }
 
     IEnumerable<SapMovementsINDTO>? sapMovementsINDTOs;
-
     RadzenDataGrid<SapMovementsINDTO> sapMovementsINDTOGrid;
+
+    IEnumerable<string> selectedMoveTypes;
+    IEnumerable<string> selectedSapUnitOfMeasure;
+    List<string> distinctMoveTypesInList = new List<string>();
+    List<string> distinctSapUnitOfMeasureInList = new List<string>();
+
 
     DateTime startDate = DateTime.Today.AddDays(-7);
     DateTime endDate = DateTime.Today.AddDays(1).AddSeconds(-1);
@@ -442,23 +502,38 @@
         }
     }
 
-    private async Task SaveStateAsync()
-    {
-        await Task.CompletedTask;
-
-        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SapMovementsINGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SapMovementsINGridSettings)}')");
-    }
-
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("SapMovementsINGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SapMovementsINGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
             _sapMovementsINGridSettings = JsonSerializer.Deserialize<DataGridSettings>(result);
+            if (_sapMovementsINGridSettings != null)
+            {
+                var col_var = _sapMovementsINGridSettings.Columns.Where(c => c.Property == "MoveType").FirstOrDefault();
+                if (col_var.FilterValue != null)
+                {
+                    selectedMoveTypes = JsonSerializer.Deserialize<List<string>>(col_var.FilterValue.ToString());
+                }
+                var col_var2 = _sapMovementsINGridSettings.Columns.Where(c => c.Property == "SapUnitOfMeasure").FirstOrDefault();
+                if (col_var2.FilterValue != null)
+                {
+                    selectedSapUnitOfMeasure = JsonSerializer.Deserialize<List<string>>(col_var2.FilterValue.ToString());
+                }
+            }
         }
     }
+
+    private async Task SaveStateAsync()
+    {
+        await Task.CompletedTask;
+        await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SapMovementsINGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SapMovementsINGridSettings)}')");
+        await SD.SetPageSettingsVersion("SapMovementsINGridSettings", _jsRuntime);
+    }
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -475,8 +550,8 @@
                 maxEndDate = DateTime.Today.AddDays(1).AddSeconds(-1);
                 minEndDate = DateTime.Today.AddMonths(-1).AddDays(-1);
 
-                IsLoading = true;                
-                await LoadStateAsync();                
+                IsLoading = true;
+                await LoadStateAsync();
                 StateHasChanged();
 
                 await GetRows();
@@ -514,6 +589,11 @@
             sapMovementsINDTOs = await _sapMovementsINRepository.GetAllByTimeInterval(startDate, endDate, "VALUETIME");
         else
             sapMovementsINDTOs = await _sapMovementsINRepository.GetAllByTimeInterval(startDate, endDate, "ADDTIME");
+
+        List<string> distinctMoveTypesInList = new List<string>();
+        List<string> distinctSapUnitOfMeasureInList = new List<string>();
+        await GetDistincts();
+
         ApplyButtonDisabled = true;
         IsLoading = false;
         StateHasChanged();
@@ -521,16 +601,16 @@
     }
 
 
-    async Task EditRow(SapMovementsINDTO? sapMovementsINDTO)
-    {
-        await _jsRuntime.ToastrSuccess("Не реализовано");
-    }
+    // async Task EditRow(SapMovementsINDTO? sapMovementsINDTO)
+    // {
+    //     await _jsRuntime.ToastrSuccess("Не реализовано");
+    // }
 
 
-    async Task DeleteRow(SapMovementsINDTO sapMovementsINDTO)
-    {
-        await _jsRuntime.ToastrSuccess("Не реализовано");
-    }
+    // async Task DeleteRow(SapMovementsINDTO sapMovementsINDTO)
+    // {
+    //     await _jsRuntime.ToastrSuccess("Не реализовано");
+    // }
 
 
     async Task ExcelExport()
@@ -564,6 +644,140 @@
         excelExportFlag = false;
         await Task.Delay(200);
         await InvokeAsync(StateHasChanged);
+    }
+
+    async Task GetDistincts()
+    {
+        if (sapMovementsINDTOs != null)
+        {
+            distinctMoveTypesInList = (List<string>)sapMovementsINDTOs.Where(u => u.MoveType != null).OrderBy(u => u.MoveType)
+                .Select(u => u.MoveType).Distinct().ToList();
+            distinctSapUnitOfMeasureInList = (List<string>)sapMovementsINDTOs.Where(u => u.SapUnitOfMeasure != null).OrderBy(u => u.SapUnitOfMeasure)
+                .Select(u => u.SapUnitOfMeasure).Distinct().ToList();
+
+        }
+    }
+
+    void OnSelectedMoveTypesChange(object value)
+    {
+        if (selectedMoveTypes != null && !selectedMoveTypes.Any())
+        {
+            selectedMoveTypes = null;
+        }
+    }
+
+    void OnSelectedSapUnitOfMeasureChange(object value)
+    {
+        if (selectedSapUnitOfMeasure != null && !selectedSapUnitOfMeasure.Any())
+        {
+            selectedSapUnitOfMeasure = null;
+        }
+    }
+
+    private async Task CleanPageSettingsCustom()
+    {
+        await Task.CompletedTask;
+        var selectionResult = await _dialogService.Confirm("Будут очищены пользовательские настройки страницы: видимость колонок, порядок следования колонок, ширина колонок, применённые фильтры", "Сбросить настройки интерфейса страницы",
+        new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
+
+        if (selectionResult != true)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        var result = await _jsRuntime.InvokeAsync<string>
+            ("window.localStorage.removeItem", "SapMovementsINGridSettings");
+
+        SapMovementsINGridSettings = null;
+
+        selectedMoveTypes = null;
+        selectedSapUnitOfMeasure = null;
+
+        if (sapMovementsINDTOs != null)
+        {
+            await GetDistincts();
+        }
+
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    async Task CleanAllFiltersCustom()
+    {
+        var selectionResult = await _dialogService.Confirm("Будут очищены все фильтры", "Очистить фильтры",
+        new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
+
+        if (selectionResult != true)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        if (SapMovementsINGridSettings != null)
+        {
+            foreach (var c in SapMovementsINGridSettings.Columns)
+            {
+                c.FilterValue = null;
+                c.SecondFilterValue = null;
+            }
+
+        }
+
+        selectedMoveTypes = null;
+        selectedSapUnitOfMeasure = null;
+
+        if (sapMovementsINDTOs != null)
+        {
+            await GetDistincts();
+        }
+
+        await InvokeAsync(SaveStateAsync);
+        await Task.Delay(200);
+        await InvokeAsync(StateHasChanged);
+
+    }
+
+    async Task CleanAllOrdersCustom()
+    {
+
+        var selectionResult = await _dialogService.Confirm("Будут очищены все сортировки", "Очистить сортировки",
+        new ConfirmOptions { OkButtonText = "Очистить", CancelButtonText = "Отмена", Left = "300px" });
+
+        if (selectionResult != true)
+        {
+            await InvokeAsync(SaveStateAsync);
+            return;
+        }
+
+        if (SapMovementsINGridSettings != null)
+        {
+            foreach (var c in SapMovementsINGridSettings.Columns)
+            {
+                c.SortOrder = null;
+            }
+            await InvokeAsync(SaveStateAsync);
+            await Task.Delay(200);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    async Task ExcelImport()
+    {
+        await _jsRuntime.ToastrSuccess("Не реализовано");
+        return;
+        IsLoading = true;
+        if (await _authorizationRepository.CurrentUserIsInAdminRole(SD.MessageBoxMode.On))
+        {
+            SapMaterialDTO dialogResult = null;
+            IsLoading = false;
+            dialogResult = await _dialogService.OpenAsync<LoadFromExcel>("Загрузка данных из Excel (Витрина SAP - Движения-вход)", new Dictionary
+                    <string, object>
+                    () { { "LoadFromExcelReportTemplateTypeNameSettingName", SD.SapMovementsINLoadFromExcelReportTemplateTypeNameSettingName } }, new DialogOptions() { Width = $"{950}px", Left = $"{200}px" });
+            IsLoading = false;
+            await this.OnAfterRenderAsync(true);
+        }
     }
 
 }

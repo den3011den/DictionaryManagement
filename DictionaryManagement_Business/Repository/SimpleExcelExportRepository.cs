@@ -88,11 +88,11 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportDepartmentId.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportDepartmentDTOFK == null ? "" : reportEntity.ReportDepartmentDTOFK.ShortName.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportDepartmentDTOFK == null ? "" : reportEntity.ReportDepartmentDTOFK.ToStringHierarchyShortName.ToString();
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportTemplateDTOFK.MesDepartmentDTOFK.Id.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportTemplateDTOFK.MesDepartmentDTOFK.ShortName.ToString();
+                    ws.Cell(excelRowNum, excelColNum).Value = reportEntity.ReportTemplateDTOFK.MesDepartmentDTOFK.ToStringHierarchyShortName.ToString();
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportEntity.DownloadTime == null ? "" : ((DateTime)reportEntity.DownloadTime).ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
@@ -247,7 +247,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.DepartmentId == null ? "" : mesParamDTO.DepartmentId.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.MesDepartmentDTOFK == null ? "" : mesParamDTO.MesDepartmentDTOFK.ShortName;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.MesDepartmentDTOFK == null ? "" : mesParamDTO.MesDepartmentDTOFK.ToStringHierarchyShortName;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesParamDTO.SapEquipmentIdSource == null ? "" : mesParamDTO.SapEquipmentIdSource.ToString();
                     excelColNum++;
@@ -471,6 +471,8 @@ namespace DictionaryManagement_Business.Repository
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Синхронизируется с AD (IsSyncWithAD)";
                 excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Сервисный пользователь (IsServiceUser)";
+                excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "В архиве (IsArchive)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Время последней синхронизации с AD (SyncWithADGroupsLastTime)";
@@ -494,6 +496,8 @@ namespace DictionaryManagement_Business.Repository
                     ws.Cell(excelRowNum, excelColNum).Value = userDTO.Description == null ? "" : userDTO.Description;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = userDTO.IsSyncWithAD == true ? "Да" : "";
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = userDTO.IsServiceUser == true ? "Да" : "";
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = userDTO.IsArchive == true ? "Да" : "";
                     excelColNum++;
@@ -627,6 +631,8 @@ namespace DictionaryManagement_Business.Repository
                 excelColNum++;
                 wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Синхронизируется с AD (User.IsSyncWithAD)";
                 excelColNum++;
+                wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Сервисный пользователь (User.IsServiceUser)";
+                excelColNum++;
                 wsUserToRole.Cell(excelRowNum, excelColNum).Value = "Время последней синхронизации с AD (User.SyncWithADGroupsLastTime)";
                 excelColNum++;
                 wsUserToRole.Cell(excelRowNum, excelColNum).Value = "В архиве (User.IsArchive)";
@@ -716,6 +722,8 @@ namespace DictionaryManagement_Business.Repository
                 excelColNum++;
                 wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "Сокр. наименование производства (MesDepartment.ShortName)";
                 excelColNum++;
+                wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "Сокр. наименование производства - полный путь";
+                excelColNum++;
                 wsRoleToDepartment.Cell(excelRowNum, excelColNum).Value = "В архиве (MesDepartment.IsArchive)";
 
                 wsRoleToDepartment.Row(excelRowNum).Style.Font.SetBold(true);
@@ -778,6 +786,8 @@ namespace DictionaryManagement_Business.Repository
                             wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.Description == null ? "" : userToRoleDTO.UserDTOFK.Description;
                             wsUserToRoleColNum++;
                             wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.IsSyncWithAD == true ? "Да" : "";
+                            wsUserToRoleColNum++;
+                            wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.IsServiceUser == true ? "Да" : "";
                             wsUserToRoleColNum++;
                             wsUserToRole.Cell(wsUserToRoleRowNum, wsUserToRoleColNum).Value = userToRoleDTO.UserDTOFK.SyncWithADGroupsLastTime.ToString("dd.MM.yyyy HH:mm:ss.fff");
                             wsUserToRoleColNum++;
@@ -875,6 +885,8 @@ namespace DictionaryManagement_Business.Repository
                             wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.Name;
                             wsRoleToDepartmentColNum++;
                             wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.ShortName;
+                            wsRoleToDepartmentColNum++;
+                            wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.ToStringHierarchyShortName;
                             wsRoleToDepartmentColNum++;
                             wsRoleToDepartment.Cell(wsRoleToDepartmentRowNum, wsRoleToDepartmentColNum).Value = roleToDepartmentDTO.DepartmentDTOFK.IsArchive == true ? "Да" : "";
 
@@ -1263,9 +1275,12 @@ namespace DictionaryManagement_Business.Repository
                 ws.Cell(excelRowNum, excelColNum).Value = "Ушло из СИР в MES (MesGoneTime)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "ИД пред. записи (PreviousRecordId)";
+                excelColNum++;
+                ws.Cell(excelRowNum, excelColNum).Value = "Передавать в Sap (NeedWriteToSap)";
+
 
                 excelColNum++;
-                ws.Cell(excelRowNum, excelColNum).Value = "Причина корректировки (CorrectionReason.Nmae)";
+                ws.Cell(excelRowNum, excelColNum).Value = "Причина корректировки (CorrectionReason.Name)";
                 excelColNum++;
                 ws.Cell(excelRowNum, excelColNum).Value = "Комментарий корректировки (MesMovementsComment.CorrectionComment)";
 
@@ -1314,6 +1329,9 @@ namespace DictionaryManagement_Business.Repository
                     ws.Cell(excelRowNum, excelColNum).Value = ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.MesGoneTime == null ? "" : ((DateTime)mesMovementsDTO.MesGoneTime).ToString("dd.MM.yyyy HH:mm:ss.fff");
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.PreviousRecordId == null ? "" : mesMovementsDTO.PreviousRecordId.ToString();
+                    excelColNum++;
+                    ws.Cell(excelRowNum, excelColNum).Value = mesMovementsDTO.NeedWriteToSap == true ? "Да" : "Нет";
+
 
                     string correctionNames = "";
                     string correctionComments = "";
@@ -2351,7 +2369,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.DepartmentId.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.MesDepartmentDTOFK == null ? "" : reportTemplateDTO.MesDepartmentDTOFK.ShortName;
+                    ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.MesDepartmentDTOFK == null ? "" : reportTemplateDTO.MesDepartmentDTOFK.ToStringHierarchyShortName;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = reportTemplateDTO.TemplateFileName;
                     excelColNum++;
@@ -2472,7 +2490,7 @@ namespace DictionaryManagement_Business.Repository
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.DepartmentId.ToString();
                     excelColNum++;
-                    ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.DepartmentDTOFK == null ? "" : smenaDTO.DepartmentDTOFK.ShortName;
+                    ws.Cell(excelRowNum, excelColNum).Value = smenaDTO.DepartmentDTOFK == null ? "" : smenaDTO.DepartmentDTOFK.ToStringHierarchyShortName;
                     excelColNum++;
                     ws.Cell(excelRowNum, excelColNum).Value = (DateTime.MinValue + smenaDTO.StartTime).ToString("HH:mm:ss", CultureInfo.InvariantCulture);
                     excelColNum++;
@@ -2568,7 +2586,15 @@ namespace DictionaryManagement_Business.Repository
                 else
                     pathVar = (await _settingsRepository.GetByName(SD.ReportDownloadPathSettingName)).Value;
 
-                string fileName = reportEntityDTO.DownloadReportFileName;
+                string fileName = "";
+                if (String.IsNullOrEmpty(reportEntityDTO.DownloadReportFileName))
+                {
+                    fileName = reportEntityDTO.Id.ToString() + ".xlsx";
+                }
+                else
+                {
+                    fileName = reportEntityDTO.DownloadReportFileName;
+                }
                 string file = System.IO.Path.Combine(pathVar, fileName);
                 var extension = Path.GetExtension(fileName);
                 if (System.IO.File.Exists(file))
@@ -2623,6 +2649,10 @@ namespace DictionaryManagement_Business.Repository
                     return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "Не удалось загрузить лист: " + sheetName, workbook);
                 }
 
+                if (worksheet == null)
+                {
+                    return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "Не найден лист: " + sheetName, workbook);
+                }
                 ExcelSheetWithSirTagsDTOList reportList = new ExcelSheetWithSirTagsDTOList();
 
                 var headerRows = worksheet.Row(1);
@@ -2640,10 +2670,22 @@ namespace DictionaryManagement_Business.Repository
                 reportList.Column11Name = headerRows.Cell(11).CachedValue.ToString();
                 reportList.Column12Name = headerRows.Cell(12).CachedValue.ToString();
 
-                var rows = worksheet.RangeUsed().RowsUsed().Skip(1);
+                IEnumerable<IXLRangeRow>? rows = null;
 
-                bool notImplementedThirdColumnForEmbReport = (reportEntityDTO.ReportTemplateDTOFK.ReportTemplateTypeDTOFK.Name.Trim().ToUpper() == "ОТЧЁТ ЭМБ"
-                    && sheetSettingName == SD.ReportOutputSheetSettingName);
+                try
+                {
+                    rows = worksheet.RangeUsed().RowsUsed().Skip(1);
+                }
+                catch (Exception ex2)
+                {
+                    return new Tuple<ExcelSheetWithSirTagsDTOList, string, XLWorkbook>(new ExcelSheetWithSirTagsDTOList(), "Не удалось получить строки листа: " + sheetName, workbook);
+                }
+
+
+                //bool notImplementedThirdColumnForEmbReport = (reportEntityDTO.ReportTemplateDTOFK.ReportTemplateTypeDTOFK.Name.Trim().ToUpper() == "ОТЧЁТ ЭМБ"
+                //    && sheetSettingName == SD.ReportOutputSheetSettingName);
+
+                bool notImplementedThirdColumnForEmbReport = false;
 
                 foreach (var row in rows)
                 {

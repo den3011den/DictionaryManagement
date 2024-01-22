@@ -11,6 +11,7 @@
 @inject IJSRuntime _jsRuntime
 @inject ISapUnitOfMeasureRepository _sapUnitOfMeasureRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 
 @if (IsAdmin == true)
@@ -34,35 +35,34 @@
             <RadzenDataGridApp @ref="sapUnitOfMeasureDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                             @bind-Settings="@SapUnitOfMeasureGridSettings" SettingsName="SapUnitOfMeasureGridSettings"
                             Data="@sapUnitOfMeasureDTOs" TItem="SapUnitOfMeasureDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset" ColumnWidth="200px"
-                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            EmptyText="Нет записей для отображения"
-                            FilterMode="FilterMode.Simple"
+                            FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"                            
+                            FilterMode="FilterMode.SimpleWithMenu"
                             AllowColumnResize="false"                            
                             GridLines="DataGridGridLines.Both"
-                            Style="height:calc(100vh - 170px)">
+                            Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="SapUnitOfMeasureDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="SapUnitOfMeasureDTO" Property="Name" Title="Наименование">
+                    <RadzenDataGridColumnApp TItem="SapUnitOfMeasureDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumnApp TItem="SapUnitOfMeasureDTO" Property="Name" Title="Наименование">
                         <EditTemplate Context="sapUnitOfMeasureDTO">
                             <RadzenTextBox @bind-Value="sapUnitOfMeasureDTO.Name" Style="width:100%; display: block" Name="Name" />
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="SapUnitOfMeasureDTO" Property="ShortName" Title="Сокр. наименование">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp TItem="SapUnitOfMeasureDTO" Property="ShortName" Title="Сокр. наименование">
                         <EditTemplate Context="sapUnitOfMeasureDTO">
                             <RadzenTextBox @bind-Value="sapUnitOfMeasureDTO.ShortName" Style="width:100%; display: block" Name="ShortName" />
                             <RadzenRequiredValidator Text="Сокр. наименование обязателено к заполнению" Component="ShortName" Popup="true" />
                             <RadzenLengthValidator Max=100 Text="Сокр. наименование не может быть больше 100 символов" Component="ShortName" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapUnitOfMeasureDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="SapUnitOfMeasureDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn Title="Действия" TItem="SapUnitOfMeasureDTO" Context="sapUnitOfMeasureDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp Title="Действия" TItem="SapUnitOfMeasureDTO" Context="sapUnitOfMeasureDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="sapUnitOfMeasureDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(sapUnitOfMeasureDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -86,7 +86,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(sapUnitOfMeasureDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }
@@ -143,7 +143,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("SapUnitOfMeasureGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "SapUnitOfMeasureGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -153,8 +154,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('SapUnitOfMeasureGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(SapUnitOfMeasureGridSettings)}')");
+        await SD.SetPageSettingsVersion("SapUnitOfMeasureGridSettings", _jsRuntime);
     }
 
 
@@ -238,8 +239,9 @@
                     return;
                 }
             }
-
-            await _sapUnitOfMeasureRepository.Update(sapUnitOfMeasureDTO, SD.UpdateMode.Update);
+            SapUnitOfMeasureDTO oldSapUnitOfMeasureDTO = await _sapUnitOfMeasureRepository.Get(sapUnitOfMeasureDTO.Id);
+            SapUnitOfMeasureDTO newSapUnitOfMeasureDTO = await _sapUnitOfMeasureRepository.Update(sapUnitOfMeasureDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<SapUnitOfMeasureDTO>(oldObject: oldSapUnitOfMeasureDTO, newObject: newSapUnitOfMeasureDTO, "Изменение ед.изм. SAP", "Ед.изм. SAP: ", _authorizationRepository);
         }
     }
 
@@ -311,18 +313,25 @@
 
             if (sapUnitOfMeasureDTOs.Contains(sapUnitOfMeasureDTO))
             {
+                SapUnitOfMeasureDTO oldSapUnitOfMeasureDTO = await _sapUnitOfMeasureRepository.Get(sapUnitOfMeasureDTO.Id);
+                SapUnitOfMeasureDTO newSapUnitOfMeasureDTO = new SapUnitOfMeasureDTO();
+                string logEventTypeName = "";
+
                 if (sapUnitOfMeasureDTO.IsArchive)
                 {
-                    await _sapUnitOfMeasureRepository.Update(sapUnitOfMeasureDTO, SD.UpdateMode.RestoreFromArchive);
+                    newSapUnitOfMeasureDTO = await _sapUnitOfMeasureRepository.Update(sapUnitOfMeasureDTO, SD.UpdateMode.RestoreFromArchive);
                     sapUnitOfMeasureDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Ед. изм. " + sapUnitOfMeasureDTO.Name + " восстановлена из архива");
+                    logEventTypeName = "Восстановление из архива ед.изм. SAP";
                 }
                 else
                 {
-                    await _sapUnitOfMeasureRepository.Update(sapUnitOfMeasureDTO, SD.UpdateMode.MoveToArchive);
+                    newSapUnitOfMeasureDTO = await _sapUnitOfMeasureRepository.Update(sapUnitOfMeasureDTO, SD.UpdateMode.MoveToArchive);
                     sapUnitOfMeasureDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Ед. изм. " + sapUnitOfMeasureDTO.Name + " удалена в архив");
+                    logEventTypeName = "Удаление в архив ед.изм. SAP";
                 }
+                await _logEventRepository.ToLog<SapUnitOfMeasureDTO>(oldObject: oldSapUnitOfMeasureDTO, newObject: newSapUnitOfMeasureDTO, logEventTypeName, "Ед.изм. SAP: ", _authorizationRepository);
                 await sapUnitOfMeasureDTOGrid.UpdateRow(sapUnitOfMeasureDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -369,6 +378,7 @@
 
             var newDTO = await _sapUnitOfMeasureRepository.Create(sapUnitOfMeasureDTO);
 
+            await _logEventRepository.ToLog<SapUnitOfMeasureDTO>(oldObject: null, newObject: newDTO, "Добавление ед.изм. SAP", "Ед.изм. SAP: ", _authorizationRepository);
             //sapUnitOfMeasureDTO.Id = newDTO.Id;
             //await sapUnitOfMeasureDTOGrid.UpdateRow(sapUnitOfMeasureDTO);
 

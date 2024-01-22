@@ -42,6 +42,10 @@ namespace DictionaryManagement_Business.Repository
             objectToAdd.DestDataTypeId = objectToAddDTO.DestDataTypeId;
             objectToAdd.DepartmentId = objectToAddDTO.DepartmentId;
             objectToAdd.TemplateFileName = objectToAddDTO.TemplateFileName;
+            objectToAdd.NeedAutoCalc = objectToAddDTO.NeedAutoCalc;
+            objectToAdd.AutoCalcOrder = objectToAddDTO.AutoCalcOrder;
+            objectToAdd.AutoCalcNumber = objectToAddDTO.AutoCalcNumber;
+
             objectToAdd.IsArchive = objectToAddDTO.IsArchive;
 
             var addedReportTemplate = _db.ReportTemplate.Add(objectToAdd);
@@ -57,6 +61,10 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
@@ -73,6 +81,10 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .FirstOrDefaultWithNoLock(u => u.TemplateFileName.Trim().ToUpper() == templateFileName.Trim().ToUpper());
             if (objToGet != null)
             {
@@ -91,6 +103,10 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .FirstOrDefaultWithNoLock(u => u.ReportTemplateTypeId == reportTemplateTypeId && u.DestDataTypeId == destDataTypeId && u.DepartmentId == departmentId);
                 if (objToGet != null)
                 {
@@ -99,6 +115,30 @@ namespace DictionaryManagement_Business.Repository
             }
             return null;
         }
+
+
+        public async Task<ReportTemplateDTO> GetByReportTemplateTypeId(int reportTemplateTypeId)
+        {
+            if (reportTemplateTypeId > 0)
+            {
+                var objToGet = _db.ReportTemplate
+                            .Include("AddUserFK")
+                            .Include("ReportTemplateTypeFK")
+                            .Include("DestDataTypeFK")
+                            .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .FirstOrDefaultWithNoLock(u => u.ReportTemplateTypeId == reportTemplateTypeId);
+                if (objToGet != null)
+                {
+                    return _mapper.Map<ReportTemplate, ReportTemplateDTO>(objToGet);
+                }
+            }
+            return null;
+        }
+
 
 
         public async Task<IEnumerable<ReportTemplateDTO>> GetAll(SelectDictionaryScope selectDictionaryScope = SelectDictionaryScope.All)
@@ -110,7 +150,12 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
-                            .Where(u => u.IsArchive == true).ToListWithNoLock();
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Where(u => u.IsArchive == true)
+                            .ToListWithNoLock();
                 return _mapper.Map<IEnumerable<ReportTemplate>, IEnumerable<ReportTemplateDTO>>(hhh2);
             }
             if (selectDictionaryScope == SD.SelectDictionaryScope.NotArchiveOnly)
@@ -120,6 +165,10 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .Where(u => u.IsArchive != true).ToListWithNoLock();
                 return _mapper.Map<IEnumerable<ReportTemplate>, IEnumerable<ReportTemplateDTO>>(hhh3);
 
@@ -128,7 +177,12 @@ namespace DictionaryManagement_Business.Repository
                             .Include("AddUserFK")
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
-                            .Include("MesDepartmentFK").ToListWithNoLock();
+                            .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .ToListWithNoLock();
             return _mapper.Map<IEnumerable<ReportTemplate>, IEnumerable<ReportTemplateDTO>>(hhh1);
         }
 
@@ -142,6 +196,10 @@ namespace DictionaryManagement_Business.Repository
                             .Include("ReportTemplateTypeFK")
                             .Include("DestDataTypeFK")
                             .Include("MesDepartmentFK")
+                            .Include("MesDepartmentFK.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("MesDepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                         .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)
@@ -216,9 +274,14 @@ namespace DictionaryManagement_Business.Repository
                     objectToUpdate.Description = objectToUpdateDTO.Description;
                 if (objectToUpdateDTO.TemplateFileName != objectToUpdate.TemplateFileName)
                     objectToUpdate.TemplateFileName = objectToUpdateDTO.TemplateFileName;
+                if (objectToUpdateDTO.NeedAutoCalc != objectToUpdate.NeedAutoCalc)
+                    objectToUpdate.NeedAutoCalc = objectToUpdateDTO.NeedAutoCalc;
+                if (objectToUpdateDTO.AutoCalcOrder != objectToUpdate.AutoCalcOrder)
+                    objectToUpdate.AutoCalcOrder = objectToUpdateDTO.AutoCalcOrder;
+                if (objectToUpdateDTO.AutoCalcNumber != objectToUpdate.AutoCalcNumber)
+                    objectToUpdate.AutoCalcNumber = objectToUpdateDTO.AutoCalcNumber;
                 if (objectToUpdateDTO.IsArchive != objectToUpdate.IsArchive)
                     objectToUpdate.IsArchive = objectToUpdateDTO.IsArchive;
-
 
                 _db.ReportTemplate.Update(objectToUpdate);
                 _db.SaveChanges();

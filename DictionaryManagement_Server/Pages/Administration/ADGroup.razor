@@ -12,6 +12,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IADGroupRepository _adGroupRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @inject DialogService _dialogService
 
@@ -37,22 +38,22 @@
                             AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single" GridLines="DataGridGridLines.Both"
                             Data="@adGroupDTOs" TItem="ADGroupDTO"
                             FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                            FilterMode="FilterMode.Simple"                            
+                               FilterMode="FilterMode.SimpleWithMenu"
                             Density=Density.Compact
                             ShowPagingSummary="true"                                                        
                             AllowVirtualization="true"
-                            Style="height:calc(100vh - 170px)">
+                            Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="ADGroupDTO" Property="ToStringId" Title="Ид роли" Width="35px"
+                    <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="ToStringId" Title="Ид группы" Width="40px"
                                           FilterProperty="ToStringId" FilterOperator="FilterOperator.Contains" SortProperty="ToStringId">
                         <Template Context="data1">
                             <div style="white-space:pre-wrap; font-size: 10px">
                                 @data1.ToStringId
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ADGroupDTO" Property="Name" Title="ФИО" Width="45px" FilterProperty="Name" SortProperty="Name" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="Name" Title="Наименование" Width="80px" FilterProperty="Name" SortProperty="Name" FilterOperator="FilterOperator.Contains">
                         <Template Context="data2">
                             <div style="white-space:pre-wrap; font-size: 12px">
                                 <strong>
@@ -60,23 +61,23 @@
                                 </strong>
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ADGroupDTO" Property="Description" Title="Описание" Width="33px" FilterProperty="Description" SortProperty="Description" FilterOperator="FilterOperator.Contains">
+                    <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="Description" Title="Описание" Width="70px" FilterProperty="Description" SortProperty="Description" FilterOperator="FilterOperator.Contains">
                         <Template Context="data3">
                             <div style="white-space:pre-wrap; font-size: 10px">
                                 @data3.Description
                             </div>
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="ADGroupDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="8px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="IsArchive" Title="Арх" Filterable="true" Width="18px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="false" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="ADGroupDTO" Context="adGroupDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="16px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="ADGroupDTO" Context="adGroupDTO" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Width="16px">
                         <Template Context="adGroupDTO">
                             <RadzenButton title="Редактировать группу AD" Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(adGroupDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -91,7 +92,7 @@
                                 </RadzenButton>
                             }
                         </Template>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
                 </Columns>
             </RadzenDataGridApp>
@@ -172,6 +173,9 @@
     {
         await Task.CompletedTask;
 
+        if (!(await SD.CheckPageSettingsVersion("ADGroupGridSettings", _jsRuntime)))
+            return;
+
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "ADGroupGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -184,6 +188,7 @@
         await Task.CompletedTask;
 
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('ADGroupGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(ADGroupGridSettings)}')");
+        await SD.SetPageSettingsVersion("ADGroupGridSettings", _jsRuntime);
     }
 
 
@@ -260,17 +265,21 @@
                 }
             }
 
+            ADGroupDTO oldADGroupDTO = await _adGroupRepository.Get(adGroupDTO.Id);
+
             if (adGroupDTO.IsArchive)
             {
                 await _adGroupRepository.Update(adGroupDTO, SD.UpdateMode.RestoreFromArchive);
                 adGroupDTO.IsArchive = false;
+                await _logEventRepository.ToLog<ADGroupDTO>(oldADGroupDTO, adGroupDTO, "Восстановление из архива группы AD", "Группа AD: ", _authorizationRepository);
                 await _jsRuntime.ToastrSuccess("Группа AD \"" + adGroupDTO.Name + ")\" восстановлена из архива");
             }
             else
             {
                 await _adGroupRepository.Update(adGroupDTO, SD.UpdateMode.MoveToArchive);
                 adGroupDTO.IsArchive = true;
-                await _jsRuntime.ToastrSuccess("Группа AD \"" + adGroupDTO.Name + "\" удалёна в архив");
+                await _logEventRepository.ToLog<ADGroupDTO>(oldADGroupDTO, adGroupDTO, "Удаление в архив группы AD", "Группа AD: ", _authorizationRepository);
+                await _jsRuntime.ToastrSuccess("Группа AD \"" + adGroupDTO.Name + "\" удалена в архив");
             }
             await adGroupDTOGrid.UpdateRow(adGroupDTO);
         }

@@ -46,7 +46,7 @@
                             ShowCleanGridFiltersHeaderButton="false"
                             ShowCleanGridSortsHeaderButton="false">
                 <Columns>
-                    <RadzenDataGridColumn TItem="SapToMesMaterialMappingDTO" Property="SapMaterialDTO" FilterProperty="SapMaterialDTO.ToStringValue" Title="Материал SAP" Width="280px" Filterable="true">
+                    <RadzenDataGridColumnApp TItem="SapToMesMaterialMappingDTO" Property="SapMaterialDTO" FilterProperty="SapMaterialDTO.ToStringValue" Title="Материал SAP" Width="280px" Filterable="true">
                         <Template Context="sapToMesMaterialMappingDTO">
                             <div style="white-space:pre-wrap">
                                 @sapToMesMaterialMappingDTO.SapMaterialDTO.ShortName
@@ -58,9 +58,9 @@
                                             FilterOperator="StringFilterOperator.Contains" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" />
                             <RadzenRequiredValidator Text="Материал SAP обязателен к выбору" Component="SapMat" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="SapToMesMaterialMappingDTO" Property="MesMaterialDTO" Title="Материал MES" Width="280px" FilterProperty="MesMaterialDTO.ToStringValue" Filterable="true">
+                    <RadzenDataGridColumnApp TItem="SapToMesMaterialMappingDTO" Property="MesMaterialDTO" Title="Материал MES" Width="280px" FilterProperty="MesMaterialDTO.ToStringValue" Filterable="true">
                         <Template Context="sapToMesMaterialMappingDTO">
                             <div style="white-space:pre-wrap">
                                 @sapToMesMaterialMappingDTO.MesMaterialDTO.ShortName
@@ -71,9 +71,9 @@
                                             FilterOperator="StringFilterOperator.Contains" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" />
                             <RadzenRequiredValidator Text="Материал MES обязателен к выбору" Component="MesMat" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn Title="Действия" TItem="SapToMesMaterialMappingDTO" Context="SapToMesMaterialMappingDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    <RadzenDataGridColumnApp Title="Действия" TItem="SapToMesMaterialMappingDTO" Context="SapToMesMaterialMappingDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="SapToMesMaterialMappingDTO">
                             @* <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(SapToMesMaterialMappingDTO))" @onclick:stopPropagation="true"> *@
                             <RadzenButton Icon="edit" Disabled=true ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(SapToMesMaterialMappingDTO))" @onclick:stopPropagation="true">
@@ -93,7 +93,7 @@
                             <RadzenButton Disabled=true ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(SapToMesMaterialMappingDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
                 </Columns>
             </RadzenDataGridApp>

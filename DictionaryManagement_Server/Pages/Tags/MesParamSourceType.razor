@@ -11,6 +11,7 @@
 @inject IJSRuntime _jsRuntime
 @inject IMesParamSourceTypeRepository _mesParamSourceTypeRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 @if (IsAdmin == true)
 {
@@ -34,27 +35,27 @@
                                Data="@mesParamSourceTypeDTOs" TItem="MesParamSourceTypeDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
                                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                EmptyText="Нет записей для отображения"
-                               FilterMode="FilterMode.Simple"
+                               FilterMode="FilterMode.SimpleWithMenu"
                                AllowColumnResize="false"
                                AllowVirtualization="true"
                                GridLines="DataGridGridLines.Both"
-                               Style="height:calc(100vh - 170px)">
+                               Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="Id" Title="Ид записи" Width="100px" />
-                    <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="Name" Title="Наименование" Width="300px">
+                    <RadzenDataGridColumnApp TItem="MesParamSourceTypeDTO" Property="Id" Title="Ид записи" Width="100px" />
+                    <RadzenDataGridColumnApp TItem="MesParamSourceTypeDTO" Property="Name" Title="Наименование" Width="300px">
                         <EditTemplate Context="mesParamSourceTypeDTO">
                             <RadzenTextBox @bind-Value="mesParamSourceTypeDTO.Name" Style="width:100%; display: block" Name="Name" />
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="MesParamSourceTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="MesParamSourceTypeDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="80px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn Title="Действия" TItem="MesParamSourceTypeDTO" Context="mesParamSourceTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp Title="Действия" TItem="MesParamSourceTypeDTO" Context="mesParamSourceTypeDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="mesParamSourceTypeDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(mesParamSourceTypeDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -77,7 +78,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(mesParamSourceTypeDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }
@@ -141,7 +142,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("MesParamSourceTypeGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "MesParamSourceTypeGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -151,8 +153,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('MesParamSourceTypeGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(MesParamSourceTypeGridSettings)}')");
+        await SD.SetPageSettingsVersion("MesParamSourceTypeGridSettings", _jsRuntime);
     }
 
 
@@ -215,8 +217,9 @@
                     return;
                 }
             }
-
-            await _mesParamSourceTypeRepository.Update(mesParamSourceTypeDTO, SD.UpdateMode.Update);
+            MesParamSourceTypeDTO oldMesParamSourceTypeDTO = await _mesParamSourceTypeRepository.Get(mesParamSourceTypeDTO.Id);
+            MesParamSourceTypeDTO newMesParamSourceTypeDTO = await _mesParamSourceTypeRepository.Update(mesParamSourceTypeDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<MesParamSourceTypeDTO>(oldObject: oldMesParamSourceTypeDTO, newObject: newMesParamSourceTypeDTO, "Изменение типа тэга СИР", "Тип тэга СИР: ", _authorizationRepository);
         }
     }
 
@@ -287,18 +290,25 @@
 
             if (mesParamSourceTypeDTOs.Contains(mesParamSourceTypeDTO))
             {
+                MesParamSourceTypeDTO oldMesParamSourceTypeDTO = await _mesParamSourceTypeRepository.Get(mesParamSourceTypeDTO.Id);
+                MesParamSourceTypeDTO newMesParamSourceTypeDTO = new MesParamSourceTypeDTO();
+                string logEventTypeName = "";
+
                 if (mesParamSourceTypeDTO.IsArchive)
                 {
-                    await _mesParamSourceTypeRepository.Update(mesParamSourceTypeDTO, SD.UpdateMode.RestoreFromArchive);
+                    newMesParamSourceTypeDTO = await _mesParamSourceTypeRepository.Update(mesParamSourceTypeDTO, SD.UpdateMode.RestoreFromArchive);
                     mesParamSourceTypeDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Тип тэгов " + mesParamSourceTypeDTO.Name + " восстановлена из архива");
+                    logEventTypeName = "Восстановление из архива типа тэга СИР";
                 }
                 else
                 {
-                    await _mesParamSourceTypeRepository.Update(mesParamSourceTypeDTO, SD.UpdateMode.MoveToArchive);
+                    newMesParamSourceTypeDTO = await _mesParamSourceTypeRepository.Update(mesParamSourceTypeDTO, SD.UpdateMode.MoveToArchive);
                     mesParamSourceTypeDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Тип тэгов " + mesParamSourceTypeDTO.Name + " удалена в архив");
+                    logEventTypeName = "Удаление в архив типа тэга СИР";
                 }
+                await _logEventRepository.ToLog<MesParamSourceTypeDTO>(oldObject: oldMesParamSourceTypeDTO, newObject: newMesParamSourceTypeDTO, logEventTypeName, "Тип тэга СИР: ", _authorizationRepository);
                 await mesParamSourceTypeDTOGrid.UpdateRow(mesParamSourceTypeDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -336,7 +346,7 @@
             }
 
             var newDTO = await _mesParamSourceTypeRepository.Create(mesParamSourceTypeDTO);
-
+            await _logEventRepository.ToLog<MesParamSourceTypeDTO>(oldObject: null, newObject: newDTO, "Добавление типа тэга СИР", "Тип тэга СИР: ", _authorizationRepository);
             //mesParamSourceTypeDTOToInsert.Id = newDTO.Id;
             //await mesParamSourceTypeDTOGrid.UpdateRow(mesParamSourceTypeDTOToInsert);
 

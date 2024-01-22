@@ -9,6 +9,7 @@
 
 @inject IRoleVMRepository _roleVMRepository
 @inject DialogService _dialogService
+@inject ILogEventRepository _logEventRepository;
 
 @if (IsAdmin == true)
 {
@@ -31,7 +32,7 @@
                         <RadzenColumn Size="12">
                             <RadzenStack>
                                 <RadzenStack Gap="1rem">
-                                    <RadzenDataGridApp AllowAlternatingRows="true" AllowFiltering="true" PageSize="17" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
+                                    <RadzenDataGridApp AllowAlternatingRows="true" AllowFiltering="true" PageSize="10" AllowPaging="true" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                                     Data="ADGroupList" TItem="ADGroupDTO"
                                                     FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                                                     FilterMode="FilterMode.Simple"
@@ -44,18 +45,23 @@
                                                     ShowCleanGridSortsHeaderButton="false">
                                         <Columns>
 
-                                            <RadzenDataGridColumn TItem="ADGroupDTO" Property="Checked" Title=" " Filterable="true" Width="15px">
+                                            <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="Checked" Title=" " Filterable="true" Width="15px">
                                                 <Template Context="data">
                                                     <RadzenCheckBox @bind-Value=data.Checked Disabled="false" TriState="false" TValue="bool" />
                                                 </Template>
-                                            </RadzenDataGridColumn>
+                                            </RadzenDataGridColumnApp>
 
-                                            <RadzenDataGridColumn TItem="ADGroupDTO" Property="ToStringId" Filterable="true" FilterProperty="ToStringId" Title="Ид" Width="75px">
-                                            </RadzenDataGridColumn>
-                                            <RadzenDataGridColumn TItem="ADGroupDTO" Property="Name" Title="Наименование" Width="130px">
-                                            </RadzenDataGridColumn>
-                                            <RadzenDataGridColumn TItem="ADGroupDTO" Property="Description" Title="Описание" Width="150px">
-                                            </RadzenDataGridColumn>
+                                            <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="ToStringId" Filterable="true" FilterProperty="ToStringId" Title="Ид" Width="75px">
+                                            </RadzenDataGridColumnApp>
+                                            <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="Name" Title="Наименование" Width="130px">
+                                            </RadzenDataGridColumnApp>
+                                            <RadzenDataGridColumnApp TItem="ADGroupDTO" Property="Description" Title="Описание" Width="150px">
+                                                <Template Context="data1">
+                                                    <div style="white-space:pre-line; word-wrap: break-word;">
+                                                        @data1.Description
+                                                    </div>
+                                                </Template>
+                                            </RadzenDataGridColumnApp>
                                         </Columns>
                                     </RadzenDataGridApp>
                                 </RadzenStack>
@@ -63,8 +69,10 @@
                         </RadzenColumn>
                     </RadzenRow>
 
-
-
+                    <br />
+                    <RadzenText class="text-warning" TextStyle="TextStyle.Body1" TagName="TagName.Span">
+                        * в списке только НЕ архивные группы AD и не включённые в роль @ActiveRoleVMDTO.Name
+                    </RadzenText>
 
                     <div class="form-group py-2">
                         <button class="btn btn-primary">@Title</button>
@@ -156,7 +164,6 @@
             foreach (var checkedADGroupDTOItem in checkedADGroupDTOList)
             {
                 addedRoleToADGroupDTOItem = await _roleVMRepository.AddRoleToADGroup(ActiveRoleVMDTO, checkedADGroupDTOItem);
-
                 if (addedRoleToADGroupDTOItem == null)
                 {
                     await _jsRuntime.ToastrError("Не удалось добавить группу AD \"" + checkedADGroupDTOItem.Name + "\"!");
@@ -164,6 +171,10 @@
                 else
                 {
                     addedCount = addedCount + 1;
+                    Guid userId = (await _authorizationRepository.GetCurrentUserDTO()).Id;
+                    await _logEventRepository.AddRecord("Добавление связки группы AD с ролью", userId, "<Пусто>",
+                        ActiveRoleVMDTO.Name + " --> " + checkedADGroupDTOItem.ToString(), false,
+                        "Роль: " + ActiveRoleVMDTO.Name + " Группа AD: " + checkedADGroupDTOItem.ToString());
                 }
             }
 

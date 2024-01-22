@@ -6,6 +6,8 @@ using DictionaryManagement_Models.IntDBModels;
 using DND.EFCoreWithNoLock.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Linq;
+using static DictionaryManagement_Common.SD;
 
 namespace DictionaryManagement_Business.Repository
 {

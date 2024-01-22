@@ -39,6 +39,10 @@ namespace DictionaryManagement_Business.Repository
         {
             var objToGet = _db.Smena
                             .Include("DepartmentFK")
+                            .Include("DepartmentFK.DepartmentParent")
+                            .Include("DepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("DepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("DepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                             .FirstOrDefaultWithNoLock(u => u.Id == id);
             if (objToGet != null)
             {
@@ -50,7 +54,12 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<SmenaDTO>> GetAllByDepartmentId(int departmentId)
         {
             var hhh1 = _db.Smena
-                            .Include("DepartmentFK").Where(u => u.DepartmentId == departmentId).ToListWithNoLock();
+                            .Include("DepartmentFK")
+                            .Include("DepartmentFK.DepartmentParent")
+                            .Include("DepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("DepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("DepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Where(u => u.DepartmentId == departmentId).ToListWithNoLock();
             return _mapper.Map<IEnumerable<Smena>, IEnumerable<SmenaDTO>>(hhh1);
         }
 
@@ -59,7 +68,12 @@ namespace DictionaryManagement_Business.Repository
         public async Task<IEnumerable<SmenaDTO>> GetAll()
         {
             var hhh1 = _db.Smena
-                            .Include("DepartmentFK").ToListWithNoLock();
+                            .Include("DepartmentFK")
+                            .Include("DepartmentFK.DepartmentParent")
+                            .Include("DepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("DepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("DepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .ToListWithNoLock();
             return _mapper.Map<IEnumerable<Smena>, IEnumerable<SmenaDTO>>(hhh1);
         }
 
@@ -67,7 +81,11 @@ namespace DictionaryManagement_Business.Repository
         public async Task<SmenaDTO> Update(SmenaDTO objectToUpdateDTO)
         {
             var objectToUpdate = _db.Smena
-                .Include("DepartmentFK")
+                            .Include("DepartmentFK")
+                            .Include("DepartmentFK.DepartmentParent")
+                            .Include("DepartmentFK.DepartmentParent.DepartmentParent")
+                            .Include("DepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent")
+                            .Include("DepartmentFK.DepartmentParent.DepartmentParent.DepartmentParent.DepartmentParent")
                 .FirstOrDefaultWithNoLock(u => u.Id == objectToUpdateDTO.Id);
 
             if (objectToUpdate != null)

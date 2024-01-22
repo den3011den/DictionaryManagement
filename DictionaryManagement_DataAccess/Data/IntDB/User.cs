@@ -23,6 +23,8 @@ namespace DictionaryManagement_DataAccess.Data.IntDB
         public bool? IsSyncWithAD { get; set; } = true;
 
         public DateTime? SyncWithADGroupsLastTime { get; set; } = (DateTime)System.Data.SqlTypes.SqlDateTime.MinValue;
+
+        public bool? IsServiceUser { get; set; } = false;
     }
 
 }

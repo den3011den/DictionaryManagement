@@ -12,6 +12,7 @@
 @inject IJSRuntime _jsRuntime
 @inject ICorrectionReasonRepository _correctionReasonRepository
 @inject ISimpleExcelExportRepository _simpleExcelExportRepository
+@inject ILogEventRepository _logEventRepository
 
 
 @if (IsAdmin == true)
@@ -34,15 +35,14 @@
             <RadzenDataGridApp @ref="correctionReasonDTOGrid" AllowAlternatingRows="true" AllowFiltering="true" AllowPaging="false" AllowSorting="true" AllowMultiColumnSorting="true" EditMode="DataGridEditMode.Single"
                                @bind-Settings="@CorrectionReasonGridSettings" SettingsName="CorrectionReasonGridSettings"
                                Data="@correctionReasonDTOs" TItem="CorrectionReasonDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Sort="@Reset" Page="@Reset" Filter="@Reset"
-                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
-                               EmptyText="Нет записей для отображения"
-                               FilterMode="FilterMode.Simple"
+                               FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"                               
+                               FilterMode="FilterMode.SimpleWithMenu"
                                AllowColumnResize="false"
                                GridLines="DataGridGridLines.Both"
-                               Style="height:calc(100vh - 170px)">
+                               Style="height:calc(100vh - 190px)">
                 <Columns>
-                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="Id" Title="Ид записи" Width="120px" />
-                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="Name" Title="Наименование" Width="320px">
+                    <RadzenDataGridColumnApp TItem="CorrectionReasonDTO" Property="Id" Title="Ид записи" Width="120px" />
+                    <RadzenDataGridColumnApp TItem="CorrectionReasonDTO" Property="Name" Title="Наименование" Width="320px">
                         <Template Context="correctionReasonDTO">
                             <div style="white-space:pre-wrap">
                                 @correctionReasonDTO.Name
@@ -53,14 +53,14 @@
                             <RadzenRequiredValidator Text="Наименование обязателено к заполнению" Component="Name" Popup="true" />
                             <RadzenLengthValidator Max=250 Text="Наименование не может быть больше 250 символов" Component="Name" Popup="true" />
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
 
-                    <RadzenDataGridColumn TItem="CorrectionReasonDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumnApp TItem="CorrectionReasonDTO" Property="IsArchive" Title="Архив" Filterable="true" Width="70px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenCheckBox @bind-Value=data.IsArchive ReadOnly="true" TriState="true" TValue="bool" />
                         </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn Title="Действия" TItem="CorrectionReasonDTO" Context="correctionReasonDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
+                    </RadzenDataGridColumnApp>
+                    <RadzenDataGridColumnApp Title="Действия" TItem="CorrectionReasonDTO" Context="correctionReasonDTO" Filterable="true" Sortable="false" TextAlign="TextAlign.Right" Width="156px">
                         <Template Context="correctionReasonDTO">
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium" Click="@(args => EditRow(correctionReasonDTO))" @onclick:stopPropagation="true">
                             </RadzenButton>
@@ -83,7 +83,7 @@
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" class="my-1 ms-1" Click="@(args => DeleteRow(correctionReasonDTO))">
                             </RadzenButton>
                         </EditTemplate>
-                    </RadzenDataGridColumn>
+                    </RadzenDataGridColumnApp>
                 </Columns>
             </RadzenDataGridApp>
         }
@@ -140,7 +140,8 @@
     private async Task LoadStateAsync()
     {
         await Task.CompletedTask;
-
+        if (!(await SD.CheckPageSettingsVersion("CorrectionReasonGridSettings", _jsRuntime)))
+            return;
         var result = await _jsRuntime.InvokeAsync<string>("window.localStorage.getItem", "CorrectionReasonGridSettings");
         if (!string.IsNullOrEmpty(result))
         {
@@ -150,8 +151,8 @@
     private async Task SaveStateAsync()
     {
         await Task.CompletedTask;
-
         await _jsRuntime.InvokeVoidAsync("eval", $@"window.localStorage.setItem('CorrectionReasonGridSettings', '{JsonSerializer.Serialize<DataGridSettings>(CorrectionReasonGridSettings)}')");
+        await SD.SetPageSettingsVersion("CorrectionReasonGridSettings", _jsRuntime);
     }
 
 
@@ -219,8 +220,9 @@
                     return;
                 }
             }
-
-            await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.Update);
+            CorrectionReasonDTO oldCorrectionReasonDTO = await _correctionReasonRepository.Get(correctionReasonDTO.Id);
+            CorrectionReasonDTO newCorrectionReasonDTO = await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.Update);
+            await _logEventRepository.ToLog<CorrectionReasonDTO>(oldObject: oldCorrectionReasonDTO, newObject: newCorrectionReasonDTO, "Изменение причины корректировки", "Причина корректировки: ", _authorizationRepository);
         }
     }
 
@@ -291,18 +293,26 @@
 
             if (correctionReasonDTOs.Contains(correctionReasonDTO))
             {
+
+                CorrectionReasonDTO oldCorrectionReasonDTO = await _correctionReasonRepository.Get(correctionReasonDTO.Id);
+                CorrectionReasonDTO newCorrectionReasonDTO = new CorrectionReasonDTO();
+                string logEventTypeName = "";
+
                 if (correctionReasonDTO.IsArchive)
                 {
-                    await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.RestoreFromArchive);
+                    newCorrectionReasonDTO = await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.RestoreFromArchive);
                     correctionReasonDTO.IsArchive = false;
                     await _jsRuntime.ToastrSuccess("Причина корректировки " + correctionReasonDTO.Name + " восстановлена из архива");
+                    logEventTypeName = "Восстановление из архива причины корректировки";
                 }
                 else
                 {
-                    await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.MoveToArchive);
+                    newCorrectionReasonDTO = await _correctionReasonRepository.Update(correctionReasonDTO, SD.UpdateMode.MoveToArchive);
                     correctionReasonDTO.IsArchive = true;
                     await _jsRuntime.ToastrSuccess("Причина корректировки " + correctionReasonDTO.Name + " удалена в архив");
+                    logEventTypeName = "Удаление в архив причины корректировки";
                 }
+                await _logEventRepository.ToLog<CorrectionReasonDTO>(oldObject: oldCorrectionReasonDTO, newObject: newCorrectionReasonDTO, logEventTypeName, "Причина корректировки: ", _authorizationRepository);
                 await correctionReasonDTOGrid.UpdateRow(correctionReasonDTO);
                 //await sapEquipmentDTOGrid.Reload();
             }
@@ -340,6 +350,7 @@
             }
 
             var newDTO = await _correctionReasonRepository.Create(correctionReasonDTO);
+            await _logEventRepository.ToLog<CorrectionReasonDTO>(oldObject: null, newObject: newDTO, "Добавление причины корректировки", "Причина корректировки: ", _authorizationRepository);
 
             //correctionReasonDTOToInsert.Id = newDTO.Id;
             //await correctionReasonDTOGrid.UpdateRow(correctionReasonDTOToInsert);
